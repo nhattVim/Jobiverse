@@ -1,4 +1,4 @@
-# Node.js (áp dụng cho cả frontend và backend)
+# Node.js
 node_modules/
 npm-debug.log*
 yarn-debug.log*
@@ -33,5 +33,5 @@ Thumbs.db
 .idea/
 *.swp
 
-# Optional: bỏ folder chứa các file upload
+# Optional
 uploads/
