@@ -15,8 +15,4 @@ UserSchema.pre('save', async function (next) {
   next();
 });
 
-// module.exports = mongoose.model("User", UserSchema, "users");
-
-const User = mongoose.model('User', UserSchema, 'users');  // 'users' là tên collection
-
-module.exports = User;
+module.exports = mongoose.model('User', UserSchema);
