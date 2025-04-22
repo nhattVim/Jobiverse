@@ -2,21 +2,14 @@ const mongoose = require("mongoose");
 const bcrypt = require('bcryptjs');
 
 const UserSchema = new mongoose.Schema({
-  name: String,
+  accoutType: {
+    type: String,
+    enum: ['student', 'employer', 'admin'],
+    required: true
+  },
   email: String,
   password: String,
-  phone: String,
   token: String,
-  address: {
-    // Tỉnh
-    province: String,
-    // Thành phố,thị xã
-    district: String,
-    // Xã phường
-    ward: String,
-    // Đường
-    street: String
-  },
   deleted: {
     type: Boolean,
     default: false

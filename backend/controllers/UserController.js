@@ -27,12 +27,7 @@ class UserController {
 
   // [POST] /users
   createUser(req, res, next) {
-    const { name, email, password } = req.body;
-    const newUser = new User({
-      name,
-      email,
-      password,
-    });
+    const newUser = new User(req.body);
 
     newUser.save()
       .then(user => {
@@ -47,9 +42,8 @@ class UserController {
   // [PUT] /users/:id
   updateUser(req, res, next) {
     const userId = req.params.id;
-    const { name, email, password } = req.body;
 
-    User.findByIdAndUpdate(userId, { name, email, password }, { new: true })
+    User.findByIdAndUpdate(userId, req.body, { new: true })
       .then(user => {
         if (!user) {
           return res.status(404).json({ message: 'User not found' });
@@ -75,30 +69,9 @@ class UserController {
       .catch(next);
   }
 
-  // [GET] /users/search
-  searchUsers(req, res, next) {
-    const { name, email } = req.query;
-
-    const searchQuery = {};
-    if (name) searchQuery.name = new RegExp(name, 'i');  // Tìm kiếm theo tên, không phân biệt hoa thường
-    if (email) searchQuery.email = new RegExp(email, 'i');  // Tìm kiếm theo email
-
-    User.find(searchQuery)
-      .then(users => {
-        res.status(200).json({ users });
-      })
-      .catch(next);
-  }
-
   // [POST] /users/register
   registerUser(req, res, next) {
-    const { name, email, password } = req.body;
-
-    const newUser = new User({
-      name,
-      email,
-      password,
-    });
+    const newUser = req.body;
 
     newUser.save()
       .then(user => {
