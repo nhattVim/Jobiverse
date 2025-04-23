@@ -2,14 +2,13 @@ const Employer = require('../models/Employer');
 
 class EmployerController {
   // [GET] /employers
-  getAllEmployers(req, res, next) {
-    Employer.find().lean()
-      .then(employers => {
-        res.status(200).json({
-          employers
-        });
-      })
-      .catch(next);
+  async getAllEmployers(req, res, next) {
+    try {
+      const employers = await Employer.find().populate('account', '-password');
+      res.json(employers);
+    } catch (error) {
+      res.status(500).json({ message: 'Lỗi khi lấy danh sách employer' });
+    }
   }
 
   // [GET] /employers/:id

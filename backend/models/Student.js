@@ -1,9 +1,9 @@
 const mongoose = require("mongoose");
 
 const StudentSchema = new mongoose.Schema({
-  userID: {
+  account: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: "User",
+    ref: "Account",
     required: true,
     unique: true
   },
@@ -26,6 +26,6 @@ const StudentSchema = new mongoose.Schema({
     required: true
   },
   avatarURL: String,
-}, { timestamps: true })
+})
 
 module.exports = mongoose.model('Student', StudentSchema);

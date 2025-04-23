@@ -1,9 +1,9 @@
 const mongoose = require("mongoose");
 
 const EmployerSchema = new mongoose.Schema({
-  userID: {
+  account: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: "User",
+    ref: "Account",
     required: true,
     unique: true
   },
@@ -25,6 +25,6 @@ const EmployerSchema = new mongoose.Schema({
     required: true
   },
   companyInfo: String,
-}, { timestamps: true })
+})
 
 module.exports = mongoose.model('Employer', EmployerSchema);

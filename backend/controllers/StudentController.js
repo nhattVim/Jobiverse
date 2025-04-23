@@ -4,7 +4,7 @@ class StudentController {
   // [GET] /students
   async getAllStudents(req, res, next) {
     try {
-      const students = await Student.find().populate('userID');
+      const students = await Student.find().populate('account', '-password');
       res.json(students);
     } catch (error) {
       res.status(500).json({ message: 'Lỗi khi lấy danh sách sinh viên' });
