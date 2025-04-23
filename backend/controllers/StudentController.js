@@ -2,14 +2,13 @@ const Student = require('../models/Student');
 
 class StudentController {
   // [GET] /students
-  getAllStudents(req, res, next) {
-    Student.find().lean()
-      .then(users => {
-        res.status(200).json({
-          users: users,
-        });
-      })
-      .catch(next);
+  async getAllStudents(req, res, next) {
+    try {
+      const students = await Student.find().populate('userID');
+      res.json(students);
+    } catch (error) {
+      res.status(500).json({ message: 'Lỗi khi lấy danh sách sinh viên' });
+    }
   }
 
   // [GET] /students/:id

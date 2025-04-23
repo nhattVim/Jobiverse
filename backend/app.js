@@ -1,3 +1,4 @@
+require('dotenv').config();
 const express = require('express');
 const app = express();
 const cors = require('cors');
@@ -8,7 +9,6 @@ const cookieParser = require('cookie-parser');
 const logger = require('morgan');
 
 // Connect to database
-require('dotenv').config();
 db.connect()
 
 // Middlewares

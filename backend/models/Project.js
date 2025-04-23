@@ -15,7 +15,7 @@ const ProjectSchema = new mongoose.Schema({
     type: String,
     required: true
   },
-  description: string,
+  description: String,
   skillsRequired: {
     type: String,
     required: true

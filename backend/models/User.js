@@ -2,7 +2,7 @@ const mongoose = require("mongoose");
 const bcrypt = require('bcryptjs');
 
 const UserSchema = new mongoose.Schema({
-  accoutType: {
+  accountType: {
     type: String,
     enum: ['student', 'employer', 'admin'],
     required: true
