@@ -11,15 +11,7 @@ class AuthController {
   async registerUser(req, res, next) {
     try {
       const { accountType, email, password, ...profileData } = req.body;
-
       const account = await Account.create({ accountType, email, password });
-
-      if (accountType === 'student') {
-        await Student.create({ ...profileData, account: account._id });
-      } else if (accountType === 'employer') {
-        await Employer.create({ ...profileData, account: account._id });
-      }
-
       res.status(201).json({ message: 'Tạo tài khoản thành công', accountID: account._id });
     } catch (err) {
       console.error(err);

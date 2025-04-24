@@ -11,13 +11,13 @@ const verifyToken = async (req, res, next) => {
     const decoded = jwt.verify(token, JWT_SECRET);
     const account = await Account.findById(decoded.accountID);
     if (!account) return res.status(404).json({ message: 'Token không đúng' });
-    req.account = decoded;
+    req.account = account;
     next();
   } catch (err) {
     if (err.name === 'TokenExpiredError') {
       return res.status(401).json({ message: 'Token đã hết hạn' });
     } else {
-      res.status(403).json({ message: 'Token không hợp lệ hoặc hết hạn' });
+      res.status(403).json({ message: 'Token không hợp lệ' });
     }
   }
 };

@@ -25,49 +25,51 @@ class StudentController {
   }
 
   // [POST] /students
-  createStudent(req, res, next) {
-    const newStudent = new Student(req.body);
-
-    newStudent.save()
-      .then(user => {
-        res.status(201).json({
-          message: 'User added successfully',
-          user: user,
-        });
-      })
-      .catch(next);
+  async createStudentProfile(req, res, next) {
+    try {
+      const newStudent = new Student(req.body);
+      newStudent.account = req.account;
+      await newStudent.save();
+      res.status(201).json({ message: 'Tạo hồ sơ student thành công', newStudent });
+    } catch (err) {
+      console.error(err);
+      res.status(500).json({ message: 'Lỗi khi tạo hồ sơ student' });
+    }
   }
 
   // [GET] /students/search
-  searchStudents(req, res, next) {
-    const { name, email } = req.query;
+  async searchStudents(req, res, next) {
+    try {
+      const { mssv, name } = req.query;
 
-    const searchQuery = {};
-    if (name) searchQuery.name = new RegExp(name, 'i');  // Tìm kiếm theo tên, không phân biệt hoa thường
-    if (email) searchQuery.email = new RegExp(email, 'i');  // Tìm kiếm theo email
+      const searchQuery = {};
+      if (mssv) searchQuery.mssv = new RegExp(mssv, 'i');
+      if (name) searchQuery.name = new RegExp(name, 'i');
 
-    Student.find(searchQuery)
-      .then(students => {
-        res.status(200).json({ students });
-      })
-      .catch(next);
+      const students = await Student.find(searchQuery).populate('account', '-password');
+      res.status(200).json({ students });
+    } catch (error) {
+      res.status(500).json({ message: 'Lỗi khi tìm kiếm sinh viên' });
+    }
   }
 
   // [PUT] /students/:id
-  updateStudent(req, res, next) {
-    const studentId = req.params.id;
-
-    Student.findByIdAndUpdate(studentId, req.body, { new: true })
-      .then(student => {
-        if (!student) {
-          return res.status(404).json({ message: 'User not found' });
-        }
-        res.status(200).json({
-          message: 'User updated successfully',
-          user: student,
-        });
-      })
-      .catch(next);
+  async updateStudentProfile(req, res, next) {
+    try {
+      const studentID = req.params.id;
+      const { mssv, name, major, interests, university, avatarURL } = req.body;
+      const updatedStudent = await Student.findByIdAndUpdate(
+        studentID,
+        { mssv, name, major, interests, university, avatarURL },
+        { new: true }
+      );
+      if (!updatedStudent) {
+        return res.status(404).json({ message: 'Employer not found' });
+      }
+      res.status(200).json({ message: 'Employer updated successfully', updatedStudent });
+    } catch (error) {
+      res.status(500).json({ message: 'Lỗi khi cập nhật hồ sơ sinh viên' });
+    }
   }
 
   // [DELETE] /students/:id

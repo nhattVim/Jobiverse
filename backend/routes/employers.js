@@ -6,6 +6,7 @@ router.get('/search', employerController.searchEmployers);
 
 router.get('/', employerController.getAllEmployers);
 router.get('/:id', employerController.getEmployerById);
-router.post('/', employerController.createEmployer);
+router.post('/', employerController.createEmployerProfile);
+router.put('/:id', employerController.updateEmployerProfile);
 
 module.exports = router;

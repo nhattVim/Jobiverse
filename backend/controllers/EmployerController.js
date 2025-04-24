@@ -12,62 +12,61 @@ class EmployerController {
   }
 
   // [GET] /employers/:id
-  getEmployerById(req, res, next) {
-    const employerID = req.params.id;
-    Employer.findById(employerID)
-      .then(employer => {
-        if (!employer) {
-          return res.status(404).json({ message: 'User not found' });
-        }
-        res.status(200).json({ user: employer });
-      })
-      .catch(next);
+  async getEmployerById(req, res, next) {
+    try {
+      const employers = await Employer.findById(req.params.id).populate('account', '-password');
+      res.json(employers);
+    } catch (error) {
+      res.status(500).json({ message: 'Lỗi khi lấy thông tin employer' });
+    }
   }
 
   // [POST] /employers
-  createEmployer(req, res, next) {
-    const newEmployer = new Employer(req.body);
-
-    newEmployer.save()
-      .then(employer => {
-        res.status(201).json({
-          message: 'User added successfully',
-          employer
-        });
-      })
-      .catch(next);
+  async createEmployerProfile(req, res, next) {
+    try {
+      const newEmployer = new Employer(req.body);
+      newEmployer.account = req.account;
+      newEmployer.save();
+      res.status(201).json({ message: 'Tạo hồ sơ employer thành công', newEmployer });
+    } catch (error) {
+      res.status(500).json({ message: 'Lỗi khi tạo employer' });
+    }
   }
 
-  // [GET] /students/search
-  searchEmployers(req, res, next) {
-    const { name, email } = req.query;
+  // [GET] /employers/search
+  async searchEmployers(req, res, next) {
+    try {
+      const { companyName, representativeName } = req.query;
 
-    const searchQuery = {};
-    if (name) searchQuery.name = new RegExp(name, 'i');  // Tìm kiếm theo tên, không phân biệt hoa thường
-    if (email) searchQuery.email = new RegExp(email, 'i');  // Tìm kiếm theo email
+      const searchQuery = {};
+      if (companyName) searchQuery.companyName = new RegExp(companyName, 'i');
+      if (representativeName) searchQuery.representativeName = new RegExp(representativeName, 'i');
 
-    Employer.find(searchQuery)
-      .then(employers => {
-        res.status(200).json({ employers });
-      })
-      .catch(next);
+      const employers = await Employer.find(searchQuery).populate('account', '-password');
+      res.status(200).json({ employers });
+    } catch (error) {
+      res.status(500).json({ message: 'Lỗi khi tìm kiếm employer' });
+    }
   }
 
   // [PUT] /employers/:id
-  updateEmployer(req, res, next) {
-    const employerId = req.params.id;
-
-    Employer.findByIdAndUpdate(employerId, req.body, { new: true })
-      .then(employer => {
-        if (!employer) {
-          return res.status(404).json({ message: 'User not found' });
-        }
-        res.status(200).json({
-          message: 'User updated successfully',
-          user: employer,
-        });
-      })
-      .catch(next);
+  async updateEmployerProfile(req, res, next) {
+    try {
+      const employerId = req.params.id;
+      const { companyName, representativeName, position, industry, companyInfo } = req.body;
+      const updatedEmployer = await Employer.findByIdAndUpdate(
+        employerId,
+        { companyName, representativeName, position, industry, companyInfo },
+        { new: true }
+      );
+      if (!updatedEmployer) {
+        return res.status(404).json({ message: 'Employer not found' });
+      }
+      res.status(200).json({ message: 'Employer updated successfully', updatedEmployer });
+    }
+    catch (error) {
+      res.status(500).json({ message: 'Lỗi khi cập nhật employer' });
+    }
   }
 
   // [DELETE] /employers/:id

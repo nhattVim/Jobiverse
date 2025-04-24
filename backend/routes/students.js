@@ -6,8 +6,8 @@ router.get('/search', studentController.searchStudents);
 
 router.get('/', studentController.getAllStudents);
 router.get('/:id', studentController.getStudentById);
-router.post('/', studentController.createStudent);
-// router.put('/:id', studentController.updateStudent);
+router.post('/', studentController.createStudentProfile);
+router.put('/:id', studentController.updateStudentProfile);
 // router.delete('/:id', studentController.deleteStudent);
 
 module.exports = router;
