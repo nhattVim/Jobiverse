@@ -1,14 +1,12 @@
 const Account = require('../models/Account');
-const Student = require('../models/Student');
-const Employer = require('../models/Employer');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 
 const JWT_SECRET = process.env.JWT_SECRET;
 
-class AuthController {
-  // [POST] /auth/register
-  async registerUser(req, res, next) {
+class AccountController {
+  // [POST] /account/register
+  async registerAccount(req, res, next) {
     try {
       const { accountType, email, password, ...profileData } = req.body;
       const account = await Account.create({ accountType, email, password });
@@ -19,8 +17,8 @@ class AuthController {
     }
   }
 
-  // [POST] /auth/login
-  async loginUser(req, res, next) {
+  // [POST] /account/login
+  async loginAccount(req, res, next) {
     try {
       const { email, password } = req.body;
 
@@ -50,6 +48,30 @@ class AuthController {
       res.status(500).json({ message: 'Lỗi máy chủ khi đăng nhập' });
     }
   }
+
+  // [DELETE] /account/delete
+  async deleteAccount(req, res, next) {
+    try {
+      const account = await Account.findByIdAndUpdate(req.params.id, { deleted: true });
+      if (!account) return res.status(404).json({ message: 'Tài khoản không tồn tại' });
+      res.json({ message: 'Xóa tài khoản thành công' });
+    } catch (err) {
+      console.error(err);
+      res.status(500).json({ message: 'Lỗi máy chủ khi xóa tài khoản' });
+    }
+  }
+
+  // [POST] /account/restore
+  async restoreAccount(req, res, next) {
+    try {
+      const account = await Account.findByIdAndUpdate(req.params.id, { deleted: false });
+      if (!account) return res.status(404).json({ message: 'Tài khoản không tồn tại' });
+      res.json({ message: 'Khôi phục tài khoản thành công' });
+    } catch (err) {
+      console.error(err);
+      res.status(500).json({ message: 'Lỗi máy chủ khi khôi phục tài khoản' });
+    }
+  }
 }
 
-module.exports = new AuthController();
+module.exports = new AccountController();

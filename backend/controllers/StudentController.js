@@ -4,7 +4,11 @@ class StudentController {
   // [GET] /students
   async getAllStudents(req, res, next) {
     try {
-      const students = await Student.find().populate('account', '-password');
+      const students = (await Student.find().populate({
+        path: 'account',
+        match: { deleted: false },
+        select: '-password'
+      })).filter(student => student.account);
       res.json(students);
     } catch (error) {
       res.status(500).json({ message: 'Lỗi khi lấy danh sách sinh viên' });
@@ -12,17 +16,25 @@ class StudentController {
   }
 
   // [GET] /students/:id
-  getStudentById(req, res, next) {
-    const studentID = req.params.id;
-    Student.findById(studentID)
-      .then(user => {
-        if (!user) {
-          return res.status(404).json({ message: 'User not found' });
-        }
-        res.status(200).json({ user });
-      })
-      .catch(next);
+  async getStudentById(req, res, next) {
+    try {
+      const student = await Student.findById(req.params.id).populate({
+        path: 'account',
+        match: { deleted: false },
+        select: '-password'
+      });
+
+      if (!student || !student.account) {
+        return res.status(404).json({ message: 'Không tìm thấy sinh viên hoặc tài khoản đã bị xoá' });
+      }
+
+      res.status(200).json({ student });
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ message: 'Lỗi khi lấy thông tin sinh viên' });
+    }
   }
+
 
   // [POST] /students
   async createStudentProfile(req, res, next) {
@@ -64,25 +76,12 @@ class StudentController {
         { new: true }
       );
       if (!updatedStudent) {
-        return res.status(404).json({ message: 'Employer not found' });
+        return res.status(404).json({ message: 'Student not found' });
       }
-      res.status(200).json({ message: 'Employer updated successfully', updatedStudent });
+      res.status(200).json({ message: 'Student updated successfully', updatedStudent });
     } catch (error) {
       res.status(500).json({ message: 'Lỗi khi cập nhật hồ sơ sinh viên' });
     }
-  }
-
-  // [DELETE] /students/:id
-  deleteStudent(req, res, next) {
-    const studentId = req.params.id;
-    Student.findByIdAndDelete(studentId)
-      .then(student => {
-        if (!student) {
-          return res.status(404).json({ message: 'User not found' });
-        }
-        res.status(200).json({ message: 'User deleted successfully' });
-      })
-      .catch(next);
   }
 }
 

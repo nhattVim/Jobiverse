@@ -4,7 +4,11 @@ class EmployerController {
   // [GET] /employers
   async getAllEmployers(req, res, next) {
     try {
-      const employers = await Employer.find().populate('account', '-password');
+      const employers = (await Employer.find().populate({
+        path: 'account',
+        match: { deleted: false },
+        select: '-password'
+      })).filter(student => student.account)
       res.json(employers);
     } catch (error) {
       res.status(500).json({ message: 'Lỗi khi lấy danh sách employer' });
@@ -14,8 +18,16 @@ class EmployerController {
   // [GET] /employers/:id
   async getEmployerById(req, res, next) {
     try {
-      const employers = await Employer.findById(req.params.id).populate('account', '-password');
-      res.json(employers);
+      const employer = await Employer.findById(req.params.id).populate({
+        path: 'account',
+        match: { deleted: false },
+        select: '-password'
+      });
+
+      if (!employer || !employer.account) {
+        return res.status(404).json({ message: 'Không tìm thấy employer hoặc tài khoản đã bị xoá' });
+      }
+      res.status(200).json(employer);
     } catch (error) {
       res.status(500).json({ message: 'Lỗi khi lấy thông tin employer' });
     }
@@ -67,19 +79,6 @@ class EmployerController {
     catch (error) {
       res.status(500).json({ message: 'Lỗi khi cập nhật employer' });
     }
-  }
-
-  // [DELETE] /employers/:id
-  deleteEmployer(req, res, next) {
-    const employerId = req.params.id;
-    Employer.findByIdAndDelete(employerId)
-      .then(employer => {
-        if (!employer) {
-          return res.status(404).json({ message: 'User not found' });
-        }
-        res.status(200).json({ message: 'User deleted successfully' });
-      })
-      .catch(next);
   }
 }
 

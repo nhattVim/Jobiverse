@@ -1,10 +1,10 @@
-const authRouter = require('./auth')
+const accountRouter = require('./account')
 const studentsRouter = require('./students')
 const employerRouter = require('./employers')
 const verifyToken = require('../middlewares/auth');
 
 function route(app) {
-  app.use('/auth', authRouter)
+  app.use('/account', accountRouter)
   app.use('/students', verifyToken, studentsRouter)
   app.use('/employers', verifyToken, employerRouter)
 }
