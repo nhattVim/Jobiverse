@@ -61,13 +61,13 @@ class EmployerController {
     }
   }
 
-  // [PUT] /employers/:id
+  // [PUT] /employers
   async updateEmployerProfile(req, res, next) {
     try {
-      const employerId = req.params.id;
+      const accountId = req.account._id;
       const { companyName, representativeName, position, industry, companyInfo } = req.body;
-      const updatedEmployer = await Employer.findByIdAndUpdate(
-        employerId,
+      const updatedEmployer = await Employer.findOneAndUpdate(
+        { account: accountId },
         { companyName, representativeName, position, industry, companyInfo },
         { new: true }
       );

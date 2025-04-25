@@ -29,7 +29,7 @@ class AccountController {
       if (!isMatch) return res.status(401).json({ message: 'Sai mật khẩu' });
 
       const token = jwt.sign(
-        { accountID: account._id, accountType: account.accountType },
+        { id: account._id, type: account.accountType },
         JWT_SECRET,
         { expiresIn: '7d' }
       );

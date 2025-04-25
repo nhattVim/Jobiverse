@@ -1,4 +1,5 @@
 const Student = require('../models/Student');
+const CV = require('../models/CV');
 
 class StudentController {
   // [GET] /students
@@ -65,13 +66,13 @@ class StudentController {
     }
   }
 
-  // [PUT] /students/:id
+  // [PUT] /students
   async updateStudentProfile(req, res, next) {
     try {
-      const studentID = req.params.id;
+      const accountId = req.account._id;
       const { mssv, name, major, interests, university, avatarURL } = req.body;
-      const updatedStudent = await Student.findByIdAndUpdate(
-        studentID,
+      const updatedStudent = await Student.findOneAndUpdate(
+        { account: accountId },
         { mssv, name, major, interests, university, avatarURL },
         { new: true }
       );
