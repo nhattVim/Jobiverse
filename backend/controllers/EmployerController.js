@@ -15,7 +15,7 @@ class EmployerController {
     }
   }
 
-  // [GET] /employers/:id
+  // [GET] /employers
   async getEmployerById(req, res, next) {
     try {
       const employer = await Employer.findById(req.params.id).populate({

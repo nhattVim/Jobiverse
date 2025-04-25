@@ -1,55 +1,29 @@
 const Account = require('../models/Account');
-const bcrypt = require('bcryptjs');
-const jwt = require('jsonwebtoken');
 
-const JWT_SECRET = process.env.JWT_SECRET;
-
-class AccountController {
-  // [POST] /account/register
-  async registerAccount(req, res, next) {
+class AdminController {
+  // [GET] /account
+  async getAllAccount(req, res, next) {
     try {
-      const { accountType, email, password, ...profileData } = req.body;
-      const account = await Account.create({ accountType, email, password });
-      res.status(201).json({ message: 'Tạo tài khoản thành công', accountID: account._id });
+      const accounts = await Account.find({ deleted: false });
+      res.json(accounts);
     } catch (err) {
       console.error(err);
-      res.status(500).json({ message: 'Lỗi khi tạo tài khoản' });
+      res.status(500).json({ message: 'Lỗi máy chủ khi lấy danh sách tài khoản' });
     }
   }
 
-  // [POST] /account/login
-  async loginAccount(req, res, next) {
+  // [GET] /account/deleted
+  async getAllDeletedAccount(req, res, next) {
     try {
-      const { email, password } = req.body;
-
-      const account = await Account.findOne({ email, deleted: false });
-      if (!account) return res.status(404).json({ message: 'Email không tồn tại' });
-
-      const isMatch = await bcrypt.compare(password, account.password);
-      if (!isMatch) return res.status(401).json({ message: 'Sai mật khẩu' });
-
-      const token = jwt.sign(
-        { id: account._id, type: account.accountType },
-        JWT_SECRET,
-        { expiresIn: '7d' }
-      );
-
-      res.json({
-        message: 'Đăng nhập thành công',
-        token,
-        account: {
-          id: account._id,
-          email: account.email,
-          accountType: account.accountType,
-        },
-      });
+      const accounts = await Account.find({ deleted: true });
+      res.json(accounts);
     } catch (err) {
       console.error(err);
-      res.status(500).json({ message: 'Lỗi máy chủ khi đăng nhập' });
+      res.status(500).json({ message: 'Lỗi máy chủ khi lấy danh sách tài khoản' });
     }
   }
 
-  // [DELETE] /account/delete
+  // [DELETE] /account/:id
   async deleteAccount(req, res, next) {
     try {
       const account = await Account.findByIdAndUpdate(req.params.id, { deleted: true });
@@ -61,7 +35,19 @@ class AccountController {
     }
   }
 
-  // [POST] /account/restore
+  // [DELETE] /account/force/:id
+  async forceDeleteAccount(req, res, next) {
+    try {
+      const account = await Account.findByIdAndDelete(req.params.id);
+      if (!account) return res.status(404).json({ message: 'Tài khoản không tồn tại' });
+      res.json({ message: 'Xóa vĩnh viễn tài khoản thành công' });
+    } catch (err) {
+      console.error(err);
+      res.status(500).json({ message: 'Lỗi máy chủ khi xóa vĩnh viễn tài khoản' });
+    }
+  }
+
+  // [POST] /account/restore/:id
   async restoreAccount(req, res, next) {
     try {
       const account = await Account.findByIdAndUpdate(req.params.id, { deleted: false });
@@ -74,4 +60,4 @@ class AccountController {
   }
 }
 
-module.exports = new AccountController();
+module.exports = new AdminController();
