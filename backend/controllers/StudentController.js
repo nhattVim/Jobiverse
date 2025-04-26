@@ -1,5 +1,4 @@
 const Student = require('../models/Student');
-const CV = require('../models/CV');
 
 class StudentController {
   // [GET] /students

@@ -1,14 +1,9 @@
 const mongoose = require("mongoose");
 
 const ProjectSchema = new mongoose.Schema({
-  employerID: {
+  employer: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Employer',
-    required: true
-  },
-  studentID: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'Student',
     required: true
   },
   title: {
@@ -33,6 +28,15 @@ const ProjectSchema = new mongoose.Schema({
     enum: ['open', 'closed', 'in-progress'],
     default: 'open'
   },
-}, { timestamps: true })
+  applicants: [{
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Student'
+  }],
+  assignedStudents: [{
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Student'
+  }]
+}, { timestamps: true });
+
 
 module.exports = mongoose.model('Project', ProjectSchema);

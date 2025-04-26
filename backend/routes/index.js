@@ -3,14 +3,15 @@ const studentsRouter = require('./students')
 const employerRouter = require('./employers')
 const accountRouter = require('./accounts')
 const CVRouter = require('./cv')
-const verifyToken = require('../middlewares/auth');
+const projectRouter = require('./projects')
 
 function route(app) {
   app.use('/', authRouter)
-  app.use('/account', verifyToken("admin"), accountRouter)
-  app.use('/students', verifyToken("student"), studentsRouter)
-  app.use('/cv', verifyToken("student"), CVRouter)
-  app.use('/employers', verifyToken("employer"), employerRouter)
+  app.use('/account', accountRouter)
+  app.use('/students', studentsRouter)
+  app.use('/cv', CVRouter)
+  app.use('/employers', employerRouter)
+  app.use('/projects', projectRouter)
 }
 
 module.exports = route
