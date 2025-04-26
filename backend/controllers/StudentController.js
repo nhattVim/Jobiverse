@@ -35,7 +35,6 @@ class StudentController {
     }
   }
 
-
   // [POST] /students
   async createStudentProfile(req, res, next) {
     try {
