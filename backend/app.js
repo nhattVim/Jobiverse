@@ -2,8 +2,8 @@ require('dotenv').config();
 const express = require('express');
 const app = express();
 const cors = require('cors');
-const route = require('./routes')
-const db = require('./config/db')
+const route = require('./src/routes')
+const db = require('./src/config/db')
 const path = require('path');
 const cookieParser = require('cookie-parser');
 const logger = require('morgan');
