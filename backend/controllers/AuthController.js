@@ -34,9 +34,15 @@ class AccountController {
         { expiresIn: '7d' }
       );
 
+      res.cookie('token', token, {
+        httpOnly: true,
+        secure: false,
+        sameSite: 'strict',
+        maxAge: 7 * 24 * 60 * 60 * 1000
+      });
+
       res.json({
         message: 'Đăng nhập thành công',
-        token,
         account: {
           id: account._id,
           email: account.email,
@@ -46,6 +52,22 @@ class AccountController {
     } catch (err) {
       console.error(err);
       res.status(500).json({ message: 'Lỗi máy chủ khi đăng nhập' });
+    }
+  }
+
+  // [POST] /logout
+  async logoutAccount(req, res, next) {
+    try {
+      res.clearCookie('token', {
+        httpOnly: true,
+        secure: false,
+        sameSite: 'strict',
+      });
+
+      res.json({ message: 'Đăng xuất thành công' });
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ message: 'Lỗi đăng xuất' });
     }
   }
 }
