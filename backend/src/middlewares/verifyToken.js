@@ -21,11 +21,11 @@ const verifyToken = (role) => {
       console.log('========================');
       console.log()
 
-      if (account.accountType !== "admin") {
-        if (role && account.accountType !== role) {
-          return res.status(403).json({ message: 'Token không có quyền truy cập' });
-        }
+      // if (account.accountType !== "admin") {
+      if (role && account.accountType !== role) {
+        return res.status(403).json({ message: 'Account không có quyền truy cập' });
       }
+      // }
 
       req.account = account;
       next();

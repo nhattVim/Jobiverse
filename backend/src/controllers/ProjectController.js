@@ -1,5 +1,6 @@
 const Project = require('../models/Project');
 const Employer = require('../models/Employer');
+const Student = require('../models/Student');
 
 class ProjectController {
   // [GET] /projects
@@ -13,7 +14,7 @@ class ProjectController {
   }
 
   // [GET] /projects/my
-  async getProjectsByToken(req, res, next) {
+  async getProjects(req, res, next) {
     try {
       const accountId = req.account._id;
 
@@ -73,9 +74,8 @@ class ProjectController {
       const projectId = req.params.id;
 
       const employer = await Employer.findOne({ account: accountId });
-      if (!employer) {
-        return res.status(404).json({ message: 'Employer không tồn tại' });
-      }
+      if (!employer) return res.status(404).json({ message: 'Employer không tồn tại' });
+
 
       const updatedProject = await Project.findOneAndUpdate(
         { _id: projectId, employer: employer._id },
@@ -90,6 +90,32 @@ class ProjectController {
       res.status(200).json(updatedProject);
     } catch (error) {
       res.status(500).json({ message: 'Lỗi cập nhật dự án', error });
+    }
+  }
+
+  // [PUT] /projects//my/:id/status
+  async updateProjectStatus(req, res, next) {
+    try {
+      const accountId = req.account._id;
+      const projectId = req.params.id;
+      const { status } = req.body;
+
+      const employer = await Employer.findOne({ account: accountId });
+      if (!employer) return res.status(404).json({ message: 'Employer không tồn tại' });
+
+      const project = await Project.findOne({ _id: projectId, employer: employer._id });
+      if (!project) return res.status(404).json({ message: 'Project not found or not owned by you' });
+
+      if (!['open', 'closed', 'in-progress'].includes(status)) {
+        return res.status(400).json({ message: 'Invalid status value. Must be "status": "open|closed|in-progress"' });
+      }
+
+      project.status = status;
+      await project.save();
+
+      res.status(200).json({ message: 'Project status updated successfully', project });
+    } catch (error) {
+
     }
   }
 
@@ -116,6 +142,85 @@ class ProjectController {
       res.status(200).json({ message: 'Dự án đã được xóa thành công' });
     } catch (error) {
       res.status(500).json({ message: 'Lỗi xóa dự án', error });
+    }
+  }
+
+  // [POST] /projects/:projectId/apply
+  async applyToProject(req, res, next) {
+    try {
+      const { projectId } = req.params;
+      const accountId = req.account._id;
+
+      const student = await Student.findOne({ account: accountId });
+      if (!student) {
+        return res.status(404).json({ message: 'Student not found' });
+      }
+
+      const project = await Project.findById(projectId);
+      if (!project) {
+        return res.status(404).json({ message: 'Project not found' });
+      }
+
+      if (project.status !== 'open') {
+        return res.status(400).json({ message: 'Project is not open for applications' });
+      }
+
+      if (project.applicants.includes(student._id)) {
+        return res.status(400).json({ message: 'You have already applied to this project' });
+      }
+
+      if (project.assignedStudents.includes(student._id)) {
+        return res.status(400).json({ message: 'You have already been assigned to this project' });
+      }
+
+      project.applicants.push(student._id);
+      await project.save();
+
+      res.status(200).json({ message: 'Application submitted successfully' });
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ message: 'Server error', error });
+    }
+  }
+
+  // [POST] /projects/:projectId/respond/:studentId
+  async respondToApplication(req, res, next) {
+    try {
+      const { projectId, studentId } = req.params;
+      const { action } = req.body;
+      const accountId = req.account._id;
+
+      const employer = await Employer.findOne({ account: accountId });
+      if (!employer) {
+        return res.status(404).json({ message: 'Employer not found' });
+      }
+
+      const project = await Project.findById(projectId);
+      if (!project) {
+        return res.status(404).json({ message: 'Project not found' });
+      }
+
+      if (project.employer.toString() !== employer._id.toString()) {
+        return res.status(403).json({ message: 'You are not authorized to respond to this project' });
+      }
+
+      if (!project.applicants.includes(studentId)) {
+        return res.status(400).json({ message: 'Student did not apply for this project' });
+      }
+
+      if (action === 'accept') {
+        project.assignedStudents.push(studentId);
+      } else if (action !== 'reject') {
+        return res.status(400).json({ message: 'Invalid action. Must be "accept" or "reject"' });
+      }
+
+      project.applicants = project.applicants.filter(id => id.toString() !== studentId);
+      await project.save();
+
+      res.status(200).json({ message: `Student has been ${action}ed successfully` });
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ message: 'Server error', error });
     }
   }
 }
