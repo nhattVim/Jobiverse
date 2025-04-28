@@ -7,7 +7,26 @@ class ProjectController {
   // [GET] /projects
   async getAllProjects(req, res, next) {
     try {
-      const projects = await Project.find({});
+      const accountId = req.account._id;
+      const student = await Student.findOne({ account: accountId });
+
+      let projects = await Project.find().sort({ createdAt: -1 });
+
+      if (student && student.interests && student.interests.length > 0) {
+        projects = projects.map(project => {
+          let matchScore = 0;
+          for (const interest of student.interests) {
+            const regex = new RegExp(interest, 'i');
+            if (regex.test(project.title) || regex.test(project.description)) {
+              matchScore += 1;
+            }
+          }
+          return { ...project._doc, matchScore };
+        });
+
+        projects.sort((a, b) => b.matchScore - a.matchScore);
+      }
+
       res.status(200).json(projects);
     } catch (error) {
       res.status(500).json({ message: 'Error retrieving projects', error });

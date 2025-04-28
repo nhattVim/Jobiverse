@@ -20,7 +20,7 @@ const StudentSchema = new mongoose.Schema({
     type: String,
     required: true
   },
-  interests: String,
+  interests: [{ type: String }],
   university: {
     type: String,
     required: true
