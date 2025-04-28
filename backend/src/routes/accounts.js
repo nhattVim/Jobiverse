@@ -3,7 +3,7 @@ const router = express.Router();
 const accountController = require('../controllers/AccountController');
 const verifyToken = require('../middlewares/verifyToken');
 
-router.use(verifyToken("admin"));
+router.use(verifyToken(["admin"]));
 router.get('/', accountController.getAllAccount);
 router.get('/deleted', accountController.getAllDeletedAccount);
 router.delete('/:id', accountController.deleteAccount);

@@ -8,7 +8,13 @@ class AccountController {
   // [POST] /account/register
   async registerAccount(req, res, next) {
     try {
-      const { accountType, email, password, ...profileData } = req.body;
+      const { accountType, email, password } = req.body;
+
+      const existingAccount = await Account.findOne({ email });
+      if (existingAccount) {
+        return res.status(400).json({ message: 'Email đã được sử dụng' });
+      }
+
       const account = await Account.create({ accountType, email, password });
       res.status(201).json({ message: 'Tạo tài khoản thành công', accountID: account._id });
     } catch (err) {
@@ -29,7 +35,7 @@ class AccountController {
       if (!isMatch) return res.status(401).json({ message: 'Sai mật khẩu' });
 
       const token = jwt.sign(
-        { id: account._id },
+        { id: account._id, type: account.accountType },
         JWT_SECRET,
         { expiresIn: '7d' }
       );
@@ -43,11 +49,7 @@ class AccountController {
 
       res.json({
         message: 'Đăng nhập thành công',
-        account: {
-          id: account._id,
-          email: account.email,
-          accountType: account.accountType,
-        },
+        account
       });
     } catch (err) {
       console.error(err);

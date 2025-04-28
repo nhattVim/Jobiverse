@@ -1,6 +1,7 @@
 const Project = require('../models/Project');
 const Employer = require('../models/Employer');
 const Student = require('../models/Student');
+const Notification = require('../models/Notification');
 
 class ProjectController {
   // [GET] /projects
@@ -176,6 +177,14 @@ class ProjectController {
       project.applicants.push(student._id);
       await project.save();
 
+      const employer = await Employer.findById(project.employer).populate('account');
+      if (employer && employer.account) {
+        await Notification.create({
+          account: employer.account._id,
+          content: `Student ${student.account.name} has applied to your project ${project.title}`,
+        })
+      }
+
       res.status(200).json({ message: 'Application submitted successfully' });
     } catch (error) {
       console.error(error);
@@ -216,6 +225,14 @@ class ProjectController {
 
       project.applicants = project.applicants.filter(id => id.toString() !== studentId);
       await project.save();
+
+      const student = await Student.findById(studentId).populate('account');
+      if (student && student.account) {
+        await Notification.create({
+          account: student.account._id,
+          content: `Your application for project "${project.title}" has been ${action}ed.`,
+        });
+      }
 
       res.status(200).json({ message: `Student has been ${action}ed successfully` });
     } catch (error) {

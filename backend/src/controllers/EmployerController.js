@@ -15,7 +15,7 @@ class EmployerController {
     }
   }
 
-  // [GET] /employers
+  // [GET] /employers/:id
   async getEmployerById(req, res, next) {
     try {
       const employer = await Employer.findById(req.params.id).populate({
@@ -36,10 +36,15 @@ class EmployerController {
   // [POST] /employers
   async createEmployerProfile(req, res, next) {
     try {
-      const newEmployer = new Employer(req.body);
-      newEmployer.account = req.account;
-      newEmployer.save();
-      res.status(201).json({ message: 'Tạo hồ sơ employer thành công', newEmployer });
+      const accountId = req.account._id;
+
+      const existingEmployer = await Employer.findOne({ account: accountId });
+      if (existingEmployer) return res.status(400).json({ message: 'Tài khoản đã có hồ sơ employer' })
+
+      const employer = await Employer.create({ ...req.body, account: accountId });
+      if (!employer) return res.status(400).json({ message: 'Lỗi khi tạo hồ sơ employer' });
+
+      res.status(201).json({ message: 'Tạo hồ sơ employer thành công', employer });
     } catch (error) {
       res.status(500).json({ message: 'Lỗi khi tạo employer' });
     }

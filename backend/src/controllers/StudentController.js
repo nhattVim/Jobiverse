@@ -38,12 +38,16 @@ class StudentController {
   // [POST] /students
   async createStudentProfile(req, res, next) {
     try {
-      const newStudent = new Student(req.body);
-      newStudent.account = req.account;
-      await newStudent.save();
-      res.status(201).json({ message: 'Tạo hồ sơ student thành công', newStudent });
+      const accountId = req.account._id;
+
+      const existingStudent = await Student.findOne({ account: accountId });
+      if (existingStudent) return res.status(400).json({ message: 'Tài khoản đã có hồ sơ student' });
+
+      const student = await Student.create({ ...req.body, account: accountId });
+      if (!student) return res.status(400).json({ message: 'Lỗi khi tạo hồ sơ sinh viên' });
+
+      res.status(201).json({ message: 'Tạo hồ sơ student thành công', student });
     } catch (err) {
-      console.error(err);
       res.status(500).json({ message: 'Lỗi khi tạo hồ sơ student' });
     }
   }

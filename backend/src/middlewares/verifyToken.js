@@ -2,7 +2,7 @@ const jwt = require('jsonwebtoken');
 const Account = require('../models/Account');
 const JWT_SECRET = process.env.JWT_SECRET;
 
-const verifyToken = (role) => {
+const verifyToken = ([...role]) => {
   return async (req, res, next) => {
     // const token = req.headers.authorization?.split(' ')[1]; // lấy từ header
     const token = req.cookies.token; // lấy từ cookie
@@ -21,11 +21,9 @@ const verifyToken = (role) => {
       console.log('========================');
       console.log()
 
-      // if (account.accountType !== "admin") {
-      if (role && account.accountType !== role) {
+      if (!role.includes(account.accountType)) {
         return res.status(403).json({ message: 'Account không có quyền truy cập' });
       }
-      // }
 
       req.account = account;
       next();

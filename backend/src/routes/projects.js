@@ -5,13 +5,13 @@ const verifyToken = require('../middlewares/verifyToken');
 
 router.get('/', projectController.getAllProjects);
 
-router.get('/my', verifyToken("employer"), projectController.getProjects);
-router.post('/my', verifyToken("employer"), projectController.createProject);
-router.put('/my/:id', verifyToken("employer"), projectController.updateProject);
-router.put('/my/:id/status', verifyToken("employer"), projectController.updateProjectStatus);
-router.delete('/my/:id', verifyToken("employer"), projectController.deleteProject);
+router.get('/my', verifyToken(["employer"]), projectController.getProjects);
+router.post('/my', verifyToken(["employer"]), projectController.createProject);
+router.put('/my/:id', verifyToken(["employer"]), projectController.updateProject);
+router.put('/my/:id/status', verifyToken(["employer"]), projectController.updateProjectStatus);
+router.delete('/my/:id', verifyToken(["employer"]), projectController.deleteProject);
 
-router.post('/:projectId/apply', verifyToken("student"), projectController.applyToProject);
-router.post('/:projectId/respond/:studentId', verifyToken("employer"), projectController.respondToApplication);
+router.post('/:projectId/apply', verifyToken(["student"]), projectController.applyToProject);
+router.post('/:projectId/respond/:studentId', verifyToken(["employer"]), projectController.respondToApplication);
 
 module.exports = router;
