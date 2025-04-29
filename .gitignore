@@ -16,8 +16,8 @@ dist/
 build/
 
 # Environment variables
-.env
-.env.* # ví dụ: .env.development, .env.production
+# .env
+# .env.* # ví dụ: .env.development, .env.production
 
 # Logs
 logs
