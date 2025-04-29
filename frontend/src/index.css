@@ -26,16 +26,12 @@ html, body {
 }
 
 @layer components {
-  .text-all-paragraphs {
-    font-size: 16px;
-    line-height: 24px;
+  .container-primary {
+    @apply max-w-[82.5rem] mx-auto px-4 sm:px-6 lg:px-8
   }
 }
 
 @layer base {
-  h1 {
-    @apply text-4xl
-  }
 }
 
 
