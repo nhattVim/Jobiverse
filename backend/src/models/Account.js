@@ -7,8 +7,22 @@ const AccountSchema = new mongoose.Schema({
     enum: ['student', 'employer', 'admin'],
     required: true
   },
-  email: String,
-  password: String,
+  userName: {
+    type: String,
+    unique: true
+  },
+  phoneNumber: {
+    type: Number,
+    unique: true
+  },
+  email: {
+    type: String,
+    required: true
+  },
+  password: {
+    type: String,
+    required: true
+  },
   deleted: {
     type: Boolean,
     default: false

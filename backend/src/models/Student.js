@@ -17,7 +17,13 @@ const StudentSchema = new mongoose.Schema({
     required: true
   },
   major: {
-    type: String,
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "Major",
+    required: true
+  },
+  specialization: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "Specialization",
     required: true
   },
   interests: [{ type: String }],

@@ -7,6 +7,11 @@ const EmployerSchema = new mongoose.Schema({
     required: true,
     unique: true
   },
+  businessScale: {
+    type: String,
+    enum: ['Private individuals', 'companies'],
+    required: true
+  },
   companyName: {
     type: String,
     required: true
@@ -19,12 +24,20 @@ const EmployerSchema = new mongoose.Schema({
     type: String,
     required: true
   },
-  interests: String,
+  interests: [{ type: String }],
   industry: {
     type: String,
     required: true
   },
   companyInfo: String,
+  prove: {
+    type: String,
+    required: true
+  },
+  address: {
+    type: String,
+    required: true
+  },
 })
 
 module.exports = mongoose.model('Employer', EmployerSchema);

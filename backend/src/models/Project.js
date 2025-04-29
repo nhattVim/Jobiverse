@@ -1,9 +1,9 @@
 const mongoose = require("mongoose");
 
 const ProjectSchema = new mongoose.Schema({
-  employer: {
+  account: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'Employer',
+    ref: 'Account',
     required: true
   },
   title: {
@@ -11,17 +11,22 @@ const ProjectSchema = new mongoose.Schema({
     required: true
   },
   description: String,
-  skillsRequired: {
-    type: String,
+  major: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Major',
     required: true
   },
-  benefits: {
+  specialization: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "Specialization",
+    required: true
+  },
+  content: {
     type: String,
     required: true
   },
   workingTime: {
     type: String,
-    required: true
   },
   status: {
     type: String,
@@ -37,6 +42,5 @@ const ProjectSchema = new mongoose.Schema({
     ref: 'Student'
   }]
 }, { timestamps: true });
-
 
 module.exports = mongoose.model('Project', ProjectSchema);

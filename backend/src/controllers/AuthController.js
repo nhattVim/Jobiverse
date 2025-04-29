@@ -8,14 +8,14 @@ class AccountController {
   // [POST] /account/register
   async registerAccount(req, res, next) {
     try {
-      const { accountType, email, password } = req.body;
+      const { accountType, email, password, userName } = req.body;
 
       const existingAccount = await Account.findOne({ email });
       if (existingAccount) {
         return res.status(400).json({ message: 'Email đã được sử dụng' });
       }
 
-      const account = await Account.create({ accountType, email, password });
+      const account = await Account.create({ accountType, email, password, userName });
       res.status(201).json({ message: 'Tạo tài khoản thành công', accountID: account._id });
     } catch (err) {
       console.error(err);

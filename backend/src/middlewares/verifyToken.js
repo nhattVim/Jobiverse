@@ -21,7 +21,7 @@ const verifyToken = ([...role]) => {
       console.log('========================');
       console.log()
 
-      if (!role.includes(account.accountType)) {
+      if (role.length > 0 && !role.includes(account.accountType)) {
         return res.status(403).json({ message: 'Account không có quyền truy cập' });
       }
 
