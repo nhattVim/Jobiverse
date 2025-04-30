@@ -14,12 +14,10 @@ const ProjectSchema = new mongoose.Schema({
   major: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Major',
-    required: true
   },
   specialization: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "Specialization",
-    required: true
   },
   content: {
     type: String,

@@ -9,7 +9,7 @@ const EmployerSchema = new mongoose.Schema({
   },
   businessScale: {
     type: String,
-    enum: ['Private individuals', 'companies'],
+    enum: ['Private individuals', 'Companies'],
     required: true
   },
   companyName: {

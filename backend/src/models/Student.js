@@ -19,12 +19,10 @@ const StudentSchema = new mongoose.Schema({
   major: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "Major",
-    required: true
   },
   specialization: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "Specialization",
-    required: true
   },
   interests: [{ type: String }],
   university: {

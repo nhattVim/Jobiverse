@@ -10,8 +10,8 @@ class StudentController {
         select: '-password'
       })).filter(student => student.account);
       res.json(students);
-    } catch (error) {
-      res.status(500).json({ message: 'Lỗi khi lấy danh sách sinh viên' });
+    } catch (err) {
+      res.status(500).json({ message: 'Lỗi khi lấy danh sách sinh viên', error: err.message });
     }
   }
 
@@ -29,9 +29,8 @@ class StudentController {
       }
 
       res.status(200).json({ student });
-    } catch (error) {
-      console.error(error);
-      res.status(500).json({ message: 'Lỗi khi lấy thông tin sinh viên' });
+    } catch (err) {
+      res.status(500).json({ message: 'Lỗi khi lấy thông tin sinh viên', error: err.message });
     }
   }
 
@@ -48,7 +47,7 @@ class StudentController {
 
       res.status(201).json({ message: 'Tạo hồ sơ student thành công', student });
     } catch (err) {
-      res.status(500).json({ message: 'Lỗi khi tạo hồ sơ student' });
+      res.status(500).json({ message: 'Lỗi khi tạo hồ sơ student', error: err.message });
     }
   }
 
@@ -63,8 +62,8 @@ class StudentController {
 
       const students = await Student.find(searchQuery).populate('account', '-password');
       res.status(200).json({ students });
-    } catch (error) {
-      res.status(500).json({ message: 'Lỗi khi tìm kiếm sinh viên' });
+    } catch (err) {
+      res.status(500).json({ message: 'Lỗi khi tìm kiếm sinh viên', error: err.message });
     }
   }
 
@@ -82,8 +81,8 @@ class StudentController {
         return res.status(404).json({ message: 'Student not found' });
       }
       res.status(200).json({ message: 'Student updated successfully', updatedStudent });
-    } catch (error) {
-      res.status(500).json({ message: 'Lỗi khi cập nhật hồ sơ sinh viên' });
+    } catch (err) {
+      res.status(500).json({ message: 'Lỗi khi cập nhật hồ sơ sinh viên', error: err.message });
     }
   }
 }

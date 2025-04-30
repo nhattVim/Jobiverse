@@ -18,8 +18,7 @@ class AccountController {
       const account = await Account.create({ accountType, email, password, userName });
       res.status(201).json({ message: 'Tạo tài khoản thành công', accountID: account._id });
     } catch (err) {
-      console.error(err);
-      res.status(500).json({ message: 'Lỗi khi tạo tài khoản' });
+      res.status(500).json({ message: 'Lỗi khi tạo tài khoản', error: err.message });
     }
   }
 
@@ -52,8 +51,7 @@ class AccountController {
         account
       });
     } catch (err) {
-      console.error(err);
-      res.status(500).json({ message: 'Lỗi máy chủ khi đăng nhập' });
+      res.status(500).json({ message: 'Lỗi máy chủ khi đăng nhập', error: err.message });
     }
   }
 
@@ -67,9 +65,8 @@ class AccountController {
       });
 
       res.json({ message: 'Đăng xuất thành công' });
-    } catch (error) {
-      console.error(error);
-      res.status(500).json({ message: 'Lỗi đăng xuất' });
+    } catch (err) {
+      res.status(500).json({ message: 'Lỗi đăng xuất', error: err.message });
     }
   }
 }

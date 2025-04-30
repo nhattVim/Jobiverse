@@ -1,6 +1,7 @@
 const Project = require('../models/Project');
 const Employer = require('../models/Employer');
 const Student = require('../models/Student');
+const Account = require('../models/Account');
 const Notification = require('../models/Notification');
 
 class ProjectController {
@@ -28,8 +29,8 @@ class ProjectController {
       }
 
       res.status(200).json(projects);
-    } catch (error) {
-      res.status(500).json({ message: 'Error retrieving projects', error });
+    } catch (err) {
+      res.status(500).json({ message: 'Error retrieving projects', error: err.message });
     }
   }
 
@@ -37,20 +38,14 @@ class ProjectController {
   async getProjects(req, res, next) {
     try {
       const accountId = req.account._id;
-
-      const employer = await Employer.findOne({ account: accountId });
-      if (!employer) {
-        return res.status(404).json({ message: 'Employer not found' });
-      }
-
-      const projects = await Project.find({ employer: employer._id });
+      const projects = await Project.find({ account: accountId });
       if (!projects || projects.length === 0) {
         return res.status(404).json({ message: 'No projects found' });
       }
 
       res.status(200).json(projects);
-    } catch (error) {
-      res.status(500).json({ message: 'Error retrieving project', error });
+    } catch (err) {
+      res.status(500).json({ message: 'Error retrieving project', error: err.message });
     }
   }
 
@@ -58,32 +53,13 @@ class ProjectController {
   async createProject(req, res, next) {
     try {
       const accountId = req.account._id;
-      const {
-        title,
-        description,
-        skillsRequired,
-        benefits,
-        workingTime
-      } = req.body;
 
-      const employer = await Employer.findOne({ account: accountId });
-      if (!employer) {
-        return res.status(404).json({ message: 'Employer không tồn tại' });
-      }
+      const project = await Project.create({ account: accountId, ...req.body });
+      if (!project) return res.status(400).json({ message: 'Tạo dự án thất bại' });
 
-      const newProject = new Project({
-        employer: employer._id,
-        title,
-        description,
-        skillsRequired,
-        benefits,
-        workingTime
-      });
-
-      const savedProject = await newProject.save();
-      res.status(201).json(savedProject);
-    } catch (error) {
-      res.status(500).json({ message: 'Lỗi tạo dự án', error });
+      res.status(201).json(project);
+    } catch (err) {
+      res.status(500).json({ message: 'Lỗi tạo dự án', error: err.message });
     }
   }
 
@@ -93,37 +69,27 @@ class ProjectController {
       const accountId = req.account._id;
       const projectId = req.params.id;
 
-      const employer = await Employer.findOne({ account: accountId });
-      if (!employer) return res.status(404).json({ message: 'Employer không tồn tại' });
-
-
       const updatedProject = await Project.findOneAndUpdate(
-        { _id: projectId, employer: employer._id },
+        { _id: projectId, account: accountId },
         req.body,
         { new: true }
       );
 
-      if (!updatedProject) {
-        return res.status(404).json({ message: 'Dự án không tồn tại' });
-      }
-
+      if (!updatedProject) return res.status(404).json({ message: 'Dự án không tồn tại' });
       res.status(200).json(updatedProject);
-    } catch (error) {
-      res.status(500).json({ message: 'Lỗi cập nhật dự án', error });
+    } catch (err) {
+      res.status(500).json({ message: 'Lỗi cập nhật dự án', error: err.message });
     }
   }
 
-  // [PUT] /projects//my/:id/status
+  // [PUT] /projects/my/:id/status
   async updateProjectStatus(req, res, next) {
     try {
       const accountId = req.account._id;
       const projectId = req.params.id;
       const { status } = req.body;
 
-      const employer = await Employer.findOne({ account: accountId });
-      if (!employer) return res.status(404).json({ message: 'Employer không tồn tại' });
-
-      const project = await Project.findOne({ _id: projectId, employer: employer._id });
+      const project = await Project.findOne({ _id: projectId, account: accountId });
       if (!project) return res.status(404).json({ message: 'Project not found or not owned by you' });
 
       if (!['open', 'closed', 'in-progress'].includes(status)) {
@@ -135,7 +101,7 @@ class ProjectController {
 
       res.status(200).json({ message: 'Project status updated successfully', project });
     } catch (error) {
-
+      res.status(500).json({ message: 'Server error', error: error.message });
     }
   }
 
@@ -145,23 +111,12 @@ class ProjectController {
       const accountId = req.account._id;
       const projectId = req.params.id;
 
-      const employer = await Employer.findOne({ account: accountId });
-      if (!employer) {
-        return res.status(404).json({ message: 'Employer không tồn tại' });
-      }
-
-      const deletedProject = await Project.findOneAndDelete({
-        _id: projectId,
-        employer: employer._id
-      });
-
-      if (!deletedProject) {
-        return res.status(404).json({ message: 'Dự án không tồn tại' });
-      }
+      const deletedProject = await Project.findOneAndDelete({ _id: projectId, account: accountId });
+      if (!deletedProject) return res.status(404).json({ message: 'Dự án không tồn tại' });
 
       res.status(200).json({ message: 'Dự án đã được xóa thành công' });
-    } catch (error) {
-      res.status(500).json({ message: 'Lỗi xóa dự án', error });
+    } catch (err) {
+      res.status(500).json({ message: 'Lỗi xóa dự án', error: err.message });
     }
   }
 
@@ -171,43 +126,32 @@ class ProjectController {
       const { projectId } = req.params;
       const accountId = req.account._id;
 
-      const student = await Student.findOne({ account: accountId });
-      if (!student) {
-        return res.status(404).json({ message: 'Student not found' });
-      }
-
       const project = await Project.findById(projectId);
-      if (!project) {
-        return res.status(404).json({ message: 'Project not found' });
-      }
+      if (!project) return res.status(404).json({ message: 'Project not found' });
 
-      if (project.status !== 'open') {
+      const student = await Student.findOne({ account: accountId });
+      if (!student) return res.status(404).json({ message: 'Student not found' });
+
+      if (project.status !== 'open')
         return res.status(400).json({ message: 'Project is not open for applications' });
-      }
 
-      if (project.applicants.includes(student._id)) {
+      if (project.applicants.includes(student._id))
         return res.status(400).json({ message: 'You have already applied to this project' });
-      }
 
-      if (project.assignedStudents.includes(student._id)) {
+      if (project.assignedStudents.includes(student._id))
         return res.status(400).json({ message: 'You have already been assigned to this project' });
-      }
 
       project.applicants.push(student._id);
       await project.save();
 
-      const employer = await Employer.findById(project.employer).populate('account');
-      if (employer && employer.account) {
-        await Notification.create({
-          account: employer.account._id,
-          content: `Student ${student.account.name} has applied to your project ${project.title}`,
-        })
-      }
+      await Notification.create({
+        account: project.account,
+        content: `Student ${student.account.name} has applied to your project ${project.title}`,
+      })
 
       res.status(200).json({ message: 'Application submitted successfully' });
-    } catch (error) {
-      console.error(error);
-      res.status(500).json({ message: 'Server error', error });
+    } catch (err) {
+      res.status(500).json({ message: 'Server error', err: err.message });
     }
   }
 
@@ -218,17 +162,13 @@ class ProjectController {
       const { action } = req.body;
       const accountId = req.account._id;
 
-      const employer = await Employer.findOne({ account: accountId });
-      if (!employer) {
-        return res.status(404).json({ message: 'Employer not found' });
-      }
-
       const project = await Project.findById(projectId);
-      if (!project) {
-        return res.status(404).json({ message: 'Project not found' });
-      }
+      if (!project) return res.status(404).json({ message: 'Project not found' });
 
-      if (project.employer.toString() !== employer._id.toString()) {
+      const account = await Account.findById(accountId);
+      if (!account) return res.status(404).json({ message: 'Account không tồn tại' });
+
+      if (project.account.toString() !== account._id.toString()) {
         return res.status(403).json({ message: 'You are not authorized to respond to this project' });
       }
 
@@ -245,18 +185,17 @@ class ProjectController {
       project.applicants = project.applicants.filter(id => id.toString() !== studentId);
       await project.save();
 
-      const student = await Student.findById(studentId).populate('account');
-      if (student && student.account) {
-        await Notification.create({
-          account: student.account._id,
-          content: `Your application for project "${project.title}" has been ${action}ed.`,
-        });
-      }
+      const student = await Student.findById(studentId);
+      if (!student) return res.status(404).json({ message: 'Student not found' });
+
+      await Notification.create({
+        account: student.account._id,
+        content: `Your application for project "${project.title}" has been ${action}ed.`,
+      });
 
       res.status(200).json({ message: `Student has been ${action}ed successfully` });
-    } catch (error) {
-      console.error(error);
-      res.status(500).json({ message: 'Server error', error });
+    } catch (err) {
+      res.status(500).json({ message: 'Server error', error: err.message });
     }
   }
 }

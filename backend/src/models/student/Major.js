@@ -10,7 +10,6 @@ const MajorSchema = new mongoose.Schema({
     type: String,
     required: true
   },
-  specialization: [{ type: String }],
 })
 
 module.exports = mongoose.model('Major', MajorSchema);
