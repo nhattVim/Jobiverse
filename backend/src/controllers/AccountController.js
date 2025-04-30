@@ -7,8 +7,18 @@ class AdminController {
       const accounts = await Account.find({ deleted: false });
       res.json(accounts);
     } catch (err) {
-      console.error(err);
-      res.status(500).json({ message: 'Lỗi máy chủ khi lấy danh sách tài khoản' });
+      res.status(500).json({ message: 'Lỗi máy chủ khi lấy danh sách tài khoản', error: err.message });
+    }
+  }
+
+  // [GET] /account/:id
+  async getAccountById(req, res, next) {
+    try {
+      const account = await Account.findById(req.params.id);
+      if (!account) return res.status(404).json({ message: 'Tài khoản không tồn tại' });
+      res.json(account);
+    } catch (err) {
+      res.status(500).json({ message: 'Lỗi máy chủ khi lấy tài khoản', error: err.message });
     }
   }
 
@@ -18,8 +28,7 @@ class AdminController {
       const accounts = await Account.find({ deleted: true });
       res.json(accounts);
     } catch (err) {
-      console.error(err);
-      res.status(500).json({ message: 'Lỗi máy chủ khi lấy danh sách tài khoản' });
+      res.status(500).json({ message: 'Lỗi máy chủ khi lấy danh sách tài khoản', error: err.message });
     }
   }
 
@@ -30,8 +39,7 @@ class AdminController {
       if (!account) return res.status(404).json({ message: 'Tài khoản không tồn tại' });
       res.json({ message: 'Xóa tài khoản thành công' });
     } catch (err) {
-      console.error(err);
-      res.status(500).json({ message: 'Lỗi máy chủ khi xóa tài khoản' });
+      res.status(500).json({ message: 'Lỗi máy chủ khi xóa tài khoản', error: err.message });
     }
   }
 
@@ -42,8 +50,7 @@ class AdminController {
       if (!account) return res.status(404).json({ message: 'Tài khoản không tồn tại' });
       res.json({ message: 'Xóa vĩnh viễn tài khoản thành công' });
     } catch (err) {
-      console.error(err);
-      res.status(500).json({ message: 'Lỗi máy chủ khi xóa vĩnh viễn tài khoản' });
+      res.status(500).json({ message: 'Lỗi máy chủ khi xóa vĩnh viễn tài khoản', error: err.message });
     }
   }
 
@@ -54,8 +61,7 @@ class AdminController {
       if (!account) return res.status(404).json({ message: 'Tài khoản không tồn tại' });
       res.json({ message: 'Khôi phục tài khoản thành công' });
     } catch (err) {
-      console.error(err);
-      res.status(500).json({ message: 'Lỗi máy chủ khi khôi phục tài khoản' });
+      res.status(500).json({ message: 'Lỗi máy chủ khi khôi phục tài khoản', error: err.message });
     }
   }
 }

@@ -15,8 +15,8 @@ class CVController {
       if (!cv) return res.status(404).json({ message: 'Chưa có CV' });
 
       res.status(200).json({ cv });
-    } catch (error) {
-      res.status(500).json({ message: 'Lỗi khi lấy CV' });
+    } catch (err) {
+      res.status(500).json({ message: 'Lỗi khi lấy CV', error: err.message });
     }
   }
 
@@ -53,9 +53,8 @@ class CVController {
       }
 
       res.status(200).json({ message, cv: updatedCV });
-    } catch (error) {
-      console.error(error);
-      res.status(500).json({ message: 'Lỗi khi xử lý CV' });
+    } catch (err) {
+      res.status(500).json({ message: 'Lỗi khi xử lý CV', error: err.message });
     }
   }
 
@@ -73,8 +72,8 @@ class CVController {
       if (!result) return res.status(404).json({ message: 'CV không tồn tại' });
 
       res.status(200).json({ message: 'Xoá CV thành công' });
-    } catch (error) {
-      res.status(500).json({ message: 'Lỗi khi xoá CV' });
+    } catch (err) {
+      res.status(500).json({ message: 'Lỗi khi xoá CV', error: err.message });
     }
   }
 }

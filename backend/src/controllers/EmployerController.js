@@ -8,10 +8,10 @@ class EmployerController {
         path: 'account',
         match: { deleted: false },
         select: '-password'
-      })).filter(student => student.account)
+      })).filter(employer => employer.account)
       res.json(employers);
-    } catch (error) {
-      res.status(500).json({ message: 'Lỗi khi lấy danh sách employer' });
+    } catch (err) {
+      res.status(500).json({ message: 'Lỗi khi lấy danh sách employer', error: err.message });
     }
   }
 
@@ -28,8 +28,8 @@ class EmployerController {
         return res.status(404).json({ message: 'Không tìm thấy employer hoặc tài khoản đã bị xoá' });
       }
       res.status(200).json(employer);
-    } catch (error) {
-      res.status(500).json({ message: 'Lỗi khi lấy thông tin employer' });
+    } catch (err) {
+      res.status(500).json({ message: 'Lỗi khi lấy thông tin employer', error: err.message });
     }
   }
 
@@ -45,8 +45,8 @@ class EmployerController {
       if (!employer) return res.status(400).json({ message: 'Lỗi khi tạo hồ sơ employer' });
 
       res.status(201).json({ message: 'Tạo hồ sơ employer thành công', employer });
-    } catch (error) {
-      res.status(500).json({ message: 'Lỗi khi tạo employer' });
+    } catch (err) {
+      res.status(500).json({ message: 'Lỗi khi tạo employer', error: err.message });
     }
   }
 
@@ -61,8 +61,8 @@ class EmployerController {
 
       const employers = await Employer.find(searchQuery).populate('account', '-password');
       res.status(200).json({ employers });
-    } catch (error) {
-      res.status(500).json({ message: 'Lỗi khi tìm kiếm employer' });
+    } catch (err) {
+      res.status(500).json({ message: 'Lỗi khi tìm kiếm employer', error: err.message });
     }
   }
 
@@ -81,8 +81,8 @@ class EmployerController {
       }
       res.status(200).json({ message: 'Employer updated successfully', updatedEmployer });
     }
-    catch (error) {
-      res.status(500).json({ message: 'Lỗi khi cập nhật employer' });
+    catch (err) {
+      res.status(500).json({ message: 'Lỗi khi cập nhật employer', error: err.message });
     }
   }
 }

@@ -11,6 +11,6 @@ router.put('/my/:id/status', verifyToken([]), projectController.updateProjectSta
 router.delete('/my/:id', verifyToken([]), projectController.deleteProject);
 
 router.post('/:projectId/apply', verifyToken(["student"]), projectController.applyToProject);
-router.post('/:projectId/respond/:studentId', verifyToken(["employer"]), projectController.respondToApplication);
+router.post('/:projectId/respond/:studentId', verifyToken([]), projectController.respondToApplication);
 
 module.exports = router;
