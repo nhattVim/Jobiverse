@@ -1,8 +1,8 @@
 import { createBrowserRouter } from "react-router-dom";
 import { ROUTES } from "./routePaths";
-import Home from "../pages/home";
-import Login from "../pages/login";
-import Register from "../pages/register";
+import Home from "../pages/Home";
+import Login from "../pages/Login";
+import Register from "../pages/Register";
 import MainLayout from "../layouts/MainLayout";
 import JobList from "../pages/JobList";
 
