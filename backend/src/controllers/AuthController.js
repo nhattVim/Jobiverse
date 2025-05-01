@@ -5,7 +5,7 @@ const jwt = require('jsonwebtoken');
 const JWT_SECRET = process.env.JWT_SECRET;
 
 class AccountController {
-  // [POST] /account/register
+  // [POST] /register
   async registerAccount(req, res, next) {
     try {
       const { accountType, email, password, userName } = req.body;
@@ -22,7 +22,7 @@ class AccountController {
     }
   }
 
-  // [POST] /account/login
+  // [POST] /login
   async loginAccount(req, res, next) {
     try {
       const { email, password } = req.body;
@@ -46,10 +46,7 @@ class AccountController {
         maxAge: 7 * 24 * 60 * 60 * 1000
       });
 
-      res.json({
-        message: 'Đăng nhập thành công',
-        account
-      });
+      res.json({ message: 'Đăng nhập thành công' });
     } catch (err) {
       res.status(500).json({ message: 'Lỗi máy chủ khi đăng nhập', error: err.message });
     }
@@ -67,6 +64,17 @@ class AccountController {
       res.json({ message: 'Đăng xuất thành công' });
     } catch (err) {
       res.status(500).json({ message: 'Lỗi đăng xuất', error: err.message });
+    }
+  }
+
+  // [GET] /profile
+  async getAccountProfile(req, res, next) {
+    try {
+      const account = await Account.findById(req.account._id).select('-password -__v');
+      if (!account) return res.status(404).json({ message: 'Tài khoản không tồn tại' })
+      res.json(account);
+    } catch (err) {
+      return res.status(500).json({ message: 'Lỗi máy chủ khi lấy thông tin tài khoản', error: err.message });
     }
   }
 }

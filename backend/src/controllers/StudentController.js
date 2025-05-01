@@ -4,11 +4,13 @@ class StudentController {
   // [GET] /students
   async getAllStudents(req, res, next) {
     try {
-      const students = (await Student.find().populate({
-        path: 'account',
-        match: { deleted: false },
-        select: '-password'
-      })).filter(student => student.account);
+      const students = (await Student.find()
+        .select('-__v')
+        .populate({
+          path: 'account',
+          match: { deleted: false },
+          select: '-password -__v'
+        })).filter(student => student.account);
       res.json(students);
     } catch (err) {
       res.status(500).json({ message: 'Lỗi khi lấy danh sách sinh viên', error: err.message });
@@ -18,11 +20,13 @@ class StudentController {
   // [GET] /students/:id
   async getStudentById(req, res, next) {
     try {
-      const student = await Student.findById(req.params.id).populate({
-        path: 'account',
-        match: { deleted: false },
-        select: '-password'
-      });
+      const student = await Student.findById(req.params.id)
+        .select('-__v')
+        .populate({
+          path: 'account',
+          match: { deleted: false },
+          select: '-password -__v'
+        });
 
       if (!student || !student.account) {
         return res.status(404).json({ message: 'Không tìm thấy sinh viên hoặc tài khoản đã bị xoá' });
@@ -60,7 +64,10 @@ class StudentController {
       if (mssv) searchQuery.mssv = new RegExp(mssv, 'i');
       if (name) searchQuery.name = new RegExp(name, 'i');
 
-      const students = await Student.find(searchQuery).populate('account', '-password');
+      const students = await Student.find(searchQuery)
+        .select('-__v')
+        .populate('account', '-password -__v');
+
       res.status(200).json({ students });
     } catch (err) {
       res.status(500).json({ message: 'Lỗi khi tìm kiếm sinh viên', error: err.message });

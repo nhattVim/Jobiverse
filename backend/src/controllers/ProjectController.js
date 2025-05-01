@@ -11,7 +11,7 @@ class ProjectController {
       const accountId = req.account._id;
       const student = await Student.findOne({ account: accountId });
 
-      let projects = await Project.find().sort({ createdAt: -1 });
+      let projects = await Project.find().sort({ createdAt: -1 }).select('-__v');
 
       if (student && student.interests && student.interests.length > 0) {
         projects = projects.map(project => {
@@ -38,7 +38,7 @@ class ProjectController {
   async getProjects(req, res, next) {
     try {
       const accountId = req.account._id;
-      const projects = await Project.find({ account: accountId });
+      const projects = await Project.find({ account: accountId }).select('-__v').sort({ createdAt: -1 });
       if (!projects || projects.length === 0) {
         return res.status(404).json({ message: 'No projects found' });
       }
