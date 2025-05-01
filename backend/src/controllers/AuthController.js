@@ -66,17 +66,6 @@ class AccountController {
       res.status(500).json({ message: 'Lỗi đăng xuất', error: err.message });
     }
   }
-
-  // [GET] /profile
-  async getAccountProfile(req, res, next) {
-    try {
-      const account = await Account.findById(req.account._id).select('-password -__v');
-      if (!account) return res.status(404).json({ message: 'Tài khoản không tồn tại' })
-      res.json(account);
-    } catch (err) {
-      return res.status(500).json({ message: 'Lỗi máy chủ khi lấy thông tin tài khoản', error: err.message });
-    }
-  }
 }
 
 module.exports = new AccountController();

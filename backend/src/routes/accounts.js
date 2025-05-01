@@ -3,6 +3,9 @@ const router = express.Router();
 const accountController = require('../controllers/AccountController');
 const verifyToken = require('../middlewares/verifyToken');
 
+router.get('/profile', verifyToken([]), accountController.getAccountProfile);
+router.put('/change-password', verifyToken([]), accountController.changePassword);
+
 router.use(verifyToken(["admin"]));
 router.get('/', accountController.getAllAccount);
 router.get('/deleted', accountController.getAllDeletedAccount);
