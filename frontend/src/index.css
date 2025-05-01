@@ -1,44 +1,42 @@
-@import url('https://fonts.googleapis.com/css2?family=Noto+Sans:ital,wght@0,100..900;1,100..900&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Noto+Sans:ital,wght@0,100..900;1,100..900&display=swap");
 @import "tailwindcss";
 
-html, body {
+html,
+body {
   font-family: "Noto Sans", sans-serif;
-  @apply text-black
+  @apply text-black;
+  @apply bg-white;
 }
 
 @theme {
-  --color-black: #292C39;
+  --color-black: #292c39;
   --color-black-mid: #303240;
   --color-black-low: #444655;
-  --color-gray-dark: #898B9B;
-  --color-gray: #A9AABC;
-  --color-gray-light: #D4D6E8;
-  --color-white-low: #E5E6F2;
-  --color-white-mid: #EEEFFA;
-  --color-white: #F7F8FF;
-  --color-white-bright: #FFFFFF;
-  --color-blue-mid: #2E51AB; 
-  --color-blue: #406BD0;
-  --color-yellow: #EDCD59;
+  --color-gray-dark: #898b9b;
+  --color-gray: #a9aabc;
+  --color-gray-light: #d4d6e8;
+  --color-white-low: #e5e6f2;
+  --color-white-mid: #eeeffa;
+  --color-white: #f7f8ff;
+  --color-white-bright: #ffffff;
+  --color-blue-mid: #2e51ab;
+  --color-blue: #406bd0;
+  --color-yellow: #edcd59;
 
   --radius-small: 20px;
   --radius-medium: 30px;
+
+  --container-7xl: 1464px;
 }
 
-@layer components {
-  .container-primary {
-    @apply max-w-[82.5rem] mx-auto px-4 sm:px-6 lg:px-8
-  }
+@utility container-responsive {
+  @apply max-w-7xl mx-auto lg:px-6 px-4;
 }
-
-@layer base {
-}
-
 
 @utility bg-gradient-blue-right {
-    background: linear-gradient(270deg, #2E51AB 0%, #132145 100%);
+  background: linear-gradient(270deg, #2e51ab 0%, #132145 100%);
 }
 
 @utility bg-gradient-blue-left {
-    background: linear-gradient(90deg, #132145 0%, #2E51AB 100%);
+  background: linear-gradient(90deg, #132145 0%, #2e51ab 100%);
 }
