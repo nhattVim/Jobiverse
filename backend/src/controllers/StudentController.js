@@ -67,7 +67,7 @@ class StudentController {
       const students = await Student.find(searchQuery)
         .select('-__v')
         .populate('account', '-password -__v');
-
+ 
       res.status(200).json({ students });
     } catch (err) {
       res.status(500).json({ message: 'Lỗi khi tìm kiếm sinh viên', error: err.message });
