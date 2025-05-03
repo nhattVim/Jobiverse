@@ -1,4 +1,4 @@
-const CV = require('../models/student/CV');
+const CV = require('../models/CV/CV');
 const Student = require('../models/Student');
 
 class CVController {
@@ -6,12 +6,11 @@ class CVController {
   async getStudentCV(req, res, next) {
     try {
       const accountId = req.account._id;
-      const student = await Student.findOne({ account: accountId });
 
+      const student = await Student.findOne({ account: accountId });
       if (!student) return res.status(404).json({ message: 'Không tìm thấy sinh viên' });
 
-      const cv = await CV.findOne({ student: student._id });
-
+      const cv = await CV.findOne({ student: student._id }).select('-__v');
       if (!cv) return res.status(404).json({ message: 'Chưa có CV' });
 
       res.status(200).json({ cv });
@@ -24,31 +23,19 @@ class CVController {
   async updateStudentCV(req, res) {
     try {
       const accountId = req.account._id;
-      const { content } = req.body;
+      const content = req.body;
 
       const student = await Student.findOne({ account: accountId });
-      if (!student) {
-        return res.status(404).json({ message: 'Không tìm thấy sinh viên' });
-      }
+      if (!student) return res.status(404).json({ message: 'Không tìm thấy sinh viên' });
 
       const existingCV = await CV.findOne({ student: student._id });
-
-      let message;
-      let updatedCV;
+      let message, updatedCV;
 
       if (existingCV) {
-        updatedCV = await CV.findByIdAndUpdate(
-          existingCV._id,
-          { content, lastUpdated: Date.now() },
-          { new: true }
-        );
+        updatedCV = await CV.findByIdAndUpdate(existingCV._id, { ...content, lastUpdated: Date.now() }, { new: true });
         message = 'Cập nhật CV thành công';
       } else {
-        updatedCV = await CV.create({
-          student: student._id,
-          content,
-          lastUpdated: Date.now()
-        });
+        updatedCV = await CV.create({ student: student._id, ...content, lastUpdated: Date.now() });
         message = 'Tạo CV mới thành công';
       }
 
@@ -58,18 +45,16 @@ class CVController {
     }
   }
 
-
   // [DELETE] /cv
   async deleteStudentCV(req, res) {
     try {
       const accountId = req.account._id;
-      const student = await Student.findOne({ account: accountId });
 
+      const student = await Student.findOne({ account: accountId });
       if (!student) return res.status(404).json({ message: 'Không tìm thấy sinh viên' });
 
-      const result = await CV.findOneAndDelete({ student: student._id });
-
-      if (!result) return res.status(404).json({ message: 'CV không tồn tại' });
+      const cv = await CV.findOneAndDelete({ student: student._id });
+      if (!cv) return res.status(404).json({ message: 'CV không tồn tại' });
 
       res.status(200).json({ message: 'Xoá CV thành công' });
     } catch (err) {

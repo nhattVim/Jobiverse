@@ -5,7 +5,7 @@ class NotificationController {
   async getNotifications(req, res, next) {
     const accountId = req.account._id;
     try {
-      const notifications = await Notification.find({ account: accountId }).sort({ createdAt: -1 });
+      const notifications = await Notification.find({ account: accountId }).select('-__v').sort({ createdAt: -1 });
       res.status(200).json(notifications);
     } catch (err) {
       res.status(500).json({ message: 'Internal server error', error: err.message });

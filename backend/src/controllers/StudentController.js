@@ -1,14 +1,17 @@
 const Student = require('../models/Student');
-
+const Major = require('../models/Major/Major');
+const Specialization = require('../models/Major/Specialization');
 class StudentController {
   // [GET] /students
   async getAllStudents(req, res, next) {
     try {
-      const students = (await Student.find().populate({
-        path: 'account',
-        match: { deleted: false },
-        select: '-password'
-      })).filter(student => student.account);
+      const students = (await Student.find()
+        .select('-__v')
+        .populate({
+          path: 'account',
+          match: { deleted: false },
+          select: '-password -__v'
+        })).filter(student => student.account);
       res.json(students);
     } catch (err) {
       res.status(500).json({ message: 'Lỗi khi lấy danh sách sinh viên', error: err.message });
@@ -18,11 +21,13 @@ class StudentController {
   // [GET] /students/:id
   async getStudentById(req, res, next) {
     try {
-      const student = await Student.findById(req.params.id).populate({
-        path: 'account',
-        match: { deleted: false },
-        select: '-password'
-      });
+      const student = await Student.findById(req.params.id)
+        .select('-__v')
+        .populate({
+          path: 'account',
+          match: { deleted: false },
+          select: '-password -__v'
+        });
 
       if (!student || !student.account) {
         return res.status(404).json({ message: 'Không tìm thấy sinh viên hoặc tài khoản đã bị xoá' });
@@ -60,7 +65,10 @@ class StudentController {
       if (mssv) searchQuery.mssv = new RegExp(mssv, 'i');
       if (name) searchQuery.name = new RegExp(name, 'i');
 
-      const students = await Student.find(searchQuery).populate('account', '-password');
+      const students = await Student.find(searchQuery)
+        .select('-__v')
+        .populate('account', '-password -__v');
+ 
       res.status(200).json({ students });
     } catch (err) {
       res.status(500).json({ message: 'Lỗi khi tìm kiếm sinh viên', error: err.message });
@@ -85,6 +93,48 @@ class StudentController {
       res.status(500).json({ message: 'Lỗi khi cập nhật hồ sơ sinh viên', error: err.message });
     }
   }
+
+    // [GET] /student/filter
+      async filterStudent(req, res, next) {
+        try {
+          const majorName = req.query.major;
+          const specializationName = req.query.specialization;
+      
+          if (!majorName) {
+            return res.status(400).json({ message: 'Thiếu tên ngành (major)' });
+          }
+      
+          const majorDoc = await Major.findOne({ name: new RegExp(majorName, 'i') });
+          if (!majorDoc) {
+            return res.status(404).json({ message: 'Không tìm thấy ngành' });
+          }
+      
+          var filter = { major: majorDoc._id };
+          var populateFields = ['major'];
+      
+          if (specializationName) {
+            const specializationDoc = await Specialization.findOne({ name: new RegExp(specializationName, 'i') });
+      
+            if (!specializationDoc) {
+              return res.status(404).json({ message: 'Không tìm thấy chuyên ngành' });
+            }
+            //thêm specialization vào filter hình dung : filter = { specialization: specializationDoc._id }
+            filter.specialization = specializationDoc._id;
+            populateFields.push('specialization');
+          }
+      
+          const students = await Student.find(filter).populate(populateFields);
+      
+          if (!students.length) {
+            return res.status(404).json({ message: 'Không có project nào phù hợp' });
+          }
+      
+          res.status(200).json({ students });
+      
+        } catch (err) {
+          res.status(500).json({ message: 'Lỗi server', error: err.message });
+        }
+      }
 }
 
 module.exports = new StudentController();

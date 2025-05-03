@@ -4,11 +4,13 @@ class EmployerController {
   // [GET] /employers
   async getAllEmployers(req, res, next) {
     try {
-      const employers = (await Employer.find().populate({
-        path: 'account',
-        match: { deleted: false },
-        select: '-password'
-      })).filter(employer => employer.account)
+      const employers = (await Employer.find()
+        .select('-__v')
+        .populate({
+          path: 'account',
+          match: { deleted: false },
+          select: '-password -__v'
+        })).filter(employer => employer.account)
       res.json(employers);
     } catch (err) {
       res.status(500).json({ message: 'Lỗi khi lấy danh sách employer', error: err.message });
@@ -18,15 +20,18 @@ class EmployerController {
   // [GET] /employers/:id
   async getEmployerById(req, res, next) {
     try {
-      const employer = await Employer.findById(req.params.id).populate({
-        path: 'account',
-        match: { deleted: false },
-        select: '-password'
-      });
+      const employer = await Employer.findById(req.params.id)
+        .select('-__v')
+        .populate({
+          path: 'account',
+          match: { deleted: false },
+          select: '-password'
+        });
 
       if (!employer || !employer.account) {
         return res.status(404).json({ message: 'Không tìm thấy employer hoặc tài khoản đã bị xoá' });
       }
+
       res.status(200).json(employer);
     } catch (err) {
       res.status(500).json({ message: 'Lỗi khi lấy thông tin employer', error: err.message });
@@ -59,7 +64,9 @@ class EmployerController {
       if (companyName) searchQuery.companyName = new RegExp(companyName, 'i');
       if (representativeName) searchQuery.representativeName = new RegExp(representativeName, 'i');
 
-      const employers = await Employer.find(searchQuery).populate('account', '-password');
+      const employers = await Employer.find(searchQuery)
+        .select('-__v')
+        .populate('account', '-password -__v');
       res.status(200).json({ employers });
     } catch (err) {
       res.status(500).json({ message: 'Lỗi khi tìm kiếm employer', error: err.message });
