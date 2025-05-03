@@ -1,5 +1,6 @@
 const Student = require('../models/Student');
-
+const Major = require('../models/Major/Major');
+const Specialization = require('../models/Major/Specialization');
 class StudentController {
   // [GET] /students
   async getAllStudents(req, res, next) {
@@ -92,6 +93,48 @@ class StudentController {
       res.status(500).json({ message: 'Lỗi khi cập nhật hồ sơ sinh viên', error: err.message });
     }
   }
+
+    // [GET] /student/filter
+      async filterStudent(req, res, next) {
+        try {
+          const majorName = req.query.major;
+          const specializationName = req.query.specialization;
+      
+          if (!majorName) {
+            return res.status(400).json({ message: 'Thiếu tên ngành (major)' });
+          }
+      
+          const majorDoc = await Major.findOne({ name: new RegExp(majorName, 'i') });
+          if (!majorDoc) {
+            return res.status(404).json({ message: 'Không tìm thấy ngành' });
+          }
+      
+          var filter = { major: majorDoc._id };
+          var populateFields = ['major'];
+      
+          if (specializationName) {
+            const specializationDoc = await Specialization.findOne({ name: new RegExp(specializationName, 'i') });
+      
+            if (!specializationDoc) {
+              return res.status(404).json({ message: 'Không tìm thấy chuyên ngành' });
+            }
+            //thêm specialization vào filter hình dung : filter = { specialization: specializationDoc._id }
+            filter.specialization = specializationDoc._id;
+            populateFields.push('specialization');
+          }
+      
+          const students = await Student.find(filter).populate(populateFields);
+      
+          if (!students.length) {
+            return res.status(404).json({ message: 'Không có project nào phù hợp' });
+          }
+      
+          res.status(200).json({ students });
+      
+        } catch (err) {
+          res.status(500).json({ message: 'Lỗi server', error: err.message });
+        }
+      }
 }
 
 module.exports = new StudentController();
