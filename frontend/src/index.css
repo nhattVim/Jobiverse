@@ -6,6 +6,7 @@ body {
   font-family: "Noto Sans", sans-serif;
   @apply text-black;
   @apply bg-white;
+  @apply font-medium;
 }
 
 @theme {
@@ -27,6 +28,17 @@ body {
   --radius-medium: 30px;
 
   --container-7xl: 1464px;
+
+  --animate-slideDown: slideDown 0.5s ease-in-out;
+
+  @keyframes slideDown {
+    from {
+      transform: translateY(-100%);
+    }
+    to {
+      transform: translateY(0);
+    }
+  }
 }
 
 @utility container-responsive {

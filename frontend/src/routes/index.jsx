@@ -5,6 +5,7 @@ import Login from "../pages/Login";
 import Register from "../pages/Register";
 import MainLayout from "../layouts/MainLayout";
 import JobList from "../pages/JobList";
+import JobPost from "../pages/JobPost";
 
 export const router = createBrowserRouter([
   {
@@ -18,6 +19,10 @@ export const router = createBrowserRouter([
       {
         path: ROUTES.JOB_LIST,
         element: <JobList />,
+      },
+      {
+        path: ROUTES.JOB_POST,
+        element: <JobPost />,
       },
     ],
   },
