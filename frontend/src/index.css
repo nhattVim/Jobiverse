@@ -1,7 +1,6 @@
 @import url("https://fonts.googleapis.com/css2?family=Noto+Sans:ital,wght@0,100..900;1,100..900&display=swap");
 @import "tailwindcss";
 
-html,
 body {
   font-family: "Noto Sans", sans-serif;
   @apply text-black;
@@ -27,7 +26,7 @@ body {
   --radius-small: 20px;
   --radius-medium: 30px;
 
-  --container-7xl: 1464px;
+  --container-7xl: 1448px;
 
   --animate-slideDown: slideDown 0.5s ease-in-out;
 

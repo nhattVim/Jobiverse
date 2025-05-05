@@ -6,6 +6,7 @@ import Register from "../pages/Register";
 import MainLayout from "../layouts/MainLayout";
 import JobList from "../pages/JobList";
 import JobPost from "../pages/JobPost";
+import UploadCV from "../pages/UploadCV";
 
 export const router = createBrowserRouter([
   {
@@ -23,6 +24,10 @@ export const router = createBrowserRouter([
       {
         path: ROUTES.JOB_POST,
         element: <JobPost />,
+      },
+      {
+        path: "/upload-cv",
+        element: <UploadCV />,
       },
     ],
   },

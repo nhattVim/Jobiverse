@@ -8,8 +8,12 @@ import {
   ArrowUpRightIcon,
   ArrowLongLeftIcon,
   ArrowLongRightIcon,
+  IdentificationIcon,
+  DocumentTextIcon,
 } from "@heroicons/react/24/solid";
 import JobCard from "../components/JobCard";
+import ButtonArrowOne from "../shared/ButtonArrowOne";
+import { ROUTES } from "../routes/routePaths";
 
 const Home = () => {
   const jobCard = {
@@ -147,7 +151,7 @@ const Home = () => {
 
       {/* Job List Section */}
       <div className="bg-white-low w-full py-30">
-        <div className="container-responsive relative">
+        <div className="container-responsive">
           <div className="flex flex-col items-start">
             <div className="flex justify-between items-start w-full mb-[60px]">
               <h2 className="text-5xl font-semibold leading-[62.4px]">
@@ -177,6 +181,140 @@ const Home = () => {
                     currentIndex={currentIndex}
                   />
                 ))}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Advice Section */}
+      <div className="w-full py-30">
+        <div className="container-responsive">
+          <div className="flex flex-col items-start">
+            <h2 className="text-5xl font-semibold leading-[62.4px] mb-[60px]">
+              Bức phá cùng Jobiverse
+            </h2>
+
+            <div className="grid grid-cols-2 gap-[50px]">
+              <div className="flex items-center bg-white-low rounded-medium p-[30px] gap-[30px]">
+                <div className="flex flex-col items-start">
+                  <h6 className="text-[22px] leading-[28.6px] font-semibold mb-2.5">
+                    Nâng cấp Profile
+                  </h6>
+
+                  <p className="text-sm text-gray-dark mb-5">
+                    Profile là bản hồ sơ năng lực giúp bạn xây dựng thương hiệu
+                    cá nhân, thể hiện thế mạnh của bản thân thông qua việc đính
+                    kèm học vấn, kinh nghiệm, dự án, kỹ năng,... của mình
+                  </p>
+                  <ButtonArrowOne selectedPage={ROUTES.HOME}>
+                    Tạo profile
+                  </ButtonArrowOne>
+                </div>
+
+                <div>
+                  <IdentificationIcon className="w-[100px] h-[100px] text-blue" />
+                </div>
+              </div>
+
+              <div className="flex items-center bg-white-low rounded-medium p-[30px] gap-[30px]">
+                <div className="flex flex-col items-start">
+                  <h6 className="text-[22px] leading-[28.6px] font-semibold mb-2.5">
+                    CV Builder 2.0
+                  </h6>
+
+                  <p className="text-sm text-gray-dark mb-5">
+                    Một chiếc CV chuyên nghiệp sẽ giúp bạn gây ấn tượng với nhà
+                    tuyển dụng và tăng khả năng vượt qua vòng lọc CV.
+                  </p>
+                  <ButtonArrowOne selectedPage={ROUTES.HOME}>
+                    Tạo CV ngay
+                  </ButtonArrowOne>
+                </div>
+
+                <div>
+                  <DocumentTextIcon className="w-[100px] h-[100px] text-blue" />
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Step Section */}
+      <div className="w-full pb-30">
+        <div className="container-responsive">
+          <div className="grid grid-cols-[0.5fr_1fr] gap-[80px]">
+            <div className="w-full">
+              <img
+                src="https://cdn.prod.website-files.com/66b757e42412d2f5e0906c3d/66beec0fa4c957f1ce611980_about-01.avif"
+                alt="stepimg"
+                className="rounded-medium object-cover w-full h-full"
+              />
+            </div>
+
+            <div className="flex flex-col justify-between items-start w-full h-full">
+              <div className="flex flex-col items-start gap-10">
+                <p className="text-[24px] leading-9">
+                  Nền tảng của chúng tôi cung cấp trải nghiệm liền mạch cho cả
+                  người tìm kiếm việc làm và nhà tuyển dụng, sử dụng công nghệ
+                  tiên tiến và giao diện thân thiện với người dùng để làm cho
+                  quy trình tuyển dụng trở nên hiệu quả và hiệu suất.
+                </p>
+
+                <ButtonArrowOne>Liên hệ ngay</ButtonArrowOne>
+              </div>
+
+              <div className="self-stretch relative inline-flex justify-start items-center gap-[50px]">
+                <div className="flex-1 self-stretch inline-flex flex-col justify-start items-start gap-7">
+                  <div className="w-12 h-12 p-2.5 bg-white-low rounded-[50px] flex flex-col justify-between items-center">
+                    <div className="justify-start text-lg font-semibold ">
+                      01
+                    </div>
+                  </div>
+                  <div className="self-stretch flex flex-col justify-start items-start gap-2.5">
+                    <div className="self-stretch justify-start text-xl font-bold leading-7">
+                      Tạo hồ sơ của bạn
+                    </div>
+                    <div className="w-48 justify-start text-gray-dark text-base font-medium leading-normal">
+                      Đăng ký và xây dựng một hồ sơ toàn diện.
+                    </div>
+                  </div>
+                </div>
+                <div className="flex-1 self-stretch inline-flex flex-col justify-start items-start gap-7">
+                  <div className="w-12 h-12 p-2.5 bg-blue rounded-[50px] flex flex-col justify-between items-center">
+                    <div className="justify-start text-white text-lg font-semibold ">
+                      02
+                    </div>
+                  </div>
+                  <div className="self-stretch flex flex-col justify-start items-start gap-2.5">
+                    <div className="self-stretch justify-start text-xl font-bold leading-7">
+                      Tìm kiếm và ứng tuyển
+                    </div>
+                    <div className="self-stretch justify-start text-gray-dark text-base font-medium leading-normal">
+                      Duyệt qua hàng ngàn danh sách công việc trong các ngành
+                      công nghiệp khác nhau.
+                    </div>
+                  </div>
+                </div>
+                <div className="flex-1 self-stretch inline-flex flex-col justify-start items-start gap-7">
+                  <div className="w-12 h-12 p-2.5 bg-yellow rounded-[50px] flex flex-col justify-between items-center">
+                    <div className="justify-start text-lg font-semibold">
+                      03
+                    </div>
+                  </div>
+                  <div className="self-stretch flex flex-col justify-start items-start gap-2.5">
+                    <div className="self-stretch justify-start text-xl font-bold leading-7">
+                      Kết nối và được thuê
+                    </div>
+                    <div className="self-stretch justify-start text-gray-dark text-base font-medium leading-normal">
+                      Nền tảng của chúng tôi tạo điều kiện cho giao tiếp liền
+                      mạch để giúp bạn được thuê nhanh chóng.
+                    </div>
+                  </div>
+                </div>
+                <div className="w-[260px] h-0 left-[48px] top-[25px] absolute outline-2 outline-offset-[-1px] outline-white-low"></div>
+                <div className="w-[260px] h-0 left-[359px] top-[25px] absolute outline-2 outline-offset-[-1px] outline-white-low"></div>
               </div>
             </div>
           </div>

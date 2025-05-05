@@ -48,7 +48,7 @@ const JobPost = () => {
   return (
     <div className="min-h-screen bg-white">
       
-      <div className="w-full bg-gradient-to-r from-blue-950 to-blue-800 text-white p-6 rounded-r-2xl">
+      <div className="w-full bg-gradient-blue-right text-white p-6 rounded-r-2xl">
         <div className="max-w-2xl mx-auto text-center">
           <h1 className="text-3xl font-bold mb-4">Đăng một công việc</h1>
           <p className="text-sm">
