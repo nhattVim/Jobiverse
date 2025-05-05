@@ -7,6 +7,7 @@ import MainLayout from "../layouts/MainLayout";
 import JobList from "../pages/JobList";
 import JobPost from "../pages/JobPost";
 import UploadCV from "../pages/UploadCV";
+import CreateCV from "../pages/CreateCV";
 
 export const router = createBrowserRouter([
   {
@@ -40,5 +41,10 @@ export const router = createBrowserRouter([
   {
     path: ROUTES.REGISTER,
     element: <Register />,
+  },
+
+  {
+    path: ROUTES.CREATE_CV,
+    element: <CreateCV />,
   },
 ]);

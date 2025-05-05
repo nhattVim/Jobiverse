@@ -4,4 +4,5 @@ export const ROUTES = {
   JOB_POST: "/job-post",
   REGISTER: "/register",
   LOGIN: "/login",
+  CREATE_CV: "/create-cv",
 }

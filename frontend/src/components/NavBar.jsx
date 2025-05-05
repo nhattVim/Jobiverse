@@ -45,7 +45,7 @@ const NavBar = () => {
                 </Link>
               </li>
               <li className="px-5 py-2.5">
-                <Link className="flex items-center" to={"/"}>
+                <Link className="flex items-center" to={ROUTES.CREATE_CV}>
                   Tạo CV
                   <ChevronDownIcon className="w-4 ml-1" />
                 </Link>

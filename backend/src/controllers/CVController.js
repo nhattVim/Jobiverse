@@ -1,4 +1,4 @@
-const CV = require('../models/CV/CV');
+const CV = require('../models/CV');
 const Student = require('../models/Student');
 
 class CVController {
