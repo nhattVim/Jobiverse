@@ -1,6 +1,6 @@
-import { MapPinIcon, CurrencyDollarIcon } from "@heroicons/react/24/outline";
-import React from "react";
-import ButtonArrowOne from "../shared/ButtonArrowOne";
+import { MapPinIcon, CurrencyDollarIcon } from '@heroicons/react/24/outline'
+import React from 'react'
+import ButtonArrowOne from '../shared/ButtonArrowOne'
 
 const JobCard = ({
   jobTitle,
@@ -8,12 +8,12 @@ const JobCard = ({
   jobType,
   salary,
   location,
-  currentIndex,
+  currentIndex
 }) => {
   return (
     <div
-      className={`inline-block w-[33%] h-full whitespace-normal align-top transition-transform duration-500 ease-in-out`}
-      style={{ transform: `translateX(-${currentIndex * 100}%)`}}
+      className={'inline-block w-[33%] h-full whitespace-normal align-top transition-transform duration-500 ease-in-out'}
+      style={{ transform: `translateX(-${currentIndex * 100}%)` }}
     >
       <div className="mr-[50px]">
         <div className="flex flex-col items-start gap-[30px] p-10 bg-white rounded-medium w-full">
@@ -42,7 +42,7 @@ const JobCard = ({
         </div>
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default JobCard;
+export default JobCard

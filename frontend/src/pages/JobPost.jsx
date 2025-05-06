@@ -1,53 +1,53 @@
-import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
-import apiFetch from "../services/api";
+import React, { useState } from 'react'
+import { useNavigate } from 'react-router-dom'
+import apiFetch from '../services/api'
 
 const JobPost = () => {
-  const navigate = useNavigate();
+  const navigate = useNavigate()
   const [form, setForm] = useState({
-    title: "",
-    location: "",
-    quantity: "",
-    jobType: "",
-    salary: "",
-    experience: "",
-    gpa: "",
-    description: "",
-    requirement: "",
-    workTime: "",
-    deadline: "",
-  });
+    title: '',
+    location: '',
+    quantity: '',
+    jobType: '',
+    salary: '',
+    experience: '',
+    gpa: '',
+    description: '',
+    requirement: '',
+    workTime: '',
+    deadline: ''
+  })
 
-  const [error, setError] = useState("");
+  const [error, setError] = useState('')
 
   const handleChange = (e) => {
-    const { name, value } = e.target;
-    setForm({ ...form, [name]: value });
-  };
+    const { name, value } = e.target
+    setForm({ ...form, [name]: value })
+  }
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
+    e.preventDefault()
 
-    const requiredFields = ["title", "location", "jobType", "salary", "description"];
+    const requiredFields = ['title', 'location', 'jobType', 'salary', 'description']
     for (const field of requiredFields) {
       if (!form[field]) {
-        setError("Vui lòng điền đầy đủ thông tin bắt buộc.");
-        return;
+        setError('Vui lòng điền đầy đủ thông tin bắt buộc.')
+        return
       }
     }
 
     try {
-      await apiFetch("/jobpost", "POST", form);
-      navigate("/job-list");
+      await apiFetch('/jobpost', 'POST', form)
+      navigate('/job-list')
     } catch (err) {
-      console.error(err);
-      setError("Tạo bài đăng thất bại, vui lòng thử lại.");
+      console.error(err)
+      setError('Tạo bài đăng thất bại, vui lòng thử lại.')
     }
-  };
+  }
 
   return (
     <div className="min-h-screen bg-white">
-      
+
       <div className="w-full bg-gradient-blue-right text-white p-6 rounded-r-2xl">
         <div className="max-w-2xl mx-auto text-center">
           <h1 className="text-3xl font-bold mb-4">Đăng một công việc</h1>
@@ -57,7 +57,7 @@ const JobPost = () => {
         </div>
       </div>
 
-      
+
       <div className="max-w-2xl w-full mx-auto mt-6 space-y-6">
         {error && <p className="text-sm text-red-600">{error}</p>}
         <form onSubmit={handleSubmit}>
@@ -224,7 +224,7 @@ const JobPost = () => {
         </form>
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default JobPost;
+export default JobPost

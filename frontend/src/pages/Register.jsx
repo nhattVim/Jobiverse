@@ -1,41 +1,41 @@
-import React, { useState } from "react";
-import Logo1 from "../assets/Logo1.svg";
-import { useNavigate, Link } from "react-router-dom";
-import apiFetch from "../services/api";
+import React, { useState } from 'react'
+import Logo1 from '../assets/Logo1.svg'
+import { useNavigate, Link } from 'react-router-dom'
+import apiFetch from '../services/api'
 
 const Register = () => {
-  const navigate = useNavigate();
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [accountType, setAccountType] = useState('');
-  const [acceptPolicy, setAcceptPolicy] = useState(false);
-  const [error, setError] = useState("");
+  const navigate = useNavigate()
+  const [email, setEmail] = useState('')
+  const [password, setPassword] = useState('')
+  const [accountType, setAccountType] = useState('')
+  const [acceptPolicy, setAcceptPolicy] = useState(false)
+  const [error, setError] = useState('')
 
   const handleRegister = async (e) => {
-    e.preventDefault();
+    e.preventDefault()
 
     if (!email || !password || !accountType) {
-      setError("Vui lòng điền đầy đủ thông tin.");
-      return;
+      setError('Vui lòng điền đầy đủ thông tin.')
+      return
     }
 
     if (!acceptPolicy) {
-      setError("Bạn phải đồng ý với Điều khoản & Điều kiện.");
-      return;
+      setError('Bạn phải đồng ý với Điều khoản & Điều kiện.')
+      return
     }
 
     try {
-      await apiFetch("/register", "POST", {
+      await apiFetch('/register', 'POST', {
         email,
         password,
-        accountType,
-      });
-      navigate("/login");
+        accountType
+      })
+      navigate('/login')
     } catch (error) {
-      setError("Đăng ký thất bại, vui lòng thử lại.");
-      console.error("Đăng ký thất bại", error);
+      setError('Đăng ký thất bại, vui lòng thử lại.')
+      console.error('Đăng ký thất bại', error)
     }
-  };
+  }
 
   return (
     <div className="flex items-center justify-center h-screen bg-white">
@@ -109,7 +109,7 @@ const Register = () => {
                 onChange={(e) => setAcceptPolicy(e.target.checked)}
               />
               <p className="font-medium leading-6">
-                Tôi đã đọc và đồng ý với các{" "}
+                Tôi đã đọc và đồng ý với các{' '}
                 <Link to="/register" className="underline text-blue">
                   Điều khoản & Điều kiện.
                 </Link>
@@ -127,7 +127,7 @@ const Register = () => {
 
         <div className="flex items-center justify-center w-full">
           <p className="font-medium leading-6">
-            Bạn đã có tài khoản?{" "}
+            Bạn đã có tài khoản?{' '}
             <Link to="/login" className="underline text-blue">
               Đăng nhập
             </Link>
@@ -135,7 +135,7 @@ const Register = () => {
         </div>
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default Register;
+export default Register

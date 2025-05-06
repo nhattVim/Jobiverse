@@ -1,51 +1,51 @@
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import apiFetch from '../services/api';
+import React, { useState } from 'react'
+import { useNavigate } from 'react-router-dom'
+import apiFetch from '../services/api'
 
 const UploadCV = () => {
-  const navigate = useNavigate();
-  const [form, setForm] = useState({ cv: null });
-  const [error, setError] = useState('');
+  const navigate = useNavigate()
+  const [form, setForm] = useState({ cv: null })
+  const [error, setError] = useState('')
 
-  const [dragOver, setDragOver] = useState(false); // 👉 THÊM: state theo dõi khi kéo file vào vùng drop
+  const [dragOver, setDragOver] = useState(false) // 👉 THÊM: state theo dõi khi kéo file vào vùng drop
 
   const handleFileChange = (e) => {
-    const file = e.target.files[0];
+    const file = e.target.files[0]
     if (file) {
-      const validTypes = ['application/pdf', 'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'];
+      const validTypes = ['application/pdf', 'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document']
       if (validTypes.includes(file.type) && file.size <= 5 * 1024 * 1024) {
-        setForm({ ...form, cv: file });
-        setError('');
+        setForm({ ...form, cv: file })
+        setError('')
       } else {
-        setError('Vui lòng chọn file .pdf, .doc, .docx với kích thước dưới 5MB.');
-        setForm({ ...form, cv: null });
+        setError('Vui lòng chọn file .pdf, .doc, .docx với kích thước dưới 5MB.')
+        setForm({ ...form, cv: null })
       }
     }
-  };
+  }
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
+    e.preventDefault()
     if (!form.cv) {
-      setError('Vui lòng chọn file CV để tải lên.');
-      return;
+      setError('Vui lòng chọn file CV để tải lên.')
+      return
     }
 
-    const formData = new FormData();
-    formData.append('cv', form.cv);
+    const formData = new FormData()
+    formData.append('cv', form.cv)
 
     try {
-      await apiFetch('/upload-cv', 'POST', formData, true);
-      alert('CV đã được tải lên thành công!');
-      navigate('/CV-Management'); //Khi nào làm CV Management thì chỉnh lại
+      await apiFetch('/upload-cv', 'POST', formData, true)
+      alert('CV đã được tải lên thành công!')
+      navigate('/CV-Management') //Khi nào làm CV Management thì chỉnh lại
     } catch (err) {
       if (err.message.includes('Unauthorized') || err.message.includes('Token')) {
-        setError('Bạn cần đăng nhập để tải CV lên.');
-        setTimeout(() => navigate('/login'), 2000);
+        setError('Bạn cần đăng nhập để tải CV lên.')
+        setTimeout(() => navigate('/login'), 2000)
       } else {
-        setError('Tải CV thất bại, vui lòng thử lại.');
+        setError('Tải CV thất bại, vui lòng thử lại.')
       }
     }
-  };
+  }
 
   return (
     <div className="min-h-screen bg-white">
@@ -71,15 +71,15 @@ const UploadCV = () => {
                 dragOver ? 'border-blue-500 bg-blue-50' : 'border-gray-300'
               }`}
               onDragOver={(e) => {
-                e.preventDefault();
-                setDragOver(true);
+                e.preventDefault()
+                setDragOver(true)
               }}
               onDragLeave={() => setDragOver(false)}
               onDrop={(e) => {
-                e.preventDefault();
-                setDragOver(false);
-                const file = e.dataTransfer.files[0];
-                handleFileChange({ target: { files: [file] } }); // xử lý giống input
+                e.preventDefault()
+                setDragOver(false)
+                const file = e.dataTransfer.files[0]
+                handleFileChange({ target: { files: [file] } }) // xử lý giống input
               }}
             >
               <p className="text-black font-bold">⬆️ Tải lên CV từ máy tính, chọn hoặc kéo thả</p>
@@ -117,7 +117,7 @@ const UploadCV = () => {
         </form>
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default UploadCV;
+export default UploadCV

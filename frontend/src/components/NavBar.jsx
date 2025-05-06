@@ -1,29 +1,29 @@
-import React, { useEffect, useState } from "react";
-import Logo2 from "../assets/Logo2.svg";
-import { Link } from "react-router-dom";
+import React, { useEffect, useState } from 'react'
+import Logo2 from '../assets/Logo2.svg'
+import { Link } from 'react-router-dom'
 import {
   BellIcon,
   ChevronDownIcon,
-  UserCircleIcon,
-} from "@heroicons/react/24/solid";
-import ButtonArrowOne from "../shared/ButtonArrowOne";
-import { ROUTES } from "../routes/routePaths";
+  UserCircleIcon
+} from '@heroicons/react/24/solid'
+import ButtonArrowOne from '../shared/ButtonArrowOne'
+import { ROUTES } from '../routes/routePaths'
 
 const NavBar = () => {
-  const [isTopOfPage, setIsTopOfPage] = useState(true);
+  const [isTopOfPage, setIsTopOfPage] = useState(true)
 
   useEffect(() => {
     const handleScroll = () => {
       if (window.scrollY === 0) {
-        setIsTopOfPage(true);
+        setIsTopOfPage(true)
       }
-      if (window.scrollY > 100) setIsTopOfPage(false);
-    };
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
+      if (window.scrollY > 100) setIsTopOfPage(false)
+    }
+    window.addEventListener('scroll', handleScroll)
+    return () => window.removeEventListener('scroll', handleScroll)
+  }, [])
 
-  const navbarStyle = isTopOfPage ? "py-5" : "fixed top-0 left-0 z-50 py-2 drop-shadow animate-slideDown";
+  const navbarStyle = isTopOfPage ? 'py-5' : 'fixed top-0 left-0 z-50 py-2 drop-shadow animate-slideDown'
 
   return (
     <div className={`${navbarStyle} w-full bg-white transition-all duration-300`}>
@@ -69,7 +69,7 @@ const NavBar = () => {
         </div>
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default NavBar;
+export default NavBar

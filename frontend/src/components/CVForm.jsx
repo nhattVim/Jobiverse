@@ -1,91 +1,91 @@
-import { useState, React } from "react";
+import { useState, React } from 'react'
 
 const personalFields = {
-  avatar: { label: "Ảnh đại diện", placeholder: "Dán link ảnh đại diện...", type: "url" },
-  name: { label: "Họ và tên", placeholder: "Nhập họ tên", type: "text" },
-  birthday: { label: "Ngày sinh", placeholder: "DD/MM/YYYY", type: "date" },
+  avatar: { label: 'Ảnh đại diện', placeholder: 'Dán link ảnh đại diện...', type: 'url' },
+  name: { label: 'Họ và tên', placeholder: 'Nhập họ tên', type: 'text' },
+  birthday: { label: 'Ngày sinh', placeholder: 'DD/MM/YYYY', type: 'date' },
   gender: {
-    label: "Giới tính",
-    type: "select",
-    options: ["Nam", "Nữ"],
-    placeholder: "-- Chọn giới tính --"
+    label: 'Giới tính',
+    type: 'select',
+    options: ['Nam', 'Nữ'],
+    placeholder: '-- Chọn giới tính --'
   },
-  phone: { label: "Số điện thoại", placeholder: "0123456789", type: "tel" },
-  email: { label: "Email", placeholder: "example@gmail.com", type: "email" },
-  address: { label: "Địa chỉ", placeholder: "Tp Quy Nhơn, Bình Định", type: "text" },
-  website: { label: "Website", placeholder: "facebook.com/Jobiverse.vn", type: "url" },
-  sumary: { label: "Giới thiệu ngắn", placeholder: "Sơ lược bản thân", type: "text" }
-};
-
+  phone: { label: 'Số điện thoại', placeholder: '0123456789', type: 'tel' },
+  email: { label: 'Email', placeholder: 'example@gmail.com', type: 'email' },
+  address: { label: 'Địa chỉ', placeholder: 'Tp Quy Nhơn, Bình Định', type: 'text' },
+  website: { label: 'Website', placeholder: 'facebook.com/Jobiverse.vn', type: 'url' },
+  sumary: { label: 'Giới thiệu ngắn', placeholder: 'Sơ lược bản thân', type: 'text' },
+  desiredPosition: { label: 'Vị trí mong muốn', placeholder: 'Nhập vị trí mong muốn', type: 'text' }
+}
 
 export default function CVForm({ cvData, setCvData }) {
-  console.log(cvData);
-  const [newSkill, setNewSkill] = useState("");
+  console.log(cvData)
+  const [newSkill, setNewSkill] = useState('')
 
   const handleChange = (e) => {
-    setCvData({ ...cvData, [e.target.name]: e.target.value });
-  };
+    setCvData({ ...cvData, [e.target.name]: e.target.value })
+  }
 
   const handleExpChange = (e, idx) => {
-    const updated = [...cvData.experiences];
-    updated[idx][e.target.name] = e.target.value;
-    setCvData({ ...cvData, experiences: updated });
-  };
+    const updated = [...cvData.experiences]
+    updated[idx][e.target.name] = e.target.value
+    setCvData({ ...cvData, experiences: updated })
+  }
 
   const addExperience = () => {
     setCvData({
       ...cvData,
-      experiences: [...cvData.experiences, { position: "", company: "", start: "", end: "", description: "" }]
-    });
-  };
+      experiences: [...cvData.experiences, { position: '', company: '', start: '', end: '', description: '' }]
+    })
+  }
 
   const handleEduChange = (e, idx) => {
-    const updated = [...cvData.educations];
-    updated[idx][e.target.name] = e.target.value;
-    setCvData({ ...cvData, educations: updated });
-  };
+    const updated = [...cvData.educations]
+    updated[idx][e.target.name] = e.target.value
+    setCvData({ ...cvData, educations: updated })
+  }
 
   const addEducation = () => {
     setCvData({
       ...cvData,
-      educations: [...cvData.educations, { degree: "", school: "", start: "", end: "" }]
-    });
-  };
+      educations: [...cvData.educations, { degree: '', school: '', start: '', end: '' }]
+    })
+  }
 
   const addSkill = () => {
     if (newSkill.trim()) {
-      setCvData({ ...cvData, skills: [...cvData.skills, newSkill.trim()] });
-      setNewSkill("");
+      setCvData({ ...cvData, skills: [...cvData.skills, newSkill.trim()] })
+      setNewSkill('')
     }
-  };
+  }
 
   const removeSkill = (idx) => {
-    const updated = [...cvData.skills];
-    updated.splice(idx, 1);
-    setCvData({ ...cvData, skills: updated });
+    const updated = [...cvData.skills]
+    updated.splice(idx, 1)
+    setCvData({ ...cvData, skills: updated })
   }
 
   const removeExperience = (idx) => {
-    const updated = [...cvData.experiences];
-    updated.splice(idx, 1);
-    setCvData({ ...cvData, experiences: updated });
-  };
+    const updated = [...cvData.experiences]
+    updated.splice(idx, 1)
+    setCvData({ ...cvData, experiences: updated })
+  }
 
   const removeEducation = (idx) => {
-    const updated = [...cvData.educations];
-    updated.splice(idx, 1);
-    setCvData({ ...cvData, educations: updated });
-  };
+    const updated = [...cvData.educations]
+    updated.splice(idx, 1)
+    setCvData({ ...cvData, educations: updated })
+  }
 
   return (
-    <form className="flex flex-col w-full max-w-xl gap-4 p-6 bg-white shadow rounded-xl">
+    <form className="flex flex-col w-full max-w-xl gap-4 p-6 shadow bg-white-bright rounded-xl">
       <h2 className="mb-2 text-2xl font-bold">Tạo hồ sơ CV</h2>
 
       {Object.entries(personalFields).map(([key, field]) => (
         <div key={key}>
           <label className="block font-medium">{field.label}</label>
 
-          {field.type === "select" ? (
+          {field.type === 'select' ? (
             <select name={key} value={cvData[key]} onChange={handleChange} className="w-full p-2 mt-1 border rounded">
               <option value="">{field.placeholder}</option>
               {field.options.map((opt, i) => (
@@ -94,7 +94,7 @@ export default function CVForm({ cvData, setCvData }) {
             </select>
           ) : (
             <input
-              type={field.type || "text"}
+              type={field.type || 'text'}
               name={key}
               placeholder={field.placeholder}
               value={cvData[key]}
@@ -155,7 +155,7 @@ export default function CVForm({ cvData, setCvData }) {
       {/* Kỹ năng */}
       <div>
         <label className="block font-medium">Kỹ năng</label>
-        <div className="flex gap-2 mb-2">
+        <div className="flex gap-2 mt-1 mb-2">
           <input type="text" className="flex-grow p-1 border rounded" placeholder="Nhập kỹ năng"
             value={newSkill} onChange={(e) => setNewSkill(e.target.value)} />
           <button type="button" className="px-3 py-1 text-white bg-blue-600 rounded hover:bg-blue-700" onClick={addSkill}>
@@ -173,5 +173,5 @@ export default function CVForm({ cvData, setCvData }) {
         </div>
       </div>
     </form>
-  );
+  )
 }

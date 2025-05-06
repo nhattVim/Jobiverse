@@ -1,6 +1,6 @@
-import React from "react";
-import Logo2 from "../assets/Logo2.svg";
-import { PhoneIcon, EnvelopeIcon, PaperAirplaneIcon } from "@heroicons/react/24/outline";
+import React from 'react'
+import Logo2 from '../assets/Logo2.svg'
+import { PhoneIcon, EnvelopeIcon, PaperAirplaneIcon } from '@heroicons/react/24/outline'
 
 const Footer = () => {
   return (
@@ -85,7 +85,7 @@ const Footer = () => {
         </div>
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default Footer;
+export default Footer

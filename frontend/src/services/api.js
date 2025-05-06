@@ -1,22 +1,22 @@
-const API_BASE = "http://localhost:3000";
+const API_BASE = 'http://localhost:3000'
 
-export default async function apiFetch(path, method = "GET", body = null) {
+export default async function apiFetch(path, method = 'GET', body = null) {
   const options = {
     method,
     headers: { 'Content-Type': 'application/json' },
-    credentials: 'include',
-  };
+    credentials: 'include'
+  }
 
   if (body) {
-    options.body = JSON.stringify(body);
+    options.body = JSON.stringify(body)
   }
 
-  const res = await fetch(`${API_BASE}${path}`, options);
-  const data = await res.json();
+  const res = await fetch(`${API_BASE}${path}`, options)
+  const data = await res.json()
 
   if (!res.ok) {
-    throw new Error(data.message || "Lỗi mạng");
+    throw new Error(data.message || 'Lỗi mạng')
   }
 
-  return data;
+  return data
 }

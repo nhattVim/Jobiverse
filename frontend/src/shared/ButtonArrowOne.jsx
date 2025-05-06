@@ -1,6 +1,6 @@
-import { ArrowUpRightIcon } from "@heroicons/react/24/solid";
-import React from "react";
-import { Link } from "react-router-dom";
+import { ArrowUpRightIcon } from '@heroicons/react/24/solid'
+import React from 'react'
+import { Link } from 'react-router-dom'
 
 const ButtonArrowOne = ({ children, selectedPage }) => {
   return (
@@ -10,7 +10,7 @@ const ButtonArrowOne = ({ children, selectedPage }) => {
         <ArrowUpRightIcon className="w-5 h-5 text-blue font-semibold" />
       </div>
     </Link>
-  );
-};
+  )
+}
 
-export default ButtonArrowOne;
+export default ButtonArrowOne

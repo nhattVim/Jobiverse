@@ -1,5 +1,5 @@
-import React from "react";
-import BgNews from "../assets/BgNews.jpg";
+import React from 'react'
+import BgNews from '../assets/BgNews.jpg'
 
 const News = () => {
   return (
@@ -20,12 +20,12 @@ const News = () => {
             </h5>
             <form className="w-full">
               <div className="flex justify-between items-center gap-5">
-                  <input
-                    type="email"
-                    id="email"
-                    placeholder="Nhập địa chỉ email của bạn"
-                    className="w-[400px] h-[50px] px-4 py-2 bg-white-bright rounded-full focus:outline-none focus:ring-2 focus:ring-yellow-500"
-                  />
+                <input
+                  type="email"
+                  id="email"
+                  placeholder="Nhập địa chỉ email của bạn"
+                  className="w-[400px] h-[50px] px-4 py-2 bg-white-bright rounded-full focus:outline-none focus:ring-2 focus:ring-yellow-500"
+                />
                 <button
                   type="submit"
                   className="px-[30px] h-[50px] bg-yellow text-black font-semibold rounded-full hover:bg-yellow-400 transition duration-300"
@@ -38,7 +38,7 @@ const News = () => {
         </div>
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default News;
+export default News

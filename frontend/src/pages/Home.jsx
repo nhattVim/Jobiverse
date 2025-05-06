@@ -1,41 +1,41 @@
-import React, { useState } from "react";
-import HeroImg from "../assets/HeroImg.jpg";
-import Type1 from "../assets/Type1.jpg";
-import Type2 from "../assets/Type2.jpg";
-import { MapPinIcon, MagnifyingGlassIcon } from "@heroicons/react/24/outline";
-import { Link } from "react-router-dom";
+import React, { useState } from 'react'
+import HeroImg from '../assets/HeroImg.jpg'
+import Type1 from '../assets/Type1.jpg'
+import Type2 from '../assets/Type2.jpg'
+import { MapPinIcon, MagnifyingGlassIcon } from '@heroicons/react/24/outline'
+import { Link } from 'react-router-dom'
 import {
   ArrowUpRightIcon,
   ArrowLongLeftIcon,
   ArrowLongRightIcon,
   IdentificationIcon,
-  DocumentTextIcon,
-} from "@heroicons/react/24/solid";
-import JobCard from "../components/JobCard";
-import ButtonArrowOne from "../shared/ButtonArrowOne";
-import { ROUTES } from "../routes/routePaths";
+  DocumentTextIcon
+} from '@heroicons/react/24/solid'
+import JobCard from '../components/JobCard'
+import ButtonArrowOne from '../shared/ButtonArrowOne'
+import { ROUTES } from '../routes/routePaths'
 
 const Home = () => {
   const jobCard = {
-    jobTitle: "Backend Developer (C#, .NET)",
+    jobTitle: 'Backend Developer (C#, .NET)',
     imgCompany:
-      "https://cdn.prod.website-files.com/66b757e42412d2f5e0906c5f/66bf2b9a2ff5d8f19427f6db_job-07.svg",
-    jobType: "Thực tập",
-    salary: "Từ 2 - 4 triệu",
-    location: "Hồ Chí Minh",
-  };
-  const jobCards = Array(9).fill(jobCard);
-  const [currentIndex, setCurrentIndex] = useState(0);
+      'https://cdn.prod.website-files.com/66b757e42412d2f5e0906c5f/66bf2b9a2ff5d8f19427f6db_job-07.svg',
+    jobType: 'Thực tập',
+    salary: 'Từ 2 - 4 triệu',
+    location: 'Hồ Chí Minh'
+  }
+  const jobCards = Array(9).fill(jobCard)
+  const [currentIndex, setCurrentIndex] = useState(0)
 
   const goToPrevious = () => {
-    const isFirstSlide = currentIndex === 0;
-    setCurrentIndex(isFirstSlide ? 0 : currentIndex - 1);
-  };
+    const isFirstSlide = currentIndex === 0
+    setCurrentIndex(isFirstSlide ? 0 : currentIndex - 1)
+  }
 
   const goToNext = () => {
-    const isLastSlide = currentIndex === jobCards.length - 3;
-    setCurrentIndex(isLastSlide ? 0 : currentIndex + 1);
-  };
+    const isLastSlide = currentIndex === jobCards.length - 3
+    setCurrentIndex(isLastSlide ? 0 : currentIndex + 1)
+  }
 
   return (
     <>
@@ -321,7 +321,7 @@ const Home = () => {
         </div>
       </div>
     </>
-  );
-};
+  )
+}
 
-export default Home;
+export default Home
