@@ -1,59 +1,59 @@
-import React, { useState } from "react";
-import Banner from "../components/Banner";
-import { CheckIcon, FunnelIcon } from "@heroicons/react/24/solid";
-import JobListItem from "../components/JobListItem";
+import React, { useState } from 'react'
+import Banner from '../components/Banner'
+import { CheckIcon, FunnelIcon } from '@heroicons/react/24/solid'
+import JobListItem from '../components/JobListItem'
 
 const JobList = () => {
   const categoriesItem = [
-    { id: 1, name: "Fullstack Developer" },
-    { id: 2, name: "Backend Developer" },
-    { id: 3, name: "Frontend Developer" },
-    { id: 4, name: "Mobile Developer" },
-    { id: 5, name: "Data Engineer" },
-    { id: 6, name: "Data Analyst" },
-    { id: 7, name: "DevOps Engineer" },
-  ];
+    { id: 1, name: 'Fullstack Developer' },
+    { id: 2, name: 'Backend Developer' },
+    { id: 3, name: 'Frontend Developer' },
+    { id: 4, name: 'Mobile Developer' },
+    { id: 5, name: 'Data Engineer' },
+    { id: 6, name: 'Data Analyst' },
+    { id: 7, name: 'DevOps Engineer' }
+  ]
   const expItem = [
-    { id: 1, name: "Không yêu cầu" },
-    { id: 2, name: "Dưới 1 năm" },
-    { id: 3, name: "1 năm" },
-    { id: 4, name: "2 năm" },
-    { id: 5, name: "3 năm" },
-    { id: 6, name: "4 năm" },
-    { id: 7, name: "5 năm" },
-    { id: 8, name: "Trên 5 năm" },
-  ];
+    { id: 1, name: 'Không yêu cầu' },
+    { id: 2, name: 'Dưới 1 năm' },
+    { id: 3, name: '1 năm' },
+    { id: 4, name: '2 năm' },
+    { id: 5, name: '3 năm' },
+    { id: 6, name: '4 năm' },
+    { id: 7, name: '5 năm' },
+    { id: 8, name: 'Trên 5 năm' }
+  ]
   const jobTypeItem = [
-    { id: 1, name: "Toàn thời gian" },
-    { id: 2, name: "Bán thời gian" },
-    { id: 3, name: "Thực tập" },
-    { id: 4, name: "Khác" },
-  ];
+    { id: 1, name: 'Toàn thời gian' },
+    { id: 2, name: 'Bán thời gian' },
+    { id: 3, name: 'Thực tập' },
+    { id: 4, name: 'Khác' }
+  ]
 
   const jobItem = {
-    jobTitle: "Backend Developer (C#, .NET)",
+    jobTitle: 'Backend Developer (C#, .NET)',
     companyInfo: {
-      img: "https://cdn.prod.website-files.com/66b757e42412d2f5e0906c5f/66bf2b9a2ff5d8f19427f6db_job-07.svg",
-      name: "CodeLink",
-      location: "TP Hồ Chí Minh",
+      img: 'https://cdn.prod.website-files.com/66b757e42412d2f5e0906c5f/66bf2b9a2ff5d8f19427f6db_job-07.svg',
+      name: 'CodeLink',
+      location: 'TP Hồ Chí Minh'
     },
-    jobType: "Thực tập",
-    salary: "Từ 2 - 4 triệu",
-    location: "TP Hồ Chí Minh",
-    skill: ["C#", ".NET", "SQL Server", "REST API"],
-  };
+    jobType: 'Thực tập',
+    salary: 'Từ 2 - 4 triệu',
+    location: 'TP Hồ Chí Minh',
+    skill: ['C#', '.NET', 'SQL Server', 'REST API']
+  }
 
-  const jobItems = Array(4).fill(jobItem);
-  const [selectedExp, setSelectedExp] = useState("Tất cả");
-  const [selectedType, setSelectedType] = useState("Tất cả");
+  const jobItems = Array(4).fill(jobItem)
+  const [selectedExp, setSelectedExp] = useState('Tất cả')
+  const [selectedType, setSelectedType] = useState('Tất cả')
 
   const handleExpChange = (exp) => {
-    setSelectedExp(exp);
-  };
+    setSelectedExp(exp)
+  }
 
   const handleTypeChange = (type) => {
-    setSelectedType(type);
-  };
+    setSelectedType(type)
+  }
   return (
     <>
       <Banner />
@@ -91,8 +91,8 @@ const JobList = () => {
                           name="exp"
                           id="exp"
                           className="w-[18px] h-[18px]"
-                          checked={selectedType === "Tất cả"}
-                          onChange={() => handleTypeChange("Tất cả")}
+                          checked={selectedType === 'Tất cả'}
+                          onChange={() => handleTypeChange('Tất cả')}
                         />
                         <p className="text-sm text-black-low">Tất cả</p>
                       </div>
@@ -120,8 +120,8 @@ const JobList = () => {
                           name="type"
                           id="type"
                           className="w-[18px] h-[18px]"
-                          checked={selectedExp === "Tất cả"}
-                          onChange={() => handleExpChange("Tất cả")}
+                          checked={selectedExp === 'Tất cả'}
+                          onChange={() => handleExpChange('Tất cả')}
                         />
                         <p className="text-sm text-black-low">Tất cả</p>
                       </div>
@@ -198,7 +198,7 @@ const JobList = () => {
         </div>
       </div>
     </>
-  );
-};
+  )
+}
 
-export default JobList;
+export default JobList

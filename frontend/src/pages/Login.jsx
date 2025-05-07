@@ -1,23 +1,23 @@
-import { React, useState } from "react";
-import Logo1 from "../assets/Logo1.svg";
-import { useNavigate, Link } from "react-router-dom";
-import apiFetch from "../services/api";
+import { React, useState } from 'react'
+import Logo1 from '../assets/Logo1.svg'
+import { useNavigate, Link } from 'react-router-dom'
+import apiFetch from '../services/api'
 
 const Login = () => {
-  const navigate = useNavigate();
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const navigate = useNavigate()
+  const [email, setEmail] = useState('')
+  const [password, setPassword] = useState('')
 
   const handleLogin = async (e) => {
-    e.preventDefault();
+    e.preventDefault()
     try {
-      await apiFetch("/login", "POST", {
+      await apiFetch('/login', 'POST', {
         email,
-        password,
-      });
-      navigate("/");
+        password
+      })
+      navigate('/')
     } catch (error) {
-      console.error("Đăng nhập thất bại", error);
+      console.error('Đăng nhập thất bại', error)
     }
   }
   return (
@@ -73,7 +73,7 @@ const Login = () => {
 
         <div className="flex items-center justify-between w-full">
           <p className="font-medium leading-6">
-            Bạn chưa có tài khoản?{" "}
+            Bạn chưa có tài khoản?{' '}
             <Link to="/register" className="underline text-blue">
               Đăng ký
             </Link>
@@ -84,7 +84,7 @@ const Login = () => {
         </div>
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default Login;
+export default Login
