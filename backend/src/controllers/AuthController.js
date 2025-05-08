@@ -13,19 +13,12 @@ class AccountController {
       const trimmedEmail = email?.trim();
       const trimmedPhone = phoneNumber?.trim();
 
-      const existingAccount = await Account.findOne({
-        $or: [
-          { email: trimmedEmail },
-          { phoneNumber: trimmedPhone }
-        ],
-      });
+      const emailExists = await Account.findOne({ email: trimmedEmail, deleted: false });
+      if (emailExists) return res.status(400).json({ message: 'Email đã được sử dụng' });
 
-      if (existingAccount) {
-        if (existingAccount.email === trimmedEmail)
-          return res.status(400).json({ message: 'Email đã được sử dụng' });
-        if (existingAccount.phoneNumber === trimmedPhone)
-          return res.status(400).json({ message: 'Số điện thoại đã được sử dụng' });
-      }
+
+      const phoneExists = await Account.findOne({ phoneNumber: trimmedPhone, deleted: false });
+      if (phoneExists) return res.status(400).json({ message: 'Số điện thoại đã được sử dụng' });
 
       const account = await Account.create({ accountType, email, password, phoneNumber });
       res.status(201).json({ message: 'Tạo tài khoản thành công', accountID: account._id });
@@ -38,14 +31,14 @@ class AccountController {
   async loginAccount(req, res, next) {
     try {
       const { emailOrPhone, password } = req.body;
+      const isEmail = emailOrPhone.includes('@');
+      let account;
 
-      const account = await Account.findOne({
-        deleted: false,
-        $or: [
-          { email: emailOrPhone },
-          { phoneNumber: emailOrPhone }
-        ],
-      });
+      if (isEmail) {
+        account = await Account.findOne({ deleted: false, email: emailOrPhone, });
+      } else {
+        account = await Account.findOne({ deleted: false, phoneNumber: emailOrPhone, });
+      }
 
       if (!account) return res.status(404).json({ message: 'Email hoặc số điện thoại không tồn tại' });
 
