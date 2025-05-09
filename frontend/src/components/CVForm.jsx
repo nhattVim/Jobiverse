@@ -1,85 +1,86 @@
-import { useState, React } from 'react'
+import { useState } from 'react'
+import CVFormSection from './CVFormSection'
 
 const personalFields = {
   avatar: { label: 'Ảnh đại diện', placeholder: 'Dán link ảnh đại diện...', type: 'url' },
   name: { label: 'Họ và tên', placeholder: 'Nhập họ tên', type: 'text' },
   birthday: { label: 'Ngày sinh', placeholder: 'DD/MM/YYYY', type: 'date' },
-  gender: {
-    label: 'Giới tính',
-    type: 'select',
-    options: ['Nam', 'Nữ'],
-    placeholder: '-- Chọn giới tính --'
-  },
+  gender: { label: 'Giới tính', type: 'select', options: ['Nam', 'Nữ'], placeholder: '-- Chọn giới tính --' },
   phone: { label: 'Số điện thoại', placeholder: '0123456789', type: 'tel' },
   email: { label: 'Email', placeholder: 'example@gmail.com', type: 'email' },
   address: { label: 'Địa chỉ', placeholder: 'Tp Quy Nhơn, Bình Định', type: 'text' },
   website: { label: 'Website', placeholder: 'facebook.com/Jobiverse.vn', type: 'url' },
-  sumary: { label: 'Giới thiệu ngắn', placeholder: 'Sơ lược bản thân', type: 'text' },
+  summary: { label: 'Giới thiệu ngắn', placeholder: 'Sơ lược bản thân', type: 'text' },
   desiredPosition: { label: 'Vị trí mong muốn', placeholder: 'Nhập vị trí mong muốn', type: 'text' }
 }
 
-export default function CVForm({ cvData, setCvData }) {
+const experienceFields = [
+  { name: 'position', placeholder: 'Vị trí' },
+  { name: 'company', placeholder: 'Công ty' },
+  { name: 'start', placeholder: 'Bắt đầu (VD: 01/2020)' },
+  { name: 'end', placeholder: 'Kết thúc (VD: 12/2022)' },
+  { name: 'description', placeholder: 'Mô tả công việc', textarea: true }
+]
+
+const educationFields = [
+  { name: 'degree', placeholder: 'Bằng cấp' },
+  { name: 'school', placeholder: 'Trường học' },
+  { name: 'start', placeholder: 'Bắt đầu (VD: 2016)' },
+  { name: 'end', placeholder: 'Kết thúc (VD: 2020)' }
+]
+
+const activityFields = [
+  { name: 'title', placeholder: 'Tên hoạt động' },
+  { name: 'organization', placeholder: 'Tổ chức' },
+  { name: 'start', placeholder: 'Bắt đầu (VD: 01/2021)' },
+  { name: 'end', placeholder: 'Kết thúc (VD: 06/2022)' },
+  { name: 'description', placeholder: 'Mô tả', textarea: true }
+]
+
+const achievementFields = [
+  { name: 'title', placeholder: 'Tên thành tích' },
+  { name: 'description', placeholder: 'Mô tả', textarea: true }
+]
+
+const languageFields = [
+  { name: 'language', placeholder: 'Ngôn ngữ (VD: Tiếng Anh)' },
+  { name: 'level', placeholder: 'Trình độ (VD: Trung cấp)' }
+]
+
+const socialFields = [
+  { name: 'platform', placeholder: 'Mạng xã hội (VD: Facebook)' },
+  { name: 'link', placeholder: 'Link' }
+]
+
+export default function CVForm({ cvData, setCvData, onSubmit }) {
   console.log(cvData)
-  const [newSkill, setNewSkill] = useState('')
+  const [skill, setSkill] = useState('')
 
   const handleChange = (e) => {
     setCvData({ ...cvData, [e.target.name]: e.target.value })
   }
 
-  const handleExpChange = (e, idx) => {
-    const updated = [...cvData.experiences]
+  const handleListChange = (e, idx, key) => {
+    const updated = [...cvData[key]]
     updated[idx][e.target.name] = e.target.value
-    setCvData({ ...cvData, experiences: updated })
+    setCvData({ ...cvData, [key]: updated })
   }
 
-  const addExperience = () => {
-    setCvData({
-      ...cvData,
-      experiences: [...cvData.experiences, { position: '', company: '', start: '', end: '', description: '' }]
-    })
+  const addItem = (key, emptyItem) => {
+    setCvData({ ...cvData, [key]: [...cvData[key], { ...emptyItem }] })
   }
 
-  const handleEduChange = (e, idx) => {
-    const updated = [...cvData.educations]
-    updated[idx][e.target.name] = e.target.value
-    setCvData({ ...cvData, educations: updated })
-  }
-
-  const addEducation = () => {
-    setCvData({
-      ...cvData,
-      educations: [...cvData.educations, { degree: '', school: '', start: '', end: '' }]
-    })
-  }
-
-  const addSkill = () => {
-    if (newSkill.trim()) {
-      setCvData({ ...cvData, skills: [...cvData.skills, newSkill.trim()] })
-      setNewSkill('')
-    }
-  }
-
-  const removeSkill = (idx) => {
-    const updated = [...cvData.skills]
+  const removeItem = (idx, key) => {
+    const updated = [...cvData[key]]
     updated.splice(idx, 1)
-    setCvData({ ...cvData, skills: updated })
-  }
-
-  const removeExperience = (idx) => {
-    const updated = [...cvData.experiences]
-    updated.splice(idx, 1)
-    setCvData({ ...cvData, experiences: updated })
-  }
-
-  const removeEducation = (idx) => {
-    const updated = [...cvData.educations]
-    updated.splice(idx, 1)
-    setCvData({ ...cvData, educations: updated })
+    setCvData({ ...cvData, [key]: updated })
   }
 
   return (
-    <form className="flex flex-col w-full gap-4 p-10 shadow bg-white-bright rounded-xl">
-      <h2 className="mb-2 text-2xl font-bold">Tạo hồ sơ CV</h2>
+    <form style={{ scrollbarGutter: 'stable' }} className="max-h-screen overflow-y-hidden hover:overflow-y-auto flex flex-col w-full gap-4 px-10 pb-10 shadow bg-white-bright rounded-xl">
+      <div className="sticky top-0 z-50 bg-white-bright w-full pt-10 pb-2 border-b border-gray-light">
+        <h2 className="mb-2 text-2xl font-bold">Tạo hồ sơ CV</h2>
+      </div>
 
       {Object.entries(personalFields).map(([key, field]) => (
         <div key={key}>
@@ -105,60 +106,71 @@ export default function CVForm({ cvData, setCvData }) {
         </div>
       ))}
 
-      {/* Kinh nghiệm làm việc */}
-      <div>
-        <label className="block font-medium">Kinh nghiệm làm việc</label>
-        {cvData.experiences.map((exp, i) => (
-          <div key={i} className="relative p-2 my-2 border rounded">
-            <button type="button" className="absolute text-sm font-bold text-red-500 -right-4 top-1"
-              onClick={() => removeExperience(i)}
-            >×</button>
-            <input type="text" name="position" placeholder="Vị trí" className="w-full p-1 mb-1 border rounded"
-              value={exp.position} onChange={(e) => handleExpChange(e, i)} />
-            <input type="text" name="company" placeholder="Công ty" className="w-full p-1 mb-1 border rounded"
-              value={exp.company} onChange={(e) => handleExpChange(e, i)} />
-            <input type="text" name="start" placeholder="Bắt đầu (VD: 01/2020)" className="w-full p-1 mb-1 border rounded"
-              value={exp.start} onChange={(e) => handleExpChange(e, i)} />
-            <input type="text" name="end" placeholder="Kết thúc (VD: 12/2022)" className="w-full p-1 mb-1 border rounded"
-              value={exp.end} onChange={(e) => handleExpChange(e, i)} />
-            <textarea name="description" placeholder="Mô tả công việc" className="w-full p-1 border rounded"
-              value={exp.description} onChange={(e) => handleExpChange(e, i)} />
-          </div>
-        ))}
-        <button type="button" className="text-sm text-blue-600 underline" onClick={addExperience}>
-          + Thêm kinh nghiệm
-        </button>
-      </div>
+      <CVFormSection
+        sectionKey="Kinh nghiệm làm việc"
+        fields={experienceFields}
+        items={cvData.experiences}
+        onChange={(e, idx) => handleListChange(e, idx, 'experiences')}
+        onAdd={() => addItem('experiences', { position: '', company: '', start: '', end: '', description: '' })}
+        onRemove={(idx) => removeItem(idx, 'experiences')}
+      />
 
-      {/* Học vấn */}
-      <div>
-        <label className="block font-medium">Học vấn</label>
-        {cvData.educations.map((edu, idx) => (
-          <div key={idx} className="relative p-2 my-2 border rounded">
-            <button type="button" className="absolute text-sm font-bold text-red-500 top-1 -right-4 hover:text-red-700"
-              onClick={() => removeEducation(idx)}>×</button>
-            <input type="text" name="degree" placeholder="Bằng cấp" className="w-full p-1 mb-1 border rounded"
-              value={edu.degree} onChange={(e) => handleEduChange(e, idx)} />
-            <input type="text" name="school" placeholder="Trường học" className="w-full p-1 mb-1 border rounded"
-              value={edu.school} onChange={(e) => handleEduChange(e, idx)} />
-            <input type="text" name="start" placeholder="Bắt đầu (VD: 2016)" className="w-full p-1 mb-1 border rounded"
-              value={edu.start} onChange={(e) => handleEduChange(e, idx)} />
-            <input type="text" name="end" placeholder="Kết thúc (VD: 2020)" className="w-full p-1 border rounded"
-              value={edu.end} onChange={(e) => handleEduChange(e, idx)} />
-          </div>
-        ))}
-        <button type="button" className="text-sm text-blue-600 underline" onClick={addEducation}>
-          + Thêm học vấn
-        </button>
-      </div>
+      <CVFormSection
+        sectionKey="Hoạt động"
+        fields={activityFields}
+        items={cvData.activities}
+        onChange={(e, idx) => handleListChange(e, idx, 'activities')}
+        onAdd={() => addItem('activities', { title: '', organization: '', start: '', end: '', description: '' })}
+        onRemove={(idx) => removeItem(idx, 'activities')}
+      />
 
-      {/* Kỹ năng */}
+      <CVFormSection
+        sectionKey="Thành tích"
+        fields={achievementFields}
+        items={cvData.achievements}
+        onChange={(e, idx) => handleListChange(e, idx, 'achievements')}
+        onAdd={() => addItem('achievements', { title: '', description: '' })}
+        onRemove={(idx) => removeItem(idx, 'achievements')}
+      />
+
+      <CVFormSection
+        sectionKey="Ngôn ngữ"
+        fields={languageFields}
+        items={cvData.languages}
+        onChange={(e, idx) => handleListChange(e, idx, 'languages')}
+        onAdd={() => addItem('languages', { language: '', level: '' })}
+        onRemove={(idx) => removeItem(idx, 'languages')}
+      />
+
+      <CVFormSection
+        sectionKey="Học vấn"
+        fields={educationFields}
+        items={cvData.educations}
+        onChange={(e, idx) => handleListChange(e, idx, 'educations')}
+        onAdd={() => addItem('educations', { language: '', level: '' })}
+        onRemove={(idx) => removeItem(idx, 'educations')}
+      />
+
+      <CVFormSection
+        sectionKey="mạng xã hội"
+        fields={socialFields}
+        items={cvData.socials}
+        onChange={(e, idx) => handleListChange(e, idx, 'socials')}
+        onAdd={() => addItem('socials', { platform: '', link: '' })}
+        onRemove={(idx) => removeItem(idx, 'socials')}
+      />
+
       <div>
         <label className="block font-medium">Kỹ năng</label>
         <div className="flex gap-2 mt-1 mb-2">
           <input type="text" className="flex-grow p-1 border rounded" placeholder="Nhập kỹ năng"
-            value={newSkill} onChange={(e) => setNewSkill(e.target.value)} />
-          <button type="button" className="px-3 py-1 text-white bg-blue-600 rounded hover:bg-blue-700" onClick={addSkill}>
+            value={skill} onChange={(e) => setSkill(e.target.value)} />
+          <button type="button" className="px-3 py-1 text-white bg-blue-600 rounded hover:bg-blue-700" onClick={() => {
+            if (skill.trim()) {
+              setCvData({ ...cvData, skills: [...cvData.skills, skill.trim()] })
+              setSkill('')
+            }
+          }}>
             Thêm
           </button>
         </div>
@@ -167,11 +179,23 @@ export default function CVForm({ cvData, setCvData }) {
             <span key={idx} className="px-2 py-1 text-sm bg-gray-200 rounded">
               {skill}
               <button type="button" className="ml-1 font-bold text-red-500 hover:text-red-700"
-                onClick={() => removeSkill(idx)}>×</button>
+                onClick={() => {
+                  const updated = [...cvData.skills]
+                  updated.splice(idx, 1)
+                  setCvData({ ...cvData, skills: updated })
+                }}>×</button>
             </span>
           ))}
         </div>
       </div>
+
+      <button
+        type="button"
+        onClick={() => onSubmit(cvData)}
+        className="px-4 py-2 mt-4 text-white bg-blue-600 rounded hover:bg-blue-700"
+      >
+        Tạo CV
+      </button>
     </form>
   )
 }

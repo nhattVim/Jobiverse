@@ -8,14 +8,22 @@ class AccountController {
   // [POST] /register
   async registerAccount(req, res, next) {
     try {
-      const { accountType, email, password, userName } = req.body;
+      const { accountType, email, password, phoneNumber } = req.body;
 
-      const existingAccount = await Account.findOne({ email });
-      if (existingAccount) {
-        return res.status(400).json({ message: 'Email đã được sử dụng' });
+      const trimmedEmail = email?.trim();
+      const trimmedPhone = phoneNumber?.trim();
+
+      if (!trimmedEmail || !trimmedPhone || !password || !accountType) {
+        return res.status(400).json({ message: 'Thiếu thông tin bắt buộc' });
       }
 
-      const account = await Account.create({ accountType, email, password, userName });
+      const emailExists = await Account.findOne({ email: trimmedEmail, deleted: false });
+      if (emailExists) return res.status(400).json({ message: 'Email đã được sử dụng' });
+
+      const phoneExists = await Account.findOne({ phoneNumber: trimmedPhone, deleted: false });
+      if (phoneExists) return res.status(400).json({ message: 'Số điện thoại đã được sử dụng' });
+
+      const account = await Account.create({ accountType, email, password, phoneNumber });
       res.status(201).json({ message: 'Tạo tài khoản thành công', accountID: account._id });
     } catch (err) {
       res.status(500).json({ message: 'Lỗi khi tạo tài khoản', error: err.message });
@@ -25,10 +33,22 @@ class AccountController {
   // [POST] /login
   async loginAccount(req, res, next) {
     try {
-      const { email, password } = req.body;
+      const { emailOrPhone, password } = req.body;
 
-      const account = await Account.findOne({ email, deleted: false });
-      if (!account) return res.status(404).json({ message: 'Email không tồn tại' });
+      if (!emailOrPhone || !password) {
+        return res.status(400).json({ message: 'Thiếu thông tin bắt buộc' });
+      }
+
+      const isEmail = emailOrPhone.includes('@');
+      let account;
+
+      if (isEmail) {
+        account = await Account.findOne({ deleted: false, email: emailOrPhone, });
+      } else {
+        account = await Account.findOne({ deleted: false, phoneNumber: emailOrPhone, });
+      }
+
+      if (!account) return res.status(404).json({ message: 'Email hoặc số điện thoại không tồn tại' });
 
       const isMatch = await bcrypt.compare(password, account.password);
       if (!isMatch) return res.status(401).json({ message: 'Sai mật khẩu' });

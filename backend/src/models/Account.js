@@ -7,16 +7,14 @@ const AccountSchema = new mongoose.Schema({
     enum: ['student', 'employer', 'admin'],
     required: true
   },
-  userName: {
-    type: String,
-    unique: true
-  },
   phoneNumber: {
     type: Number,
-    unique: true
+    unique: true,
+    required: true
   },
   email: {
     type: String,
+    unique: true,
     required: true
   },
   password: {

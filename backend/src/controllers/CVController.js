@@ -1,4 +1,5 @@
 const CV = require('../models/CV');
+const Account = require('../models/Account');
 const Student = require('../models/Student');
 
 class CVController {
@@ -25,7 +26,7 @@ class CVController {
       const accountId = req.account._id;
       const content = req.body;
 
-      const student = await Student.findOne({ account: accountId });
+      const student = await Account.findOne({ _id: accountId });
       if (!student) return res.status(404).json({ message: 'Không tìm thấy sinh viên' });
 
       const existingCV = await CV.findOne({ student: student._id });
@@ -41,7 +42,7 @@ class CVController {
 
       res.status(200).json({ message, cv: updatedCV });
     } catch (err) {
-      res.status(500).json({ message: 'Lỗi khi xử lý CV', error: err.message });
+      res.status(500).json({ message: 'Lỗi khi xử lý CV' + err.message, error: err.message });
     }
   }
 
