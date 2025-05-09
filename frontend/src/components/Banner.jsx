@@ -1,5 +1,5 @@
-import { MagnifyingGlassIcon, MapPinIcon } from "@heroicons/react/24/outline";
-import React from "react";
+import { MagnifyingGlassIcon, MapPinIcon } from '@heroicons/react/24/outline'
+import React from 'react'
 
 const Banner = () => {
   return (
@@ -13,7 +13,7 @@ const Banner = () => {
             <div className="w-full grid grid-cols-[0.5fr_1fr_0.25fr] bg-white rounded-full font-medium p-2">
               <div className="flex justify-center items-center p-5 ">
                 <MapPinIcon className="h-6 w-6 text-black-low" />
-                <select name="address" id="address" className="bg-white flex-1">
+                <select name="address" id="address" className="bg-white flex-1 focus:outline-none">
                   <option value="" disabled selected hidden>
                     Địa điểm
                   </option>
@@ -32,7 +32,7 @@ const Banner = () => {
                 />
               </div>
               <div className="flex justify-end border-l border-l-gray-dark pl-5">
-                <button className="w-full bg-blue text-white rounded-full py-4 px-[30px] font-semibold hover:bg-blue-mid transition-all duration-300 ease-in-out">
+                <button className="w-full bg-blue text-white rounded-full py-4 px-[30px] font-semibold hover:bg-blue-mid transition-all duration-300 ease-in-out cursor-pointer">
                   Tìm kiếm
                 </button>
               </div>
@@ -41,7 +41,7 @@ const Banner = () => {
         </div>
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default Banner;
+export default Banner

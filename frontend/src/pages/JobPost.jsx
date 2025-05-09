@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import apiFetch from '../services/api'
+import BannerText from '../components/BannerText'
 
 const JobPost = () => {
   const navigate = useNavigate()
@@ -47,22 +48,13 @@ const JobPost = () => {
 
   return (
     <div className="min-h-screen bg-white">
+      <BannerText title="Đăng một công việc" caption="Đưa công việc của bạn đến gần hơn với những người phù hợp. Một tin đăng chuẩn chỉnh sẽ giúp bạn tiết kiệm thời gian và nhanh chóng tiếp cận nhân sự chất lượng."/>
 
-      <div className="w-full bg-gradient-blue-right text-white p-6 rounded-r-2xl">
-        <div className="max-w-2xl mx-auto text-center">
-          <h1 className="text-3xl font-bold mb-4">Đăng một công việc</h1>
-          <p className="text-sm">
-            Đưa công việc của bạn đến gần hơn với những người phù hợp. Một tin đăng chuẩn chỉnh sẽ giúp bạn tiết kiệm thời gian và nhanh chóng tiếp cận nhân sự chất lượng.
-          </p>
-        </div>
-      </div>
-
-
-      <div className="max-w-2xl w-full mx-auto mt-6 space-y-6">
+      <div className="max-w-4xl w-full mx-auto py-20 space-y-6">
         {error && <p className="text-sm text-red-600">{error}</p>}
         <form onSubmit={handleSubmit}>
-          <section className="bg-white-low p-6 rounded-lg shadow-md border border-gray-200">
-            <h2 className="text-xl font-bold mb-6">Chi tiết công việc</h2>
+          <section className="bg-white-low p-10 rounded-medium shadow-md border border-gray-200">
+            <h2 className="text-2xl font-bold mb-6">Chi tiết công việc</h2>
             <div className="space-y-4">
 
               {/* Tên công việc */}

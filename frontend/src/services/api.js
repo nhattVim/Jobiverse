@@ -20,3 +20,7 @@ export default async function apiFetch(path, method = 'GET', body = null) {
 
   return data
 }
+
+export async function fetchAllProjects() {
+  return await apiFetch('/projects', 'GET')
+}

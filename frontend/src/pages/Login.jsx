@@ -14,7 +14,10 @@ const Login = () => {
       await apiFetch('/login', 'POST', {
         email,
         password
-      })
+      });
+      
+      const user = await apiFetch('/account/profile', 'GET');
+      localStorage.setItem('user', JSON.stringify(user));
       navigate('/')
     } catch (error) {
       console.error('Đăng nhập thất bại', error)

@@ -78,7 +78,7 @@ export default function CVForm({ cvData, setCvData }) {
   }
 
   return (
-    <form className="flex flex-col w-full max-w-xl gap-4 p-6 shadow bg-white-bright rounded-xl">
+    <form className="flex flex-col w-full gap-4 p-10 shadow bg-white-bright rounded-xl">
       <h2 className="mb-2 text-2xl font-bold">Tạo hồ sơ CV</h2>
 
       {Object.entries(personalFields).map(([key, field]) => (
