@@ -6,15 +6,57 @@ const CVSchema = new mongoose.Schema({
     ref: 'Student',
     required: true
   },
-  title: {
-    type: String,
-    required: true
-  },
+  avatar: String,
+  name: String,
+  birthday: String,
+  gender: String,
+  phone: String,
+  email: String,
+  address: String,
+  website: String,
   summary: String,
-  skills: String,
-  experience: String,
-  education: String,
-  certifications: String,
+  desiredPosition: String,
+
+  experiences: [{
+    position: String,
+    company: String,
+    start: String,
+    end: String,
+    description: String
+  }],
+
+  educations: [{
+    degree: String,
+    school: String,
+    start: String,
+    end: String,
+  }],
+
+  activities: [{
+    title: String,
+    organization: String,
+    start: String,
+    end: String,
+    description: String
+  }],
+
+  achievements: [{
+    title: String,
+    description: String
+  }],
+
+  languages: [{
+    language: String,
+    level: String
+  }],
+
+  socials: [{
+    platform: String,
+    link: String
+  }],
+
+  skills: [String],
+
   files: [{
     fileName: String,
     fileURL: String,
@@ -23,10 +65,11 @@ const CVSchema = new mongoose.Schema({
       default: Date.now
     }
   }],
+
   lastUpdated: {
     type: Date,
     default: Date.now
   }
-}, { timestamps: true })
+}, { timestamps: true });
 
 module.exports = mongoose.model('CV', CVSchema);

@@ -7,7 +7,7 @@ const verifyToken = ([...role]) => {
     // const token = req.headers.authorization?.split(' ')[1]; // lấy từ header
     const token = req.cookies.token; // lấy từ cookie
 
-    if (!token) return res.status(401).json({ message: 'Không có token' });
+    if (!token) return res.status(401).json({ message: 'Chưa đăng nhập, vui lòng đăng nhập' });
 
     try {
       const decoded = jwt.verify(token, JWT_SECRET);
