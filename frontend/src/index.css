@@ -34,6 +34,7 @@ body {
     from {
       transform: translateY(-100%);
     }
+
     to {
       transform: translateY(0);
     }
@@ -41,7 +42,7 @@ body {
 }
 
 @utility container-responsive {
-  @apply max-w-7xl mx-auto lg:px-6 px-4;
+  @apply px-4 mx-auto max-w-7xl lg:px-6;
 }
 
 @utility bg-gradient-blue-right {
@@ -50,4 +51,15 @@ body {
 
 @utility bg-gradient-blue-left {
   background: linear-gradient(90deg, #132145 0%, #2e51ab 100%);
+}
+
+input[type="number"]::-webkit-outer-spin-button,
+input[type="number"]::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+input[type="number"] {
+  appearance: textfield;
+  -moz-appearance: textfield;
 }

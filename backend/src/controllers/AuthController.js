@@ -13,9 +13,12 @@ class AccountController {
       const trimmedEmail = email?.trim();
       const trimmedPhone = phoneNumber?.trim();
 
+      if (!trimmedEmail || !trimmedPhone || !password || !accountType) {
+        return res.status(400).json({ message: 'Thiếu thông tin bắt buộc' });
+      }
+
       const emailExists = await Account.findOne({ email: trimmedEmail, deleted: false });
       if (emailExists) return res.status(400).json({ message: 'Email đã được sử dụng' });
-
 
       const phoneExists = await Account.findOne({ phoneNumber: trimmedPhone, deleted: false });
       if (phoneExists) return res.status(400).json({ message: 'Số điện thoại đã được sử dụng' });
@@ -31,6 +34,11 @@ class AccountController {
   async loginAccount(req, res, next) {
     try {
       const { emailOrPhone, password } = req.body;
+
+      if (!emailOrPhone || !password) {
+        return res.status(400).json({ message: 'Thiếu thông tin bắt buộc' });
+      }
+
       const isEmail = emailOrPhone.includes('@');
       let account;
 

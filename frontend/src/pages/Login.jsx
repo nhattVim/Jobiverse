@@ -5,18 +5,25 @@ import apiFetch from '../services/api'
 
 const Login = () => {
   const navigate = useNavigate()
-  const [email, setEmail] = useState('')
+  const [emailOrPhone, setEmailOrPhone] = useState('')
   const [password, setPassword] = useState('')
+  const [error, setError] = useState('')
 
   const handleLogin = async (e) => {
     e.preventDefault()
+
+    if (!emailOrPhone.trim()) return setError('Email hoặc số điện thoại không được để trống')
+    if (!password.trim()) return setError('Mật khẩu không được để trống')
+
     try {
       await apiFetch('/login', 'POST', {
-        email,
+        emailOrPhone,
         password
       })
+      console.log(emailOrPhone, password)
       navigate('/')
     } catch (error) {
+      setError(error.message || 'Đăng nhập thất bại, vui lòng thử lại.')
       console.error('Đăng nhập thất bại', error)
     }
   }
@@ -34,6 +41,8 @@ const Login = () => {
           </p>
         </div>
 
+        {error && <p className="text-sm text-red-600">{error}</p>}
+
         <form onSubmit={handleLogin} className="w-full">
           <div className="flex flex-col gap-5">
             <div className="flex flex-col gap-1.5">
@@ -41,12 +50,12 @@ const Login = () => {
                 Email
               </label>
               <input
-                type="email"
-                id="email"
-                placeholder="Nhập email của bạn"
+                type="text"
+                id="emailOrPhone"
+                placeholder="Nhập email hoặc số điẹn thoại của bạn"
                 className="w-full h-[50px] px-4 py-2 bg-white-bright rounded-full focus:outline-none focus:ring-2 focus:ring-blue"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
+                value={emailOrPhone}
+                onChange={(e) => setEmailOrPhone(e.target.value)}
               />
             </div>
             <div className="flex flex-col gap-1.5">

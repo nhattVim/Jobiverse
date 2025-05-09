@@ -6,6 +6,7 @@ import apiFetch from '../services/api'
 const Register = () => {
   const navigate = useNavigate()
   const [email, setEmail] = useState('')
+  const [phone, setPhone] = useState('')
   const [password, setPassword] = useState('')
   const [accountType, setAccountType] = useState('')
   const [acceptPolicy, setAcceptPolicy] = useState(false)
@@ -14,25 +15,22 @@ const Register = () => {
   const handleRegister = async (e) => {
     e.preventDefault()
 
-    if (!email || !password || !accountType) {
-      setError('Vui lòng điền đầy đủ thông tin.')
-      return
-    }
-
-    if (!acceptPolicy) {
-      setError('Bạn phải đồng ý với Điều khoản & Điều kiện.')
-      return
-    }
+    if (!email.trim()) return setError('Email không được để trống')
+    if (!phone.trim()) return setError('Số điện thoại không được để trống')
+    if (!password.trim()) return setError('Mật khẩu không được để trống')
+    if (!accountType) return setError('Vui lòng chọn loại tài khoản')
+    if (!acceptPolicy) return setError('Bạn phải đồng ý với Điều khoản & Điều kiện.')
 
     try {
       await apiFetch('/register', 'POST', {
         email,
+        phoneNumber: phone,
         password,
         accountType
       })
       navigate('/login')
     } catch (error) {
-      setError('Đăng ký thất bại, vui lòng thử lại.')
+      setError(error.message || 'Đăng ký thất bại, vui lòng thử lại.')
       console.error('Đăng ký thất bại', error)
     }
   }
@@ -51,7 +49,6 @@ const Register = () => {
           </p>
         </div>
 
-        {/* Hiển thị lỗi nếu có */}
         {error && <p className="text-sm text-red-600">{error}</p>}
 
         <form onSubmit={handleRegister} className="w-full">
@@ -67,6 +64,19 @@ const Register = () => {
                 className="w-full h-[50px] px-4 py-2 bg-white-bright rounded-full focus:outline-none focus:ring-2 focus:ring-blue"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
+              />
+            </div>
+            <div className="flex flex-col gap-1.5">
+              <label htmlFor="Phone" className="font-medium leading-6">
+                Phone
+              </label>
+              <input
+                type="number"
+                id="phone"
+                placeholder="Nhập số điện thoại của bạn"
+                className="w-full h-[50px] px-4 py-2 bg-white-bright rounded-full focus:outline-none focus:ring-2 focus:ring-blue"
+                value={phone}
+                onChange={(e) => setPhone(e.target.value)}
               />
             </div>
 
