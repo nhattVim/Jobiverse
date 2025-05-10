@@ -6,6 +6,7 @@ const CVSchema = new mongoose.Schema({
     ref: 'Student',
     required: true
   },
+  title: String,
   avatar: String,
   name: String,
   birthday: String,

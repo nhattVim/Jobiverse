@@ -1,4 +1,5 @@
-import { useState, React } from 'react'
+import { useState, useEffect } from 'react'
+import { useParams } from 'react-router-dom'
 import CVFormSection from './CVFormSection'
 
 const personalFields = {
@@ -53,8 +54,13 @@ const socialFields = [
 ]
 
 export default function CVForm({ cvData, setCvData, onSubmit }) {
-  console.log(cvData)
+  const { id } = useParams()
   const [skill, setSkill] = useState('')
+  const [mess, setMess] = useState('Tạo mới')
+
+  useEffect(() => {
+    if (id) return setMess('Cập nhật')
+  }, [id])
 
   const handleChange = (e) => {
     setCvData({ ...cvData, [e.target.name]: e.target.value })
@@ -76,9 +82,16 @@ export default function CVForm({ cvData, setCvData, onSubmit }) {
     setCvData({ ...cvData, [key]: updated })
   }
 
+  console.log(cvData)
+
   return (
     <form className="flex flex-col w-full max-w-xl gap-4 p-6 shadow bg-white-bright rounded-xl">
-      <h2 className="mb-2 text-2xl font-bold">Tạo hồ sơ CV</h2>
+      <input
+        type="text" className="mb-2 text-2xl font-bold focus:outline-none focus:ring-0 focus:border-none"
+        placeholder={cvData.title || 'Tên hồ sơ (VD: Fullstack CV)'}
+        value={cvData.title}
+        onChange={(e) => setCvData({ ...cvData, title: e.target.value })}
+      />
 
       {Object.entries(personalFields).map(([key, field]) => (
         <div key={key}>
@@ -192,7 +205,7 @@ export default function CVForm({ cvData, setCvData, onSubmit }) {
         onClick={() => onSubmit(cvData)}
         className="px-4 py-2 mt-4 text-white bg-blue-600 rounded hover:bg-blue-700"
       >
-        Tạo CV
+        {mess} CV
       </button>
     </form>
   )

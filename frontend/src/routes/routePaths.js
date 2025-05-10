@@ -4,5 +4,7 @@ export const ROUTES = {
   JOB_POST: '/job-post',
   REGISTER: '/register',
   LOGIN: '/login',
-  CREATE_CV: '/create-cv'
+  CREATE_CV: '/cv',
+  UPDATE_CV: '/cv/:id',
+  CV_LIST: '/cv-list'
 }

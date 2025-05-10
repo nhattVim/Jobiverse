@@ -4,8 +4,10 @@ const CVController = require('../controllers/CVController');
 const verifyToken = require('../middlewares/verifyToken');
 
 router.use(verifyToken(["student"]));
-router.get('/', CVController.getStudentCV);
-router.put('/', CVController.updateStudentCV);
-router.delete('/', CVController.deleteStudentCV);
+router.get('/', CVController.getAllStudentCV);
+router.get('/:id', CVController.getStudentCV);
+router.post('/', CVController.createStudentCV);
+router.put('/:id', CVController.updateStudentCV);
+router.delete('/:id', CVController.deleteStudentCV);
 
 module.exports = router;

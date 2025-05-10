@@ -7,7 +7,8 @@ import MainLayout from '../layouts/MainLayout'
 import JobList from '../pages/JobList'
 import JobPost from '../pages/JobPost'
 import UploadCV from '../pages/UploadCV'
-import CreateCV from '../pages/CreateCV'
+import CVEditor from '../pages/CVEditor'
+import CVList from '../pages/CVList'
 
 export const router = createBrowserRouter([
   {
@@ -31,8 +32,16 @@ export const router = createBrowserRouter([
         element: <UploadCV />
       },
       {
+        path: ROUTES.CV_LIST,
+        element: <CVList />
+      },
+      {
         path: ROUTES.CREATE_CV,
-        element: <CreateCV />
+        element: <CVEditor />
+      },
+      {
+        path: ROUTES.UPDATE_CV,
+        element: <CVEditor />
       }
     ]
   },
@@ -48,7 +57,7 @@ export const router = createBrowserRouter([
   },
 
   {
-    path: ROUTES.CREATE_CV,
-    element: <CreateCV />
+    path: ROUTES.CV_LIST,
+    element: <CVList />
   }
 ])
