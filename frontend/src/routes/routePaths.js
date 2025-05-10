@@ -10,5 +10,5 @@ export const ROUTES = {
   UPLOAD_CV: '/upload-cv',
   CV_MANAGEMENT: '/cv-management',
   SAVED_JOB: '/saved-job',
-  SET_INFORMATION: '/set-infomation',
+  SET_INFORMATION: '/set-infomation'
 }

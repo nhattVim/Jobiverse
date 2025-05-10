@@ -1,50 +1,50 @@
-import React, { useEffect, useState } from "react";
-import Logo2 from "../assets/Logo2.svg";
-import { Link, useNavigate } from "react-router-dom";
+import React, { useEffect, useState } from 'react'
+import Logo2 from '../assets/Logo2.svg'
+import { Link, useNavigate } from 'react-router-dom'
 import {
   BellIcon,
   ChevronDownIcon,
-  UserCircleIcon,
-} from "@heroicons/react/24/solid";
-import ButtonArrowOne from "../shared/ButtonArrowOne";
-import { ROUTES } from "../routes/routePaths";
+  UserCircleIcon
+} from '@heroicons/react/24/solid'
+import ButtonArrowOne from '../shared/ButtonArrowOne'
+import { ROUTES } from '../routes/routePaths'
 
 const NavBar = () => {
-  const navigate = useNavigate();
-  const [isTopOfPage, setIsTopOfPage] = useState(true);
-  const [hoveredMenu, setHoveredMenu] = useState(null); // State để quản lý menu đang được hover
-  const [isLoggedIn, setIsLoggedIn] = useState(false); // Trạng thái đăng nhập
-  const [userInfo, setUserInfo] = useState(null); // Thông tin người dùng
+  const navigate = useNavigate()
+  const [isTopOfPage, setIsTopOfPage] = useState(true)
+  const [hoveredMenu, setHoveredMenu] = useState(null) // State để quản lý menu đang được hover
+  const [isLoggedIn, setIsLoggedIn] = useState(false) // Trạng thái đăng nhập
+  const [userInfo, setUserInfo] = useState(null) // Thông tin người dùng
 
   useEffect(() => {
     const handleScroll = () => {
       if (window.scrollY === 0) {
-        setIsTopOfPage(true);
+        setIsTopOfPage(true)
       }
-      if (window.scrollY > 100) setIsTopOfPage(false);
-    };
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
+      if (window.scrollY > 100) setIsTopOfPage(false)
+    }
+    window.addEventListener('scroll', handleScroll)
+    return () => window.removeEventListener('scroll', handleScroll)
+  }, [])
 
   useEffect(() => {
-    const user = JSON.parse(localStorage.getItem("user")); // Lấy thông tin người dùng từ localStorage
+    const user = JSON.parse(localStorage.getItem('user')) // Lấy thông tin người dùng từ localStorage
     if (user) {
-      setIsLoggedIn(true);
-      setUserInfo(user);
+      setIsLoggedIn(true)
+      setUserInfo(user)
     }
-  }, []);
+  }, [])
 
   const handleLogout = () => {
-    localStorage.removeItem("user"); // Xóa thông tin người dùng khỏi localStorage
-    setIsLoggedIn(false);
-    setUserInfo(null);
-    navigate(ROUTES.LOGIN);
-  };
+    localStorage.removeItem('user') // Xóa thông tin người dùng khỏi localStorage
+    setIsLoggedIn(false)
+    setUserInfo(null)
+    navigate(ROUTES.LOGIN)
+  }
 
   const navbarStyle = isTopOfPage
-    ? "py-5"
-    : "fixed top-0 left-0 z-50 py-2 drop-shadow animate-slideDown";
+    ? 'py-5'
+    : 'fixed top-0 left-0 z-50 py-2 drop-shadow animate-slideDown'
 
   return (
     <div
@@ -68,7 +68,7 @@ const NavBar = () => {
               </li>
               <li
                 className="px-5 py-2.5 relative group"
-                onMouseEnter={() => setHoveredMenu("jobList")}
+                onMouseEnter={() => setHoveredMenu('jobList')}
                 onMouseLeave={() => setHoveredMenu(null)}
               >
                 <Link
@@ -78,7 +78,7 @@ const NavBar = () => {
                   Việc làm
                   <ChevronDownIcon className="w-4 ml-1" />
                 </Link>
-                {hoveredMenu === "jobList" && (
+                {hoveredMenu === 'jobList' && (
                   <div className="w-[500px] absolute top-full -left-1/2 z-50">
                     <ul className="grid grid-cols-2 p-5 mt-6 transition-all duration-500 shadow-md bg-white-bright rounded-small">
                       <li className="px-4 py-2 transition-colors duration-300 hover:text-blue">
@@ -99,7 +99,7 @@ const NavBar = () => {
               </li>
               <li
                 className="px-5 py-2.5 relative group"
-                onMouseEnter={() => setHoveredMenu("createCV")}
+                onMouseEnter={() => setHoveredMenu('createCV')}
                 onMouseLeave={() => setHoveredMenu(null)}
               >
                 <Link
@@ -109,7 +109,7 @@ const NavBar = () => {
                   Tạo CV
                   <ChevronDownIcon className="w-4 ml-1" />
                 </Link>
-                {hoveredMenu === "createCV" && (
+                {hoveredMenu === 'createCV' && (
                   <div className="w-[300px] absolute top-full -left-1/2 z-50">
                     <ul className="grid grid-cols-2 p-5 mt-6 transition-all duration-500 shadow-md bg-white-bright rounded-small">
                       <li className="px-4 py-2 transition-colors duration-300 hover:text-blue">
@@ -148,19 +148,19 @@ const NavBar = () => {
                 </div>
                 <div
                   className="relative flex items-center gap-2 p-2 h-[46px] rounded-full bg-white-low cursor-pointer"
-                  onMouseEnter={() => setHoveredMenu("account")}
+                  onMouseEnter={() => setHoveredMenu('account')}
                   onMouseLeave={() => setHoveredMenu(null)}
                 >
                   <UserCircleIcon className="w-6 h-6" />
                   <ChevronDownIcon className="w-4 h-4" />
-                  {hoveredMenu === "account" && (
+                  {hoveredMenu === 'account' && (
                     <div className="w-[300px] absolute top-full right-0 z-50">
                       <ul className="grid grid-cols-1 p-5 mt-6 transition-all duration-500 shadow-md bg-white-bright rounded-small">
                         <li className="flex items-center gap-5 px-4 pt-2 pb-4 mb-2 border-b border-gray-light">
                           <img
                             src={
                               userInfo?.avatar ||
-                              "https://cdn2.fptshop.com.vn/small/avatar_trang_1_cd729c335b.jpg"
+                              'https://cdn2.fptshop.com.vn/small/avatar_trang_1_cd729c335b.jpg'
                             }
                             alt="avatar"
                             className="w-10 h-10 rounded-full"
@@ -224,7 +224,7 @@ const NavBar = () => {
         </div>
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default NavBar;
+export default NavBar
