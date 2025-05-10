@@ -24,10 +24,8 @@ const JobList = () => {
     { id: 8, name: 'Trên 5 năm' }
   ]
   const jobTypeItem = [
-    { id: 1, name: 'Toàn thời gian' },
-    { id: 2, name: 'Bán thời gian' },
-    { id: 3, name: 'Thực tập' },
-    { id: 4, name: 'Khác' }
+    { id: 1, name: 'Online' },
+    { id: 2, name: 'Offline' }
   ]
 
   const jobItem = {
@@ -70,8 +68,8 @@ const JobList = () => {
                     </h6>
                   </div>
                   <div className="flex flex-col gap-4">
-                    <p>Theo danh mục nghề</p>
-                    <div className="grid grid-cols-2 gap-2.5">
+                    <p>Theo danh mục nghành</p>
+                    <div className="grid grid-cols-2 gap-2.5 place-items-start">
                       {categoriesItem.map((item, index) => (
                         <div
                           key={index}

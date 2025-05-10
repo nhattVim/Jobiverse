@@ -28,3 +28,7 @@ export default async function apiFetch(path, method = 'GET', body = null) {
     throw error
   }
 }
+
+export async function fetchAllProjects() {
+  return await apiFetch('/projects', 'GET')
+}

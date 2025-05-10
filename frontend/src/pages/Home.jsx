@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import HeroImg from '../assets/HeroImg.jpg'
 import Type1 from '../assets/Type1.jpg'
 import Type2 from '../assets/Type2.jpg'
@@ -14,6 +14,7 @@ import {
 import JobCard from '../components/JobCard'
 import ButtonArrowOne from '../shared/ButtonArrowOne'
 import { ROUTES } from '../routes/routePaths'
+import { fetchAllProjects } from '../services/api'
 
 const Home = () => {
   const jobCard = {
@@ -26,6 +27,7 @@ const Home = () => {
   }
   const jobCards = Array(9).fill(jobCard)
   const [currentIndex, setCurrentIndex] = useState(0)
+  const [projects, setProjects] = useState([])
 
   const goToPrevious = () => {
     const isFirstSlide = currentIndex === 0
@@ -36,6 +38,19 @@ const Home = () => {
     const isLastSlide = currentIndex === jobCards.length - 3
     setCurrentIndex(isLastSlide ? 0 : currentIndex + 1)
   }
+
+  useEffect(() => {
+    const loadProjects = async () => {
+      try {
+        const data = await fetchAllProjects()
+        setProjects(data)
+      } catch (error) {
+        console.error('Error fetching projects:', error.message)
+      }
+    }
+
+    loadProjects()
+  }, [])
 
   return (
     <>
@@ -68,7 +83,7 @@ const Home = () => {
                   <select
                     name="address"
                     id="address"
-                    className="bg-black-low flex-1"
+                    className="bg-black-low flex-1 focus:outline-none cursor-pointer"
                   >
                     <option value="" disabled selected hidden>
                       Địa điểm
@@ -101,10 +116,10 @@ const Home = () => {
             <h2 className="text-5xl font-semibold leading-[62.4px]">
               Khám phá việc làm theo loại
             </h2>
-            <Link className="flex items-center justify-center bg-yellow text-black rounded-full py-2 pl-3 pr-2 font-semibold gap-2.5">
+            <Link to={ROUTES.JOB_LIST} className="group flex items-center justify-center bg-yellow text-black rounded-full py-2 pl-3 pr-2 font-semibold gap-2.5 hover:bg-blue hover:text-white transition-all duration-500 ease-in-out">
               Xem tất cả
-              <div className="bg-black rounded-full flex items-center justify-center w-[30px] h-[30px]">
-                <ArrowUpRightIcon className="w-5 h-5 text-white font-semibold" />
+              <div className="bg-black rounded-full flex items-center justify-center w-[30px] h-[30px] group-hover:bg-white transition-all duration-500 ease-in-out">
+                <ArrowUpRightIcon className="w-5 h-5 text-white font-semibold group-hover:text-blue transition-all duration-500 ease-in-out" />
               </div>
             </Link>
           </div>
@@ -120,7 +135,7 @@ const Home = () => {
               </div>
               <div className="flex justify-between items-center w-[75%] absolute z-40">
                 <h3 className="text-[28px] font-semibold text-white">
-                  Bán thời gian
+                  Online
                 </h3>
                 <div className="bg-yellow rounded-full flex items-center justify-center w-[40px] h-[40px]">
                   <ArrowUpRightIcon className="w-6 h-6 text-black font-semibold" />
@@ -138,7 +153,7 @@ const Home = () => {
               </div>
               <div className="flex justify-between items-center w-[75%] absolute z-40">
                 <h3 className="text-[28px] font-semibold text-white">
-                  Toàn thời gian
+                  Offline
                 </h3>
                 <div className="bg-yellow rounded-full flex items-center justify-center w-[40px] h-[40px]">
                   <ArrowUpRightIcon className="w-6 h-6 text-black font-semibold" />
@@ -170,12 +185,12 @@ const Home = () => {
             </div>
             <div className="w-full">
               <div className="whitespace-nowrap h-full overflow-hidden">
-                {jobCards.map((job, index) => (
+                {projects.map((job, index) => (
                   <JobCard
                     key={index}
-                    jobTitle={job.jobTitle}
-                    imgCompany={job.imgCompany}
-                    jobType={job.jobType}
+                    jobTitle={job.title}
+                    imgCompany={'https://cdn.prod.website-files.com/66b757e42412d2f5e0906c5f/66bf2b9a2ff5d8f19427f6db_job-07.svg'}
+                    jobType={job.content}
                     salary={job.salary}
                     location={job.location}
                     currentIndex={currentIndex}

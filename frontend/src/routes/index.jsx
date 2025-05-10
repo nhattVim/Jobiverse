@@ -28,7 +28,7 @@ export const router = createBrowserRouter([
         element: <JobPost />
       },
       {
-        path: '/upload-cv',
+        path: ROUTES.UPLOAD_CV,
         element: <UploadCV />
       },
       {

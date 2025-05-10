@@ -53,6 +53,11 @@ body {
   background: linear-gradient(90deg, #132145 0%, #2e51ab 100%);
 }
 
+@utility scrollbar-gutter-stable {
+  scrollbar-gutter: stable;
+}
+
+
 input[type="number"]::-webkit-outer-spin-button,
 input[type="number"]::-webkit-inner-spin-button {
   -webkit-appearance: none;
