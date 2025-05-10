@@ -12,6 +12,7 @@ router.put('/my/:id/status', projectController.updateProjectStatus);
 router.delete('/my/:id', projectController.deleteProject);
 
 router.get('/search', verifyToken(["student"]), projectController.searchProjectsByMajorName);
+router.get('/:id', projectController.recommendProject);
 
 router.post('/:projectId/apply', verifyToken(["student"]), projectController.applyToProject);
 router.post('/:projectId/respond/:studentId', verifyToken([]), projectController.respondToApplication);

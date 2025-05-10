@@ -206,9 +206,9 @@ class ProjectController {
       const majorName = req.query.major;
       const specializationName = req.query.specialization;
 
-      // if (!majorName) {
-      //   return res.status(400).json({ message: 'Thiếu tên ngành (major)' });
-      // }
+      if (!majorName) {
+        return res.status(400).json({ message: 'Thiếu tên ngành (major)' });
+      }
 
       const majorDoc = await Major.findOne({ name: new RegExp(majorName, 'i') });
       if (!majorDoc) {
@@ -241,6 +241,35 @@ class ProjectController {
       res.status(500).json({ message: 'Lỗi server', error: err.message });
     }
   }
+
+  async recommendProject(req, res, next) {
+    try {
+      const projectId = req.params.id;
+      const project = await Project.findById(projectId);
+      if (!project) {
+        return res.status(404).json({ message: 'Không tồn tại project' });
+      }
+      const majorId = project.major._id;
+      const specializationId = project.specialization._id;
+      const projects = await Project.find({
+        _id: { $ne: projectId },  // loại trừ chính project này
+        major: majorId,
+        specialization: specializationId,
+      })
+        .select('-__v')
+        .populate('major', '-__v')
+        .populate('description', '-__v');
+        if (!projects || projects.length === 0) {
+          return res.status(404).json({ message: 'Không tìm thấy project tương tự' });
+        }
+    
+        res.status(200).json({ projects });
+    }
+    catch (err) {
+      res.status(500).json({ message: 'Lỗi server', error: err.message });
+    }
+  }
+
 
 }
 
