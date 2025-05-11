@@ -44,7 +44,7 @@ const NavBar = () => {
 
   const navbarStyle = isTopOfPage
     ? 'py-5'
-    : 'fixed top-0 left-0 z-50 py-2 drop-shadow animate-slideDown'
+    : 'fixed top-0 left-0 z-[999] py-2 drop-shadow animate-slideDown'
 
   return (
     <div
@@ -76,7 +76,7 @@ const NavBar = () => {
                   className="flex items-center transition-colors duration-300 group-hover:text-blue"
                 >
                   Việc làm
-                  <ChevronDownIcon className="w-4 ml-1" />
+                  <ChevronDownIcon className="w-4 ml-1 group-hover:rotate-180 transition-transform duration-300" />
                 </Link>
                 {hoveredMenu === 'jobList' && (
                   <div className="w-[500px] absolute top-full -left-1/2 z-50">
@@ -107,7 +107,7 @@ const NavBar = () => {
                   className="flex items-center transition-colors duration-300 cursor-pointer group-hover:text-blue"
                 >
                   Tạo CV
-                  <ChevronDownIcon className="w-4 ml-1" />
+                  <ChevronDownIcon className="w-4 ml-1 group-hover:rotate-180 transition-transform duration-300" />
                 </Link>
                 {hoveredMenu === 'createCV' && (
                   <div className="w-[300px] absolute top-full -left-1/2 z-50">

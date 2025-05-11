@@ -3,6 +3,7 @@ import { useNavigate, useParams } from 'react-router-dom'
 import CVForm from '../components/CVForm'
 import CVPreview from '../components/CVPreview'
 import apiFetch from '../services/api'
+import BannerText from '../components/BannerText'
 
 export default function CVEditor() {
   const { id } = useParams()
@@ -67,13 +68,28 @@ export default function CVEditor() {
   if (loading) return <p className="p-4">Đang tải CV...</p>
 
   return (
-    <div className="min-h-screen bg-white font-sans text-[#1c1c1c] flex flex-col md:flex-row py-2 pr-2 h-auto">
-      <div className="flex items-start justify-center w-full h-auto p-6 md:w-1/2">
-        <CVForm cvData={cvData} setCvData={setCvData} onSubmit={handleSubmit} />
+    <>
+      <BannerText
+        title="Tạo CV"
+        caption="Cùng Jobiverse biến chiếc CV đơn điệu trở thành sân khấu biểu diễn độc nhất của riêng bạn với những mẫu CV từ đơn giản, chuyên nghiệp tới sáng tạo nhất được thiết kế riêng cho từng ngành nghề."
+      />
+
+      <div className="w-full py-20">
+        <div className="container-responsive">
+          <div className="min-h-screen bg-white font-sans text-[#1c1c1c] flex flex-col md:flex-row h-auto gap-10">
+            <div className="sticky top-[130px] flex items-start justify-center w-full h-auto md:w-1/2 max-h-screen overflow-y-hidden">
+              <CVForm
+                cvData={cvData}
+                setCvData={setCvData}
+                onSubmit={handleSubmit}
+              />
+            </div>
+            <div className="md:w-1/2 w-full flex justify-center items-start min-h-[92vh] overflow-y-auto h-auto">
+              <CVPreview cvData={cvData} />
+            </div>
+          </div>
+        </div>
       </div>
-      <div className="md:w-1/2 w-full p-4 flex justify-center items-start min-h-[92vh] overflow-y-auto h-auto">
-        <CVPreview cvData={cvData} />
-      </div>
-    </div>
+    </>
   )
 }

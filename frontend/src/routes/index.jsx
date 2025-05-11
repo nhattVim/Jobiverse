@@ -9,6 +9,9 @@ import JobPost from '../pages/JobPost'
 import UploadCV from '../pages/UploadCV'
 import CVEditor from '../pages/CVEditor'
 import CVList from '../pages/CVList'
+import CVManagement from '../pages/CVManagement'
+import SavedJob from '../pages/SavedJob'
+import SetInfomation from '../pages/SetInfomation'
 
 export const router = createBrowserRouter([
   {
@@ -19,6 +22,7 @@ export const router = createBrowserRouter([
         index: true,
         element: <Home />
       },
+      //JOB ROUTES
       {
         path: ROUTES.JOB_LIST,
         element: <JobList />
@@ -27,6 +31,11 @@ export const router = createBrowserRouter([
         path: ROUTES.JOB_POST,
         element: <JobPost />
       },
+      {
+        path: ROUTES.SAVED_JOB,
+        element: <SavedJob />
+      },
+      // CV ROUTES
       {
         path: ROUTES.UPLOAD_CV,
         element: <UploadCV />
@@ -40,12 +49,22 @@ export const router = createBrowserRouter([
         element: <CVEditor />
       },
       {
+        path: ROUTES.CV_MANAGEMENT,
+        element: <CVManagement />
+      },
+      {
         path: ROUTES.UPDATE_CV,
         element: <CVEditor />
+      },
+      // INFORMATION ROUTES
+      {
+        path: ROUTES.SET_INFORMATION,
+        element: <SetInfomation />
       }
     ]
   },
 
+  // AUTH ROUTES
   {
     path: ROUTES.LOGIN,
     element: <Login />
@@ -54,10 +73,5 @@ export const router = createBrowserRouter([
   {
     path: ROUTES.REGISTER,
     element: <Register />
-  },
-
-  {
-    path: ROUTES.CV_LIST,
-    element: <CVList />
   }
 ])

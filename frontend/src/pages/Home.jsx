@@ -35,7 +35,7 @@ const Home = () => {
   }
 
   const goToNext = () => {
-    const isLastSlide = currentIndex === jobCards.length - 3
+    const isLastSlide = currentIndex === projects.length - 3
     setCurrentIndex(isLastSlide ? 0 : currentIndex + 1)
   }
 
