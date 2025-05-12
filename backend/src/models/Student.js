@@ -1,9 +1,9 @@
-const mongoose = require("mongoose");
+const mongoose = require('mongoose')
 
 const StudentSchema = new mongoose.Schema({
   account: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: "Account",
+    ref: 'Account',
     required: true,
     unique: true
   },
@@ -18,18 +18,18 @@ const StudentSchema = new mongoose.Schema({
   },
   major: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: "Major",
+    ref: 'Major'
   },
   specialization: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: "Specialization",
+    ref: 'Specialization'
   },
   interests: [{ type: String }],
   university: {
     type: String,
     required: true
   },
-  avatarURL: String,
+  avatarURL: String
 })
 
-module.exports = mongoose.model('Student', StudentSchema);
+module.exports = mongoose.model('Student', StudentSchema)

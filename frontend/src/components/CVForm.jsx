@@ -83,7 +83,7 @@ export default function CVForm({ cvData, setCvData, onSubmit }) {
   }
 
   return (
-    <form style={{ scrollbarGutter: 'stable' }} className="flex flex-col w-full max-h-screen gap-4 px-10 pb-10 overflow-y-hidden shadow hover:overflow-y-auto bg-white-bright rounded-xl">
+    <form style={{ scrollbarGutter: 'stable' }} className="flex flex-col w-full max-h-screen gap-4 px-10 pb-10 overflow-y-hidden border shadow hover:overflow-y-auto bg-white-bright border-gray-light">
       <div className="sticky top-0 z-50 w-full pt-10 pb-2 border-b bg-white-bright border-gray-light">
         <input
           type="text" className="mb-2 text-2xl font-bold focus:outline-none focus:ring-0 focus:border-none"

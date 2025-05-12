@@ -1,4 +1,4 @@
-const mongoose = require("mongoose");
+const mongoose = require('mongoose')
 
 const SpecializationSchema = new mongoose.Schema({
   name: {
@@ -12,9 +12,9 @@ const SpecializationSchema = new mongoose.Schema({
   },
   major: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: "Major",
+    ref: 'Major',
     required: true
-  },
+  }
 })
 
-module.exports = mongoose.model('Specialization', SpecializationSchema);
+module.exports = mongoose.model('Specialization', SpecializationSchema)

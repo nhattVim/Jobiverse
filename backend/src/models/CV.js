@@ -1,4 +1,4 @@
-const mongoose = require("mongoose");
+const mongoose = require('mongoose')
 
 const CVSchema = new mongoose.Schema({
   student: {
@@ -30,7 +30,7 @@ const CVSchema = new mongoose.Schema({
     degree: String,
     school: String,
     start: String,
-    end: String,
+    end: String
   }],
 
   activities: [{
@@ -71,6 +71,6 @@ const CVSchema = new mongoose.Schema({
     type: Date,
     default: Date.now
   }
-}, { timestamps: true });
+}, { timestamps: true })
 
-module.exports = mongoose.model('CV', CVSchema);
+module.exports = mongoose.model('CV', CVSchema)
