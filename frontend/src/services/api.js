@@ -4,31 +4,33 @@ export default async function apiFetch(path, method = 'GET', body = null) {
   const options = {
     method,
     headers: { 'Content-Type': 'application/json' },
-    credentials: 'include'
+    credentials: 'include',
+    ...(body && { body: JSON.stringify(body) })
   }
-
-  if (body) options.body = JSON.stringify(body)
 
   try {
     const res = await fetch(`${API_BASE}${path}`, options)
     const contentType = res.headers.get('Content-Type')
 
-    let data
-    if (contentType && contentType.includes('application/json')) {
-      data = await res.json()
-    } else {
-      data = await res.text()
+    if (!res.ok) {
+      const errorData = contentType && contentType.includes('application/json')
+        ? await res.json()
+        : await res.text()
+      throw new Error(errorData.message || 'Lỗi mạng')
     }
 
-    if (!res.ok) throw new Error(data.message || 'Lỗi mạng')
+    if (contentType.includes('application/json')) {
+      return await res.json()
+    }
 
-    return data
+    if (contentType.includes('application/pdf') || contentType.includes('application/octet-stream')) {
+      const blob = await res.blob()
+      return blob
+    }
+
+    return await res.text()
   } catch (error) {
     console.error(`API error [${method} ${path}]:`, error)
     throw error
   }
-}
-
-export async function fetchAllProjects() {
-  return await apiFetch('/projects', 'GET')
 }

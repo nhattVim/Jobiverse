@@ -14,7 +14,7 @@ import {
 import JobCard from '../components/JobCard'
 import ButtonArrowOne from '../shared/ButtonArrowOne'
 import { ROUTES } from '../routes/routePaths'
-import { fetchAllProjects } from '../services/api'
+import apiFetch from '../services/api'
 
 const Home = () => {
   const jobCard = {
@@ -42,7 +42,7 @@ const Home = () => {
   useEffect(() => {
     const loadProjects = async () => {
       try {
-        const data = await fetchAllProjects()
+        const data = await apiFetch('/projects', 'GET')
         setProjects(data)
       } catch (error) {
         console.error('Error fetching projects:', error.message)
@@ -78,12 +78,12 @@ const Home = () => {
               </h3>
 
               <div className="grid grid-cols-[0.75fr_1fr] bg-black-low rounded-medium font-medium">
-                <div className="flex justify-center items-center p-5 ">
-                  <MapPinIcon className="h-6 w-6 text-yellow" />
+                <div className="flex items-center justify-center p-5 ">
+                  <MapPinIcon className="w-6 h-6 text-yellow" />
                   <select
                     name="address"
                     id="address"
-                    className="bg-black-low flex-1 focus:outline-none cursor-pointer"
+                    className="flex-1 cursor-pointer bg-black-low focus:outline-none"
                   >
                     <option value="" disabled selected hidden>
                       Địa điểm
@@ -94,13 +94,13 @@ const Home = () => {
                   </select>
                 </div>
 
-                <div className="flex justify-center items-center p-5 gap-2 border-l border-l-gray-dark">
-                  <MagnifyingGlassIcon className="h-6 w-6 text-yellow" />
+                <div className="flex items-center justify-center gap-2 p-5 border-l border-l-gray-dark">
+                  <MagnifyingGlassIcon className="w-6 h-6 text-yellow" />
                   <input
                     name="search"
                     id="search"
                     placeholder="Tìm kiếm việc làm"
-                    className="flex-1 outline-none border-none"
+                    className="flex-1 border-none outline-none"
                   />
                 </div>
               </div>
@@ -111,7 +111,7 @@ const Home = () => {
 
       {/* Categories Section */}
       <div className="container-responsive">
-        <div className="flex justify-between items-center py-30">
+        <div className="flex items-center justify-between py-30">
           <div className="flex flex-col gap-10 items-start h-[300px]">
             <h2 className="text-5xl font-semibold leading-[62.4px]">
               Khám phá việc làm theo loại
@@ -119,7 +119,7 @@ const Home = () => {
             <Link to={ROUTES.JOB_LIST} className="group flex items-center justify-center bg-yellow text-black rounded-full py-2 pl-3 pr-2 font-semibold gap-2.5 hover:bg-blue hover:text-white transition-all duration-500 ease-in-out">
               Xem tất cả
               <div className="bg-black rounded-full flex items-center justify-center w-[30px] h-[30px] group-hover:bg-white transition-all duration-500 ease-in-out">
-                <ArrowUpRightIcon className="w-5 h-5 text-white font-semibold group-hover:text-blue transition-all duration-500 ease-in-out" />
+                <ArrowUpRightIcon className="w-5 h-5 font-semibold text-white transition-all duration-500 ease-in-out group-hover:text-blue" />
               </div>
             </Link>
           </div>
@@ -138,7 +138,7 @@ const Home = () => {
                   Online
                 </h3>
                 <div className="bg-yellow rounded-full flex items-center justify-center w-[40px] h-[40px]">
-                  <ArrowUpRightIcon className="w-6 h-6 text-black font-semibold" />
+                  <ArrowUpRightIcon className="w-6 h-6 font-semibold text-black" />
                 </div>
               </div>
             </div>
@@ -156,7 +156,7 @@ const Home = () => {
                   Offline
                 </h3>
                 <div className="bg-yellow rounded-full flex items-center justify-center w-[40px] h-[40px]">
-                  <ArrowUpRightIcon className="w-6 h-6 text-black font-semibold" />
+                  <ArrowUpRightIcon className="w-6 h-6 font-semibold text-black" />
                 </div>
               </div>
             </div>
@@ -165,7 +165,7 @@ const Home = () => {
       </div>
 
       {/* Job List Section */}
-      <div className="bg-white-low w-full py-30">
+      <div className="w-full bg-white-low py-30">
         <div className="container-responsive">
           <div className="flex flex-col items-start">
             <div className="flex justify-between items-start w-full mb-[60px]">
@@ -184,7 +184,7 @@ const Home = () => {
               </div>
             </div>
             <div className="w-full">
-              <div className="whitespace-nowrap h-full overflow-hidden">
+              <div className="h-full overflow-hidden whitespace-nowrap">
                 {projects.map((job, index) => (
                   <JobCard
                     key={index}
@@ -217,7 +217,7 @@ const Home = () => {
                     Nâng cấp Profile
                   </h6>
 
-                  <p className="text-sm text-gray-dark mb-5">
+                  <p className="mb-5 text-sm text-gray-dark">
                     Profile là bản hồ sơ năng lực giúp bạn xây dựng thương hiệu
                     cá nhân, thể hiện thế mạnh của bản thân thông qua việc đính
                     kèm học vấn, kinh nghiệm, dự án, kỹ năng,... của mình
@@ -238,7 +238,7 @@ const Home = () => {
                     CV Builder 2.0
                   </h6>
 
-                  <p className="text-sm text-gray-dark mb-5">
+                  <p className="mb-5 text-sm text-gray-dark">
                     Một chiếc CV chuyên nghiệp sẽ giúp bạn gây ấn tượng với nhà
                     tuyển dụng và tăng khả năng vượt qua vòng lọc CV.
                   </p>
@@ -264,11 +264,11 @@ const Home = () => {
               <img
                 src="https://cdn.prod.website-files.com/66b757e42412d2f5e0906c3d/66beec0fa4c957f1ce611980_about-01.avif"
                 alt="stepimg"
-                className="rounded-medium object-cover w-full h-full"
+                className="object-cover w-full h-full rounded-medium"
               />
             </div>
 
-            <div className="flex flex-col justify-between items-start w-full h-full">
+            <div className="flex flex-col items-start justify-between w-full h-full">
               <div className="flex flex-col items-start gap-10">
                 <p className="text-[24px] leading-9">
                   Nền tảng của chúng tôi cung cấp trải nghiệm liền mạch cho cả
@@ -281,7 +281,7 @@ const Home = () => {
               </div>
 
               <div className="self-stretch relative inline-flex justify-start items-center gap-[50px]">
-                <div className="flex-1 self-stretch inline-flex flex-col justify-start items-start gap-7">
+                <div className="inline-flex flex-col items-start self-stretch justify-start flex-1 gap-7">
                   <div className="w-12 h-12 p-2.5 bg-white-low rounded-[50px] flex flex-col justify-between items-center">
                     <div className="justify-start text-lg font-semibold ">
                       01
@@ -291,14 +291,14 @@ const Home = () => {
                     <div className="self-stretch justify-start text-xl font-bold leading-7">
                       Tạo hồ sơ của bạn
                     </div>
-                    <div className="w-48 justify-start text-gray-dark text-base font-medium leading-normal">
+                    <div className="justify-start w-48 text-base font-medium leading-normal text-gray-dark">
                       Đăng ký và xây dựng một hồ sơ toàn diện.
                     </div>
                   </div>
                 </div>
-                <div className="flex-1 self-stretch inline-flex flex-col justify-start items-start gap-7">
+                <div className="inline-flex flex-col items-start self-stretch justify-start flex-1 gap-7">
                   <div className="w-12 h-12 p-2.5 bg-blue rounded-[50px] flex flex-col justify-between items-center">
-                    <div className="justify-start text-white text-lg font-semibold ">
+                    <div className="justify-start text-lg font-semibold text-white ">
                       02
                     </div>
                   </div>
@@ -306,13 +306,13 @@ const Home = () => {
                     <div className="self-stretch justify-start text-xl font-bold leading-7">
                       Tìm kiếm và ứng tuyển
                     </div>
-                    <div className="self-stretch justify-start text-gray-dark text-base font-medium leading-normal">
+                    <div className="self-stretch justify-start text-base font-medium leading-normal text-gray-dark">
                       Duyệt qua hàng ngàn danh sách công việc trong các ngành
                       công nghiệp khác nhau.
                     </div>
                   </div>
                 </div>
-                <div className="flex-1 self-stretch inline-flex flex-col justify-start items-start gap-7">
+                <div className="inline-flex flex-col items-start self-stretch justify-start flex-1 gap-7">
                   <div className="w-12 h-12 p-2.5 bg-yellow rounded-[50px] flex flex-col justify-between items-center">
                     <div className="justify-start text-lg font-semibold">
                       03
@@ -322,7 +322,7 @@ const Home = () => {
                     <div className="self-stretch justify-start text-xl font-bold leading-7">
                       Kết nối và được thuê
                     </div>
-                    <div className="self-stretch justify-start text-gray-dark text-base font-medium leading-normal">
+                    <div className="self-stretch justify-start text-base font-medium leading-normal text-gray-dark">
                       Nền tảng của chúng tôi tạo điều kiện cho giao tiếp liền
                       mạch để giúp bạn được thuê nhanh chóng.
                     </div>

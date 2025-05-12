@@ -1,6 +1,7 @@
 const CV = require('../models/CV');
 const Account = require('../models/Account');
 const Student = require('../models/Student');
+const puppeteer = require('puppeteer')
 
 class CVController {
   // [GET] /cv
@@ -81,6 +82,38 @@ class CVController {
       res.status(200).json({ message: 'Xoá CV thành công' });
     } catch (err) {
       res.status(500).json({ message: 'Lỗi khi xoá CV', error: err.message });
+    }
+  }
+
+  // [POST] /cv/generate-pdf
+  async generatePDF(req, res) {
+    const { html, fileName } = req.body;
+    if (!html) return res.status(400).send('HTML content is required');
+
+    try {
+      const browser = await puppeteer.launch({ headless: 'new' });
+      const page = await browser.newPage();
+
+      await page.setContent(html, { waitUntil: 'networkidle0' });
+
+      const pdfBuffer = await page.pdf({
+        format: 'A4',
+        printBackground: true,
+        margin: { top: '10mm', bottom: '10mm', left: '10mm', right: '10mm' },
+      });
+
+      await browser.close();
+
+      res.set({
+        'Content-Type': 'application/pdf',
+        'Content-Disposition': `attachment; filename="${fileName}"`,
+        'Content-Length': pdfBuffer.length
+      });
+
+      res.end(pdfBuffer)
+    } catch (error) {
+      console.error('PDF error:', error);
+      res.status(500).json({ message: 'Lỗi khi tạo PDF', error: error.message });
     }
   }
 }

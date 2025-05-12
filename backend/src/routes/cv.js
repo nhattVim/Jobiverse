@@ -7,6 +7,7 @@ router.use(verifyToken(["student"]));
 router.get('/', CVController.getAllStudentCV);
 router.get('/:id', CVController.getStudentCV);
 router.post('/', CVController.createStudentCV);
+router.post('/generate-pdf', CVController.generatePDF);
 router.put('/:id', CVController.updateStudentCV);
 router.delete('/:id', CVController.deleteStudentCV);
 
