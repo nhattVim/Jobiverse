@@ -24,7 +24,7 @@ const CVManagement = () => {
   }, [])
 
   const handleCreateCV = () => {
-    navigate('/create-cv')
+    navigate('/cv')
   }
 
   const handleUploadCV = () => {

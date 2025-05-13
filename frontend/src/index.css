@@ -28,7 +28,10 @@ body {
 
   --container-7xl: 1448px;
 
+  --breakpoint-lg: 1100px; 
+
   --animate-slideDown: slideDown 0.5s ease-in-out;
+  --animate-pop: pop 0.3s ease;
 
   @keyframes slideDown {
     from {
@@ -37,6 +40,18 @@ body {
 
     to {
       transform: translateY(0);
+    }
+  }
+
+  @keyframes pop {
+    0% {
+      transform: scale(1);
+    }
+    40% {
+      transform: scale(1.4);
+    }
+    100% {
+      transform: scale(1);
     }
   }
 }
@@ -56,7 +71,6 @@ body {
 @utility scrollbar-gutter-stable {
   scrollbar-gutter: stable;
 }
-
 
 input[type="number"]::-webkit-outer-spin-button,
 input[type="number"]::-webkit-inner-spin-button {

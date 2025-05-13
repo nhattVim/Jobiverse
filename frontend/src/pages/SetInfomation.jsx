@@ -18,9 +18,9 @@ const SetInfomation = () => {
 
   // Lấy email từ localStorage khi load trang
   useEffect(() => {
-    const userEmail = localStorage.getItem('email') // cần đảm bảo login xong có lưu email
-    if (userEmail) {
-      setForm(prevForm => ({ ...prevForm, email: userEmail }))
+    const user = JSON.parse(localStorage.getItem('user'))
+    if (user) {
+      setForm(prevForm => ({ ...prevForm, email: user.email, phoneNumber: user.phoneNumber }))
     }
   }, [])
 
@@ -41,7 +41,7 @@ const SetInfomation = () => {
       await apiFetch('/users/update', 'POST', form) //Gọi API cập nhật thông tin
       setSuccess('Cập nhật thông tin thành công!')
     } catch (err) {
-      setError('Cập nhật thất bại. Vui lòng thử lại.')
+      setError('Cập nhật thất bại. Vui lòng thử lại.', err)
     }
   }
 
@@ -133,14 +133,14 @@ const SetInfomation = () => {
                     name="email"
                     value={form.email}
                     readOnly
-                    className="w-full px-4 py-2 rounded-full bg-gray-300 text-gray-800 cursor-not-allowed"
+                    className="w-full px-4 py-2 rounded-full bg-gray-300 text-gray-800 cursor-not-allowed focus:outline-none"
                     placeholder="Email"
                   />
                 </div>
 
                 <button
                   type="submit"
-                  className="bg-gradient-to-r from-blue-700 to-blue-500 text-white px-6 py-2 rounded-full hover:opacity-90 transition"
+                  className="bg-blue text-white px-6 py-2 rounded-full hover:opacity-90 transition cursor-pointer"
                 >
                   Lưu lại
                 </button>
