@@ -3,7 +3,7 @@ const router = express.Router()
 const accountController = require('../controllers/AccountController')
 const verifyToken = require('../middlewares/verifyToken')
 
-router.get('/profile', verifyToken([]), accountController.getAccountProfile)
+router.get('/detail', verifyToken([]), accountController.getAccountDetail)
 router.put('/change-password', verifyToken([]), accountController.changePassword)
 
 router.use(verifyToken(['admin']))

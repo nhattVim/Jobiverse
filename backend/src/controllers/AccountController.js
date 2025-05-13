@@ -1,4 +1,6 @@
 const Account = require('../models/Account')
+const Student = require('../models/Student')
+const Employee = require('../models/Employer')
 const bcrypt = require('bcryptjs')
 
 class AdminController {
@@ -33,16 +35,31 @@ class AdminController {
     }
   }
 
-  // [GET] /profile
-  async getAccountProfile(req, res, next) {
+  // [GET] /detail
+  async getAccountDetail(req, res, next) {
     try {
-      const account = await Account.findById(req.account._id).select('-password -__v')
+      const account = await Account.findById(req.account._id).select('-password -__v -deleted')
       if (!account) return res.status(404).json({ message: 'Tài khoản không tồn tại' })
-      res.json(account)
+
+      let avatar = null
+
+      if (account.accountType === 'student') {
+        const student = await Student.findOne({ account: account._id })
+        avatar = student?.avatar || null
+      } else if (account.accountType === 'employer') {
+        const employer = await Employee.findOne({ account: account._id })
+        avatar = employer?.avatar || null
+      }
+
+      const result = account.toObject()
+      result.avatar = avatar
+
+      res.json(result)
     } catch (err) {
       return res.status(500).json({ message: 'Lỗi máy chủ khi lấy thông tin tài khoản', error: err.message })
     }
   }
+
 
   // [DELETE] /account/:id
   async deleteAccount(req, res, next) {

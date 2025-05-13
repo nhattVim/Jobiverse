@@ -38,6 +38,18 @@ class EmployerController {
     }
   }
 
+  // [GET] /employers/me
+  async getMyEmployerProfile(req, res, next) {
+    const accountId = req.account._id
+    try {
+      const employer = await Employer.findOne({ account: accountId }).select('-__v')
+      if (!employer) return res.status(404).json({ message: 'Không tìm thấy employer hoặc tài khoản đã bị xoá' })
+      res.status(200).json(employer)
+    } catch (err) {
+      res.status(500).json({ message: 'Lỗi khi lấy thông tin employer', error: err.message })
+    }
+  }
+
   // [POST] /employers
   async createEmployerProfile(req, res, next) {
     try {

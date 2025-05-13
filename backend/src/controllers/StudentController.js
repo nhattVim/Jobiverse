@@ -1,6 +1,7 @@
 const Student = require('../models/Student')
-const Major = require('../models/Major/Major')
-const Specialization = require('../models/Major/Specialization')
+const Major = require('../models/Major')
+const Specialization = require('../models/Specialization')
+
 class StudentController {
   // [GET] /students
   async getAllStudents(req, res, next) {
@@ -39,13 +40,35 @@ class StudentController {
     }
   }
 
+  // [GET] /students/me
+  async getMyProfile(req, res, next) {
+    try {
+      const accountId = req.account._id
+      const profile = await Student.findOne({ account: accountId })
+        .populate({
+          path: 'account',
+          match: { deleted: false },
+          select: '-password -__v'
+        })
+
+      if (!profile || !profile.account) return res.status(404).json({ message: 'Không tìm thấy profile sinh viên' })
+      res.status(200).json(profile)
+    } catch (err) {
+      res.status(500).json({ message: 'Lỗi khi lấy thông tin sinh viên', error: err.message })
+    }
+  }
+
   // [POST] /students
-  async createStudentProfile(req, res, next) {
+  async saveStudentProfile(req, res, next) {
     try {
       const accountId = req.account._id
 
-      const existingStudent = await Student.findOne({ account: accountId })
-      if (existingStudent) return res.status(400).json({ message: 'Tài khoản đã có hồ sơ student' })
+      const updateStudent = await Student.findOneAndUpdate(
+        { account: accountId },
+        { ...req.body },
+        { new: true }
+      )
+      if (updateStudent) return res.status(200).json({ message: 'Cập nhật tài khoản thành công' })
 
       const student = await Student.create({ ...req.body, account: accountId })
       if (!student) return res.status(400).json({ message: 'Lỗi khi tạo hồ sơ sinh viên' })
@@ -72,25 +95,6 @@ class StudentController {
       res.status(200).json({ students })
     } catch (err) {
       res.status(500).json({ message: 'Lỗi khi tìm kiếm sinh viên', error: err.message })
-    }
-  }
-
-  // [PUT] /students
-  async updateStudentProfile(req, res, next) {
-    try {
-      const accountId = req.account._id
-      const { mssv, name, major, interests, university, avatarURL } = req.body
-      const updatedStudent = await Student.findOneAndUpdate(
-        { account: accountId },
-        { mssv, name, major, interests, university, avatarURL },
-        { new: true }
-      )
-      if (!updatedStudent) {
-        return res.status(404).json({ message: 'Student not found' })
-      }
-      res.status(200).json({ message: 'Student updated successfully', updatedStudent })
-    } catch (err) {
-      res.status(500).json({ message: 'Lỗi khi cập nhật hồ sơ sinh viên', error: err.message })
     }
   }
 
