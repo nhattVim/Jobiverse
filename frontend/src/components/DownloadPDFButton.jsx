@@ -1,7 +1,7 @@
 import html2canvas from 'html2canvas'
 import jsPDF from 'jspdf'
 
-export default function DownloadPDFButton({ targetId, fileName = 'cv.pdf' }) {
+export default function DownloadPDFButton({ targetId, fileName, children, ...props }) {
   const handleDownload = () => {
     const element = document.getElementById(targetId)
     if (!element) return
@@ -20,8 +20,8 @@ export default function DownloadPDFButton({ targetId, fileName = 'cv.pdf' }) {
   }
 
   return (
-    <button onClick={handleDownload} className="px-4 py-2 text-white bg-blue-600 rounded">
-      Tải xuống PDF
+    <button onClick={handleDownload} className="px-4 py-2 text-white bg-blue-600 rounded" {...props}>
+      {children || 'Tải xuống PDF'}
     </button>
   )
 }

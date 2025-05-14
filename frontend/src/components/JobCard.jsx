@@ -2,6 +2,7 @@ import { MapPinIcon, CurrencyDollarIcon, HeartIcon } from '@heroicons/react/24/o
 import { HeartIcon as HeartSolidIcon } from '@heroicons/react/24/solid'
 import React, { useState } from 'react'
 import ButtonArrowOne from '../shared/ButtonArrowOne'
+import apiFetch from '../services/api'
 
 const JobCard = ({
   jobTitle,
@@ -9,13 +10,27 @@ const JobCard = ({
   jobType,
   salary,
   location,
-  currentIndex
+  currentIndex,
+  projectId,
+  isFavoritedInitially
 }) => {
 
-  const [isFavorited, setIsFavorited] = useState(false)
+  const [isFavorited, setIsFavorited] = useState(isFavoritedInitially)
 
-  const handleFavorite = () => {
-    setIsFavorited(!isFavorited)
+  const handleFavorite = async () => {
+    const newFavoriteState = !isFavorited
+    setIsFavorited(newFavoriteState)
+
+    try {
+      if (newFavoriteState) {
+      await apiFetch('/favorites', 'POST', { projectId })
+      } else {
+        await apiFetch(`/favorites/${projectId}`, 'DELETE')
+      }
+    } catch (err) {
+      console.error('Failed to save favorite state', err)
+      setIsFavorited(!newFavoriteState)
+    }
   }
 
   return (

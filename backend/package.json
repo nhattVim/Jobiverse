@@ -3,6 +3,7 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
+    "lint": "eslint .",
     "start": "set DEBUG=backend:* && node ./bin/www",
     "dev": "set DEBUG=backend:* && nodemon ./bin/www"
   },
@@ -14,9 +15,14 @@
     "dotenv": "^16.5.0",
     "express": "~4.16.1",
     "jsonwebtoken": "^9.0.2",
-    "morgan": "~1.9.1"
+    "morgan": "~1.9.1",
+    "puppeteer": "^24.8.2"
   },
   "devDependencies": {
+    "@eslint/js": "^9.26.0",
+    "@eslint/json": "^0.12.0",
+    "eslint": "^9.26.0",
+    "globals": "^16.1.0",
     "mongoose": "^8.13.2",
     "nodemon": "^3.1.9"
   }

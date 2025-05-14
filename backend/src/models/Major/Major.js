@@ -1,4 +1,4 @@
-const mongoose = require("mongoose");
+const mongoose = require('mongoose')
 
 const MajorSchema = new mongoose.Schema({
   name: {
@@ -9,7 +9,7 @@ const MajorSchema = new mongoose.Schema({
   description: {
     type: String,
     required: true
-  },
+  }
 })
 
-module.exports = mongoose.model('Major', MajorSchema);
+module.exports = mongoose.model('Major', MajorSchema)

@@ -1,9 +1,9 @@
-const mongoose = require("mongoose");
+const mongoose = require('mongoose')
 
 const EmployerSchema = new mongoose.Schema({
   account: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: "Account",
+    ref: 'Account',
     required: true,
     unique: true
   },
@@ -37,7 +37,7 @@ const EmployerSchema = new mongoose.Schema({
   address: {
     type: String,
     required: true
-  },
+  }
 })
 
-module.exports = mongoose.model('Employer', EmployerSchema);
+module.exports = mongoose.model('Employer', EmployerSchema)

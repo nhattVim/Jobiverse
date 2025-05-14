@@ -1,3 +1,5 @@
+import usePatchOklchColors from '../hooks/usePatchOklchColors'
+
 const personalFields = {
   birthday: { label: 'Ngày sinh', placeholder: 'DD/MM/YYYY' },
   gender: { label: 'Giới tính', placeholder: 'Nam/Nữ' },
@@ -61,9 +63,11 @@ const sectionFields = {
   }
 }
 
-export default function CVPreview({ cvData }) {
+export default function CVPreview({ cvData, id }) {
+  usePatchOklchColors(`#${id}`)
+
   return (
-    <div className="w-full bg-white-bright  border border-[#cccccc] p-6 text-[#1c1c1c] grid grid-cols-3 gap-2">
+    <div className="w-full bg-white-bright  border border-[#cccccc] p-6 text-[#1c1c1c] grid grid-cols-3 gap-2 font-sans" id={id}>
       <div className="col-span-1 space-y-2">
         <h1 className="text-3xl font-bold font-['Noto_Sans'] leading-9 mt-2">{cvData.name || 'Họ tên ứng viên'}</h1>
 

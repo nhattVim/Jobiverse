@@ -1,4 +1,4 @@
-const mongoose = require("mongoose");
+const mongoose = require('mongoose')
 
 const ProjectSchema = new mongoose.Schema({
   account: {
@@ -13,18 +13,18 @@ const ProjectSchema = new mongoose.Schema({
   description: String,
   major: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'Major',
+    ref: 'Major'
   },
   specialization: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: "Specialization",
+    ref: 'Specialization'
   },
   content: {
     type: String,
     required: true
   },
   workingTime: {
-    type: String,
+    type: String
   },
   status: {
     type: String,
@@ -39,6 +39,6 @@ const ProjectSchema = new mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Student'
   }]
-}, { timestamps: true });
+}, { timestamps: true })
 
-module.exports = mongoose.model('Project', ProjectSchema);
+module.exports = mongoose.model('Project', ProjectSchema)

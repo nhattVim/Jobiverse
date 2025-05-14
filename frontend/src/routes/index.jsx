@@ -8,7 +8,6 @@ import JobList from '../pages/JobList'
 import JobPost from '../pages/JobPost'
 import UploadCV from '../pages/UploadCV'
 import CVEditor from '../pages/CVEditor'
-import CVList from '../pages/CVList'
 import CVManagement from '../pages/CVManagement'
 import SavedJob from '../pages/SavedJob'
 import SetInfomation from '../pages/SetInfomation'
@@ -39,10 +38,6 @@ export const router = createBrowserRouter([
       {
         path: ROUTES.UPLOAD_CV,
         element: <UploadCV />
-      },
-      {
-        path: ROUTES.CV_LIST,
-        element: <CVList />
       },
       {
         path: ROUTES.CREATE_CV,

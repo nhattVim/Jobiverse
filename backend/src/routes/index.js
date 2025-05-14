@@ -5,6 +5,7 @@ const accountRouter = require('./accounts')
 const CVRouter = require('./cv')
 const projectRouter = require('./projects')
 const notificationRouter = require('./notifications')
+const favoriteRouter = require('./favorite')
 
 function route(app) {
   app.use('/', authRouter)
@@ -14,6 +15,7 @@ function route(app) {
   app.use('/employers', employerRouter)
   app.use('/projects', projectRouter)
   app.use('/notify', notificationRouter)
+  app.use('/favorites', favoriteRouter)
 }
 
 module.exports = route
