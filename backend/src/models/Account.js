@@ -24,6 +24,10 @@ const AccountSchema = new mongoose.Schema({
   deleted: {
     type: Boolean,
     default: false
+  },
+  avatar: {
+    type: Buffer,
+    required: false
   }
 }, { timestamps: true })
 

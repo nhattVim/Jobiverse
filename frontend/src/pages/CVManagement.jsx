@@ -14,6 +14,7 @@ const CVManagement = () => {
     const fetchCVs = async () => {
       try {
         const created = await apiFetch('/cv', 'GET')
+        console.log('CVs:', created)
         setCvList(created)
       } catch (err) {
         console.error('Lỗi khi lấy dữ liệu CV:', err)

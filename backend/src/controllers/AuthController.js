@@ -1,14 +1,20 @@
 const Account = require('../models/Account')
 const bcrypt = require('bcryptjs')
 const jwt = require('jsonwebtoken')
+const multer = require('multer')
 
 const JWT_SECRET = process.env.JWT_SECRET
+const storage = multer.memoryStorage()
+const upload = multer({ storage: storage })
+
 
 class AccountController {
   // [POST] /register
   async registerAccount(req, res, next) {
     try {
       const { accountType, email, password, phoneNumber } = req.body
+
+      const avatar = req.file ? req.file.buffer : null
 
       const trimmedEmail = email?.trim()
       const trimmedPhone = phoneNumber?.trim()
@@ -23,7 +29,7 @@ class AccountController {
       const phoneExists = await Account.findOne({ phoneNumber: trimmedPhone, deleted: false })
       if (phoneExists) return res.status(400).json({ message: 'Số điện thoại đã được sử dụng' })
 
-      const account = await Account.create({ accountType, email, password, phoneNumber })
+      const account = await Account.create({ accountType, email, password, phoneNumber, avatar })
       res.status(201).json({ message: 'Tạo tài khoản thành công', accountID: account._id })
     } catch (err) {
       res.status(500).json({ message: 'Lỗi khi tạo tài khoản', error: err.message })
@@ -66,7 +72,7 @@ class AccountController {
         maxAge: 7 * 24 * 60 * 60 * 1000
       })
 
-      res.json({ message: 'Đăng nhập thành công' })
+      res.json({ message: 'Đăng nhập thành công', token })
     } catch (err) {
       res.status(500).json({ message: 'Lỗi máy chủ khi đăng nhập', error: err.message })
     }

@@ -9,16 +9,12 @@ class CVController {
     try {
       const accountId = req.account._id
 
-      const student = await Account.findOne({ _id: accountId })
+      const student = await Student.findOne({ account: accountId })
       if (!student) return res.status(404).json({ message: 'Không tìm thấy sinh viên' })
 
       const cvList = await CV.find({ student: student._id })
         .select('title desiredPosition lastUpdated')
         .sort({ lastUpdated: -1 })
-
-      if (!cvList || cvList.length === 0) {
-        return res.status(200).json({ message: 'Chưa có CV nào', cvs: [] })
-      }
 
       res.status(200).json(cvList)
     } catch (err) {
@@ -32,7 +28,7 @@ class CVController {
       const accountId = req.account._id
       const cvId = req.params.id
 
-      const student = await Account.findOne({ _id: accountId })
+      const student = await Student.findOne({ account: accountId })
       if (!student) return res.status(404).json({ message: 'Không tìm thấy sinh viên' })
 
       const cv = await CV.findOne({ student: student._id, _id: cvId })
@@ -49,7 +45,7 @@ class CVController {
       const accountId = req.account._id
       const content = req.body
 
-      const student = await Account.findOne({ _id: accountId })
+      const student = await Student.findOne({ account: accountId })
       if (!student) return res.status(404).json({ message: 'Không tìm thấy sinh viên' })
 
       const newCV = await CV.create({ student: student._id, ...content, lastUpdated: Date.now() })

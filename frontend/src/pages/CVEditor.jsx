@@ -87,6 +87,8 @@ export default function CVEditor() {
       </html>
     `
 
+    console.log(JSON.stringify({ html: fullHtml, fileName: 'cv.pdf' }))
+
     try {
       const response = await apiFetch('/cv/generate-pdf', 'POST', { html: fullHtml, fileName: 'cv.pdf' })
       if (response instanceof Blob) {
