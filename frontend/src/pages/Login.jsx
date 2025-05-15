@@ -2,6 +2,7 @@ import { React, useState } from 'react'
 import Logo1 from '../assets/Logo1.svg'
 import { useNavigate, Link } from 'react-router-dom'
 import apiFetch from '../services/api'
+import { ROUTES } from '../routes/routePaths'
 
 const Login = () => {
   const navigate = useNavigate()
@@ -78,7 +79,7 @@ const Login = () => {
             </div>
             <button
               type="submit"
-              className="w-full h-[50px] bg-blue text-white font-bold rounded-full hover:bg-blue-mid transition duration-300"
+              className="w-full h-[50px] bg-blue text-white font-bold rounded-full hover:bg-blue-mid transition duration-300 cursor-pointer"
             >
               Đăng nhập
             </button>
@@ -88,7 +89,7 @@ const Login = () => {
         <div className="flex items-center justify-between w-full">
           <p className="font-medium leading-6">
             Bạn chưa có tài khoản?{' '}
-            <Link to="/register" className="underline text-blue">
+            <Link to={ROUTES.REGISTER} className="underline text-blue">
               Đăng ký
             </Link>
           </p>

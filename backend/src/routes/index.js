@@ -5,6 +5,7 @@ const accountRouter = require('./accounts')
 const CVRouter = require('./cv')
 const projectRouter = require('./projects')
 const notificationRouter = require('./notifications')
+const favoriteRouter = require('./favorite')
 const majors = require('./majors')
 const specialization = require('./specialization')
 
@@ -16,6 +17,7 @@ function route(app) {
   app.use('/employers', employerRouter)
   app.use('/projects', projectRouter)
   app.use('/notify', notificationRouter)
+  app.use('/favorites', favoriteRouter)
   app.use('/majors', majors)
   app.use('/spec', specialization)
 }

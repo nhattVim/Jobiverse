@@ -8,13 +8,14 @@ import {
 } from '@heroicons/react/24/solid'
 import ButtonArrowOne from '../shared/ButtonArrowOne'
 import { ROUTES } from '../routes/routePaths'
+import apiFetch from '../services/api'
 
 const NavBar = () => {
   const navigate = useNavigate()
   const [isTopOfPage, setIsTopOfPage] = useState(true)
-  const [hoveredMenu, setHoveredMenu] = useState(null) // State để quản lý menu đang được hover
-  const [isLoggedIn, setIsLoggedIn] = useState(false) // Trạng thái đăng nhập
-  const [userInfo, setUserInfo] = useState(null) // Thông tin người dùng
+  const [hoveredMenu, setHoveredMenu] = useState(null)
+  const [isLoggedIn, setIsLoggedIn] = useState(false)
+  const [userInfo, setUserInfo] = useState(null)
 
   useEffect(() => {
     const handleScroll = () => {
@@ -35,11 +36,16 @@ const NavBar = () => {
     }
   }, [])
 
-  const handleLogout = () => {
-    localStorage.removeItem('user') // Xóa thông tin người dùng khỏi localStorage
-    setIsLoggedIn(false)
-    setUserInfo(null)
-    navigate(ROUTES.LOGIN)
+  const handleLogout = async () => {
+    try {
+      await apiFetch('/logout', 'POST')
+      localStorage.removeItem('user')
+      setIsLoggedIn(false)
+      setUserInfo(null)
+      navigate(ROUTES.LOGIN)
+    } catch (error) {
+      console.log('Đăng xuất thất bại', error)
+    }
   }
 
   const navbarStyle = isTopOfPage
@@ -56,7 +62,7 @@ const NavBar = () => {
             <img src={Logo2} alt="logo2" className="h-10" />
           </div>
 
-          <div>
+          <div className='hidden lg:block'>
             <ul className="relative flex font-medium">
               <li className="px-5 py-2.5">
                 <Link
@@ -79,7 +85,7 @@ const NavBar = () => {
                   <ChevronDownIcon className="w-4 ml-1 transition-transform duration-300 group-hover:rotate-180" />
                 </Link>
                 {hoveredMenu === 'jobList' && (
-                  <div className="w-[500px] absolute top-full -left-1/2 z-50">
+                  <div className="w-md absolute top-full -left-1/2 z-50">
                     <ul className="grid grid-cols-2 p-5 mt-6 transition-all duration-500 shadow-md bg-white-bright rounded-small">
                       <li className="px-4 py-2 transition-colors duration-300 hover:text-blue">
                         <Link to={ROUTES.JOB_LIST}>Danh sách việc làm</Link>
@@ -110,7 +116,7 @@ const NavBar = () => {
                   <ChevronDownIcon className="w-4 ml-1 transition-transform duration-300 group-hover:rotate-180" />
                 </Link>
                 {hoveredMenu === 'createCV' && (
-                  <div className="w-[300px] absolute top-full -left-1/2 z-50">
+                  <div className="w-2xs absolute top-full -left-1/2 z-50">
                     <ul className="grid grid-cols-2 p-5 mt-6 transition-all duration-500 shadow-md bg-white-bright rounded-small">
                       <li className="px-4 py-2 transition-colors duration-300 hover:text-blue">
                         <Link to={ROUTES.CV_MANAGEMENT}>Quản lý CV</Link>
@@ -140,9 +146,11 @@ const NavBar = () => {
             {isLoggedIn ? (
               // Hiển thị thông tin tài khoản khi đã đăng nhập
               <div className="flex items-center gap-4">
-                <ButtonArrowOne selectedPage={ROUTES.JOB_POST}>
-                  Đăng một công việc
-                </ButtonArrowOne>
+                <div className="hidden md:block">
+                  <ButtonArrowOne selectedPage={ROUTES.JOB_POST}>
+                    Đăng một công việc
+                  </ButtonArrowOne>
+                </div>
                 <div className="flex justify-center items-center w-[46px] h-[46px] rounded-full bg-white-low">
                   <BellIcon className="w-6 h-6" />
                 </div>

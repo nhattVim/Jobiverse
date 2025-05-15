@@ -128,7 +128,7 @@ const Register = () => {
 
             <button
               type="submit"
-              className="w-full h-[50px] bg-blue text-white font-bold rounded-full hover:bg-blue-mid transition duration-300"
+              className="w-full h-[50px] bg-blue text-white font-bold rounded-full hover:bg-blue-mid transition duration-300 cursor-pointer"
             >
               Đăng ký
             </button>

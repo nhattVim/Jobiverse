@@ -10,27 +10,33 @@ class ProjectController {
   // [GET] /projects
   async getAllProjects(req, res, next) {
     try {
-      const accountId = req.account._id
-      const student = await Student.findOne({ account: accountId })
-
-      let projects = await Project.find().sort({ createdAt: -1 }).select('-__v')
-
-      if (student && student.interests && student.interests.length > 0) {
-        projects = projects.map(project => {
-          let matchScore = 0
-          for (const interest of student.interests) {
-            const regex = new RegExp(interest, 'i')
-            if (regex.test(project.title) || regex.test(project.description)) {
-              matchScore += 1
-            }
-          }
-          return { ...project._doc, matchScore }
+      const projects = await Project.find()
+        .select('-__v')
+        .populate({
+          path: 'account',
+          select: 'accountType'
         })
 
-        projects.sort((a, b) => b.matchScore - a.matchScore)
-      }
+      const populatedProjects = await Promise.all(
+        projects.map(async (project) => {
+          if (!project.account) return project
 
-      res.status(200).json(projects)
+          let profile = null
+
+          if (project.account.accountType === 'student') {
+            profile = await Student.findOne({ account: project.account._id }).select('name avatar')
+          } else if (project.account.accountType === 'employer') {
+            profile = await Employer.findOne({ account: project.account._id }).select('companyName avatar')
+          }
+
+          return {
+            ...project.toObject(),
+            profile
+          }
+        })
+      )
+
+      res.status(200).json(populatedProjects)
     } catch (err) {
       res.status(500).json({ message: 'Error retrieving projects', error: err.message })
     }

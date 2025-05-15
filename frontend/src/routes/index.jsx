@@ -11,6 +11,8 @@ import CVEditor from '../pages/CVEditor'
 import CVManagement from '../pages/CVManagement'
 import SavedJob from '../pages/SavedJob'
 import SetInfomation from '../pages/SetInfomation'
+import JobDetail from '../pages/JobDetail'
+import EmployerInfo from '../pages/EmployerInfo'
 
 export const router = createBrowserRouter([
   {
@@ -29,6 +31,10 @@ export const router = createBrowserRouter([
       {
         path: ROUTES.JOB_POST,
         element: <JobPost />
+      },
+      {
+        path: ROUTES.JOB_DETAIL,
+        element: <JobDetail />
       },
       {
         path: ROUTES.SAVED_JOB,
@@ -55,6 +61,10 @@ export const router = createBrowserRouter([
       {
         path: ROUTES.SET_INFORMATION,
         element: <SetInfomation />
+      },
+      {
+        path: '/employer-info',
+        element: <EmployerInfo />
       }
     ]
   },

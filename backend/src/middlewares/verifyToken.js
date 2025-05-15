@@ -4,8 +4,8 @@ const JWT_SECRET = process.env.JWT_SECRET
 
 const verifyToken = ([...role]) => {
   return async (req, res, next) => {
-    // const token = req.headers.authorization?.split(' ')[1]; // lấy từ header
-    const token = req.cookies.token // lấy từ cookie
+    // const token = req.headers.authorization?.split(' ')[1]
+    const token = req.cookies.token
 
     if (!token) return res.status(401).json({ message: 'Chưa đăng nhập, vui lòng đăng nhập' })
 

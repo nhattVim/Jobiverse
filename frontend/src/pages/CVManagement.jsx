@@ -3,6 +3,7 @@ import Sidebar from '../components/Sidebar'
 import { useNavigate, Link } from 'react-router-dom'
 import apiFetch from '../services/api'
 import BannerText from '../components/BannerText'
+import { PencilSquareIcon, TrashIcon } from '@heroicons/react/24/outline'
 
 const CVManagement = () => {
   const [cvList, setCvList] = useState([])
@@ -13,6 +14,7 @@ const CVManagement = () => {
     const fetchCVs = async () => {
       try {
         const created = await apiFetch('/cv', 'GET')
+        console.log('CVs:', created)
         setCvList(created)
       } catch (err) {
         console.error('Lỗi khi lấy dữ liệu CV:', err)
@@ -48,11 +50,13 @@ const CVManagement = () => {
           {/* CV đã tạo */}
           <div className="flex items-center justify-between p-6 shadow bg-white-low rounded-medium">
             <div className="flex items-center w-full space-x-4">
-              <img
-                src="https://cdn-icons-png.freepik.com/256/11959/11959483.png?semt=ais_hybrid"
-                alt="cv"
-                className="w-16 h-16"
-              />
+              {
+                cvList.length > 0 ? <div></div> :
+                  <img src="https://cdn-icons-png.freepik.com/256/11959/11959483.png?semt=ais_hybrid"
+                    alt="cv"
+                    className="w-16 h-16"
+                  />
+              }
               <div className='w-full space-y-1.5'>
                 <div className='flex items-center justify-between'>
                   <h2 className="text-lg font-semibold">CV đã tạo trên Jobiverse</h2>
@@ -73,12 +77,12 @@ const CVManagement = () => {
                     cvList.map(cv => (
                       <div
                         key={cv._id}
-                        className="flex items-center justify-between p-4 mb-3 transition border border-gray-200 rounded-lg shadow-sm hover:shadow-md hover:bg-gray-50"
+                        className="bg-white-mid flex items-center justify-between p-6 my-5 transition border border-gray-light rounded-medium hover:shadow-md hover:bg-gray-50"
                       >
                         <div>
                           <Link
                             to={`/cv/${cv._id}`}
-                            className="block mb-1 text-lg font-semibold text-green-700 hover:underline"
+                            className="block mb-1 text-lg font-semibold text-blue-mid hover:underline"
                           >
                             {cv.title || 'Chưa đặt tên'}
                           </Link>
@@ -89,15 +93,15 @@ const CVManagement = () => {
                         <div className="flex items-center space-x-2">
                           <button
                             onClick={() => navigate(`/cv/${cv._id}`)}
-                            className="px-4 py-1.5 text-sm text-white bg-green-600 rounded-md hover:bg-green-700 transition"
+                            className="px-4 py-1.5 text-sm text-white bg-green-600 rounded-full hover:bg-green-700 transition cursor-pointer"
                           >
-                            Xem/Sửa
+                            <PencilSquareIcon className='w-5 h-5'/>
                           </button>
                           <button
                             onClick={() => handleDelete(cv._id)}
-                            className="px-4 py-1.5 text-sm text-white bg-red-600 rounded-md hover:bg-red-700 transition"
+                            className="px-4 py-1.5 text-sm text-white bg-red-600 rounded-full hover:bg-red-700 transition cursor-pointer"
                           >
-                            Xoá
+                            <TrashIcon className='w-5 h-5'/>
                           </button>
                         </div>
                       </div>

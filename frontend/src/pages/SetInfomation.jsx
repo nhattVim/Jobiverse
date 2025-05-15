@@ -223,14 +223,14 @@ const SetInfomation = () => {
                     name="email"
                     value={email}
                     readOnly
-                    className="w-full px-4 py-2 text-gray-800 bg-gray-300 rounded-full cursor-not-allowed"
+                    className="w-full px-4 py-2 rounded-full bg-gray-300 text-gray-800 cursor-not-allowed focus:outline-none"
                     placeholder="Email"
                   />
                 </div>
 
                 <button
                   type="submit"
-                  className="px-6 py-2 text-white transition rounded-full bg-gradient-to-r from-blue-700 to-blue-500 hover:opacity-90"
+                  className="bg-blue text-white px-6 py-2 rounded-full hover:opacity-90 transition cursor-pointer"
                 >
                   Lưu lại
                 </button>

@@ -17,17 +17,9 @@ import { ROUTES } from '../routes/routePaths'
 import apiFetch from '../services/api'
 
 const Home = () => {
-  const jobCard = {
-    jobTitle: 'Backend Developer (C#, .NET)',
-    imgCompany:
-      'https://cdn.prod.website-files.com/66b757e42412d2f5e0906c5f/66bf2b9a2ff5d8f19427f6db_job-07.svg',
-    jobType: 'Thực tập',
-    salary: 'Từ 2 - 4 triệu',
-    location: 'Hồ Chí Minh'
-  }
-  const jobCards = Array(9).fill(jobCard)
   const [currentIndex, setCurrentIndex] = useState(0)
   const [projects, setProjects] = useState([])
+  const [favorites, setFavorites] = useState([])
 
   const goToPrevious = () => {
     const isFirstSlide = currentIndex === 0
@@ -40,16 +32,21 @@ const Home = () => {
   }
 
   useEffect(() => {
-    const loadProjects = async () => {
+    const loadProjectsAndFavorites = async () => {
       try {
-        const data = await apiFetch('/projects', 'GET')
-        setProjects(data)
+        const [projectsData, favoritesData] = await Promise.all([
+          apiFetch('/projects', 'GET'),
+          apiFetch('/favorites', 'GET')
+        ])
+
+        setProjects(projectsData)
+        setFavorites(favoritesData.map((fav) => fav.project._id))
       } catch (error) {
         console.error('Error fetching projects:', error.message)
       }
     }
 
-    loadProjects()
+    loadProjectsAndFavorites()
   }, [])
 
   return (
@@ -124,8 +121,8 @@ const Home = () => {
             </Link>
           </div>
           <div className="flex justify-end items-center gap-[50px] w-full">
-            <div className="relative p-[50px] w-[400px] h-[300px] shadow-lg flex items-end rounded-medium cursor-pointer">
-              <div className="absolute inset-0 bg-[#000] opacity-60 z-30 hover:opacity-20 transition-opacity ease-out duration-500 rounded-medium"></div>
+            <div className="group relative p-[50px] w-[400px] h-[300px] shadow-lg flex items-end rounded-medium cursor-pointer">
+              <div className="absolute inset-0 bg-[#000] opacity-60 z-30 group-hover:opacity-20 transition-opacity ease-out duration-500 rounded-medium"></div>
               <div className="absolute inset-0 w-full h-full">
                 <img
                   src={Type1}
@@ -142,8 +139,8 @@ const Home = () => {
                 </div>
               </div>
             </div>
-            <div className="relative p-[50px] w-[400px] h-[300px] shadow-lg flex items-end rounded-medium cursor-pointer">
-              <div className="absolute inset-0 bg-[#000] opacity-60 z-30 hover:opacity-20 transition-opacity ease-out duration-500 rounded-medium"></div>
+            <div className="group relative p-[50px] w-[400px] h-[300px] shadow-lg flex items-end rounded-medium cursor-pointer">
+              <div className="absolute inset-0 bg-[#000] opacity-60 z-30 group-hover:opacity-20 transition-opacity ease-out duration-500 rounded-medium"></div>
               <div className="absolute inset-0 w-full h-full">
                 <img
                   src={Type2}
@@ -190,10 +187,11 @@ const Home = () => {
                     key={index}
                     jobTitle={job.title}
                     imgCompany={'https://cdn.prod.website-files.com/66b757e42412d2f5e0906c5f/66bf2b9a2ff5d8f19427f6db_job-07.svg'}
-                    jobType={job.content}
                     salary={job.salary}
                     location={job.location}
                     currentIndex={currentIndex}
+                    projectId={job._id}
+                    isFavoritedInitially={favorites.includes(job._id)}
                   />
                 ))}
               </div>
@@ -222,7 +220,7 @@ const Home = () => {
                     cá nhân, thể hiện thế mạnh của bản thân thông qua việc đính
                     kèm học vấn, kinh nghiệm, dự án, kỹ năng,... của mình
                   </p>
-                  <ButtonArrowOne selectedPage={ROUTES.HOME}>
+                  <ButtonArrowOne selectedPage={ROUTES.SET_INFORMATION}>
                     Tạo profile
                   </ButtonArrowOne>
                 </div>
@@ -242,7 +240,7 @@ const Home = () => {
                     Một chiếc CV chuyên nghiệp sẽ giúp bạn gây ấn tượng với nhà
                     tuyển dụng và tăng khả năng vượt qua vòng lọc CV.
                   </p>
-                  <ButtonArrowOne selectedPage={ROUTES.HOME}>
+                  <ButtonArrowOne selectedPage={ROUTES.CREATE_CV}>
                     Tạo CV ngay
                   </ButtonArrowOne>
                 </div>

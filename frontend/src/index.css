@@ -22,13 +22,17 @@ body {
   --color-blue-mid: #2e51ab;
   --color-blue: #406bd0;
   --color-yellow: #edcd59;
+  --color-red: #dc2f2f;
 
   --radius-small: 20px;
   --radius-medium: 30px;
 
   --container-7xl: 1448px;
 
+  --breakpoint-lg: 1100px; 
+
   --animate-slideDown: slideDown 0.5s ease-in-out;
+  --animate-pop: pop 0.3s ease;
 
   @keyframes slideDown {
     from {
@@ -37,6 +41,18 @@ body {
 
     to {
       transform: translateY(0);
+    }
+  }
+
+  @keyframes pop {
+    0% {
+      transform: scale(1);
+    }
+    40% {
+      transform: scale(1.4);
+    }
+    100% {
+      transform: scale(1);
     }
   }
 }
@@ -56,7 +72,6 @@ body {
 @utility scrollbar-gutter-stable {
   scrollbar-gutter: stable;
 }
-
 
 input[type="number"]::-webkit-outer-spin-button,
 input[type="number"]::-webkit-inner-spin-button {

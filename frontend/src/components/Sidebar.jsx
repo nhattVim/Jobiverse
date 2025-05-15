@@ -1,5 +1,7 @@
 import React, { useRef, useState, useEffect } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
+import { ROUTES } from '../routes/routePaths'
+import { ArchiveBoxIcon, BriefcaseIcon, DocumentTextIcon, HeartIcon, UserIcon } from '@heroicons/react/24/outline'
 
 const Sidebar = () => {
   const location = useLocation()
@@ -28,11 +30,11 @@ const Sidebar = () => {
   }
 
   const menuItems = [
-    { path: '/set-infomation', label: '🔍 Thông tin cá nhân' }, //Để đúng cái tên page
-    { path: '/cv-management', label: '📄 CV của tôi' },
-    { path: '/saved-job', label: '🤍 Việc làm đã lưu' },
-    { path: '/applied-jobs', label: '📤 Việc làm đã ứng tuyển' },
-    { path: '/job-invites', label: '📬 Lời mời công việc' }
+    { path: ROUTES.SET_INFORMATION, icon: <UserIcon className='w-6 h-6'/>, label: 'Thông tin cá nhân' },
+    { path: ROUTES.CV_MANAGEMENT, icon: <DocumentTextIcon className='w-6 h-6'/>, label: 'CV của tôi' },
+    { path: ROUTES.SAVED_JOB, icon: <HeartIcon className='w-6 h-6'/>, label: 'Việc làm đã lưu' },
+    { path: '/applied-jobs', icon: <BriefcaseIcon className='w-6 h-6'/>, label: 'Việc làm đã ứng tuyển' },
+    { path: '/job-invites', icon: <ArchiveBoxIcon className='w-6 h-6'/>, label: 'Lời mời công việc' }
   ]
 
   return (
@@ -69,9 +71,10 @@ const Sidebar = () => {
           <button
             key={index}
             onClick={() => navigate(item.path)}
-            className={`w-full text-left px-5 py-2 rounded-full flex items-center gap-2 
-              ${location.pathname === item.path ? 'bg-blue text-white font-semibold' : 'hover:bg-gray-100'}`}
+            className={`w-full text-left px-5 py-3 rounded-full flex items-center gap-2 
+              ${location.pathname === item.path ? 'bg-blue text-white font-semibold' : 'hover:bg-gray-100'} cursor-pointer`}
           >
+            {item.icon}
             {item.label}
           </button>
         ))}
