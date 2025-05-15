@@ -22,6 +22,20 @@ jobs:
             - name: Install Newman
               run: npm install -g newman
 
+            - name: Run backend
+              run: |
+                  cd backend
+                  npm install
+                  npm run dev &
+
+            - name: Wait for backend to be ready
+              run: |
+                  for i in {1..10}; do
+                    nc -z localhost 3000 && echo "Server is up!" && break
+                    echo "Waiting for server..."
+                    sleep 3
+                  done
+
             - name: Run Postman Collection
               run: |
                   newman run .github/workflows/Jobiverse.postman_collection.json \
@@ -33,6 +47,3 @@ jobs:
               with:
                   name: postman-results
                   path: postman-results.xml
-
-env:
-    GITHUB_TOKEN:
