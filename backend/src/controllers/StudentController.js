@@ -1,6 +1,7 @@
 const Student = require('../models/Student')
 const Major = require('../models/Major')
 const Specialization = require('../models/Specialization')
+const Project = require('../models/Project')
 
 class StudentController {
   // [GET] /students
@@ -139,6 +140,36 @@ class StudentController {
       res.status(500).json({ message: 'Lỗi server', error: err.message })
     }
   }
+
+    // recomment các student phù hợp với dự án (random theo ngành và chuyên ngành)
+    async recommendStudent(req, res, next) {
+      try {
+        const projectId = req.params.id
+        const project = await Project.findById(projectId)
+        if (!project) {
+          return res.status(404).json({ message: 'Không tồn tại project' })
+        }
+        const majorId = project.major._id
+        const specializationId = project.specialization._id
+        const students = await Student.find({
+          _id: { $ne: projectId }, // loại trừ chính project này
+          major: majorId,
+          specialization: specializationId
+        })
+          .select('-__v')
+          .populate('major', '-__v')
+          .populate('description', '-__v')
+        if (!students || students.length === 0) {
+          return res.status(404).json({ message: 'Không có sinh viên phù hợp với dự án' })
+        }
+  
+        res.status(200).json({ projects })
+      }
+      catch (err) {
+        res.status(500).json({ message: 'Lỗi server', error: err.message })
+      }
+    }
+  
 }
 
 module.exports = new StudentController()

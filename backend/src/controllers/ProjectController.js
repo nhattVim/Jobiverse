@@ -243,6 +243,8 @@ class ProjectController {
     }
   }
 
+  // frontend có thể random để hiển thị lên hoặc là để 3-4 project đầu tiên
+  // sau khi chọn 1 project thì sẽ recommendProject khác bên dưới
   async recommendProject(req, res, next) {
     try {
       const projectId = req.params.id
