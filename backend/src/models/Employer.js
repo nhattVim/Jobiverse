@@ -37,7 +37,8 @@ const EmployerSchema = new mongoose.Schema({
   address: {
     type: String,
     required: true
-  }
+  },
+  avatar: String
 })
 
 module.exports = mongoose.model('Employer', EmployerSchema)
