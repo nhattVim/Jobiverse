@@ -21,10 +21,10 @@ const Login = () => {
         emailOrPhone,
         password
       })
-      
-      const user = await apiFetch('/account/profile', 'GET')
+
+      const user = await apiFetch('/account/detail', 'GET')
       localStorage.setItem('user', JSON.stringify(user))
-      
+
       console.log(emailOrPhone, password)
       navigate('/')
     } catch (error) {

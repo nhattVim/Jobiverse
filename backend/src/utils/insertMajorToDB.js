@@ -1,6 +1,6 @@
 const mongoose = require('mongoose')
-const Major = require('../models/student/Major')
-const Specialization = require('../models/student/Specialization')
+const Major = require('../models/Major')
+const Specialization = require('../models/Specialization')
 
 // Kết nối MongoDB
 mongoose.connect('mongodb+srv://nhattVim:nhattVim2%2A@nhattvim.altt30u.mongodb.net/Jobiverse?retryWrites=true&w=majority&appName=nhattVim', {

@@ -9,8 +9,8 @@ router.get('/filter', studentController.filterStudent)
 
 router.use(verifyToken(['student']))
 router.get('/search', studentController.searchStudents)
+router.get('/me', studentController.getMyProfile)
 router.get('/:id', studentController.getStudentById)
-router.post('/', studentController.createStudentProfile)
-router.put('/', studentController.updateStudentProfile)
+router.post('/', studentController.saveStudentProfile)
 
 module.exports = router

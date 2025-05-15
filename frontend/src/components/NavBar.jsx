@@ -82,7 +82,7 @@ const NavBar = () => {
                   className="flex items-center transition-colors duration-300 group-hover:text-blue"
                 >
                   Việc làm
-                  <ChevronDownIcon className="w-4 ml-1 group-hover:rotate-180 transition-transform duration-300" />
+                  <ChevronDownIcon className="w-4 ml-1 transition-transform duration-300 group-hover:rotate-180" />
                 </Link>
                 {hoveredMenu === 'jobList' && (
                   <div className="w-md absolute top-full -left-1/2 z-50">
@@ -113,7 +113,7 @@ const NavBar = () => {
                   className="flex items-center transition-colors duration-300 cursor-pointer group-hover:text-blue"
                 >
                   Tạo CV
-                  <ChevronDownIcon className="w-4 ml-1 group-hover:rotate-180 transition-transform duration-300" />
+                  <ChevronDownIcon className="w-4 ml-1 transition-transform duration-300 group-hover:rotate-180" />
                 </Link>
                 {hoveredMenu === 'createCV' && (
                   <div className="w-2xs absolute top-full -left-1/2 z-50">
@@ -171,11 +171,11 @@ const NavBar = () => {
                               'https://cdn2.fptshop.com.vn/small/avatar_trang_1_cd729c335b.jpg'
                             }
                             alt="avatar"
-                            className="w-10 h-10 rounded-full"
+                            className="flex-shrink-0 w-10 h-10 rounded-full"
                           />
-                          <div className="flex flex-col justify-between">
-                            <p className="font-semibold">{userInfo?.userName}</p>
-                            <p className="text-sm">{userInfo?.email}</p>
+                          <div className="flex flex-col justify-between w-full overflow-hidden">
+                            <p className="font-semibold truncate">{userInfo?.accountType}</p>
+                            <p className="text-sm truncate">{userInfo?.email}</p>
                           </div>
                         </li>
                         <li className="px-4 py-2 transition-colors duration-300 hover:text-blue">

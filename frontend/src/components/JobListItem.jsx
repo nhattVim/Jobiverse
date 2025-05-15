@@ -1,6 +1,6 @@
-import { MapPinIcon, CurrencyDollarIcon } from "@heroicons/react/24/outline";
-import React from "react";
-import ButtonArrowOne from "../shared/ButtonArrowOne";
+import { MapPinIcon, CurrencyDollarIcon } from '@heroicons/react/24/outline'
+import React from 'react'
+import ButtonArrowOne from '../shared/ButtonArrowOne'
 
 const JobListItem = ({
   jobTitle,
@@ -8,7 +8,7 @@ const JobListItem = ({
   jobType,
   salary,
   location,
-  skill,
+  skill
 }) => {
   return (
     <div className="flex flex-col items-start gap-[30px] p-10 bg-white-mid rounded-medium w-full">
@@ -65,7 +65,7 @@ const JobListItem = ({
         <ButtonArrowOne>Ứng tuyển</ButtonArrowOne>
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default JobListItem;
+export default JobListItem

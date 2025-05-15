@@ -1,4 +1,4 @@
-import React from "react";
+import React from 'react'
 
 const BannerText = ({ title, caption }) => {
   return (
@@ -14,7 +14,7 @@ const BannerText = ({ title, caption }) => {
         </div>
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default BannerText;
+export default BannerText

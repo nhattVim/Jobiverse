@@ -29,7 +29,7 @@ const StudentSchema = new mongoose.Schema({
     type: String,
     required: true
   },
-  avatarURL: String
+  avatar: String
 })
 
 module.exports = mongoose.model('Student', StudentSchema)

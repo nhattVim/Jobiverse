@@ -3,8 +3,9 @@ const Employer = require('../models/Employer')
 const Student = require('../models/Student')
 const Account = require('../models/Account')
 const Notification = require('../models/Notification')
-const Major = require('../models/Major/Major')
-const Specialization = require('../models/Major/Specialization')
+const Major = require('../models/Major')
+const Specialization = require('../models/Specialization')
+
 class ProjectController {
   // [GET] /projects
   async getAllProjects(req, res, next) {
