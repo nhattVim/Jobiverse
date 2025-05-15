@@ -3,11 +3,11 @@ import { HeartIcon as HeartSolidIcon } from '@heroicons/react/24/solid'
 import React, { useState } from 'react'
 import ButtonArrowOne from '../shared/ButtonArrowOne'
 import apiFetch from '../services/api'
+import { ROUTES } from '../routes/routePaths'
 
 const JobCard = ({
   jobTitle,
   imgCompany,
-  jobType,
   salary,
   location,
   currentIndex,
@@ -23,7 +23,7 @@ const JobCard = ({
 
     try {
       if (newFavoriteState) {
-      await apiFetch('/favorites', 'POST', { projectId })
+        await apiFetch('/favorites', 'POST', { projectId })
       } else {
         await apiFetch(`/favorites/${projectId}`, 'DELETE')
       }
@@ -45,7 +45,7 @@ const JobCard = ({
               <div className="w-[70px] h-[70px] bg-white border border-white-low rounded-small flex justify-center items-center">
                 <img src={imgCompany} alt="imgcompany" className="w-10 h-10" />
               </div>
-              <div className="px-2 py-1 bg-yellow rounded-[5px]">{jobType}</div>
+              <div className="px-2 py-1 bg-yellow rounded-[5px]">Online</div>
             </div>
             <h6 className="text-[22px] font-semibold leading-[28.6px]">
               {jobTitle}
@@ -62,7 +62,7 @@ const JobCard = ({
             </div>
           </div>
           <div className="w-full flex items-center justify-between">
-            <ButtonArrowOne>Ứng tuyển</ButtonArrowOne>
+            <ButtonArrowOne selectedPage={ROUTES.JOB_DETAIL}>Ứng tuyển</ButtonArrowOne>
             <div onClick={handleFavorite} className="h-[46px] w-[46px] flex justify-center items-center rounded-full border-2 border-blue invisible group-hover:visible">
               {
                 isFavorited ? <HeartSolidIcon className='w-6 h-6 text-blue animate-pop'/> : <HeartIcon className='w-6 h-6 text-blue'/>

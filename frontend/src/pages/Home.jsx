@@ -187,7 +187,6 @@ const Home = () => {
                     key={index}
                     jobTitle={job.title}
                     imgCompany={'https://cdn.prod.website-files.com/66b757e42412d2f5e0906c5f/66bf2b9a2ff5d8f19427f6db_job-07.svg'}
-                    jobType={job.content}
                     salary={job.salary}
                     location={job.location}
                     currentIndex={currentIndex}
