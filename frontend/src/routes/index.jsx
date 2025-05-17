@@ -13,6 +13,7 @@ import SavedJob from '../pages/SavedJob'
 import SetInfomation from '../pages/SetInfomation'
 import JobDetail from '../pages/JobDetail'
 import EmployerInfo from '../pages/EmployerInfo'
+import ProtectedRoute from './ProtectedRoute'
 
 export const router = createBrowserRouter([
   {
@@ -30,7 +31,7 @@ export const router = createBrowserRouter([
       },
       {
         path: ROUTES.JOB_POST,
-        element: <JobPost />
+        element: <ProtectedRoute><JobPost /></ProtectedRoute>
       },
       {
         path: ROUTES.JOB_DETAIL,
@@ -38,29 +39,29 @@ export const router = createBrowserRouter([
       },
       {
         path: ROUTES.SAVED_JOB,
-        element: <SavedJob />
+        element: <ProtectedRoute><SavedJob /></ProtectedRoute>
       },
       // CV ROUTES
       {
         path: ROUTES.UPLOAD_CV,
-        element: <UploadCV />
+        element: <ProtectedRoute><UploadCV /></ProtectedRoute>
       },
       {
         path: ROUTES.CREATE_CV,
-        element: <CVEditor />
+        element: <ProtectedRoute><CVEditor /></ProtectedRoute>
       },
       {
         path: ROUTES.CV_MANAGEMENT,
-        element: <CVManagement />
+        element: <ProtectedRoute><CVManagement /></ProtectedRoute>
       },
       {
         path: ROUTES.UPDATE_CV,
-        element: <CVEditor />
+        element: <ProtectedRoute><CVEditor /></ProtectedRoute>
       },
       // INFORMATION ROUTES
       {
         path: ROUTES.SET_INFORMATION,
-        element: <SetInfomation />
+        element: <ProtectedRoute><SetInfomation /></ProtectedRoute>
       },
       {
         path: '/employer-info',
