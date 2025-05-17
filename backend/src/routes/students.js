@@ -7,6 +7,8 @@ router.get('/', studentController.getAllStudents) // change to admin
 
 router.get('/filter', studentController.filterStudent)
 
+router.get('/recomment/:id', studentController.recommendStudent)
+
 router.use(verifyToken(['student']))
 router.get('/search', studentController.searchStudents)
 router.get('/me', studentController.getMyProfile)

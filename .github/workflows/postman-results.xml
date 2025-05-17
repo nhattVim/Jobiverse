@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuites name="Jobiverse" tests="50" time="0.842">
+  <testsuite name="Auth / Register account" id="656884cf-29fd-40ae-a71e-a5377518ccd6" timestamp="2025-05-15T12:33:27.956Z" tests="0" failures="0" errors="0" time="0.082"/>
+  <testsuite name="Auth / Login account" id="8b6aa971-d790-41f9-aa3e-0ea4d3d56966" timestamp="2025-05-15T12:33:27.956Z" tests="4" failures="0" errors="0" time="0.128">
+    <testcase name="Status code is 200" time="0.128" classname="AuthLoginAccount"/>
+    <testcase name="Login scuccessfull" time="0.128" classname="AuthLoginAccount"/>
+    <testcase name="Response is a valid JSON" time="0.128" classname="AuthLoginAccount"/>
+    <testcase name="Token is present" time="0.128" classname="AuthLoginAccount"/>
+  </testsuite>
+  <testsuite name="Auth / Logout account" id="c0b9d031-1356-47f4-8012-05a1e97b2d63" timestamp="2025-05-15T12:33:27.956Z" tests="0" failures="0" errors="0" time="0.004"/>
+  <testsuite name="Account / Get all account" id="568ccc24-99ec-4107-a82b-fd7e1576cffb" timestamp="2025-05-15T12:33:27.956Z" tests="0" failures="0" errors="0" time="0.004"/>
+  <testsuite name="Account / Get account by ID" id="24461f18-7816-43f6-91c5-01caf7cbaabd" timestamp="2025-05-15T12:33:27.956Z" tests="0" failures="0" errors="0" time="0.003"/>
+  <testsuite name="Account / Get all deleted account" id="4834ddc7-2aed-4206-933b-093b4d4e4869" timestamp="2025-05-15T12:33:27.956Z" tests="0" failures="0" errors="0" time="0.003"/>
+  <testsuite name="Account / Get account detail" id="b01d58cd-3cfa-49d1-9b44-088baa6be6f2" timestamp="2025-05-15T12:33:27.956Z" tests="0" failures="0" errors="0" time="0.004"/>
+  <testsuite name="Account / Change password" id="889336ac-b7be-4905-a6a0-e233d6c7b2d7" timestamp="2025-05-15T12:33:27.956Z" tests="0" failures="0" errors="0" time="0.004"/>
+  <testsuite name="Account / Delete account (soft)" id="de4b82e3-cce7-4576-bd43-a8ba68e73b14" timestamp="2025-05-15T12:33:27.956Z" tests="0" failures="0" errors="0" time="0.003"/>
+  <testsuite name="Account / Delete account (force)" id="49c8c7d9-d99b-4c2c-8da6-6b9163268bb6" timestamp="2025-05-15T12:33:27.956Z" tests="0" failures="0" errors="0" time="0.003"/>
+  <testsuite name="Account / Restore account" id="60254d10-31e1-48d7-8f24-7ee96598aad7" timestamp="2025-05-15T12:33:27.956Z" tests="0" failures="0" errors="0" time="0.002"/>
+  <testsuite name="Employer / Get all employer" id="e0aa7bb2-b342-45e7-959e-89ddc2bd8771" timestamp="2025-05-15T12:33:27.956Z" tests="0" failures="0" errors="0" time="0.110"/>
+  <testsuite name="Employer / Get employer by ID" id="556bf7bb-2d3d-4c5e-92d4-39398a9be500" timestamp="2025-05-15T12:33:27.956Z" tests="0" failures="0" errors="0" time="0.003"/>
+  <testsuite name="Employer / Create employer profile" id="abb30771-04f2-4dc4-a111-539ebfe79ce4" timestamp="2025-05-15T12:33:27.956Z" tests="0" failures="0" errors="0" time="0.002"/>
+  <testsuite name="Employer / Search employer" id="081e7a66-d754-4ef3-9d3b-7c40b0a71285" timestamp="2025-05-15T12:33:27.956Z" tests="0" failures="0" errors="0" time="0.002"/>
+  <testsuite name="Employer / Update employer" id="4f7d4051-92ba-4012-a95a-438139891df0" timestamp="2025-05-15T12:33:27.956Z" tests="0" failures="0" errors="0" time="0.003"/>
+  <testsuite name="Student / Get all students" id="d45efc36-c3b4-40a4-a5a8-5d365e3917c2" timestamp="2025-05-15T12:33:27.956Z" tests="0" failures="0" errors="0" time="0.113"/>
+  <testsuite name="Student / Get student by ID" id="7c260629-2e9b-4017-9720-2c32d4366a3e" timestamp="2025-05-15T12:33:27.956Z" tests="0" failures="0" errors="0" time="0.003"/>
+  <testsuite name="Student / Get my profile" id="9ddd3f15-d5b5-4731-b155-18b20a7002fb" timestamp="2025-05-15T12:33:27.956Z" tests="0" failures="0" errors="0" time="0.004"/>
+  <testsuite name="Student / Create student profile" id="7d1c8a62-c7b9-4093-8205-04143c9bccce" timestamp="2025-05-15T12:33:27.956Z" tests="0" failures="0" errors="0" time="0.003"/>
+  <testsuite name="Student / Search student" id="52ca2bf0-6792-46e7-b92d-612e4d1996cd" timestamp="2025-05-15T12:33:27.956Z" tests="0" failures="0" errors="0" time="0.003"/>
+  <testsuite name="Student / Update student" id="d15b9d02-fc64-4a30-ac6b-665def2d3630" timestamp="2025-05-15T12:33:27.956Z" tests="0" failures="0" errors="0" time="0.003"/>
+  <testsuite name="Student / Filter student by Major" id="3b225d79-c059-4365-ad07-5860b68d05f3" timestamp="2025-05-15T12:33:27.956Z" tests="0" failures="0" errors="0" time="0.165"/>
+  <testsuite name="Student / recomentStudent" id="e51d8d84-9285-472d-888f-f646dcd27e9d" timestamp="2025-05-15T12:33:27.956Z" tests="0" failures="0" errors="1" time="0.000">
+    <system-err><![CDATA[Iteration: 0
+RequestError: Error: runtime:extensions~request: request url is empty
+    at Requester.request (C:\Users\nhatt\scoop\persist\yarn\global\node_modules\postman-runtime\lib\requester\requester.js:421:26)
+    at C:\Users\nhatt\scoop\persist\yarn\global\node_modules\postman-runtime\lib\runner\extensions\http-request.command.js:156:37
+    at Requester.create (C:\Users\nhatt\scoop\persist\yarn\global\node_modules\postman-runtime\lib\requester\requester.js:508:16)
+    at RequesterPool.create (C:\Users\nhatt\scoop\persist\yarn\global\node_modules\postman-runtime\lib\requester\requester-pool.js:67:22)
+    at C:\Users\nhatt\scoop\persist\yarn\global\node_modules\postman-runtime\lib\runner\extensions\http-request.command.js:105:32
+    at C:\Users\nhatt\scoop\persist\yarn\global\node_modules\async\dist\async.js:252:13
+    at wrapper (C:\Users\nhatt\scoop\persist\yarn\global\node_modules\async\dist\async.js:273:20)
+    at replenish (C:\Users\nhatt\scoop\persist\yarn\global\node_modules\async\dist\async.js:443:29)
+    at C:\Users\nhatt\scoop\persist\yarn\global\node_modules\async\dist\async.js:453:13
+    at eachOfLimit (C:\Users\nhatt\scoop\persist\yarn\global\node_modules\async\dist\async.js:479:36)
+    at awaitable (C:\Users\nhatt\scoop\persist\yarn\global\node_modules\async\dist\async.js:212:32)
+    at eachOfSeries (C:\Users\nhatt\scoop\persist\yarn\global\node_modules\async\dist\async.js:815:16)
+    at awaitable (C:\Users\nhatt\scoop\persist\yarn\global\node_modules\async\dist\async.js:212:32)
+    at _asyncMap (C:\Users\nhatt\scoop\persist\yarn\global\node_modules\async\dist\async.js:245:16)
+    at mapSeries (C:\Users\nhatt\scoop\persist\yarn\global\node_modules\async\dist\async.js:839:16)
+    at awaitable (C:\Users\nhatt\scoop\persist\yarn\global\node_modules\async\dist\async.js:212:32)
+
+---
+]]></system-err>
+  </testsuite>
+  <testsuite name="CV / Get all student CV" id="946c9c30-e2c7-4f45-87b3-b79eb47e2ea5" timestamp="2025-05-15T12:33:27.956Z" tests="0" failures="0" errors="0" time="0.003"/>
+  <testsuite name="CV / Get student CV" id="03918475-554d-455a-9382-207e79807b95" timestamp="2025-05-15T12:33:27.956Z" tests="0" failures="0" errors="0" time="0.002"/>
+  <testsuite name="CV / Create &amp; Update student CV" id="690f75a9-fe5a-40ae-b96c-fe5a77263ac7" timestamp="2025-05-15T12:33:27.956Z" tests="0" failures="0" errors="0" time="0.003"/>
+  <testsuite name="CV / Delete student CV" id="5dc2efa1-c2bb-4c15-883b-05f838bb332b" timestamp="2025-05-15T12:33:27.956Z" tests="0" failures="0" errors="0" time="0.002"/>
+  <testsuite name="CV / Generate pdf" id="f4f4ca34-6391-4c3c-a1cd-b106ea3b787b" timestamp="2025-05-15T12:33:27.956Z" tests="0" failures="0" errors="0" time="0.003"/>
+  <testsuite name="CV / Generate pdf Copy" id="540f5352-50e9-448b-abc1-c248158ed6fb" timestamp="2025-05-15T12:33:27.956Z" tests="0" failures="0" errors="0" time="0.005"/>
+  <testsuite name="Project / Get all project" id="a0e77adc-cc61-4adc-aea1-49b4f0b13e78" timestamp="2025-05-15T12:33:27.956Z" tests="0" failures="0" errors="0" time="0.003"/>
+  <testsuite name="Project / Get my project" id="9fa812e1-1ae3-41ab-929e-b22586f3c980" timestamp="2025-05-15T12:33:27.956Z" tests="0" failures="0" errors="0" time="0.002"/>
+  <testsuite name="Project / Search Project by Major" id="1baff931-8703-4d87-b02b-b216833081b8" timestamp="2025-05-15T12:33:27.956Z" tests="0" failures="0" errors="0" time="0.002"/>
+  <testsuite name="Project / Create project" id="3de009a2-9c09-46ab-b2d3-51db16717f75" timestamp="2025-05-15T12:33:27.956Z" tests="0" failures="0" errors="0" time="0.003"/>
+  <testsuite name="Project / Delete project" id="af99e558-8754-4c1c-8d6b-35157a9f0c86" timestamp="2025-05-15T12:33:27.956Z" tests="0" failures="0" errors="0" time="0.002"/>
+  <testsuite name="Project / Update project" id="880261e1-919c-4c98-a977-fff9e1af5565" timestamp="2025-05-15T12:33:27.956Z" tests="0" failures="0" errors="0" time="0.003"/>
+  <testsuite name="Project / Update project status" id="83793aea-e025-41e7-824b-0833066cda89" timestamp="2025-05-15T12:33:27.956Z" tests="0" failures="0" errors="0" time="0.003"/>
+  <testsuite name="Project / Student apply to project" id="87c7ce05-c16f-428a-ae93-632f05bb7c55" timestamp="2025-05-15T12:33:27.956Z" tests="0" failures="0" errors="0" time="0.002"/>
+  <testsuite name="Project / Respond to application" id="5ca658b6-fc87-4ca1-ae4f-ae04b085067a" timestamp="2025-05-15T12:33:27.956Z" tests="0" failures="0" errors="0" time="0.003"/>
+  <testsuite name="Project / RecommendProject" id="b54851c7-3b20-44bc-8ca1-48ebfade8d14" timestamp="2025-05-15T12:33:27.956Z" tests="0" failures="0" errors="0" time="0.003"/>
+  <testsuite name="Notification / Get notifications" id="3a0ceb59-b18a-4e35-8521-e309eb016ad7" timestamp="2025-05-15T12:33:27.956Z" tests="0" failures="0" errors="0" time="0.003"/>
+  <testsuite name="Notification / Get unread count" id="331387de-4509-4809-92f0-457ecf73a35c" timestamp="2025-05-15T12:33:27.956Z" tests="0" failures="0" errors="0" time="0.002"/>
+  <testsuite name="Notification / Delete notifications" id="7a8584cf-a9a1-4cb7-9af9-22d98b698ddd" timestamp="2025-05-15T12:33:27.956Z" tests="0" failures="0" errors="0" time="0.002"/>
+  <testsuite name="Notification / Mark as read" id="a7d6ab14-2c8d-4681-bed7-0671792c3f66" timestamp="2025-05-15T12:33:27.956Z" tests="0" failures="0" errors="0" time="0.004"/>
+  <testsuite name="Major / Get all majors" id="9c65e47d-dfc9-4264-ba73-b9b0a356988b" timestamp="2025-05-15T12:33:27.956Z" tests="0" failures="0" errors="0" time="0.063"/>
+  <testsuite name="Major / Get major by id" id="4bdc5096-7050-4cf9-8297-3c19f66fa8f3" timestamp="2025-05-15T12:33:27.956Z" tests="0" failures="0" errors="0" time="0.003"/>
+  <testsuite name="Specialization / Get all specialization" id="840a9091-b0af-4673-948b-25e1d544b167" timestamp="2025-05-15T12:33:27.956Z" tests="0" failures="0" errors="0" time="0.059"/>
+  <testsuite name="Specialization / Get specialization by id" id="aa609ab3-7602-46a3-a620-c3aabe7b3973" timestamp="2025-05-15T12:33:27.956Z" tests="0" failures="0" errors="0" time="0.003"/>
+  <testsuite name="Favorite / Save favorite" id="9dd3af23-3082-43da-a091-3d9df09170fc" timestamp="2025-05-15T12:33:27.956Z" tests="0" failures="0" errors="0" time="0.003"/>
+  <testsuite name="Favorite / Get all favorites" id="ad70dd03-494e-4a4b-91e9-f52605af7687" timestamp="2025-05-15T12:33:27.956Z" tests="0" failures="0" errors="0" time="0.002"/>
+</testsuites>

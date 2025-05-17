@@ -1,0 +1,2608 @@
+{
+	"info": {
+		"_postman_id": "a12ad019-9412-4d4a-8309-04aff89a752b",
+		"name": "Jobiverse",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "42757535",
+		"_collection_link": "https://jobiverse-api-team-1878.postman.co/workspace/Jobiverse-API-team-Workspace~a8f7f129-3c74-43fc-87b6-979f60f455b2/collection/42757535-a12ad019-9412-4d4a-8309-04aff89a752b?action=share&source=collection_link&creator=42757535"
+	},
+	"item": [
+		{
+			"name": "Auth",
+			"item": [
+				{
+					"name": "Register account",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"accountType\": \"admin\",\r\n    \"email\": \"admin@gmail.com\",\r\n    \"phoneNumber\": \"0353260427\",\r\n    \"password\": \"123456\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/register",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"register"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "Register account",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"accountType\": \"student\",\r\n    \"userName\": \"abc\",\r\n    \"email\": \"abc@gmail.com\",\r\n    \"password\": \"123456\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:3000/register",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "3000",
+									"path": [
+										"register"
+									]
+								}
+							},
+							"status": "Created",
+							"code": 201,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "http://localhost:5173"
+								},
+								{
+									"key": "Vary",
+									"value": "Origin"
+								},
+								{
+									"key": "Access-Control-Allow-Credentials",
+									"value": "true"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "84"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"54-xcGYLQOSLq3EQFdcyIg3Iv7b5uo\""
+								},
+								{
+									"key": "Date",
+									"value": "Thu, 01 May 2025 13:52:52 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"message\": \"Tạo tài khoản thành công\",\n    \"accountID\": \"68137cb4c94e9923688e3495\"\n}"
+						}
+					]
+				},
+				{
+					"name": "Login account",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"let jsonData = pm.response.json();\r",
+									"\r",
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"}); \r",
+									"\r",
+									"pm.test(\"Login scuccessfull\", function () {\r",
+									"    pm.expect(jsonData.message).to.equal(\"Đăng nhập thành công\");\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response is a valid JSON\", function () {\r",
+									"    pm.expect(pm.response.headers.get(\"Content-Type\")).to.include(\"application/json\");\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Token is present\", function () {\r",
+									"    pm.expect(jsonData).to.have.property(\"token\");\r",
+									"    pm.expect(jsonData.token).to.be.a(\"string\").and.not.empty;\r",
+									"});\r",
+									"\r",
+									"pm.environment.set(\"accessToken\", jsonData.token);\r",
+									"console.log(\"Saved token:\", jsonData.token);\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"emailOrPhone\": \"phucbao19@gmail.com\",\r\n  \"password\": \"123456\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/login",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"login"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "Login account",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  //\"email\": \"admin@gmail.com\",\r\n  \"email\": \"fptsoftware@gmail.com\",\r\n  //\"email\": \"nhattVim@gmail.com\",\r\n  //\"email\": \"phucbao19@gmail.com\"\r\n  \"password\": \"123456\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:3000/login",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "3000",
+									"path": [
+										"login"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "http://localhost:5173"
+								},
+								{
+									"key": "Vary",
+									"value": "Origin"
+								},
+								{
+									"key": "Access-Control-Allow-Credentials",
+									"value": "true"
+								},
+								{
+									"key": "Set-Cookie",
+									"value": "token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4MTM3MDEwMjFmZmU1ZmI5ZGQwOTEwNCIsInR5cGUiOiJlbXBsb3llciIsImlhdCI6MTc0NjEwNzUwMywiZXhwIjoxNzQ2NzEyMzAzfQ.9snByVr7jnhjprSQ3uVvWah_29E6a2ZAc_yR_3GvTN4; Max-Age=604800; Path=/; Expires=Thu, 08 May 2025 13:51:43 GMT; HttpOnly; SameSite=Strict"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "40"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"28-6ESF0DDHQq39VpPyPkvT9UdzixA\""
+								},
+								{
+									"key": "Date",
+									"value": "Thu, 01 May 2025 13:51:43 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"message\": \"Đăng nhập thành công\"\n}"
+						}
+					]
+				},
+				{
+					"name": "Logout account",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:3000/logout",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"logout"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "Logout account",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:3000/logout",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "3000",
+									"path": [
+										"logout"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "http://localhost:5173"
+								},
+								{
+									"key": "Vary",
+									"value": "Origin"
+								},
+								{
+									"key": "Access-Control-Allow-Credentials",
+									"value": "true"
+								},
+								{
+									"key": "Set-Cookie",
+									"value": "token=; Path=/; Expires=Thu, 01 Jan 1970 00:00:00 GMT; HttpOnly; SameSite=Strict"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "40"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"28-EeSMzLVUdT/4VxlKxnso6IW6jTg\""
+								},
+								{
+									"key": "Date",
+									"value": "Thu, 01 May 2025 13:53:14 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"message\": \"Đăng xuất thành công\"\n}"
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "Account",
+			"item": [
+				{
+					"name": "Get all account",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:3000/account",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"account"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "Get all account",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:3000/account",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "3000",
+									"path": [
+										"account"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "http://localhost:5173"
+								},
+								{
+									"key": "Vary",
+									"value": "Origin"
+								},
+								{
+									"key": "Access-Control-Allow-Credentials",
+									"value": "true"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "1566"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"61e-BUYQFafwecFXyZGeXrAMAiTRFJ8\""
+								},
+								{
+									"key": "Date",
+									"value": "Thu, 01 May 2025 13:53:37 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [],
+							"body": "[\n    {\n        \"_id\": \"681097e7377e6d760ee920c6\",\n        \"accountType\": \"admin\",\n        \"userName\": \"admin\",\n        \"email\": \"admin@gmail.com\",\n        \"deleted\": false,\n        \"createdAt\": \"2025-04-29T09:12:07.558Z\",\n        \"updatedAt\": \"2025-04-29T09:12:07.558Z\"\n    },\n    {\n        \"_id\": \"681097f9377e6d760ee920c9\",\n        \"accountType\": \"student\",\n        \"userName\": \"nhattVim\",\n        \"email\": \"nhattVim@gmail.com\",\n        \"deleted\": false,\n        \"createdAt\": \"2025-04-29T09:12:25.805Z\",\n        \"updatedAt\": \"2025-05-01T06:56:29.120Z\"\n    },\n    {\n        \"_id\": \"68109a53b1981ba17f2a77db\",\n        \"accountType\": \"employer\",\n        \"email\": \"nhattruong13112000@gmail.com\",\n        \"deleted\": false,\n        \"createdAt\": \"2025-04-29T09:22:27.360Z\",\n        \"updatedAt\": \"2025-04-29T09:22:27.360Z\"\n    },\n    {\n        \"_id\": \"6811869ba5c211ab3be1a292\",\n        \"accountType\": \"employer\",\n        \"userName\": \"trung7542\",\n        \"email\": \"trung7542@gmail.com\",\n        \"deleted\": false,\n        \"createdAt\": \"2025-04-30T02:10:35.711Z\",\n        \"updatedAt\": \"2025-04-30T02:10:35.711Z\"\n    },\n    {\n        \"_id\": \"68118a2b34c9fbe6a8651e71\",\n        \"accountType\": \"employer\",\n        \"email\": \"trunghc7542@gmail.com\",\n        \"deleted\": false,\n        \"createdAt\": \"2025-04-30T02:25:47.277Z\",\n        \"updatedAt\": \"2025-04-30T02:25:47.277Z\"\n    },\n    {\n        \"_id\": \"68122d5caf2641049dd1577f\",\n        \"accountType\": \"employer\",\n        \"email\": \"ascas@gmail.com\",\n        \"deleted\": false,\n        \"createdAt\": \"2025-04-30T14:02:04.468Z\",\n        \"updatedAt\": \"2025-05-01T01:35:46.268Z\"\n    },\n    {\n        \"_id\": \"6813701021ffe5fb9dd09104\",\n        \"accountType\": \"employer\",\n        \"userName\": \"fsoft\",\n        \"email\": \"fptsoftware@gmail.com\",\n        \"deleted\": false,\n        \"createdAt\": \"2025-05-01T12:58:56.652Z\",\n        \"updatedAt\": \"2025-05-01T12:58:56.652Z\"\n    },\n    {\n        \"_id\": \"68137cb4c94e9923688e3495\",\n        \"accountType\": \"student\",\n        \"userName\": \"abc\",\n        \"email\": \"abc@gmail.com\",\n        \"deleted\": false,\n        \"createdAt\": \"2025-05-01T13:52:52.268Z\",\n        \"updatedAt\": \"2025-05-01T13:52:52.268Z\"\n    }\n]"
+						}
+					]
+				},
+				{
+					"name": "Get account by ID",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:3000/account/681097e7377e6d760ee920c6",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"account",
+								"681097e7377e6d760ee920c6"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "Get account by ID",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:3000/account/681097e7377e6d760ee920c6",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "3000",
+									"path": [
+										"account",
+										"681097e7377e6d760ee920c6"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "http://localhost:5173"
+								},
+								{
+									"key": "Vary",
+									"value": "Origin"
+								},
+								{
+									"key": "Access-Control-Allow-Credentials",
+									"value": "true"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "195"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"c3-vnNf3dJ/yM5IWUaUAiEH14VxGkA\""
+								},
+								{
+									"key": "Date",
+									"value": "Thu, 01 May 2025 13:54:05 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"_id\": \"681097e7377e6d760ee920c6\",\n    \"accountType\": \"admin\",\n    \"userName\": \"admin\",\n    \"email\": \"admin@gmail.com\",\n    \"deleted\": false,\n    \"createdAt\": \"2025-04-29T09:12:07.558Z\",\n    \"updatedAt\": \"2025-04-29T09:12:07.558Z\"\n}"
+						}
+					]
+				},
+				{
+					"name": "Get all deleted account",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:3000/account/deleted",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"account",
+								"deleted"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "Get all deleted account",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:3000/account/deleted",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "3000",
+									"path": [
+										"account",
+										"deleted"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "http://localhost:5173"
+								},
+								{
+									"key": "Vary",
+									"value": "Origin"
+								},
+								{
+									"key": "Access-Control-Allow-Credentials",
+									"value": "true"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "180"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"b4-GoKXWasK03uuEkIY9KYE19KjG/M\""
+								},
+								{
+									"key": "Date",
+									"value": "Thu, 01 May 2025 13:55:12 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [],
+							"body": "[\n    {\n        \"_id\": \"68122d5caf2641049dd1577f\",\n        \"accountType\": \"employer\",\n        \"email\": \"ascas@gmail.com\",\n        \"deleted\": true,\n        \"createdAt\": \"2025-04-30T14:02:04.468Z\",\n        \"updatedAt\": \"2025-05-01T13:55:05.583Z\"\n    }\n]"
+						}
+					]
+				},
+				{
+					"name": "Get account detail",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:3000/account/detail",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"account",
+								"detail"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "Get account profile",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:3000/account/profile",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "3000",
+									"path": [
+										"account",
+										"profile"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "http://localhost:5173"
+								},
+								{
+									"key": "Vary",
+									"value": "Origin"
+								},
+								{
+									"key": "Access-Control-Allow-Credentials",
+									"value": "true"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "195"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"c3-vnNf3dJ/yM5IWUaUAiEH14VxGkA\""
+								},
+								{
+									"key": "Date",
+									"value": "Thu, 01 May 2025 13:55:34 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"_id\": \"681097e7377e6d760ee920c6\",\n    \"accountType\": \"admin\",\n    \"userName\": \"admin\",\n    \"email\": \"admin@gmail.com\",\n    \"deleted\": false,\n    \"createdAt\": \"2025-04-29T09:12:07.558Z\",\n    \"updatedAt\": \"2025-04-29T09:12:07.558Z\"\n}"
+						}
+					]
+				},
+				{
+					"name": "Change password",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"oldPassword\": \"123\",\r\n    \"newPassword\": \"123456\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/account/change-password",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"account",
+								"change-password"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "Change password",
+							"originalRequest": {
+								"method": "PUT",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"oldPassword\": \"123456\",\r\n    \"newPassword\": \"123\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:3000/account/change-password",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "3000",
+									"path": [
+										"account",
+										"change-password"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "http://localhost:5173"
+								},
+								{
+									"key": "Vary",
+									"value": "Origin"
+								},
+								{
+									"key": "Access-Control-Allow-Credentials",
+									"value": "true"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "47"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"2f-ETblMlCRkk7ny01GjN2QsjdSnnk\""
+								},
+								{
+									"key": "Date",
+									"value": "Thu, 01 May 2025 13:55:53 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"message\": \"Đổi mật khẩu thành công.\"\n}"
+						}
+					]
+				},
+				{
+					"name": "Delete account (soft)",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:3000/account/68122d5caf2641049dd1577f",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"account",
+								"68122d5caf2641049dd1577f"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "Delete account (soft)",
+							"originalRequest": {
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:3000/account/68122d5caf2641049dd1577f",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "3000",
+									"path": [
+										"account",
+										"68122d5caf2641049dd1577f"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "http://localhost:5173"
+								},
+								{
+									"key": "Vary",
+									"value": "Origin"
+								},
+								{
+									"key": "Access-Control-Allow-Credentials",
+									"value": "true"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "44"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"2c-/KXl6iBfkroesibhtSpx5BF6R7E\""
+								},
+								{
+									"key": "Date",
+									"value": "Thu, 01 May 2025 13:55:05 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"message\": \"Xóa tài khoản thành công\"\n}"
+						}
+					]
+				},
+				{
+					"name": "Delete account (force)",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:3000/account/force/6811869ba5c211ab3be1a292",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"account",
+								"force",
+								"6811869ba5c211ab3be1a292"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "Delete account (force)",
+							"originalRequest": {
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:3000/account/force/6811869ba5c211ab3be1a292",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "3000",
+									"path": [
+										"account",
+										"force",
+										"6811869ba5c211ab3be1a292"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "http://localhost:5173"
+								},
+								{
+									"key": "Vary",
+									"value": "Origin"
+								},
+								{
+									"key": "Access-Control-Allow-Credentials",
+									"value": "true"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "57"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"39-vsty852uU3fd+nQIDMW26OieoF8\""
+								},
+								{
+									"key": "Date",
+									"value": "Thu, 01 May 2025 13:56:50 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"message\": \"Xóa vĩnh viễn tài khoản thành công\"\n}"
+						}
+					]
+				},
+				{
+					"name": "Restore account",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:3000/account/restore/68122d5caf2641049dd1577f",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"account",
+								"restore",
+								"68122d5caf2641049dd1577f"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "Restore account",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:3000/account/restore/68122d5caf2641049dd1577f",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "3000",
+									"path": [
+										"account",
+										"restore",
+										"68122d5caf2641049dd1577f"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "http://localhost:5173"
+								},
+								{
+									"key": "Vary",
+									"value": "Origin"
+								},
+								{
+									"key": "Access-Control-Allow-Credentials",
+									"value": "true"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "52"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"34-hRtoe2Xj/Ac8AOC9HEkmtop1xkM\""
+								},
+								{
+									"key": "Date",
+									"value": "Thu, 01 May 2025 13:56:21 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"message\": \"Khôi phục tài khoản thành công\"\n}"
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "Employer",
+			"item": [
+				{
+					"name": "Get all employer",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:3000/employers",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"employers"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "Get all employer",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:3000/employers",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "3000",
+									"path": [
+										"employers"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "http://localhost:5173"
+								},
+								{
+									"key": "Vary",
+									"value": "Origin"
+								},
+								{
+									"key": "Access-Control-Allow-Credentials",
+									"value": "true"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "520"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"208-HXLJjzkI6TNQKwf9+EGbRYZB0e0\""
+								},
+								{
+									"key": "Date",
+									"value": "Thu, 01 May 2025 13:58:02 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [],
+							"body": "[\n    {\n        \"_id\": \"68137ddcc94e9923688e34b7\",\n        \"account\": {\n            \"_id\": \"6813701021ffe5fb9dd09104\",\n            \"accountType\": \"employer\",\n            \"userName\": \"fsoft\",\n            \"email\": \"fptsoftware@gmail.com\",\n            \"deleted\": false,\n            \"createdAt\": \"2025-05-01T12:58:56.652Z\",\n            \"updatedAt\": \"2025-05-01T12:58:56.652Z\"\n        },\n        \"businessScale\": \"Companies\",\n        \"companyName\": \"FPT Software\",\n        \"representativeName\": \"Chu Thị Thanh Hà\",\n        \"position\": \"Chủ tịch\",\n        \"interests\": [],\n        \"industry\": \"Phần mềm\",\n        \"companyInfo\": \"We Are A Comprehensive Technology Enabler\",\n        \"prove\": \"1234567\",\n        \"address\": \"Không biết\"\n    }\n]"
+						}
+					]
+				},
+				{
+					"name": "Get employer by ID",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:3000/employers/68137ddcc94e9923688e34b7",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"employers",
+								"68137ddcc94e9923688e34b7"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "Get employer by ID",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:3000/employers/68137ddcc94e9923688e34b7",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "3000",
+									"path": [
+										"employers",
+										"68137ddcc94e9923688e34b7"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "http://localhost:5173"
+								},
+								{
+									"key": "Vary",
+									"value": "Origin"
+								},
+								{
+									"key": "Access-Control-Allow-Credentials",
+									"value": "true"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "526"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"20e-347EaseSJs96aIvlN1t0FIygzjQ\""
+								},
+								{
+									"key": "Date",
+									"value": "Thu, 01 May 2025 13:58:30 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"_id\": \"68137ddcc94e9923688e34b7\",\n    \"account\": {\n        \"_id\": \"6813701021ffe5fb9dd09104\",\n        \"accountType\": \"employer\",\n        \"userName\": \"fsoft\",\n        \"email\": \"fptsoftware@gmail.com\",\n        \"deleted\": false,\n        \"createdAt\": \"2025-05-01T12:58:56.652Z\",\n        \"updatedAt\": \"2025-05-01T12:58:56.652Z\",\n        \"__v\": 0\n    },\n    \"businessScale\": \"Companies\",\n    \"companyName\": \"FPT Software\",\n    \"representativeName\": \"Chu Thị Thanh Hà\",\n    \"position\": \"Chủ tịch\",\n    \"interests\": [],\n    \"industry\": \"Phần mềm\",\n    \"companyInfo\": \"We Are A Comprehensive Technology Enabler\",\n    \"prove\": \"1234567\",\n    \"address\": \"Không biết\"\n}"
+						}
+					]
+				},
+				{
+					"name": "Create employer profile",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"companyName\": \"Quán caffe 198\",\r\n    \"representativeName\": \"Hồ Chí Trung\",\r\n    \"position\": \"trùngk\",\r\n    \"industry\": \"Phần mềm\",\r\n    \"companyInfo\": \"We Are A Comprehensive Technology Enabler\",\r\n    \"businessScale\": \"Companies\",\r\n    \"address\": \"Không biết\",\r\n    \"prove\": \"125547554\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/employers",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"employers"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "Create employer profile",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"companyName\": \"FPT Software\",\r\n    \"representativeName\": \"Chu Thị Thanh Hà\",\r\n    \"position\": \"Chủ tịch\",\r\n    \"industry\": \"Phần mềm\",\r\n    \"companyInfo\": \"We Are A Comprehensive Technology Enabler\",\r\n    \"businessScale\": \"Companies\",\r\n    \"address\": \"Không biết\",\r\n    \"prove\": \"1234567\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:3000/employers",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "3000",
+									"path": [
+										"employers"
+									]
+								}
+							},
+							"status": "Created",
+							"code": 201,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "http://localhost:5173"
+								},
+								{
+									"key": "Vary",
+									"value": "Origin"
+								},
+								{
+									"key": "Access-Control-Allow-Credentials",
+									"value": "true"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "410"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"19a-a8cpEojkX3IyI+k6DoxCBJvnH5M\""
+								},
+								{
+									"key": "Date",
+									"value": "Thu, 01 May 2025 13:57:48 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"message\": \"Tạo hồ sơ employer thành công\",\n    \"employer\": {\n        \"account\": \"6813701021ffe5fb9dd09104\",\n        \"businessScale\": \"Companies\",\n        \"companyName\": \"FPT Software\",\n        \"representativeName\": \"Chu Thị Thanh Hà\",\n        \"position\": \"Chủ tịch\",\n        \"interests\": [],\n        \"industry\": \"Phần mềm\",\n        \"companyInfo\": \"We Are A Comprehensive Technology Enabler\",\n        \"prove\": \"1234567\",\n        \"address\": \"Không biết\",\n        \"_id\": \"68137ddcc94e9923688e34b7\",\n        \"__v\": 0\n    }\n}"
+						}
+					]
+				},
+				{
+					"name": "Search employer",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:3000/employers/search?companyName=FPT&representativeName=Chu",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"employers",
+								"search"
+							],
+							"query": [
+								{
+									"key": "companyName",
+									"value": "FPT"
+								},
+								{
+									"key": "representativeName",
+									"value": "Chu"
+								}
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "Search employer",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:3000/employers/search?companyName=FPT&representativeName=Chu",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "3000",
+									"path": [
+										"employers",
+										"search"
+									],
+									"query": [
+										{
+											"key": "companyName",
+											"value": "FPT"
+										},
+										{
+											"key": "representativeName",
+											"value": "Chu"
+										}
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "http://localhost:5173"
+								},
+								{
+									"key": "Vary",
+									"value": "Origin"
+								},
+								{
+									"key": "Access-Control-Allow-Credentials",
+									"value": "true"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "853"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"355-Pyst2xTjvO95CC70+plD6iKmarQ\""
+								},
+								{
+									"key": "Date",
+									"value": "Thu, 01 May 2025 13:58:37 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"employers\": [\n        {\n            \"_id\": \"681197a4557f9d81c8c0f07e\",\n            \"account\": null,\n            \"businessScale\": \"Companies\",\n            \"companyName\": \"FPT Software\",\n            \"representativeName\": \"Chu Thị Thanh Hà\",\n            \"position\": \"Chủ tịch\",\n            \"interests\": [],\n            \"industry\": \"Phần mềm\",\n            \"companyInfo\": \"We Are A Comprehensive Technology Enabler\",\n            \"prove\": \"1234567\",\n            \"address\": \"Không biết\"\n        },\n        {\n            \"_id\": \"68137ddcc94e9923688e34b7\",\n            \"account\": {\n                \"_id\": \"6813701021ffe5fb9dd09104\",\n                \"accountType\": \"employer\",\n                \"userName\": \"fsoft\",\n                \"email\": \"fptsoftware@gmail.com\",\n                \"deleted\": false,\n                \"createdAt\": \"2025-05-01T12:58:56.652Z\",\n                \"updatedAt\": \"2025-05-01T12:58:56.652Z\"\n            },\n            \"businessScale\": \"Companies\",\n            \"companyName\": \"FPT Software\",\n            \"representativeName\": \"Chu Thị Thanh Hà\",\n            \"position\": \"Chủ tịch\",\n            \"interests\": [],\n            \"industry\": \"Phần mềm\",\n            \"companyInfo\": \"We Are A Comprehensive Technology Enabler\",\n            \"prove\": \"1234567\",\n            \"address\": \"Không biết\"\n        }\n    ]\n}"
+						}
+					]
+				},
+				{
+					"name": "Update employer",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"companyName\": \"Công ty LNT\",\r\n    \"representativeName\": \"Nguyễn Văn B\",\r\n    \"position\": \"Giám đốc\",\r\n    \"industry\": \"Phần mềm\",\r\n    \"companyInfo\": \"Công ty ABC chuyên cung cấp giải pháp phần mềm cho doanh nghiệp.\"\r\n  }",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/employers",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"employers"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "Update employer",
+							"originalRequest": {
+								"method": "PUT",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"companyName\": \"Công ty LNT\",\r\n    \"representativeName\": \"Nguyễn Văn B\",\r\n    \"position\": \"Giám đốc\",\r\n    \"industry\": \"Phần mềm\",\r\n    \"companyInfo\": \"Công ty ABC chuyên cung cấp giải pháp phần mềm cho doanh nghiệp.\"\r\n  }",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:3000/employers",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "3000",
+									"path": [
+										"employers"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "http://localhost:5173"
+								},
+								{
+									"key": "Vary",
+									"value": "Origin"
+								},
+								{
+									"key": "Access-Control-Allow-Credentials",
+									"value": "true"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "442"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"1ba-PKJTnyxsPnKxaMwJ6RKn0gwiFGc\""
+								},
+								{
+									"key": "Date",
+									"value": "Thu, 01 May 2025 13:59:13 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"message\": \"Employer updated successfully\",\n    \"updatedEmployer\": {\n        \"_id\": \"68137ddcc94e9923688e34b7\",\n        \"account\": \"6813701021ffe5fb9dd09104\",\n        \"businessScale\": \"Companies\",\n        \"companyName\": \"Công ty LNT\",\n        \"representativeName\": \"Nguyễn Văn B\",\n        \"position\": \"Giám đốc\",\n        \"interests\": [],\n        \"industry\": \"Phần mềm\",\n        \"companyInfo\": \"Công ty ABC chuyên cung cấp giải pháp phần mềm cho doanh nghiệp.\",\n        \"prove\": \"1234567\",\n        \"address\": \"Không biết\",\n        \"__v\": 0\n    }\n}"
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "Student",
+			"item": [
+				{
+					"name": "Get all students",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:3000/students",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"students"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "Get all students",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:3000/students",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "3000",
+									"path": [
+										"students"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "http://localhost:5173"
+								},
+								{
+									"key": "Vary",
+									"value": "Origin"
+								},
+								{
+									"key": "Access-Control-Allow-Credentials",
+									"value": "true"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "479"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"1df-QtU0ZLj+rSBR8fatfQ4LdJylqjk\""
+								},
+								{
+									"key": "Date",
+									"value": "Thu, 01 May 2025 13:59:53 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [],
+							"body": "[\n    {\n        \"_id\": \"6811a2484421004bc2b1e0f5\",\n        \"account\": {\n            \"_id\": \"681097f9377e6d760ee920c9\",\n            \"accountType\": \"student\",\n            \"userName\": \"nhattVim\",\n            \"email\": \"nhattVim@gmail.com\",\n            \"deleted\": false,\n            \"createdAt\": \"2025-04-29T09:12:25.805Z\",\n            \"updatedAt\": \"2025-05-01T06:56:29.120Z\"\n        },\n        \"mssv\": \"4551050239\",\n        \"name\": \"Lê Nhật Trường\",\n        \"interests\": [\n            \"Nghiên cứu khoa học\",\n            \"Vật lý học\",\n            \"Machine Learning\",\n            \"IoT\"\n        ],\n        \"university\": \"Đại học Quy Nhơn\",\n        \"avatarURL\": \"https://mui.com/static/images/avatar/2.jpg\"\n    }\n]"
+						}
+					]
+				},
+				{
+					"name": "Get student by ID",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:3000/students/6811a2484421004bc2b1e0f5",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"students",
+								"6811a2484421004bc2b1e0f5"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "Get student by ID",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:3000/students/6811a2484421004bc2b1e0f5",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "3000",
+									"path": [
+										"students",
+										"6811a2484421004bc2b1e0f5"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "http://localhost:5173"
+								},
+								{
+									"key": "Vary",
+									"value": "Origin"
+								},
+								{
+									"key": "Access-Control-Allow-Credentials",
+									"value": "true"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "489"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"1e9-i+3EjzKF7mRt4se1eJkiogFTOWI\""
+								},
+								{
+									"key": "Date",
+									"value": "Thu, 01 May 2025 14:00:08 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"student\": {\n        \"_id\": \"6811a2484421004bc2b1e0f5\",\n        \"account\": {\n            \"_id\": \"681097f9377e6d760ee920c9\",\n            \"accountType\": \"student\",\n            \"userName\": \"nhattVim\",\n            \"email\": \"nhattVim@gmail.com\",\n            \"deleted\": false,\n            \"createdAt\": \"2025-04-29T09:12:25.805Z\",\n            \"updatedAt\": \"2025-05-01T06:56:29.120Z\"\n        },\n        \"mssv\": \"4551050239\",\n        \"name\": \"Lê Nhật Trường\",\n        \"interests\": [\n            \"Nghiên cứu khoa học\",\n            \"Vật lý học\",\n            \"Machine Learning\",\n            \"IoT\"\n        ],\n        \"university\": \"Đại học Quy Nhơn\",\n        \"avatarURL\": \"https://mui.com/static/images/avatar/2.jpg\"\n    }\n}"
+						}
+					]
+				},
+				{
+					"name": "Get my profile",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:3000/students/me",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"students",
+								"me"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create student profile",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"mssv\": \"4551050239\",\r\n    \"name\": \"Lê Nhật Trường\",\r\n    \"interests\": [\r\n        \"Nghiên cứu khoa học\",\r\n        \"Vật lý học\",\r\n        \"Machine Learning\",\r\n        \"IoT\"\r\n    ],\r\n    \"university\": \"Đại học Quy Nhơn\",\r\n    \"avatarURL\": \"https://mui.com/static/images/avatar/2.jpg\"\r\n  }",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/students",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"students"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Search student",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:3000/students/search?mssv=&name=Lê",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"students",
+								"search"
+							],
+							"query": [
+								{
+									"key": "mssv",
+									"value": ""
+								},
+								{
+									"key": "name",
+									"value": "Lê"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update student",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"mssv\": \"20345678\",\r\n    \"name\": \"Lê Nhật Trường đẹp trai vô địch siêu cấp vippro vô địch thiên hạ\",\r\n    \"major\": \"Vật lý\",\r\n    \"interests\": \"Nghiên cứu khoa học, Vật lý học\",\r\n    \"university\": \"ĐH Sư phạm Hà Nội\",\r\n    \"avatarURL\": \"https://mui.com/static/images/avatar/2.jpg\"\r\n  }",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/students",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"students"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Filter student by Major",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:3000/students/filter?major=Công nghệ thông tin&specialization",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"students",
+								"filter"
+							],
+							"query": [
+								{
+									"key": "major",
+									"value": "Công nghệ thông tin"
+								},
+								{
+									"key": "specialization",
+									"value": null
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "recomentStudent",
+					"request": {
+						"method": "GET",
+						"header": []
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "CV",
+			"item": [
+				{
+					"name": "Get all student CV",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:3000/cv",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"cv"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get student CV",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:3000/cv/681de9a33cb21e4f6b9a541f",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"cv",
+								"681de9a33cb21e4f6b9a541f"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create & Update student CV",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"title\": \"CVVVV\",\r\n    \"summary\": \"Tôi là 1\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/cv",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"cv"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete student CV",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:3000/cv/681de9a33cb21e4f6b9a541f",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"cv",
+								"681de9a33cb21e4f6b9a541f"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Generate pdf",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"html\": \"<html><body><h1>CV Test</h1><p>This is a test CV</p></body></html>\",\r\n  \"fileName\": \"cv-test.pdf\"\r\n}\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/cv/generate-pdf",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"cv",
+								"generate-pdf"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Generate pdf Copy",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"html\":\"\\n      <!DOCTYPE html>\\n      <html>\\n        <head>\\n          <meta charset=\\\"utf-8\\\">\\n          <style>@import url(\\\"https://fonts.googleapis.com/css2?family=Noto+Sans:ital,wght@0,100..900;1,100..900&display=swap\\\");\\n@layer properties;\\n@layer theme, base, components, utilities;\\n@layer theme {\\n  :root, :host { --font-sans: ui-sans-serif, system-ui, sans-serif, \\\"Apple Color Emoji\\\",\\n      \\\"Segoe UI Emoji\\\", \\\"Segoe UI Symbol\\\", \\\"Noto Color Emoji\\\"; --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, \\\"Liberation Mono\\\",\\n      \\\"Courier New\\\", monospace; --color-red-100: oklch(93.6% 0.032 17.717); --color-red-500: oklch(63.7% 0.237 25.331); --color-red-600: oklch(57.7% 0.245 27.325); --color-red-700: oklch(50.5% 0.213 27.518); --color-yellow-400: oklch(85.2% 0.199 91.936); --color-yellow-500: oklch(79.5% 0.184 86.047); --color-green-600: oklch(62.7% 0.194 149.214); --color-green-700: oklch(52.7% 0.154 150.069); --color-blue-50: oklch(97% 0.014 254.604); --color-blue-500: oklch(62.3% 0.214 259.815); --color-blue-600: oklch(54.6% 0.245 262.881); --color-blue-700: oklch(48.8% 0.243 264.376); --color-blue-800: oklch(42.4% 0.199 265.638); --color-blue-950: oklch(28.2% 0.091 267.935); --color-gray-50: oklch(98.5% 0.002 247.839); --color-gray-100: oklch(96.7% 0.003 264.542); --color-gray-200: oklch(92.8% 0.006 264.531); --color-gray-300: oklch(87.2% 0.01 258.338); --color-gray-400: oklch(70.7% 0.022 261.325); --color-gray-500: oklch(55.1% 0.027 264.364); --color-gray-600: oklch(44.6% 0.03 256.802); --color-gray-700: oklch(37.3% 0.034 259.733); --color-gray-800: oklch(27.8% 0.033 256.848); --color-black: #292c39; --color-white: #f7f8ff; --spacing: 0.25rem; --container-xl: 36rem; --container-4xl: 56rem; --container-7xl: 1448px; --text-xs: 0.75rem; --text-xs--line-height: calc(1 / 0.75); --text-sm: 0.875rem; --text-sm--line-height: calc(1.25 / 0.875); --text-base: 1rem; --text-base--line-height: calc(1.5 / 1); --text-lg: 1.125rem; --text-lg--line-height: calc(1.75 / 1.125); --text-xl: 1.25rem; --text-xl--line-height: calc(1.75 / 1.25); --text-2xl: 1.5rem; --text-2xl--line-height: calc(2 / 1.5); --text-3xl: 1.875rem; --text-3xl--line-height: calc(2.25 / 1.875); --text-4xl: 2.25rem; --text-4xl--line-height: calc(2.5 / 2.25); --text-5xl: 3rem; --text-5xl--line-height: 1; --font-weight-medium: 500; --font-weight-semibold: 600; --font-weight-bold: 700; --leading-normal: 1.5; --radius-sm: 0.25rem; --radius-md: 0.375rem; --radius-lg: 0.5rem; --radius-xl: 0.75rem; --radius-2xl: 1rem; --radius-4xl: 2rem; --ease-out: cubic-bezier(0, 0, 0.2, 1); --ease-in-out: cubic-bezier(0.4, 0, 0.2, 1); --default-transition-duration: 150ms; --default-transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1); --default-font-family: var(--font-sans); --default-mono-font-family: var(--font-mono); --color-black-mid: #303240; --color-black-low: #444655; --color-gray-dark: #898b9b; --color-gray: #a9aabc; --color-gray-light: #d4d6e8; --color-white-low: #e5e6f2; --color-white-mid: #eeeffa; --color-white-bright: #ffffff; --color-blue-mid: #2e51ab; --color-blue: #406bd0; --color-yellow: #edcd59; --radius-small: 20px; --radius-medium: 30px; --animate-slideDown: slideDown 0.5s ease-in-out; }\\n}\\n@layer base {\\n  *, ::after, ::before, ::backdrop, ::file-selector-button { box-sizing: border-box; margin: 0px; padding: 0px; border: 0px solid; }\\n  html, :host { line-height: 1.5; tab-size: 4; font-family: var(--default-font-family, ui-sans-serif, system-ui, sans-serif, \\\"Apple Color Emoji\\\", \\\"Segoe UI Emoji\\\", \\\"Segoe UI Symbol\\\", \\\"Noto Color Emoji\\\"); font-feature-settings: var(--default-font-feature-settings, normal); font-variation-settings: var(--default-font-variation-settings, normal); }\\n  hr { height: 0px; color: inherit; border-top-width: 1px; }\\n  abbr:where([title]) { text-decoration: underline dotted; }\\n  h1, h2, h3, h4, h5, h6 { font-size: inherit; font-weight: inherit; }\\n  a { color: inherit; text-decoration: inherit; }\\n  b, strong { font-weight: bolder; }\\n  code, kbd, samp, pre { font-family: var(--default-mono-font-family, ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, \\\"Liberation Mono\\\", \\\"Courier New\\\", monospace); font-feature-settings: var(--default-mono-font-feature-settings, normal); font-variation-settings: var(--default-mono-font-variation-settings, normal); font-size: 1em; }\\n  small { font-size: 80%; }\\n  sub, sup { font-size: 75%; line-height: 0; position: relative; vertical-align: baseline; }\\n  sub { bottom: -0.25em; }\\n  sup { top: -0.5em; }\\n  table { text-indent: 0px; border-color: inherit; border-collapse: collapse; }\\n  :focus-visible { outline: auto; }\\n  progress { vertical-align: baseline; }\\n  summary { display: list-item; }\\n  ol, ul, menu { list-style: none; }\\n  img, svg, video, canvas, audio, iframe, embed, object { display: block; vertical-align: middle; }\\n  img, video { max-width: 100%; height: auto; }\\n  button, input, select, optgroup, textarea, ::file-selector-button { font: inherit; letter-spacing: inherit; color: inherit; border-radius: 0px; background-color: transparent; opacity: 1; }\\n  :where(select:is([multiple], [size])) optgroup { font-weight: bolder; }\\n  :where(select:is([multiple], [size])) optgroup option { padding-inline-start: 20px; }\\n  ::file-selector-button { margin-inline-end: 4px; }\\n  ::placeholder { opacity: 1; }\\n  @supports (not (-webkit-appearance: -apple-pay-button)) or (contain-intrinsic-size: 1px) {\\n  ::placeholder {\\n  color: currentcolor;\\n  @supports (color: color-mix(in lab, red, red)) {\\n  color: color-mix(in oklab, currentcolor, transparent);\\n}\\n}\\n}\\n  textarea { resize: vertical; }\\n  ::-webkit-search-decoration { appearance: none; }\\n  ::-webkit-date-and-time-value { min-height: 1lh; text-align: inherit; }\\n  ::-webkit-datetime-edit { display: inline-flex; }\\n  ::-webkit-datetime-edit-fields-wrapper { padding: 0px; }\\n  ::-webkit-datetime-edit, ::-webkit-datetime-edit-year-field, ::-webkit-datetime-edit-month-field, ::-webkit-datetime-edit-day-field, ::-webkit-datetime-edit-hour-field, ::-webkit-datetime-edit-minute-field, ::-webkit-datetime-edit-second-field, ::-webkit-datetime-edit-millisecond-field, ::-webkit-datetime-edit-meridiem-field { padding-block: 0px; }\\n  :user-invalid { box-shadow: none; }\\n  button, input:where([type=\\\"button\\\"], [type=\\\"reset\\\"], [type=\\\"submit\\\"]), ::file-selector-button { appearance: button; }\\n  ::-webkit-inner-spin-button, ::-webkit-outer-spin-button { height: auto; }\\n  [hidden]:where(:not([hidden=\\\"until-found\\\"])) { display: none !important; }\\n}\\n@layer utilities {\\n  .absolute { position: absolute; }\\n  .fixed { position: fixed; }\\n  .relative { position: relative; }\\n  .sticky { position: sticky; }\\n  .inset-0 { inset: calc(var(--spacing) * 0); }\\n  .top-0 { top: calc(var(--spacing) * 0); }\\n  .top-1 { top: calc(var(--spacing) * 1); }\\n  .top-\\\\[25px\\\\] { top: 25px; }\\n  .top-\\\\[60px\\\\] { top: 60px; }\\n  .top-\\\\[130px\\\\] { top: 130px; }\\n  .top-full { top: 100%; }\\n  .-right-4 { right: calc(var(--spacing) * -4); }\\n  .right-0 { right: calc(var(--spacing) * 0); }\\n  .right-\\\\[-60px\\\\] { right: -60px; }\\n  .right-\\\\[20px\\\\] { right: 20px; }\\n  .bottom-0 { bottom: calc(var(--spacing) * 0); }\\n  .-left-1\\\\/2 { left: calc(-50%); }\\n  .-left-\\\\[60px\\\\] { left: calc(-60px); }\\n  .left-0 { left: calc(var(--spacing) * 0); }\\n  .left-\\\\[48px\\\\] { left: 48px; }\\n  .left-\\\\[359px\\\\] { left: 359px; }\\n  .z-30 { z-index: 30; }\\n  .z-40 { z-index: 40; }\\n  .z-50 { z-index: 50; }\\n  .z-\\\\[999\\\\] { z-index: 999; }\\n  .col-span-1 { grid-column: span 1 / span 1; }\\n  .col-span-2 { grid-column: span 2 / span 2; }\\n  .m-2 { margin: calc(var(--spacing) * 2); }\\n  .container-responsive {\\n  margin-inline: auto; max-width: var(--container-7xl); padding-inline: calc(var(--spacing) * 4);\\n  @media (width >= 64rem) {\\n  padding-inline: calc(var(--spacing) * 6);\\n}\\n}\\n  .mx-4 { margin-inline: calc(var(--spacing) * 4); }\\n  .mx-6 { margin-inline: calc(var(--spacing) * 6); }\\n  .mx-auto { margin-inline: auto; }\\n  .my-2 { margin-block: calc(var(--spacing) * 2); }\\n  .my-6 { margin-block: calc(var(--spacing) * 6); }\\n  .mt-1 { margin-top: calc(var(--spacing) * 1); }\\n  .mt-2 { margin-top: calc(var(--spacing) * 2); }\\n  .mt-4 { margin-top: calc(var(--spacing) * 4); }\\n  .mt-5 { margin-top: calc(var(--spacing) * 5); }\\n  .mt-6 { margin-top: calc(var(--spacing) * 6); }\\n  .mr-1\\\\.5 { margin-right: calc(var(--spacing) * 1.5); }\\n  .mr-\\\\[6px\\\\] { margin-right: 6px; }\\n  .mr-\\\\[50px\\\\] { margin-right: 50px; }\\n  .mb-1 { margin-bottom: calc(var(--spacing) * 1); }\\n  .mb-2 { margin-bottom: calc(var(--spacing) * 2); }\\n  .mb-2\\\\.5 { margin-bottom: calc(var(--spacing) * 2.5); }\\n  .mb-3 { margin-bottom: calc(var(--spacing) * 3); }\\n  .mb-4 { margin-bottom: calc(var(--spacing) * 4); }\\n  .mb-5 { margin-bottom: calc(var(--spacing) * 5); }\\n  .mb-6 { margin-bottom: calc(var(--spacing) * 6); }\\n  .mb-8 { margin-bottom: calc(var(--spacing) * 8); }\\n  .mb-\\\\[60px\\\\] { margin-bottom: 60px; }\\n  .ml-1 { margin-left: calc(var(--spacing) * 1); }\\n  .ml-2 { margin-left: calc(var(--spacing) * 2); }\\n  .block { display: block; }\\n  .flex { display: flex; }\\n  .grid { display: grid; }\\n  .hidden { display: none; }\\n  .inline-block { display: inline-block; }\\n  .inline-flex { display: inline-flex; }\\n  .aspect-square { aspect-ratio: 1 / 1; }\\n  .h-0 { height: calc(var(--spacing) * 0); }\\n  .h-3 { height: calc(var(--spacing) * 3); }\\n  .h-4 { height: calc(var(--spacing) * 4); }\\n  .h-5 { height: calc(var(--spacing) * 5); }\\n  .h-6 { height: calc(var(--spacing) * 6); }\\n  .h-10 { height: calc(var(--spacing) * 10); }\\n  .h-12 { height: calc(var(--spacing) * 12); }\\n  .h-16 { height: calc(var(--spacing) * 16); }\\n  .h-\\\\[18px\\\\] { height: 18px; }\\n  .h-\\\\[30px\\\\] { height: 30px; }\\n  .h-\\\\[40px\\\\] { height: 40px; }\\n  .h-\\\\[46px\\\\] { height: 46px; }\\n  .h-\\\\[50px\\\\] { height: 50px; }\\n  .h-\\\\[64px\\\\] { height: 64px; }\\n  .h-\\\\[70px\\\\] { height: 70px; }\\n  .h-\\\\[100px\\\\] { height: 100px; }\\n  .h-\\\\[240px\\\\] { height: 240px; }\\n  .h-\\\\[300px\\\\] { height: 300px; }\\n  .h-\\\\[400px\\\\] { height: 400px; }\\n  .h-\\\\[571px\\\\] { height: 571px; }\\n  .h-auto { height: auto; }\\n  .h-full { height: 100%; }\\n  .h-screen { height: 100vh; }\\n  .max-h-screen { max-height: 100vh; }\\n  .min-h-\\\\[92vh\\\\] { min-height: 92vh; }\\n  .min-h-full { min-height: 100%; }\\n  .min-h-screen { min-height: 100vh; }\\n  .w-1\\\\/2 { width: calc(50%); }\\n  .w-1\\\\/4 { width: calc(25%); }\\n  .w-3 { width: calc(var(--spacing) * 3); }\\n  .w-3\\\\/4 { width: calc(75%); }\\n  .w-4 { width: calc(var(--spacing) * 4); }\\n  .w-5 { width: calc(var(--spacing) * 5); }\\n  .w-6 { width: calc(var(--spacing) * 6); }\\n  .w-10 { width: calc(var(--spacing) * 10); }\\n  .w-12 { width: calc(var(--spacing) * 12); }\\n  .w-16 { width: calc(var(--spacing) * 16); }\\n  .w-48 { width: calc(var(--spacing) * 48); }\\n  .w-\\\\[18px\\\\] { width: 18px; }\\n  .w-\\\\[30px\\\\] { width: 30px; }\\n  .w-\\\\[33\\\\%\\\\] { width: 33%; }\\n  .w-\\\\[40px\\\\] { width: 40px; }\\n  .w-\\\\[46px\\\\] { width: 46px; }\\n  .w-\\\\[68px\\\\] { width: 68px; }\\n  .w-\\\\[70px\\\\] { width: 70px; }\\n  .w-\\\\[75\\\\%\\\\] { width: 75%; }\\n  .w-\\\\[100px\\\\] { width: 100px; }\\n  .w-\\\\[260px\\\\] { width: 260px; }\\n  .w-\\\\[300px\\\\] { width: 300px; }\\n  .w-\\\\[400px\\\\] { width: 400px; }\\n  .w-\\\\[500px\\\\] { width: 500px; }\\n  .w-\\\\[660px\\\\] { width: 660px; }\\n  .w-full { width: 100%; }\\n  .max-w-4xl { max-width: var(--container-4xl); }\\n  .max-w-7xl { max-width: var(--container-7xl); }\\n  .max-w-\\\\[70\\\\%\\\\] { max-width: 70%; }\\n  .max-w-xl { max-width: var(--container-xl); }\\n  .flex-1 { flex: 1 1 0%; }\\n  .flex-shrink-0 { flex-shrink: 0; }\\n  .flex-grow { flex-grow: 1; }\\n  .grow { flex-grow: 1; }\\n  .transform { transform: var(--tw-rotate-x,) var(--tw-rotate-y,) var(--tw-rotate-z,) var(--tw-skew-x,) var(--tw-skew-y,); }\\n  .animate-slideDown { animation: var(--animate-slideDown); }\\n  .cursor-not-allowed { cursor: not-allowed; }\\n  .cursor-pointer { cursor: pointer; }\\n  .grid-cols-1 { grid-template-columns: repeat(1, minmax(0px, 1fr)); }\\n  .grid-cols-2 { grid-template-columns: repeat(2, minmax(0px, 1fr)); }\\n  .grid-cols-3 { grid-template-columns: repeat(3, minmax(0px, 1fr)); }\\n  .grid-cols-\\\\[0\\\\.5fr_1fr\\\\] { grid-template-columns: 0.5fr 1fr; }\\n  .grid-cols-\\\\[0\\\\.5fr_1fr_0\\\\.25fr\\\\] { grid-template-columns: 0.5fr 1fr 0.25fr; }\\n  .grid-cols-\\\\[0\\\\.75fr_1fr\\\\] { grid-template-columns: 0.75fr 1fr; }\\n  .grid-cols-\\\\[1fr_0\\\\.75fr\\\\] { grid-template-columns: 1fr 0.75fr; }\\n  .flex-col { flex-direction: column; }\\n  .flex-wrap { flex-wrap: wrap; }\\n  .place-items-start { place-items: start; }\\n  .items-center { align-items: center; }\\n  .items-end { align-items: flex-end; }\\n  .items-start { align-items: flex-start; }\\n  .justify-between { justify-content: space-between; }\\n  .justify-center { justify-content: center; }\\n  .justify-end { justify-content: flex-end; }\\n  .justify-start { justify-content: flex-start; }\\n  .gap-1 { gap: calc(var(--spacing) * 1); }\\n  .gap-1\\\\.5 { gap: calc(var(--spacing) * 1.5); }\\n  .gap-2 { gap: calc(var(--spacing) * 2); }\\n  .gap-2\\\\.5 { gap: calc(var(--spacing) * 2.5); }\\n  .gap-3 { gap: calc(var(--spacing) * 3); }\\n  .gap-4 { gap: calc(var(--spacing) * 4); }\\n  .gap-5 { gap: calc(var(--spacing) * 5); }\\n  .gap-7 { gap: calc(var(--spacing) * 7); }\\n  .gap-8 { gap: calc(var(--spacing) * 8); }\\n  .gap-9 { gap: calc(var(--spacing) * 9); }\\n  .gap-10 { gap: calc(var(--spacing) * 10); }\\n  .gap-16 { gap: calc(var(--spacing) * 16); }\\n  .gap-25 { gap: calc(var(--spacing) * 25); }\\n  .gap-\\\\[15px\\\\] { gap: 15px; }\\n  .gap-\\\\[30px\\\\] { gap: 30px; }\\n  .gap-\\\\[50px\\\\] { gap: 50px; }\\n  .gap-\\\\[70px\\\\] { gap: 70px; }\\n  .gap-\\\\[80px\\\\] { gap: 80px; }\\n  .space-y-1\\\\.5 {\\n  :where(& > :not(:last-child)) { --tw-space-y-reverse: 0; margin-block-start: calc(calc(var(--spacing) * 1.5) * var(--tw-space-y-reverse)); margin-block-end: calc(calc(var(--spacing) * 1.5) * calc(1 - var(--tw-space-y-reverse))); }\\n}\\n  .space-y-2 {\\n  :where(& > :not(:last-child)) { --tw-space-y-reverse: 0; margin-block-start: calc(calc(var(--spacing) * 2) * var(--tw-space-y-reverse)); margin-block-end: calc(calc(var(--spacing) * 2) * calc(1 - var(--tw-space-y-reverse))); }\\n}\\n  .space-y-3 {\\n  :where(& > :not(:last-child)) { --tw-space-y-reverse: 0; margin-block-start: calc(calc(var(--spacing) * 3) * var(--tw-space-y-reverse)); margin-block-end: calc(calc(var(--spacing) * 3) * calc(1 - var(--tw-space-y-reverse))); }\\n}\\n  .space-y-4 {\\n  :where(& > :not(:last-child)) { --tw-space-y-reverse: 0; margin-block-start: calc(calc(var(--spacing) * 4) * var(--tw-space-y-reverse)); margin-block-end: calc(calc(var(--spacing) * 4) * calc(1 - var(--tw-space-y-reverse))); }\\n}\\n  .space-y-6 {\\n  :where(& > :not(:last-child)) { --tw-space-y-reverse: 0; margin-block-start: calc(calc(var(--spacing) * 6) * var(--tw-space-y-reverse)); margin-block-end: calc(calc(var(--spacing) * 6) * calc(1 - var(--tw-space-y-reverse))); }\\n}\\n  .space-y-10 {\\n  :where(& > :not(:last-child)) { --tw-space-y-reverse: 0; margin-block-start: calc(calc(var(--spacing) * 10) * var(--tw-space-y-reverse)); margin-block-end: calc(calc(var(--spacing) * 10) * calc(1 - var(--tw-space-y-reverse))); }\\n}\\n  .space-x-2 {\\n  :where(& > :not(:last-child)) { --tw-space-x-reverse: 0; margin-inline-start: calc(calc(var(--spacing) * 2) * var(--tw-space-x-reverse)); margin-inline-end: calc(calc(var(--spacing) * 2) * calc(1 - var(--tw-space-x-reverse))); }\\n}\\n  .space-x-3 {\\n  :where(& > :not(:last-child)) { --tw-space-x-reverse: 0; margin-inline-start: calc(calc(var(--spacing) * 3) * var(--tw-space-x-reverse)); margin-inline-end: calc(calc(var(--spacing) * 3) * calc(1 - var(--tw-space-x-reverse))); }\\n}\\n  .space-x-4 {\\n  :where(& > :not(:last-child)) { --tw-space-x-reverse: 0; margin-inline-start: calc(calc(var(--spacing) * 4) * var(--tw-space-x-reverse)); margin-inline-end: calc(calc(var(--spacing) * 4) * calc(1 - var(--tw-space-x-reverse))); }\\n}\\n  .space-x-5 {\\n  :where(& > :not(:last-child)) { --tw-space-x-reverse: 0; margin-inline-start: calc(calc(var(--spacing) * 5) * var(--tw-space-x-reverse)); margin-inline-end: calc(calc(var(--spacing) * 5) * calc(1 - var(--tw-space-x-reverse))); }\\n}\\n  .self-stretch { align-self: stretch; }\\n  .truncate { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }\\n  .overflow-hidden { overflow: hidden; }\\n  .overflow-visible { overflow: visible; }\\n  .overflow-y-auto { overflow-y: auto; }\\n  .overflow-y-hidden { overflow-y: hidden; }\\n  .rounded { border-radius: 0.25rem; }\\n  .rounded-2xl { border-radius: var(--radius-2xl); }\\n  .rounded-4xl { border-radius: var(--radius-4xl); }\\n  .rounded-\\\\[5px\\\\] { border-radius: 5px; }\\n  .rounded-\\\\[50px\\\\] { border-radius: 50px; }\\n  .rounded-full { border-radius: calc(infinity * 1px); }\\n  .rounded-lg { border-radius: var(--radius-lg); }\\n  .rounded-md { border-radius: var(--radius-md); }\\n  .rounded-medium { border-radius: var(--radius-medium); }\\n  .rounded-sm { border-radius: var(--radius-sm); }\\n  .rounded-small { border-radius: var(--radius-small); }\\n  .rounded-xl { border-radius: var(--radius-xl); }\\n  .rounded-tl-\\\\[40px\\\\] { border-top-left-radius: 40px; }\\n  .rounded-tr-medium { border-top-right-radius: var(--radius-medium); }\\n  .rounded-br-medium { border-bottom-right-radius: var(--radius-medium); }\\n  .rounded-bl-\\\\[40px\\\\] { border-bottom-left-radius: 40px; }\\n  .border { border-style: var(--tw-border-style); border-width: 1px; }\\n  .border-2 { border-style: var(--tw-border-style); border-width: 2px; }\\n  .border-t { border-top-style: var(--tw-border-style); border-top-width: 1px; }\\n  .border-r { border-right-style: var(--tw-border-style); border-right-width: 1px; }\\n  .border-b { border-bottom-style: var(--tw-border-style); border-bottom-width: 1px; }\\n  .border-l { border-left-style: var(--tw-border-style); border-left-width: 1px; }\\n  .border-dashed { --tw-border-style: dashed; border-style: dashed; }\\n  .border-none { --tw-border-style: none; border-style: none; }\\n  .border-\\\\[\\\\#cccccc\\\\] { border-color: rgb(204, 204, 204); }\\n  .border-blue-500 { border-color: var(--color-blue-500); }\\n  .border-blue-mid { border-color: var(--color-blue-mid); }\\n  .border-gray { border-color: var(--color-gray); }\\n  .border-gray-200 { border-color: var(--color-gray-200); }\\n  .border-gray-300 { border-color: var(--color-gray-300); }\\n  .border-gray-400 { border-color: var(--color-gray-400); }\\n  .border-gray-dark { border-color: var(--color-gray-dark); }\\n  .border-gray-light { border-color: var(--color-gray-light); }\\n  .border-white-low { border-color: var(--color-white-low); }\\n  .border-b-gray-light { border-bottom-color: var(--color-gray-light); }\\n  .border-l-gray-dark { border-left-color: var(--color-gray-dark); }\\n  .bg-\\\\[\\\\#000\\\\] { background-color: rgb(0, 0, 0); }\\n  .bg-\\\\[\\\\#3253C5\\\\] { background-color: rgb(50, 83, 197); }\\n  .bg-\\\\[\\\\#d5f5f6\\\\] { background-color: rgb(213, 245, 246); }\\n  .bg-\\\\[\\\\#f5f7ff\\\\] { background-color: rgb(245, 247, 255); }\\n  .bg-black { background-color: var(--color-black); }\\n  .bg-black-low { background-color: var(--color-black-low); }\\n  .bg-black-mid { background-color: var(--color-black-mid); }\\n  .bg-blue { background-color: var(--color-blue); }\\n  .bg-blue-50 { background-color: var(--color-blue-50); }\\n  .bg-blue-600 { background-color: var(--color-blue-600); }\\n  .bg-gray-200 { background-color: var(--color-gray-200); }\\n  .bg-gray-300 { background-color: var(--color-gray-300); }\\n  .bg-gray-700 { background-color: var(--color-gray-700); }\\n  .bg-gray-dark { background-color: var(--color-gray-dark); }\\n  .bg-gray-light { background-color: var(--color-gray-light); }\\n  .bg-green-600 { background-color: var(--color-green-600); }\\n  .bg-red-100 { background-color: var(--color-red-100); }\\n  .bg-red-500 { background-color: var(--color-red-500); }\\n  .bg-red-600 { background-color: var(--color-red-600); }\\n  .bg-transparent { background-color: transparent; }\\n  .bg-white { background-color: var(--color-white); }\\n  .bg-white-bright { background-color: var(--color-white-bright); }\\n  .bg-white-low { background-color: var(--color-white-low); }\\n  .bg-white-mid { background-color: var(--color-white-mid); }\\n  .bg-yellow { background-color: var(--color-yellow); }\\n  .bg-gradient-to-l { --tw-gradient-position: to left in oklab; background-image: linear-gradient(var(--tw-gradient-stops)); }\\n  .bg-gradient-to-r { --tw-gradient-position: to right in oklab; background-image: linear-gradient(var(--tw-gradient-stops)); }\\n  .from-blue-700 { --tw-gradient-from: var(--color-blue-700); --tw-gradient-stops: var(--tw-gradient-via-stops, var(--tw-gradient-position), var(--tw-gradient-from) var(--tw-gradient-from-position), var(--tw-gradient-to) var(--tw-gradient-to-position)); }\\n  .from-blue-950 { --tw-gradient-from: var(--color-blue-950); --tw-gradient-stops: var(--tw-gradient-via-stops, var(--tw-gradient-position), var(--tw-gradient-from) var(--tw-gradient-from-position), var(--tw-gradient-to) var(--tw-gradient-to-position)); }\\n  .to-blue-500 { --tw-gradient-to: var(--color-blue-500); --tw-gradient-stops: var(--tw-gradient-via-stops, var(--tw-gradient-position), var(--tw-gradient-from) var(--tw-gradient-from-position), var(--tw-gradient-to) var(--tw-gradient-to-position)); }\\n  .to-blue-800 { --tw-gradient-to: var(--color-blue-800); --tw-gradient-stops: var(--tw-gradient-via-stops, var(--tw-gradient-position), var(--tw-gradient-from) var(--tw-gradient-from-position), var(--tw-gradient-to) var(--tw-gradient-to-position)); }\\n  .object-cover { object-fit: cover; }\\n  .p-1 { padding: calc(var(--spacing) * 1); }\\n  .p-2 { padding: calc(var(--spacing) * 2); }\\n  .p-2\\\\.5 { padding: calc(var(--spacing) * 2.5); }\\n  .p-3 { padding: calc(var(--spacing) * 3); }\\n  .p-4 { padding: calc(var(--spacing) * 4); }\\n  .p-5 { padding: calc(var(--spacing) * 5); }\\n  .p-6 { padding: calc(var(--spacing) * 6); }\\n  .p-10 { padding: calc(var(--spacing) * 10); }\\n  .p-\\\\[2px\\\\] { padding: 2px; }\\n  .p-\\\\[30px\\\\] { padding: 30px; }\\n  .p-\\\\[50px\\\\] { padding: 50px; }\\n  .p-\\\\[60px\\\\] { padding: 60px; }\\n  .px-2 { padding-inline: calc(var(--spacing) * 2); }\\n  .px-2\\\\.5 { padding-inline: calc(var(--spacing) * 2.5); }\\n  .px-3 { padding-inline: calc(var(--spacing) * 3); }\\n  .px-4 { padding-inline: calc(var(--spacing) * 4); }\\n  .px-5 { padding-inline: calc(var(--spacing) * 5); }\\n  .px-6 { padding-inline: calc(var(--spacing) * 6); }\\n  .px-8 { padding-inline: calc(var(--spacing) * 8); }\\n  .px-10 { padding-inline: calc(var(--spacing) * 10); }\\n  .px-25 { padding-inline: calc(var(--spacing) * 25); }\\n  .px-\\\\[30px\\\\] { padding-inline: 30px; }\\n  .py-1 { padding-block: calc(var(--spacing) * 1); }\\n  .py-1\\\\.5 { padding-block: calc(var(--spacing) * 1.5); }\\n  .py-2 { padding-block: calc(var(--spacing) * 2); }\\n  .py-2\\\\.5 { padding-block: calc(var(--spacing) * 2.5); }\\n  .py-4 { padding-block: calc(var(--spacing) * 4); }\\n  .py-5 { padding-block: calc(var(--spacing) * 5); }\\n  .py-6 { padding-block: calc(var(--spacing) * 6); }\\n  .py-10 { padding-block: calc(var(--spacing) * 10); }\\n  .py-20 { padding-block: calc(var(--spacing) * 20); }\\n  .py-30 { padding-block: calc(var(--spacing) * 30); }\\n  .pt-2 { padding-top: calc(var(--spacing) * 2); }\\n  .pt-10 { padding-top: calc(var(--spacing) * 10); }\\n  .pr-2 { padding-right: calc(var(--spacing) * 2); }\\n  .pb-2 { padding-bottom: calc(var(--spacing) * 2); }\\n  .pb-4 { padding-bottom: calc(var(--spacing) * 4); }\\n  .pb-10 { padding-bottom: calc(var(--spacing) * 10); }\\n  .pb-30 { padding-bottom: calc(var(--spacing) * 30); }\\n  .pb-\\\\[15px\\\\] { padding-bottom: 15px; }\\n  .pb-\\\\[30px\\\\] { padding-bottom: 30px; }\\n  .pb-\\\\[104px\\\\] { padding-bottom: 104px; }\\n  .pl-3 { padding-left: calc(var(--spacing) * 3); }\\n  .pl-5 { padding-left: calc(var(--spacing) * 5); }\\n  .text-center { text-align: center; }\\n  .text-left { text-align: left; }\\n  .text-right { text-align: right; }\\n  .align-top { vertical-align: top; }\\n  .font-\\\\[\\\\'Noto_Sans\\\\'\\\\] { font-family: \\\"Noto Sans\\\"; }\\n  .font-sans { font-family: var(--font-sans); }\\n  .text-2xl { font-size: var(--text-2xl); line-height: var(--tw-leading, var(--text-2xl--line-height)); }\\n  .text-3xl { font-size: var(--text-3xl); line-height: var(--tw-leading, var(--text-3xl--line-height)); }\\n  .text-4xl { font-size: var(--text-4xl); line-height: var(--tw-leading, var(--text-4xl--line-height)); }\\n  .text-5xl { font-size: var(--text-5xl); line-height: var(--tw-leading, var(--text-5xl--line-height)); }\\n  .text-base { font-size: var(--text-base); line-height: var(--tw-leading, var(--text-base--line-height)); }\\n  .text-lg { font-size: var(--text-lg); line-height: var(--tw-leading, var(--text-lg--line-height)); }\\n  .text-sm { font-size: var(--text-sm); line-height: var(--tw-leading, var(--text-sm--line-height)); }\\n  .text-xl { font-size: var(--text-xl); line-height: var(--tw-leading, var(--text-xl--line-height)); }\\n  .text-xs { font-size: var(--text-xs); line-height: var(--tw-leading, var(--text-xs--line-height)); }\\n  .text-\\\\[22px\\\\] { font-size: 22px; }\\n  .text-\\\\[24px\\\\] { font-size: 24px; }\\n  .text-\\\\[28px\\\\] { font-size: 28px; }\\n  .text-\\\\[50px\\\\] { font-size: 50px; }\\n  .leading-0 { --tw-leading: calc(var(--spacing) * 0); line-height: calc(var(--spacing) * 0); }\\n  .leading-6 { --tw-leading: calc(var(--spacing) * 6); line-height: calc(var(--spacing) * 6); }\\n  .leading-7 { --tw-leading: calc(var(--spacing) * 7); line-height: calc(var(--spacing) * 7); }\\n  .leading-9 { --tw-leading: calc(var(--spacing) * 9); line-height: calc(var(--spacing) * 9); }\\n  .leading-\\\\[28\\\\.6px\\\\] { --tw-leading: 28.6px; line-height: 28.6px; }\\n  .leading-\\\\[36\\\\.4px\\\\] { --tw-leading: 36.4px; line-height: 36.4px; }\\n  .leading-\\\\[62\\\\.4px\\\\] { --tw-leading: 62.4px; line-height: 62.4px; }\\n  .leading-normal { --tw-leading: var(--leading-normal); line-height: var(--leading-normal); }\\n  .font-bold { --tw-font-weight: var(--font-weight-bold); font-weight: var(--font-weight-bold); }\\n  .font-medium { --tw-font-weight: var(--font-weight-medium); font-weight: var(--font-weight-medium); }\\n  .font-semibold { --tw-font-weight: var(--font-weight-semibold); font-weight: var(--font-weight-semibold); }\\n  .break-words { overflow-wrap: break-word; }\\n  .whitespace-normal { white-space: normal; }\\n  .whitespace-nowrap { white-space: nowrap; }\\n  .text-\\\\[\\\\#1c1c1c\\\\] { color: rgb(28, 28, 28); }\\n  .text-\\\\[\\\\#122269\\\\] { color: rgb(18, 34, 105); }\\n  .text-\\\\[\\\\#cccc\\\\] { color: rgba(204, 204, 204, 0.8); }\\n  .text-black { color: var(--color-black); }\\n  .text-black-low { color: var(--color-black-low); }\\n  .text-blue { color: var(--color-blue); }\\n  .text-blue-600 { color: var(--color-blue-600); }\\n  .text-blue-mid { color: var(--color-blue-mid); }\\n  .text-gray-400 { color: var(--color-gray-400); }\\n  .text-gray-500 { color: var(--color-gray-500); }\\n  .text-gray-600 { color: var(--color-gray-600); }\\n  .text-gray-700 { color: var(--color-gray-700); }\\n  .text-gray-800 { color: var(--color-gray-800); }\\n  .text-gray-dark { color: var(--color-gray-dark); }\\n  .text-green-700 { color: var(--color-green-700); }\\n  .text-red-500 { color: var(--color-red-500); }\\n  .text-red-600 { color: var(--color-red-600); }\\n  .text-red-700 { color: var(--color-red-700); }\\n  .text-white { color: var(--color-white); }\\n  .text-white-bright { color: var(--color-white-bright); }\\n  .text-yellow { color: var(--color-yellow); }\\n  .capitalize { text-transform: capitalize; }\\n  .uppercase { text-transform: uppercase; }\\n  .italic { font-style: italic; }\\n  .underline { text-decoration-line: underline; }\\n  .opacity-60 { opacity: 0.6; }\\n  .shadow { --tw-shadow: 0 1px 3px 0 var(--tw-shadow-color, rgb(0 0 0 / 0.1)), 0 1px 2px -1px var(--tw-shadow-color, rgb(0 0 0 / 0.1)); box-shadow: var(--tw-inset-shadow), var(--tw-inset-ring-shadow), var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow); }\\n  .shadow-lg { --tw-shadow: 0 10px 15px -3px var(--tw-shadow-color, rgb(0 0 0 / 0.1)), 0 4px 6px -4px var(--tw-shadow-color, rgb(0 0 0 / 0.1)); box-shadow: var(--tw-inset-shadow), var(--tw-inset-ring-shadow), var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow); }\\n  .shadow-md { --tw-shadow: 0 4px 6px -1px var(--tw-shadow-color, rgb(0 0 0 / 0.1)), 0 2px 4px -2px var(--tw-shadow-color, rgb(0 0 0 / 0.1)); box-shadow: var(--tw-inset-shadow), var(--tw-inset-ring-shadow), var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow); }\\n  .shadow-sm { --tw-shadow: 0 1px 3px 0 var(--tw-shadow-color, rgb(0 0 0 / 0.1)), 0 1px 2px -1px var(--tw-shadow-color, rgb(0 0 0 / 0.1)); box-shadow: var(--tw-inset-shadow), var(--tw-inset-ring-shadow), var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow); }\\n  .outline-2 { outline-style: var(--tw-outline-style); outline-width: 2px; }\\n  .outline-offset-\\\\[-1px\\\\] { outline-offset: -1px; }\\n  .outline-gray-light { outline-color: var(--color-gray-light); }\\n  .outline-white-low { outline-color: var(--color-white-low); }\\n  .drop-shadow { --tw-drop-shadow-size: drop-shadow(0 1px 2px var(--tw-drop-shadow-color, rgb(0 0 0 / 0.1))) drop-shadow(0 1px 1px var(--tw-drop-shadow-color, rgb(0 0 0 / 0.06))); --tw-drop-shadow: drop-shadow(0 1px 2px rgb(0 0 0 / 0.1)) drop-shadow( 0 1px 1px rgb(0 0 0 / 0.06)); filter: var(--tw-blur,) var(--tw-brightness,) var(--tw-contrast,) var(--tw-grayscale,) var(--tw-hue-rotate,) var(--tw-invert,) var(--tw-saturate,) var(--tw-sepia,) var(--tw-drop-shadow,); }\\n  .transition { transition-property: color, background-color, border-color, outline-color, text-decoration-color, fill, stroke, --tw-gradient-from, --tw-gradient-via, --tw-gradient-to, opacity, box-shadow, transform, translate, scale, rotate, filter, -webkit-backdrop-filter, backdrop-filter, display, visibility, content-visibility, overlay, pointer-events; transition-timing-function: var(--tw-ease, var(--default-transition-timing-function)); transition-duration: var(--tw-duration, var(--default-transition-duration)); }\\n  .transition-all { transition-property: all; transition-timing-function: var(--tw-ease, var(--default-transition-timing-function)); transition-duration: var(--tw-duration, var(--default-transition-duration)); }\\n  .transition-colors { transition-property: color, background-color, border-color, outline-color, text-decoration-color, fill, stroke, --tw-gradient-from, --tw-gradient-via, --tw-gradient-to; transition-timing-function: var(--tw-ease, var(--default-transition-timing-function)); transition-duration: var(--tw-duration, var(--default-transition-duration)); }\\n  .transition-opacity { transition-property: opacity; transition-timing-function: var(--tw-ease, var(--default-transition-timing-function)); transition-duration: var(--tw-duration, var(--default-transition-duration)); }\\n  .transition-transform { transition-property: transform, translate, scale, rotate; transition-timing-function: var(--tw-ease, var(--default-transition-timing-function)); transition-duration: var(--tw-duration, var(--default-transition-duration)); }\\n  .duration-200 { --tw-duration: 200ms; transition-duration: 200ms; }\\n  .duration-300 { --tw-duration: 300ms; transition-duration: 300ms; }\\n  .duration-500 { --tw-duration: 500ms; transition-duration: 500ms; }\\n  .ease-in-out { --tw-ease: var(--ease-in-out); transition-timing-function: var(--ease-in-out); }\\n  .ease-out { --tw-ease: var(--ease-out); transition-timing-function: var(--ease-out); }\\n  .outline-none { --tw-outline-style: none; outline-style: none; }\\n  .bg-gradient-blue-right { background: linear-gradient(270deg, rgb(46, 81, 171) 0%, rgb(19, 33, 69) 100%); }\\n  .group-hover\\\\:rotate-180 {\\n  &:is(:where(.group):hover *) {\\n  @media (hover: hover) {\\n  rotate: 180deg;\\n}\\n}\\n}\\n  .group-hover\\\\:bg-black {\\n  &:is(:where(.group):hover *) {\\n  @media (hover: hover) {\\n  background-color: var(--color-black);\\n}\\n}\\n}\\n  .group-hover\\\\:bg-white {\\n  &:is(:where(.group):hover *) {\\n  @media (hover: hover) {\\n  background-color: var(--color-white);\\n}\\n}\\n}\\n  .group-hover\\\\:text-blue {\\n  &:is(:where(.group):hover *) {\\n  @media (hover: hover) {\\n  color: var(--color-blue);\\n}\\n}\\n}\\n  .group-hover\\\\:text-white {\\n  &:is(:where(.group):hover *) {\\n  @media (hover: hover) {\\n  color: var(--color-white);\\n}\\n}\\n}\\n  .hover\\\\:scale-95 {\\n  &:hover {\\n  @media (hover: hover) {\\n  --tw-scale-x: 95%; --tw-scale-y: 95%; --tw-scale-z: 95%; scale: var(--tw-scale-x) var(--tw-scale-y);\\n}\\n}\\n}\\n  .hover\\\\:overflow-y-auto {\\n  &:hover {\\n  @media (hover: hover) {\\n  overflow-y: auto;\\n}\\n}\\n}\\n  .hover\\\\:bg-\\\\[\\\\#1f3bbf\\\\] {\\n  &:hover {\\n  @media (hover: hover) {\\n  background-color: rgb(31, 59, 191);\\n}\\n}\\n}\\n  .hover\\\\:bg-blue {\\n  &:hover {\\n  @media (hover: hover) {\\n  background-color: var(--color-blue);\\n}\\n}\\n}\\n  .hover\\\\:bg-blue-600 {\\n  &:hover {\\n  @media (hover: hover) {\\n  background-color: var(--color-blue-600);\\n}\\n}\\n}\\n  .hover\\\\:bg-blue-700 {\\n  &:hover {\\n  @media (hover: hover) {\\n  background-color: var(--color-blue-700);\\n}\\n}\\n}\\n  .hover\\\\:bg-blue-mid {\\n  &:hover {\\n  @media (hover: hover) {\\n  background-color: var(--color-blue-mid);\\n}\\n}\\n}\\n  .hover\\\\:bg-gray {\\n  &:hover {\\n  @media (hover: hover) {\\n  background-color: var(--color-gray);\\n}\\n}\\n}\\n  .hover\\\\:bg-gray-50 {\\n  &:hover {\\n  @media (hover: hover) {\\n  background-color: var(--color-gray-50);\\n}\\n}\\n}\\n  .hover\\\\:bg-gray-100 {\\n  &:hover {\\n  @media (hover: hover) {\\n  background-color: var(--color-gray-100);\\n}\\n}\\n}\\n  .hover\\\\:bg-gray-300 {\\n  &:hover {\\n  @media (hover: hover) {\\n  background-color: var(--color-gray-300);\\n}\\n}\\n}\\n  .hover\\\\:bg-green-700 {\\n  &:hover {\\n  @media (hover: hover) {\\n  background-color: var(--color-green-700);\\n}\\n}\\n}\\n  .hover\\\\:bg-red-600 {\\n  &:hover {\\n  @media (hover: hover) {\\n  background-color: var(--color-red-600);\\n}\\n}\\n}\\n  .hover\\\\:bg-red-700 {\\n  &:hover {\\n  @media (hover: hover) {\\n  background-color: var(--color-red-700);\\n}\\n}\\n}\\n  .hover\\\\:bg-yellow {\\n  &:hover {\\n  @media (hover: hover) {\\n  background-color: var(--color-yellow);\\n}\\n}\\n}\\n  .hover\\\\:bg-yellow-400 {\\n  &:hover {\\n  @media (hover: hover) {\\n  background-color: var(--color-yellow-400);\\n}\\n}\\n}\\n  .hover\\\\:text-black {\\n  &:hover {\\n  @media (hover: hover) {\\n  color: var(--color-black);\\n}\\n}\\n}\\n  .hover\\\\:text-blue {\\n  &:hover {\\n  @media (hover: hover) {\\n  color: var(--color-blue);\\n}\\n}\\n}\\n  .hover\\\\:text-red-700 {\\n  &:hover {\\n  @media (hover: hover) {\\n  color: var(--color-red-700);\\n}\\n}\\n}\\n  .hover\\\\:text-white {\\n  &:hover {\\n  @media (hover: hover) {\\n  color: var(--color-white);\\n}\\n}\\n}\\n  .hover\\\\:underline {\\n  &:hover {\\n  @media (hover: hover) {\\n  text-decoration-line: underline;\\n}\\n}\\n}\\n  .hover\\\\:opacity-20 {\\n  &:hover {\\n  @media (hover: hover) {\\n  opacity: 0.2;\\n}\\n}\\n}\\n  .hover\\\\:opacity-90 {\\n  &:hover {\\n  @media (hover: hover) {\\n  opacity: 0.9;\\n}\\n}\\n}\\n  .hover\\\\:shadow-md {\\n  &:hover {\\n  @media (hover: hover) {\\n  --tw-shadow: 0 4px 6px -1px var(--tw-shadow-color, rgb(0 0 0 / 0.1)), 0 2px 4px -2px var(--tw-shadow-color, rgb(0 0 0 / 0.1)); box-shadow: var(--tw-inset-shadow), var(--tw-inset-ring-shadow), var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow);\\n}\\n}\\n}\\n  .focus\\\\:border-none {\\n  &:focus { --tw-border-style: none; border-style: none; }\\n}\\n  .focus\\\\:ring-0 {\\n  &:focus { --tw-ring-shadow: var(--tw-ring-inset,) 0 0 0 calc(0px + var(--tw-ring-offset-width)) var(--tw-ring-color, currentcolor); box-shadow: var(--tw-inset-shadow), var(--tw-inset-ring-shadow), var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow); }\\n}\\n  .focus\\\\:ring-2 {\\n  &:focus { --tw-ring-shadow: var(--tw-ring-inset,) 0 0 0 calc(2px + var(--tw-ring-offset-width)) var(--tw-ring-color, currentcolor); box-shadow: var(--tw-inset-shadow), var(--tw-inset-ring-shadow), var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow); }\\n}\\n  .focus\\\\:ring-blue {\\n  &:focus { --tw-ring-color: var(--color-blue); }\\n}\\n  .focus\\\\:ring-blue-500 {\\n  &:focus { --tw-ring-color: var(--color-blue-500); }\\n}\\n  .focus\\\\:ring-yellow-500 {\\n  &:focus { --tw-ring-color: var(--color-yellow-500); }\\n}\\n  .focus\\\\:outline-none {\\n  &:focus { --tw-outline-style: none; outline-style: none; }\\n}\\n  .md\\\\:w-1\\\\/2 {\\n  @media (width >= 48rem) {\\n  width: calc(50%);\\n}\\n}\\n  .md\\\\:grid-cols-2 {\\n  @media (width >= 48rem) {\\n  grid-template-columns: repeat(2, minmax(0px, 1fr));\\n}\\n}\\n  .md\\\\:flex-row {\\n  @media (width >= 48rem) {\\n  flex-direction: row;\\n}\\n}\\n}\\nbody { font-family: \\\"Noto Sans\\\", sans-serif; color: var(--color-black); background-color: var(--color-white); --tw-font-weight: var(--font-weight-medium); font-weight: var(--font-weight-medium); }\\ninput[type=\\\"number\\\"]::-webkit-outer-spin-button, input[type=\\\"number\\\"]::-webkit-inner-spin-button { appearance: none; margin: 0px; }\\ninput[type=\\\"number\\\"] { appearance: textfield; }\\n@property --tw-rotate-x { syntax: \\\"*\\\"; inherits: false; }\\n@property --tw-rotate-y { syntax: \\\"*\\\"; inherits: false; }\\n@property --tw-rotate-z { syntax: \\\"*\\\"; inherits: false; }\\n@property --tw-skew-x { syntax: \\\"*\\\"; inherits: false; }\\n@property --tw-skew-y { syntax: \\\"*\\\"; inherits: false; }\\n@property --tw-space-y-reverse { syntax: \\\"*\\\"; inherits: false; initial-value: 0; }\\n@property --tw-space-x-reverse { syntax: \\\"*\\\"; inherits: false; initial-value: 0; }\\n@property --tw-border-style { syntax: \\\"*\\\"; inherits: false; initial-value: solid; }\\n@property --tw-gradient-position { syntax: \\\"*\\\"; inherits: false; }\\n@property --tw-gradient-from { syntax: \\\"<color>\\\"; inherits: false; initial-value: #0000; }\\n@property --tw-gradient-via { syntax: \\\"<color>\\\"; inherits: false; initial-value: #0000; }\\n@property --tw-gradient-to { syntax: \\\"<color>\\\"; inherits: false; initial-value: #0000; }\\n@property --tw-gradient-stops { syntax: \\\"*\\\"; inherits: false; }\\n@property --tw-gradient-via-stops { syntax: \\\"*\\\"; inherits: false; }\\n@property --tw-gradient-from-position { syntax: \\\"<length-percentage>\\\"; inherits: false; initial-value: 0%; }\\n@property --tw-gradient-via-position { syntax: \\\"<length-percentage>\\\"; inherits: false; initial-value: 50%; }\\n@property --tw-gradient-to-position { syntax: \\\"<length-percentage>\\\"; inherits: false; initial-value: 100%; }\\n@property --tw-leading { syntax: \\\"*\\\"; inherits: false; }\\n@property --tw-font-weight { syntax: \\\"*\\\"; inherits: false; }\\n@property --tw-shadow { syntax: \\\"*\\\"; inherits: false; initial-value: 0 0 #0000; }\\n@property --tw-shadow-color { syntax: \\\"*\\\"; inherits: false; }\\n@property --tw-shadow-alpha { syntax: \\\"<percentage>\\\"; inherits: false; initial-value: 100%; }\\n@property --tw-inset-shadow { syntax: \\\"*\\\"; inherits: false; initial-value: 0 0 #0000; }\\n@property --tw-inset-shadow-color { syntax: \\\"*\\\"; inherits: false; }\\n@property --tw-inset-shadow-alpha { syntax: \\\"<percentage>\\\"; inherits: false; initial-value: 100%; }\\n@property --tw-ring-color { syntax: \\\"*\\\"; inherits: false; }\\n@property --tw-ring-shadow { syntax: \\\"*\\\"; inherits: false; initial-value: 0 0 #0000; }\\n@property --tw-inset-ring-color { syntax: \\\"*\\\"; inherits: false; }\\n@property --tw-inset-ring-shadow { syntax: \\\"*\\\"; inherits: false; initial-value: 0 0 #0000; }\\n@property --tw-ring-inset { syntax: \\\"*\\\"; inherits: false; }\\n@property --tw-ring-offset-width { syntax: \\\"<length>\\\"; inherits: false; initial-value: 0px; }\\n@property --tw-ring-offset-color { syntax: \\\"*\\\"; inherits: false; initial-value: #fff; }\\n@property --tw-ring-offset-shadow { syntax: \\\"*\\\"; inherits: false; initial-value: 0 0 #0000; }\\n@property --tw-outline-style { syntax: \\\"*\\\"; inherits: false; initial-value: solid; }\\n@property --tw-blur { syntax: \\\"*\\\"; inherits: false; }\\n@property --tw-brightness { syntax: \\\"*\\\"; inherits: false; }\\n@property --tw-contrast { syntax: \\\"*\\\"; inherits: false; }\\n@property --tw-grayscale { syntax: \\\"*\\\"; inherits: false; }\\n@property --tw-hue-rotate { syntax: \\\"*\\\"; inherits: false; }\\n@property --tw-invert { syntax: \\\"*\\\"; inherits: false; }\\n@property --tw-opacity { syntax: \\\"*\\\"; inherits: false; }\\n@property --tw-saturate { syntax: \\\"*\\\"; inherits: false; }\\n@property --tw-sepia { syntax: \\\"*\\\"; inherits: false; }\\n@property --tw-drop-shadow { syntax: \\\"*\\\"; inherits: false; }\\n@property --tw-drop-shadow-color { syntax: \\\"*\\\"; inherits: false; }\\n@property --tw-drop-shadow-alpha { syntax: \\\"<percentage>\\\"; inherits: false; initial-value: 100%; }\\n@property --tw-drop-shadow-size { syntax: \\\"*\\\"; inherits: false; }\\n@property --tw-duration { syntax: \\\"*\\\"; inherits: false; }\\n@property --tw-ease { syntax: \\\"*\\\"; inherits: false; }\\n@property --tw-scale-x { syntax: \\\"*\\\"; inherits: false; initial-value: 1; }\\n@property --tw-scale-y { syntax: \\\"*\\\"; inherits: false; initial-value: 1; }\\n@property --tw-scale-z { syntax: \\\"*\\\"; inherits: false; initial-value: 1; }\\n@keyframes slideDown {\\n0% { transform: translateY(-100%); }\\n100% { transform: translateY(0px); }\\n}\\n@layer properties {\\n  @supports ((-webkit-hyphens: none) and (not (margin-trim: inline))) or ((-moz-orient: inline) and (not (color:rgb(from red r g b)))) {\\n  *, ::before, ::after, ::backdrop { --tw-rotate-x: initial; --tw-rotate-y: initial; --tw-rotate-z: initial; --tw-skew-x: initial; --tw-skew-y: initial; --tw-space-y-reverse: 0; --tw-space-x-reverse: 0; --tw-border-style: solid; --tw-gradient-position: initial; --tw-gradient-from: #0000; --tw-gradient-via: #0000; --tw-gradient-to: #0000; --tw-gradient-stops: initial; --tw-gradient-via-stops: initial; --tw-gradient-from-position: 0%; --tw-gradient-via-position: 50%; --tw-gradient-to-position: 100%; --tw-leading: initial; --tw-font-weight: initial; --tw-shadow: 0 0 #0000; --tw-shadow-color: initial; --tw-shadow-alpha: 100%; --tw-inset-shadow: 0 0 #0000; --tw-inset-shadow-color: initial; --tw-inset-shadow-alpha: 100%; --tw-ring-color: initial; --tw-ring-shadow: 0 0 #0000; --tw-inset-ring-color: initial; --tw-inset-ring-shadow: 0 0 #0000; --tw-ring-inset: initial; --tw-ring-offset-width: 0px; --tw-ring-offset-color: #fff; --tw-ring-offset-shadow: 0 0 #0000; --tw-outline-style: solid; --tw-blur: initial; --tw-brightness: initial; --tw-contrast: initial; --tw-grayscale: initial; --tw-hue-rotate: initial; --tw-invert: initial; --tw-opacity: initial; --tw-saturate: initial; --tw-sepia: initial; --tw-drop-shadow: initial; --tw-drop-shadow-color: initial; --tw-drop-shadow-alpha: 100%; --tw-drop-shadow-size: initial; --tw-duration: initial; --tw-ease: initial; --tw-scale-x: 1; --tw-scale-y: 1; --tw-scale-z: 1; }\\n}\\n}</style>\\n        </head>\\n        <body>\\n          <div class=\\\"w-full bg-white-bright  border border-[#cccccc] p-6 text-[#1c1c1c] grid grid-cols-3 gap-2 font-sans\\\" id=\\\"cv-preview\\\" style=\\\"--color-gray-800: rgb(30, 41, 57); --color-gray-700: rgb(54, 65, 83); --color-gray-600: rgb(74, 85, 101); --color-gray-500: rgb(106, 114, 130); --color-gray-400: rgb(153, 161, 175); --color-gray-300: rgb(209, 213, 220); --color-gray-200: rgb(229, 231, 235); --color-gray-100: rgb(243, 244, 246); --color-gray-50: rgb(249, 250, 251); --color-blue-950: rgb(22, 36, 86); --color-blue-800: rgb(25, 60, 184); --color-blue-700: rgb(20, 71, 230); --color-blue-600: rgb(21, 93, 252); --color-blue-500: rgb(43, 127, 255); --color-blue-50: rgb(239, 246, 255); --color-green-700: rgb(0, 130, 54); --color-green-600: rgb(0, 166, 62); --color-yellow-500: rgb(240, 177, 0); --color-yellow-400: rgb(253, 199, 0); --color-red-700: rgb(193, 0, 7); --color-red-600: rgb(231, 0, 11); --color-red-500: rgb(251, 44, 54); --color-red-100: rgb(255, 226, 226);\\\"><div class=\\\"col-span-1 space-y-2\\\"><h1 class=\\\"text-3xl font-bold font-['Noto_Sans'] leading-9 mt-2\\\">Lê Nhật Trường 2002</h1><img alt=\\\"avatar\\\" class=\\\"object-cover w-full border shadow aspect-square\\\" src=\\\"https://images.unsplash.com/photo-1746102268391-a17760aff398?w=600&amp;auto=format&amp;fit=crop&amp;q=60&amp;ixlib=rb-4.1.0&amp;ixid=M3wxMjA3fDB8MHxmZWF0dXJlZC1waG90b3MtZmVlZHw0fHx8ZW58MHx8fHx8\\\"><div class=\\\"p-3 text-white bg-gray-700 shadow\\\"><div><p class=\\\"py-2 font-medium\\\">Ngày sinh</p><p class=\\\"pb-4 text-sm italic break-words\\\">2004-11-13</p></div><div><p class=\\\"py-2 font-medium\\\">Giới tính</p><p class=\\\"pb-4 text-sm italic break-words\\\">Nữ</p></div><div><p class=\\\"py-2 font-medium\\\">Số điện thoại</p><p class=\\\"pb-4 text-sm italic break-words\\\">0867755734</p></div><div><p class=\\\"py-2 font-medium\\\">Email</p><p class=\\\"pb-4 text-sm italic break-words\\\">nhattruong13112000@gmail.com</p></div><div><p class=\\\"py-2 font-medium\\\">Địa chỉ</p><p class=\\\"pb-4 text-sm italic break-words\\\">Tp Quy Nhơn, Bình Định</p></div><div><p class=\\\"py-2 font-medium\\\">Website</p><p class=\\\"pb-4 text-sm italic break-words\\\">https://github.com/nhattVim</p></div></div></div><div class=\\\"col-span-2\\\"><div class=\\\"flex justify-end w-full h-10 px-4 text-white bg-gray-700\\\"><p class=\\\"w-1/2 py-1 overflow-hidden italic text-right truncate whitespace-nowrap\\\">Fullstack Developer</p></div><div class=\\\"mt-4\\\"><div class=\\\"p-3 mb-4 bg-gray-200 rounded-sm shadow\\\"><div class=\\\"flex items-center mb-1\\\"><h3 class=\\\"overflow-hidden font-bold uppercase truncate whitespace-nowrap\\\">Kinh nghiệm làm việc</h3><span class=\\\"flex-grow ml-2 border-t border-gray-400\\\"></span></div><div class=\\\"mb-2\\\"><div class=\\\"flex justify-between py-2 text-sm italic text-gray-600\\\"><span class=\\\"w-1/2 overflow-hidden truncate\\\">FPT Software</span><span class=\\\"flex gap-3\\\"><span>01/2024</span><span>-</span><span>05/2025</span></span></div><p class=\\\"w-full py-2 text-sm italic text-gray-600 break-words\\\">BE Developer</p><p class=\\\"w-full py-2 text-sm italic text-gray-600 break-words\\\">Thiết kế database, xử lí nghiệp vụ</p></div></div><div class=\\\"p-3 mb-4 bg-gray-200 rounded-sm shadow\\\"><div class=\\\"flex items-center mb-1\\\"><h3 class=\\\"overflow-hidden font-bold uppercase truncate whitespace-nowrap\\\">Học vấn</h3><span class=\\\"flex-grow ml-2 border-t border-gray-400\\\"></span></div><div class=\\\"mb-2\\\"><div class=\\\"flex justify-between py-2 text-sm italic text-gray-600\\\"><span class=\\\"w-1/2 overflow-hidden truncate\\\">Đại học Quy Nhơn</span><span class=\\\"flex gap-3\\\"><span>2016</span><span>-</span><span>2020</span></span></div><p class=\\\"w-full py-2 text-sm italic text-gray-600 break-words\\\">Cử nhâ đại học</p><p class=\\\"w-full py-2 text-sm italic text-gray-600 break-words\\\">Mô tả quá trình học tập hoặc thành tích của bạn</p></div></div><div class=\\\"p-3 mb-4 bg-gray-200 rounded-sm shadow\\\"><div class=\\\"flex items-center mb-1\\\"><h3 class=\\\"overflow-hidden font-bold uppercase truncate whitespace-nowrap\\\">Hoạt động</h3><span class=\\\"flex-grow ml-2 border-t border-gray-400\\\"></span></div><div class=\\\"mb-2\\\"><div class=\\\"flex justify-between py-2 text-sm italic text-gray-600\\\"><span class=\\\"w-1/2 overflow-hidden truncate\\\">Tên tổ chức</span><span class=\\\"flex gap-3\\\"><span>01/2024</span><span>-</span><span>05/2025</span></span></div><p class=\\\"w-full py-2 text-sm italic text-gray-600 break-words\\\">Ngành học / Môn học</p><p class=\\\"w-full py-2 text-sm italic text-gray-600 break-words\\\">Hoạt động 1</p></div></div><div class=\\\"p-3 mb-4 bg-gray-200 rounded-sm shadow\\\"><div class=\\\"flex items-center mb-1\\\"><h3 class=\\\"overflow-hidden font-bold uppercase truncate whitespace-nowrap\\\">Thành tích</h3><span class=\\\"flex-grow ml-2 border-t border-gray-400\\\"></span></div><div class=\\\"mb-2\\\"><p class=\\\"py-2 text-sm italic text-gray-600\\\">Thành tích 1</p><p class=\\\"py-2 text-sm italic text-gray-600\\\">Thành tích 1</p></div></div><div class=\\\"p-3 mb-4 bg-gray-200 rounded-sm shadow\\\"><div class=\\\"flex items-center mb-1\\\"><h3 class=\\\"overflow-hidden font-bold uppercase truncate whitespace-nowrap\\\">Ngôn ngữ</h3><span class=\\\"flex-grow ml-2 border-t border-gray-400\\\"></span></div><div class=\\\"mb-2\\\"><p class=\\\"py-2 text-sm italic text-gray-600\\\">Tiếng Anh</p><p class=\\\"py-2 text-sm italic text-gray-600\\\">B1</p></div></div><div class=\\\"p-3 mb-4 bg-gray-200 rounded-sm shadow\\\"><div class=\\\"flex items-center mb-1\\\"><h3 class=\\\"overflow-hidden font-bold uppercase truncate whitespace-nowrap\\\">Mạng xã hội</h3><span class=\\\"flex-grow ml-2 border-t border-gray-400\\\"></span></div><div class=\\\"mb-2\\\"><p class=\\\"py-2 text-sm italic text-gray-600\\\">Facebook</p><p class=\\\"py-2 text-sm italic text-gray-600\\\">https://github.com/nhattVim</p></div></div></div></div></div>\\n        </body>\\n      </html>\\n    \",\"fileName\":\"cv.pdf\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/cv/generate-pdf",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"cv",
+								"generate-pdf"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Project",
+			"item": [
+				{
+					"name": "Get all project",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:3000/projects",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"projects"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get my project",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:3000/projects/my",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"projects",
+								"my"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Search Project by Major",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:3000/projects/search?major=Công nghệ&specialization=",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"projects",
+								"search"
+							],
+							"query": [
+								{
+									"key": "major",
+									"value": "Công nghệ"
+								},
+								{
+									"key": "specialization",
+									"value": ""
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create project",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"title\": \"Lê Nhật Trường\",\r\n    \"description\": \"vLê Nhật Trường\",\r\n    \"skillsRequired\": \"Lê Nhật Trường\",\r\n    \"major\": \"68135b5062c480ca11b31c22\",\r\n    \"specialization\": \"68135b5062c480ca11b31c24\",\r\n    \"content\" : \"true\",\r\n    \"workingTime\": \"Méo có\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/projects/my",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"projects",
+								"my"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete project",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:3000/projects/my/680f6609651d11e99c79590e",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"projects",
+								"my",
+								"680f6609651d11e99c79590e"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update project",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"title\": \"Nghiên cứu vật lý lượng tử\",\r\n    \"description\": \"Phân tích và mô phỏng\",\r\n    \"skillsRequired\": \"FE, BE\",\r\n    \"benefits\": \"Méo có\",\r\n    \"workingTime\": \"Méo có\",\r\n    \"content\": \"ascs\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/projects/my/68119b74df6772c9baaf109e",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"projects",
+								"my",
+								"68119b74df6772c9baaf109e"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update project status",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"status\": \"open\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/projects/my/680e2e78090b414df62e1dda/status",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"projects",
+								"my",
+								"680e2e78090b414df62e1dda",
+								"status"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Student apply to project",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:3000/projects/68119b74df6772c9baaf109e/apply",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"projects",
+								"68119b74df6772c9baaf109e",
+								"apply"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Respond to application",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"action\": \"accept\"\r\n}\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/projects/6813705421ffe5fb9dd09108/respond/6811a2484421004bc2b1e0f5",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"projects",
+								"6813705421ffe5fb9dd09108",
+								"respond",
+								"6811a2484421004bc2b1e0f5"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "RecommendProject",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:3000/projects/681eb7fa4146bd71819a1215",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"projects",
+								"681eb7fa4146bd71819a1215"
+							],
+							"query": [
+								{
+									"key": "major",
+									"value": "68135b5062c480ca11b31c22",
+									"disabled": true
+								},
+								{
+									"key": "specialization",
+									"value": "68135b5062c480ca11b31c24",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Notification",
+			"item": [
+				{
+					"name": "Get notifications",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:3000/notify",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"notify"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get unread count",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:3000/notify/unread-count",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"notify",
+								"unread-count"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete notifications",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:3000/notify/680f364f5fd8ac377d915221",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"notify",
+								"680f364f5fd8ac377d915221"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Mark as read",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:3000/notify/6811a27f4421004bc2b1e107/read",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"notify",
+								"6811a27f4421004bc2b1e107",
+								"read"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Major",
+			"item": [
+				{
+					"name": "Get all majors",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:3000/majors",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"majors"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get major by id",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:3000/majors/123231",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"majors",
+								"123231"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Specialization",
+			"item": [
+				{
+					"name": "Get all specialization",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:3000/spec",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"spec"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get specialization by id",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:3000/spec/123231",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"spec",
+								"123231"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Favorite",
+			"item": [
+				{
+					"name": "Save favorite",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"accountId\": \"682030bdf27b457bd023fdcc\",\r\n    \"projectId\": \"681eb7d14146bd71819a120b\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/favorites",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"favorites"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get all favorites",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:3000/favorites",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"favorites"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}
