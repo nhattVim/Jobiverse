@@ -5,6 +5,7 @@ const verifyToken = require('../middlewares/verifyToken')
 
 router.get('/detail', verifyToken([]), accountController.getAccountDetail)
 router.put('/change-password', verifyToken([]), accountController.changePassword)
+router.get('/avatar', verifyToken([]), accountController.getAvatar)
 
 router.use(verifyToken(['admin']))
 router.get('/', accountController.getAllAccount)

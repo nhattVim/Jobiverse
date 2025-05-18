@@ -2,8 +2,9 @@ const express = require('express')
 const router = express.Router()
 const studentController = require('../controllers/StudentController')
 const verifyToken = require('../middlewares/verifyToken')
+const { uploadSingle } = require('../middlewares/upload')
 
-router.get('/', studentController.getAllStudents) // change to admin
+router.get('/', studentController.getAllStudents)
 
 router.get('/filter', studentController.filterStudent)
 
@@ -13,6 +14,6 @@ router.use(verifyToken(['student']))
 router.get('/search', studentController.searchStudents)
 router.get('/me', studentController.getMyProfile)
 router.get('/:id', studentController.getStudentById)
-router.post('/', studentController.saveStudentProfile)
+router.post('/', uploadSingle('avatar'), studentController.saveStudentProfile)
 
 module.exports = router

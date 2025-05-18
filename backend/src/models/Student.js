@@ -7,6 +7,8 @@ const StudentSchema = new mongoose.Schema({
     required: true,
     unique: true
   },
+  avatar: Buffer,
+  avatarType: String,
   mssv: {
     type: String,
     required: true,
@@ -28,8 +30,7 @@ const StudentSchema = new mongoose.Schema({
   university: {
     type: String,
     required: true
-  },
-  avatar: String
+  }
 })
 
 module.exports = mongoose.model('Student', StudentSchema)

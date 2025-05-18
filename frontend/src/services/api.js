@@ -1,36 +1,29 @@
 const API_BASE = 'http://localhost:3000'
 
 export default async function apiFetch(path, method = 'GET', body = null) {
-  const options = {
-    method,
-    headers: { 'Content-Type': 'application/json' },
-    credentials: 'include',
-    ...(body && { body: JSON.stringify(body) })
-  }
+  const isFormData = body instanceof FormData
 
   try {
-    const res = await fetch(`${API_BASE}${path}`, options)
-    const contentType = res.headers.get('Content-Type')
+    const res = await fetch(`${API_BASE}${path}`, {
+      method,
+      credentials: 'include',
+      headers: isFormData ? undefined : { 'Content-Type': 'application/json' },
+      body: body ? (isFormData ? body : JSON.stringify(body)) : undefined
+    })
+
+    const contentType = res.headers.get('Content-Type') || ''
 
     if (!res.ok) {
-      const errorData = contentType && contentType.includes('application/json')
-        ? await res.json()
-        : await res.text()
-      throw new Error(errorData.message || 'Lỗi mạng')
+      const error = contentType.includes('json') ? await res.json() : await res.text()
+      throw new Error(error?.message || error || 'Lỗi mạng')
     }
 
-    if (contentType.includes('application/json')) {
-      return await res.json()
-    }
+    if (contentType.includes('json')) return res.json()
+    if (contentType.includes('pdf') || contentType.includes('octet-stream') || contentType.includes('png')) return res.blob()
 
-    if (contentType.includes('application/pdf') || contentType.includes('application/octet-stream')) {
-      const blob = await res.blob()
-      return blob
-    }
-
-    return await res.text()
-  } catch (error) {
-    console.error(`API error [${method} ${path}]:`, error)
-    throw error
+    return res.text()
+  } catch (err) {
+    console.error(`[${method} ${path}]`, err)
+    throw err
   }
 }

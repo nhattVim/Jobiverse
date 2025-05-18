@@ -37,7 +37,7 @@ const UploadCV = () => {
     try {
       await apiFetch('/upload-cv', 'POST', formData, true)
       alert('CV đã được tải lên thành công!')
-      navigate('/CV-Management') //Khi nào làm CV Management thì chỉnh lại
+      navigate('/cv-manager')
     } catch (err) {
       if (err.message.includes('Unauthorized') || err.message.includes('Token')) {
         setError('Bạn cần đăng nhập để tải CV lên.')
@@ -50,22 +50,21 @@ const UploadCV = () => {
 
   return (
     <div className="min-h-screen bg-white">
-      <BannerText title="Upload CV" caption="Upload CV để các cơ hội việc làm tự tìm đến bạn"/>
+      <BannerText title="Upload CV" caption="Upload CV để các cơ hội việc làm tự tìm đến bạn" />
 
       <div className="w-full py-20">
         <div className="container-responsive">
           <form onSubmit={handleSubmit}>
-            <section className="bg-white-bright px-8 py-6 rounded-medium shadow-md">
-              <p className="text-black text-sm mb-4">
+            <section className="px-8 py-6 shadow-md bg-white-bright rounded-medium">
+              <p className="mb-4 text-sm text-black">
                 Bạn đã có sẵn CV của mình, chỉ cần tải CV lên, hệ thống sẽ tự động đề xuất CV của bạn tới những nhà tuyển dụng uy tín.
                 <br />
                 Tiết kiệm thời gian, tìm việc thông minh, nắm bắt cơ hội và làm chủ đường đua nghề nghiệp của chính mình.
               </p>
               {/* 👉 THAY: vùng tải file thành vùng kéo & thả */}
               <div
-                className={`border-2 border-dashed rounded-2xl p-6 flex flex-col items-center text-center space-y-4 transition ${
-                  dragOver ? 'border-blue-500 bg-blue-50' : 'border-gray-300'
-                }`}
+                className={`border-2 border-dashed rounded-2xl p-6 flex flex-col items-center text-center space-y-4 transition ${dragOver ? 'border-blue-500 bg-blue-50' : 'border-gray-300'
+                  }`}
                 onDragOver={(e) => {
                   e.preventDefault()
                   setDragOver(true)
@@ -78,7 +77,7 @@ const UploadCV = () => {
                   handleFileChange({ target: { files: [file] } }) // xử lý giống input
                 }}
               >
-                <p className="text-black font-bold">⬆️ Tải lên CV từ máy tính, chọn hoặc kéo thả</p>
+                <p className="font-bold text-black">⬆️ Tải lên CV từ máy tính, chọn hoặc kéo thả</p>
                 <p className="text-xs text-gray-400">Hỗ trợ định dạng .doc, .docx, .pdf kích thước dưới 5MB</p>
                 <input
                   type="file"
@@ -89,21 +88,21 @@ const UploadCV = () => {
                 />
                 <label
                   htmlFor="cvUpload"
-                  className="cursor-pointer bg-gray-200 text-gray-600 px-4 py-2 rounded-full hover:bg-gray-300 transition"
+                  className="px-4 py-2 text-gray-600 transition bg-gray-200 rounded-full cursor-pointer hover:bg-gray-300"
                 >
                   Chọn CV
                 </label>
                 {form.cv && <p className="text-sm text-gray-600">Đã chọn: {form.cv.name}</p>}
               </div>
-              <div className="text-center mt-6">
+              <div className="mt-6 text-center">
                 {error && (
-                  <div className="bg-red-100 text-red-700 px-4 py-2 rounded text-sm mb-4">
+                  <div className="px-4 py-2 mb-4 text-sm text-red-700 bg-red-100 rounded">
                     {error}
                   </div>
                 )}
                 <button
                   type="submit"
-                  className="bg-blue text-white px-8 py-2 rounded-full hover:bg-blue-600 transition"
+                  className="px-8 py-2 text-white transition rounded-full bg-blue hover:bg-blue-600"
                 >
                   Tải CV lên
                 </button>

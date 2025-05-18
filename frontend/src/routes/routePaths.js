@@ -9,7 +9,7 @@ export const ROUTES = {
   CREATE_CV: '/cv',
   UPDATE_CV: '/cv/:id',
   UPLOAD_CV: '/upload-cv',
-  CV_MANAGEMENT: '/cv-management',
+  CV_MANAGER: '/cv-manager',
   // AUTH PATHS
   REGISTER: '/register',
   LOGIN: '/login',
