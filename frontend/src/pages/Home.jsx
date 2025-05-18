@@ -32,15 +32,24 @@ const Home = () => {
   }
 
   useEffect(() => {
+    const storedUser = localStorage.getItem('user');
     const loadProjectsAndFavorites = async () => {
       try {
+        const favoritesPromise = storedUser
+          ? apiFetch('/favorites', 'GET')
+          : Promise.resolve([])
+
         const [projectsData, favoritesData] = await Promise.all([
           apiFetch('/projects', 'GET'),
-          apiFetch('/favorites', 'GET')
+          favoritesPromise
         ])
 
         setProjects(projectsData)
-        setFavorites(favoritesData.map((fav) => fav.project._id))
+        setFavorites(
+          Array.isArray(favoritesData)
+            ? favoritesData.map((fav) => fav.project._id)
+            : []
+        )
       } catch (error) {
         console.error('Error fetching projects:', error.message)
       }

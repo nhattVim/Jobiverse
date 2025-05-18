@@ -18,6 +18,11 @@ const JobCard = ({
   const [isFavorited, setIsFavorited] = useState(isFavoritedInitially)
 
   const handleFavorite = async () => {
+    const storedUser = localStorage.getItem('user')
+    if (!storedUser) {
+      alert('Vui lòng đăng nhập để sử dụng chức năng này!')
+      return
+    }
     const newFavoriteState = !isFavorited
     setIsFavorited(newFavoriteState)
 
