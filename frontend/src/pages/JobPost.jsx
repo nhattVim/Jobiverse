@@ -2,18 +2,24 @@ import React, { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import apiFetch from '../services/api'
 import BannerText from '../components/BannerText'
+import Select from 'react-select'
+import makeAnimated from 'react-select/animated'
 import { ToastContainer, toast } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
+
+const animatedComponents = makeAnimated()
 
 const JobPost = () => {
   const navigate = useNavigate()
   const [error, setError] = useState('')
+  const [majors, setMajors] = useState([])
+  const [specs, setSpecs] = useState([])
   const [form, setForm] = useState({
     title: '',
     description: '',
     location: '',
-    major: [null],
-    spec: [null],
+    major: [],
+    spec: [],
     content: '',
     workingTime: '',
     applicants: [null],
@@ -33,7 +39,7 @@ const JobPost = () => {
   const handleSubmit = async (e) => {
     e.preventDefault()
 
-    const requiredFields = ['title', 'location', 'jobType', 'salary', 'description']
+    const requiredFields = ['title', 'location', 'salary', 'description']
     for (const field of requiredFields) {
       if (!form[field]) {
         setError('Vui lòng điền đầy đủ thông tin bắt buộc.')
@@ -54,6 +60,18 @@ const JobPost = () => {
     if (error) toast.error(error)
     setError('')
   }, [error])
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const majorData = await apiFetch('/majors', 'GET')
+      const specData = await apiFetch('/specs', 'GET')
+      setMajors(majorData)
+      setSpecs(specData)
+    }
+    fetchData()
+  }, [])
+
+  console.log('Form data:', form)
 
   return (
     <div className="min-h-screen bg-white">
@@ -196,6 +214,45 @@ const JobPost = () => {
                   value={form.deadline}
                   onChange={handleChange}
                   className="w-full px-4 py-2 bg-white rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500"
+                />
+              </div>
+
+              <div>
+                <label className="block mb-1 text-sm font-bold text-gray-700">Ngành</label>
+                <Select
+                  isMulti
+                  closeMenuOnSelect={false}
+                  components={animatedComponents}
+                  options={majors.map((m) => ({ value: m._id, label: m.name }))}
+                  value={form.major.map((id) => {
+                    const m = majors.find((m) => m._id === id)
+                    return m ? { value: m._id, label: m.name } : null
+                  }).filter(Boolean)}
+                  onChange={(selected) =>
+                    setForm({ ...form, major: selected.map((s) => s.value) })
+                  }
+                  className="text-sm"
+                />
+              </div>
+
+              <div>
+                <label className="block mb-1 text-sm font-bold text-gray-700">Chuyên ngành</label>
+                <Select
+                  isMulti
+                  closeMenuOnSelect={false}
+                  components={animatedComponents}
+                  options={specs
+                    .filter((s) => form.major.includes(s.major))
+                    .map((s) => ({ value: s._id, label: s.name }))
+                  }
+                  value={form.spec.map((id) => {
+                    const spec = specs.find((s) => s._id === id)
+                    return spec ? { value: spec._id, label: spec.name } : null
+                  }).filter(Boolean)}
+                  onChange={(selected) =>
+                    setForm({ ...form, spec: selected.map((s) => s.value) })
+                  }
+                  className="text-sm"
                 />
               </div>
 

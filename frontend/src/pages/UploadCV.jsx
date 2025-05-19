@@ -32,10 +32,10 @@ const UploadCV = () => {
     }
 
     const formData = new FormData()
-    formData.append('cv', form.cv)
+    formData.append('files', form.cv)
 
     try {
-      await apiFetch('/upload-cv', 'POST', formData, true)
+      await apiFetch('/cv/uploads', 'POST', formData)
       alert('CV đã được tải lên thành công!')
       navigate('/cv-manager')
     } catch (err) {
@@ -47,6 +47,7 @@ const UploadCV = () => {
       }
     }
   }
+
 
   return (
     <div className="min-h-screen bg-white">

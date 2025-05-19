@@ -1,11 +1,11 @@
 const CV = require('../models/CV')
-const Account = require('../models/Account')
+const CVUpload = require('../models/CVUpload')
 const Student = require('../models/Student')
 const puppeteer = require('puppeteer')
 
 class CVController {
   // [GET] /cv
-  async getAllStudentCV(req, res, next) {
+  async getAllMyCV(req, res, next) {
     try {
       const accountId = req.account._id
 
@@ -23,7 +23,7 @@ class CVController {
   }
 
   // [GET] /cv/:id
-  async getStudentCV(req, res) {
+  async getCVById(req, res) {
     try {
       const accountId = req.account._id
       const cvId = req.params.id
@@ -39,8 +39,39 @@ class CVController {
     }
   }
 
+  // [GET] /cv/upload
+  async getAllUpCv(req, res) {
+    try {
+      const student = await Student.findOne({ account: req.account._id })
+      if (!student) return res.status(404).json({ message: 'Không tìm thấy sinh viên' })
+      const cvUploads = await CVUpload.find({ student: student._id })
+        .select('title fileName fileType createdAt')
+        .sort({ createdAt: -1 })
+      res.status(200).json(cvUploads)
+    } catch (err) {
+      res.status(500).json({ message: 'Lỗi khi lấy CV', error: err.message })
+    }
+  }
+
+  // [POST] /cv/download/:id
+  async getUpCVById(req, res) {
+    try {
+      const cv = await CVUpload.findById(req.params.id)
+      if (!cv) return res.status(404).send('CV not found')
+
+      res.set({
+        'Content-Type': cv.fileType,
+        'Content-Disposition': `inline; filename="${cv.fileName}"`
+      })
+
+      res.status(200).end(cv.file)
+    } catch (err) {
+      res.status(500).send('Error when getting file')
+    }
+  }
+
   // [POST] /cv
-  async createStudentCV(req, res) {
+  async createCV(req, res) {
     try {
       const accountId = req.account._id
       const content = req.body
@@ -55,8 +86,37 @@ class CVController {
     }
   }
 
+  // [POST] /cv/upload
+  async uploadCV(req, res) {
+    try {
+      const accountId = req.account._id
+      const files = req.files
+
+      if (!files || files.length === 0) return res.status(400).json({ message: 'Không có tệp nào được tải lên' })
+
+      const student = await Student.findOne({ account: accountId })
+      if (!student) return res.status(404).json({ message: 'Không tìm thấy sinh viên' })
+
+      const uploadedFiles = await Promise.all(
+        files.map(file =>
+          CVUpload.create({
+            student: student._id,
+            title: file.originalname,
+            fileName: file.originalname,
+            file: file.buffer,
+            fileType: file.mimetype
+          })
+        )
+      )
+
+      res.status(201).json({ message: 'Tải lên CV thành công', uploadedFiles })
+    } catch (err) {
+      res.status(500).json({ message: 'Lỗi khi tải lên CV', error: err.message })
+    }
+  }
+
   // [PUT] /cv
-  async updateStudentCV(req, res) {
+  async updateCV(req, res) {
     try {
       const cvId = req.params.id
 
@@ -70,11 +130,23 @@ class CVController {
   }
 
   // [DELETE] /cv
-  async deleteStudentCV(req, res) {
+  async deleteCV(req, res) {
     try {
       const cvId = req.params.id
       const cv = await CV.findByIdAndDelete(cvId)
       if (!cv) return res.status(404).json({ message: 'CV không tồn tại' })
+      res.status(200).json({ message: 'Xoá CV thành công' })
+    } catch (err) {
+      res.status(500).json({ message: 'Lỗi khi xoá CV', error: err.message })
+    }
+  }
+
+  // [DELETE] /uploads/:id
+  async deleteUpCV(req, res, next) {
+    try {
+      const cvId = req.params.id
+      const upCV = await CVUpload.findByIdAndDelete(cvId)
+      if (!upCV) return res.status(404).json({ message: 'CV không tồn tại' })
       res.status(200).json({ message: 'Xoá CV thành công' })
     } catch (err) {
       res.status(500).json({ message: 'Lỗi khi xoá CV', error: err.message })
@@ -106,7 +178,7 @@ class CVController {
         'Content-Length': pdfBuffer.length
       })
 
-      res.end(pdfBuffer)
+      res.status(200).end(pdfBuffer)
     } catch (error) {
       console.error('PDF error:', error)
       res.status(500).json({ message: 'Lỗi khi tạo PDF', error: error.message })
