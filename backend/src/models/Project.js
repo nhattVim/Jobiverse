@@ -11,6 +11,10 @@ const ProjectSchema = new mongoose.Schema({
     required: true
   },
   description: String,
+  location: {
+    type: String,
+    required: true
+  },
   major: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Major'
@@ -38,7 +42,31 @@ const ProjectSchema = new mongoose.Schema({
   assignedStudents: [{
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Student'
-  }]
+  }],
+  salary: {
+    type: Number,
+    required: true
+  },
+  experiences: [{
+    position: String,
+    company: String,
+    start: String,
+    end: String,
+    description: String
+  }],
+  deadline: {
+    type: Date,
+    required: true
+  },
+  hiringCount: {
+    type: Number,
+    default: 1
+  },
+  workType: {
+    type: String,
+    enum: ['online', 'offline'],
+    default: 'online'
+  }
 }, { timestamps: true })
 
 module.exports = mongoose.model('Project', ProjectSchema)

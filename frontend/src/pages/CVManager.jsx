@@ -77,7 +77,7 @@ const CVManagement = () => {
                     cvList.map(cv => (
                       <div
                         key={cv._id}
-                        className="bg-white-mid flex items-center justify-between p-6 my-5 transition border border-gray-light rounded-medium hover:shadow-md hover:bg-gray-50"
+                        className="flex items-center justify-between p-6 my-5 transition border bg-white-mid border-gray-light rounded-medium hover:shadow-md hover:bg-gray-50"
                       >
                         <div>
                           <Link

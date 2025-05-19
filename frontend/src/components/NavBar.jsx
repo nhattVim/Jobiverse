@@ -29,7 +29,7 @@ const NavBar = () => {
   }, [])
 
   useEffect(() => {
-    const user = JSON.parse(localStorage.getItem('user')) // Lấy thông tin người dùng từ localStorage
+    const user = JSON.parse(localStorage.getItem('user'))
     if (user) {
       setIsLoggedIn(true)
       setUserInfo(user)
@@ -85,7 +85,7 @@ const NavBar = () => {
                   <ChevronDownIcon className="w-4 ml-1 transition-transform duration-300 group-hover:rotate-180" />
                 </Link>
                 {hoveredMenu === 'jobList' && (
-                  <div className="w-md absolute top-full -left-1/2 z-50">
+                  <div className="absolute z-50 w-md top-full -left-1/2">
                     <ul className="grid grid-cols-2 p-5 mt-6 transition-all duration-500 shadow-md bg-white-bright rounded-small">
                       <li className="px-4 py-2 transition-colors duration-300 hover:text-blue">
                         <Link to={ROUTES.JOB_LIST}>Danh sách việc làm</Link>
@@ -116,10 +116,10 @@ const NavBar = () => {
                   <ChevronDownIcon className="w-4 ml-1 transition-transform duration-300 group-hover:rotate-180" />
                 </Link>
                 {hoveredMenu === 'createCV' && (
-                  <div className="w-2xs absolute top-full -left-1/2 z-50">
+                  <div className="absolute z-50 w-2xs top-full -left-1/2">
                     <ul className="grid grid-cols-2 p-5 mt-6 transition-all duration-500 shadow-md bg-white-bright rounded-small">
                       <li className="px-4 py-2 transition-colors duration-300 hover:text-blue">
-                        <Link to={ROUTES.CV_MANAGEMENT}>Quản lý CV</Link>
+                        <Link to={ROUTES.CV_MANAGER}>Quản lý CV</Link>
                       </li>
                       <li className="px-4 py-2 transition-colors duration-300 hover:text-blue">
                         <Link to={ROUTES.CREATE_CV}>Tạo CV mới</Link>
@@ -166,10 +166,7 @@ const NavBar = () => {
                       <ul className="grid grid-cols-1 p-5 mt-6 transition-all duration-500 shadow-md bg-white-bright rounded-small">
                         <li className="flex items-center gap-5 px-4 pt-2 pb-4 mb-2 border-b border-gray-light">
                           <img
-                            src={
-                              userInfo?.avatar ||
-                              'https://cdn2.fptshop.com.vn/small/avatar_trang_1_cd729c335b.jpg'
-                            }
+                            src={`http://localhost:3000/account/avatar?timestamp=${Date.now()}`}
                             alt="avatar"
                             className="flex-shrink-0 w-10 h-10 rounded-full"
                           />
@@ -184,7 +181,7 @@ const NavBar = () => {
                           </Link>
                         </li>
                         <li className="px-4 py-2 transition-colors duration-300 hover:text-blue">
-                          <Link to={ROUTES.CV_MANAGEMENT}>
+                          <Link to={ROUTES.CV_MANAGER}>
                             CV của tôi
                           </Link>
                         </li>

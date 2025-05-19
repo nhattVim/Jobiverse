@@ -63,22 +63,36 @@ class StudentController {
   async saveStudentProfile(req, res, next) {
     try {
       const accountId = req.account._id
+      let student = await Student.findOne({ account: accountId })
 
-      const updateStudent = await Student.findOneAndUpdate(
-        { account: accountId },
-        { ...req.body },
-        { new: true }
-      )
-      if (updateStudent) return res.status(200).json({ message: 'Cập nhật tài khoản thành công' })
+      if (student) {
+        student.set(req.body)
+        if (req.file) {
+          student.avatar = req.file.buffer
+          student.avatarType = req.file.mimetype
+        }
 
-      const student = await Student.create({ ...req.body, account: accountId })
-      if (!student) return res.status(400).json({ message: 'Lỗi khi tạo hồ sơ sinh viên' })
+        await student.save()
+        return res.status(200).json({ message: 'Cập nhật hồ sơ sinh viên thành công', student })
+      }
 
-      res.status(201).json({ message: 'Tạo hồ sơ student thành công', student })
+      const newStudent = new Student({
+        ...req.body,
+        account: accountId
+      })
+
+      if (req.file) {
+        newStudent.avatar = req.file.buffer
+        newStudent.avatarType = req.file.mimetype
+      }
+
+      await newStudent.save()
+      return res.status(201).json({ message: 'Tạo hồ sơ sinh viên thành công', student: newStudent })
     } catch (err) {
-      res.status(500).json({ message: 'Lỗi khi tạo hồ sơ student', error: err.message })
+      res.status(500).json({ message: 'Lỗi khi lưu hồ sơ sinh viên', error: err.message })
     }
   }
+
 
   // [GET] /students/search
   async searchStudents(req, res, next) {
@@ -141,35 +155,34 @@ class StudentController {
     }
   }
 
-    // recomment các student phù hợp với dự án (random theo ngành và chuyên ngành)
-    async recommendStudent(req, res, next) {
-      try {
-        const projectId = req.params.id
-        const project = await Project.findById(projectId)
-        if (!project) {
-          return res.status(404).json({ message: 'Không tồn tại project' })
-        }
-        const majorId = project.major._id
-        const specializationId = project.specialization._id
-        const students = await Student.find({
-          _id: { $ne: projectId }, // loại trừ chính project này
-          major: majorId,
-          specialization: specializationId
-        })
-          .select('-__v')
-          .populate('major', '-__v')
-          .populate('description', '-__v')
-        if (!students || students.length === 0) {
-          return res.status(404).json({ message: 'Không có sinh viên phù hợp với dự án' })
-        }
-  
-        res.status(200).json({ projects })
+  async recommendStudent(req, res, next) {
+    try {
+      const projectId = req.params.id
+      const project = await Project.findById(projectId)
+      if (!project) {
+        return res.status(404).json({ message: 'Không tồn tại project' })
       }
-      catch (err) {
-        res.status(500).json({ message: 'Lỗi server', error: err.message })
+      const majorId = project.major._id
+      const specializationId = project.specialization._id
+      const students = await Student.find({
+        _id: { $ne: projectId },
+        major: majorId,
+        specialization: specializationId
+      })
+        .select('-__v')
+        .populate('major', '-__v')
+        .populate('description', '-__v')
+      if (!students || students.length === 0) {
+        return res.status(404).json({ message: 'Không có sinh viên phù hợp với dự án' })
       }
+
+      res.status(200).json({ project })
     }
-  
+    catch (err) {
+      res.status(500).json({ message: 'Lỗi server', error: err.message })
+    }
+  }
+
 }
 
 module.exports = new StudentController()

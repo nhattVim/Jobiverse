@@ -49,11 +49,11 @@ export default function CVEditor() {
       if (id) {
         await apiFetch(`/cv/${id}`, 'PUT', cvData)
         alert('Cập nhật CV thành công!')
-        navigate('/cv-management')
+        navigate('/cv-manager')
       } else {
         await apiFetch('/cv', 'POST', cvData)
         alert('Tạo CV thành công!')
-        navigate('/cv-management')
+        navigate('/cv-manager')
       }
     } catch (error) {
       alert(`${id ? 'Cập nhật' : 'Tạo'} CV thất bại: ` + error.message)

@@ -40,6 +40,17 @@ class AdminController {
     try {
       const account = await Account.findById(req.account._id).select('-password -__v -deleted')
       if (!account) return res.status(404).json({ message: 'Tài khoản không tồn tại' })
+      res.json(account)
+    } catch (err) {
+      return res.status(500).json({ message: 'Lỗi máy chủ khi lấy thông tin tài khoản', error: err.message })
+    }
+  }
+
+  // [GET] /account
+  async getAvatar(req, res, next) {
+    try {
+      const account = await Account.findById(req.account._id).select('-password -__v -deleted')
+      if (!account) return res.status(404).json({ message: 'Tài khoản không tồn tại' })
 
       let avatar = null
 
@@ -54,12 +65,12 @@ class AdminController {
       const result = account.toObject()
       result.avatar = avatar
 
-      res.json(result)
+      res.set('Content-Type', 'image/png')
+      res.status(200).send(avatar)
     } catch (err) {
       return res.status(500).json({ message: 'Lỗi máy chủ khi lấy thông tin tài khoản', error: err.message })
     }
   }
-
 
   // [DELETE] /account/:id
   async deleteAccount(req, res, next) {

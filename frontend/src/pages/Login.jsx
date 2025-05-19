@@ -25,7 +25,6 @@ const Login = () => {
       const user = await apiFetch('/account/detail', 'GET')
       localStorage.setItem('user', JSON.stringify(user))
 
-      console.log(emailOrPhone, password)
       navigate('/')
     } catch (error) {
       setError(error.message || 'Đăng nhập thất bại, vui lòng thử lại.')
