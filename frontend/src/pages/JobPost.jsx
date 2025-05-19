@@ -1,25 +1,29 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import apiFetch from '../services/api'
 import BannerText from '../components/BannerText'
+import { ToastContainer, toast } from 'react-toastify'
+import 'react-toastify/dist/ReactToastify.css'
 
 const JobPost = () => {
   const navigate = useNavigate()
+  const [error, setError] = useState('')
   const [form, setForm] = useState({
     title: '',
-    location: '',
-    quantity: '',
-    jobType: '',
-    salary: '',
-    experience: '',
-    gpa: '',
     description: '',
-    requirement: '',
-    workTime: '',
-    deadline: ''
+    location: '',
+    major: [null],
+    spec: [null],
+    content: '',
+    workingTime: '',
+    applicants: [null],
+    assignedStudents: [null],
+    salary: 0,
+    experiences: '',
+    deadline: '',
+    hiringCount: 0,
+    workType: ''
   })
-
-  const [error, setError] = useState('')
 
   const handleChange = (e) => {
     const { name, value } = e.target
@@ -38,7 +42,7 @@ const JobPost = () => {
     }
 
     try {
-      await apiFetch('/jobpost', 'POST', form)
+      await apiFetch('/projects/my', 'POST', form)
       navigate('/job-list')
     } catch (err) {
       console.error(err)
@@ -46,168 +50,159 @@ const JobPost = () => {
     }
   }
 
+  useEffect(() => {
+    if (error) toast.error(error)
+    setError('')
+  }, [error])
+
   return (
     <div className="min-h-screen bg-white">
-      <BannerText title="Đăng một công việc" caption="Đưa công việc của bạn đến gần hơn với những người phù hợp. Một tin đăng chuẩn chỉnh sẽ giúp bạn tiết kiệm thời gian và nhanh chóng tiếp cận nhân sự chất lượng."/>
+      <ToastContainer position="top-right" autoClose={3000} />
+      <BannerText title="Đăng một công việc" caption="Đưa công việc của bạn đến gần hơn với những người phù hợp. Một tin đăng chuẩn chỉnh sẽ giúp bạn tiết kiệm thời gian và nhanh chóng tiếp cận nhân sự chất lượng." />
 
-      <div className="max-w-4xl w-full mx-auto py-20 space-y-6">
+      <div className="w-full max-w-4xl py-20 mx-auto space-y-6">
         {error && <p className="text-sm text-red-600">{error}</p>}
         <form onSubmit={handleSubmit}>
-          <section className="bg-white-low p-10 rounded-medium shadow-md border border-gray-200">
-            <h2 className="text-2xl font-bold mb-6">Chi tiết công việc</h2>
+          <section className="p-10 border border-gray-200 shadow-md bg-white-low rounded-medium">
+            <h2 className="mb-6 text-2xl font-bold">Chi tiết công việc</h2>
             <div className="space-y-4">
 
               {/* Tên công việc */}
               <div>
-                <label className="font-bold block text-gray-700 text-sm mb-1">Tên công việc</label>
+                <label className="block mb-1 text-sm font-bold text-gray-700">Tên công việc</label>
                 <input
                   type="text"
                   name="title"
                   value={form.title}
                   onChange={handleChange}
-                  className="w-full px-4 py-2 rounded-full bg-white focus:outline-none focus:ring-2 focus:ring-blue"
+                  className="w-full px-4 py-2 bg-white rounded-full focus:outline-none focus:ring-2 focus:ring-blue"
                   placeholder="Tên công việc"
                 />
               </div>
 
               {/* Địa điểm */}
               <div>
-                <label className="font-bold block text-gray-700 text-sm mb-1">Địa điểm làm việc</label>
+                <label className="block mb-1 text-sm font-bold text-gray-700">Địa điểm làm việc</label>
                 <input
                   type="text"
                   name="location"
                   value={form.location}
                   onChange={handleChange}
-                  className="w-full px-4 py-2 rounded-full bg-white focus:outline-none focus:ring-2 focus:ring-blue"
+                  className="w-full px-4 py-2 bg-white rounded-full focus:outline-none focus:ring-2 focus:ring-blue"
                   placeholder="Địa điểm"
                 />
               </div>
 
               {/* Số lượng */}
               <div>
-                <label className="font-bold block text-gray-700 text-sm mb-1">Số lượng tuyển</label>
+                <label className="block mb-1 text-sm font-bold text-gray-700">Số lượng tuyển</label>
                 <input
                   type="number"
-                  name="quantity"
-                  value={form.quantity}
+                  name="hiringCount"
+                  value={form.hiringCount}
                   onChange={handleChange}
-                  className="w-full px-4 py-2 rounded-full bg-white focus:outline-none focus:ring-2 focus:ring-blue"
+                  className="w-full px-4 py-2 bg-white rounded-full focus:outline-none focus:ring-2 focus:ring-blue"
                   placeholder="Số lượng"
                 />
               </div>
 
               {/* Hình thức & Lương */}
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
                 <div>
-                  <label className="font-bold block text-gray-700 text-sm mb-1">Hình thức làm việc</label>
+                  <label className="block mb-1 text-sm font-bold text-gray-700">Hình thức làm việc</label>
                   <select
-                    name="jobType"
-                    value={form.jobType}
+                    name="workType"
+                    value={form.workType}
                     onChange={handleChange}
-                    className="w-full px-4 py-2 rounded-full bg-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="w-full px-4 py-2 bg-white rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500"
                   >
-                    <option value="">Chọn...</option>
-                    <option value="Thời vụ">Thời vụ</option>
-                    <option value="Toàn thời gian">Toàn thời gian</option>
-                    <option value="Bán thời gian">Bán thời gian</option>
+                    <option value="">-- Chọn -- </option>
+                    <option value="online">Online</option>
+                    <option value="offline">Offline</option>
                   </select>
                 </div>
 
                 <div>
-                  <label className="font-bold block text-gray-700 text-sm mb-1">Tiền thuê</label>
+                  <label className="block mb-1 text-sm font-bold text-gray-700">Tiền thuê</label>
                   <input
                     type="number"
                     name="salary"
                     value={form.salary}
                     onChange={handleChange}
-                    className="w-full px-4 py-2 rounded-full bg-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="w-full px-4 py-2 bg-white rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500"
                     placeholder="Lương"
                   />
                 </div>
               </div>
 
-              {/* Kinh nghiệm & GPA */}
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                  <label className="font-bold block text-gray-700 text-sm mb-1">Kinh nghiệm yêu cầu</label>
-                  <input
-                    type="text"
-                    name="experience"
-                    value={form.experience}
-                    onChange={handleChange}
-                    className="w-full px-4 py-2 rounded-full bg-white focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    placeholder="VD: 1 năm"
-                  />
-                </div>
-
-                <div>
-                  <label className="font-bold block text-gray-700 text-sm mb-1">GPA tối thiểu</label>
-                  <input
-                    type="number"
-                    name="gpa"
-                    value={form.gpa}
-                    onChange={handleChange}
-                    className="w-full px-4 py-2 rounded-full bg-white focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    placeholder="GPA"
-                  />
-                </div>
-              </div>
-
-              {/* Mô tả công việc */}
+              {/* Kinh nghiệm */}
               <div>
-                <label className="font-bold block text-gray-700 text-sm mb-1">Mô tả công việc</label>
-                <textarea
-                  name="description"
-                  value={form.description}
+                <label className="block mb-1 text-sm font-bold text-gray-700">Kinh nghiệm yêu cầu</label>
+                <input
+                  type="text"
+                  name="experiences"
+                  value={form.experiences}
                   onChange={handleChange}
-                  rows={4}
-                  className="w-full px-4 py-2 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  placeholder="Mô tả"
-                />
-              </div>
-
-              {/* Yêu cầu */}
-              <div>
-                <label className="font-bold block text-gray-700 text-sm mb-1">Yêu cầu ứng viên</label>
-                <textarea
-                  name="requirement"
-                  value={form.requirement}
-                  onChange={handleChange}
-                  rows={4}
-                  className="w-full px-4 py-2 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  placeholder="Yêu cầu"
+                  className="w-full px-4 py-2 bg-white rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  placeholder="VD: 1 năm"
                 />
               </div>
 
               {/* Thời gian làm việc */}
               <div>
-                <label className="font-bold block text-gray-700 text-sm mb-1">Thời gian làm việc</label>
+                <label className="block mb-1 text-sm font-bold text-gray-700">Thời gian làm việc</label>
                 <input
                   type="text"
-                  name="workTime"
-                  value={form.workTime}
+                  name="workingTime"
+                  value={form.workingTime}
                   onChange={handleChange}
-                  className="w-full px-4 py-2 rounded-full bg-white focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  placeholder="VD: 8h-17h"
+                  className="w-full px-4 py-2 bg-white rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  placeholder="Part-time, 20h/tuần"
+                />
+              </div>
+
+              {/* Mô tả công việc */}
+              <div>
+                <label className="block mb-1 text-sm font-bold text-gray-700">Giới thiệu</label>
+                <textarea
+                  name="description"
+                  value={form.description}
+                  onChange={handleChange}
+                  rows={2}
+                  className="w-full px-4 py-2 bg-white rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  placeholder="Mô tả"
+                />
+              </div>
+
+              {/* Nội dung công việc */}
+              <div>
+                <label className="block mb-1 text-sm font-bold text-gray-700">Mô tả công việc</label>
+                <textarea
+                  name="content"
+                  value={form.content}
+                  onChange={handleChange}
+                  rows={5}
+                  className="w-full px-4 py-2 bg-white rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  placeholder="Mô tả"
                 />
               </div>
 
               {/* Hạn nộp hồ sơ */}
               <div>
-                <label className="font-bold block text-gray-700 text-sm mb-1">Hạn nộp hồ sơ</label>
+                <label className="block mb-1 text-sm font-bold text-gray-700">Hạn nộp hồ sơ</label>
                 <input
                   type="date"
                   name="deadline"
                   value={form.deadline}
                   onChange={handleChange}
-                  className="w-full px-4 py-2 rounded-full bg-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="w-full px-4 py-2 bg-white rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500"
                 />
               </div>
 
               {/* Nút submit */}
               <button
                 type="submit"
-                className="bg-blue text-white px-6 py-2 rounded-full hover:bg-blue-700 transition"
+                className="px-6 py-2 text-white transition rounded-full bg-blue hover:bg-blue-700"
               >
                 Tạo bài đăng
               </button>
