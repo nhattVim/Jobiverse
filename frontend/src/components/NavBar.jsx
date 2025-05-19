@@ -42,7 +42,7 @@ const NavBar = () => {
       localStorage.removeItem('user')
       setIsLoggedIn(false)
       setUserInfo(null)
-      navigate(ROUTES.LOGIN)
+      navigate(ROUTES.HOME)
     } catch (error) {
       console.log('Đăng xuất thất bại', error)
     }

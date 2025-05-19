@@ -32,7 +32,7 @@ const Home = () => {
   }
 
   useEffect(() => {
-    const storedUser = localStorage.getItem('user');
+    const storedUser = localStorage.getItem('user')
     const loadProjectsAndFavorites = async () => {
       try {
         const favoritesPromise = storedUser
