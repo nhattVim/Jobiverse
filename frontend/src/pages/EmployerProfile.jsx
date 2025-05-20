@@ -1,0 +1,162 @@
+import React, { useState } from 'react'
+import Profile from '../components/Profile'
+
+const EmployerProfile = () => {
+  const [error, setError] = useState('')
+  const [form, setForm] = useState({
+    representativeName: '',
+    companyName: '',
+    industry: '',
+    position: '',
+    companyInfo: '',
+    businessScale: [null],
+    prove: 0,
+    address: ''
+  })
+
+  const handleChange = (e) => {
+    const { name, value } = e.target
+    setForm({ ...form, [name]: value })
+  }
+
+  return (
+    <Profile
+      title="Tạo profile cho nhà tuyển dụng"
+      caption="Bắt đầu hành trình tuyển dụng hiệu quả bằng cách xây dựng hồ sơ nhà tuyển dụng rõ ràng, uy tín và hấp dẫn."
+    >
+      {error && <p className="text-sm text-red-600">{error}</p>}
+      <form className='pb-20'>
+        <section className="p-10 border border-gray-200 shadow-md bg-white-low rounded-medium">
+          <h2 className="mb-6 text-xl font-bold">Thông tin nhà tuyển dụng</h2>
+          <div className="space-y-4">
+
+            {/* Họ và tên HR */}
+            <div>
+              <label className="block mb-1 text-sm font-bold text-gray-700">Họ và tên</label>
+              <input
+                type="text"
+                name="title"
+                value={form.representativeName}
+                onChange={handleChange}
+                className="w-full px-4 py-2 bg-white rounded-full focus:outline-none focus:ring-2 focus:ring-blue"
+                placeholder="Nhập tên của HR"
+              />
+            </div>
+
+            {/* Tên công ty */}
+            <div>
+              <label className="block mb-1 text-sm font-bold text-gray-700">Công ty</label>
+              <input
+                type="text"
+                name="location"
+                value={form.companyName}
+                onChange={handleChange}
+                className="w-full px-4 py-2 bg-white rounded-full focus:outline-none focus:ring-2 focus:ring-blue"
+                placeholder="Tên công ty"
+              />
+            </div>
+
+            {/* Lĩnh vực & Vị trí */}
+            <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+              <div>
+                <label className="block mb-1 text-sm font-bold text-gray-700">Lĩnh vực</label>
+                <input
+                  type="number"
+                  name="hiringCount"
+                  value={form.industry}
+                  onChange={handleChange}
+                  className="w-full px-4 py-2 bg-white rounded-full focus:outline-none focus:ring-2 focus:ring-blue"
+                  placeholder="Lĩnh vực công ty"
+                />
+              </div>
+
+              <div>
+                <label className="block mb-1 text-sm font-bold text-gray-700">Vị trí công tác</label>
+                <input
+                  type="number"
+                  name="salary"
+                  value={form.position}
+                  onChange={handleChange}
+                  className="w-full px-4 py-2 bg-white rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  placeholder="Vị trí"
+                />
+              </div>
+            </div>
+
+            {/* Mô tả công ty */}
+            <div>
+              <label className="block mb-1 text-sm font-bold text-gray-700">Mô tả công ty</label>
+              <textarea
+                type="text"
+                name="experiences"
+                value={form.companyInfo}
+                onChange={handleChange}
+                rows={5}
+                className="w-full px-4 py-2 bg-white rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                placeholder="Mô tả"
+              />
+            </div>
+
+            {/* Quy mô doanh nghiệp & Mã số thuế */}
+            <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+              <div>
+                <label className="block mb-1 text-sm font-bold text-gray-700">Quy mô doanh nghiệp</label>
+                <select
+                  name="businessScale"
+                  value={form.businessScale}
+                  onChange={handleChange}
+                  className="w-full px-4 py-2 bg-white rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500"
+                >
+                  <option value="">-- Chọn -- </option>
+                  <option value="online">Cá nhân</option>
+                  <option value="offline">Doanh nghiệp</option>
+                </select>
+              </div>
+
+              <div>
+                <label className="block mb-1 text-sm font-bold text-gray-700">Mã số thuế</label>
+                <input
+                  type="number"
+                  name="salary"
+                  value={form.prove}
+                  onChange={handleChange}
+                  className="w-full px-4 py-2 bg-white rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  placeholder="Nhập mã số thuế"
+                />
+              </div>
+            </div>
+
+            {/* Địa chỉ công ty */}
+            <div>
+              <label className="block mb-1 text-sm font-bold text-gray-700">Địa chỉ</label>
+              <input
+                type="text"
+                name="location"
+                value={form.address}
+                onChange={handleChange}
+                className="w-full px-4 py-2 bg-white rounded-full focus:outline-none focus:ring-2 focus:ring-blue"
+                placeholder="Nhập địa chỉ"
+              />
+            </div>
+
+            {/* Nút submit */}
+            <button
+              type="submit"
+              className="px-6 py-2 text-white transition rounded-full bg-red hover:bg-red-700 cursor-pointer mr-4"
+            >
+                Huỷ
+            </button>
+            <button
+              type="submit"
+              className="px-6 py-2 text-white transition rounded-full bg-blue hover:bg-blue-700 cursor-pointer"
+            >
+                Hoàn tất
+            </button>
+          </div>
+        </section>
+      </form>
+    </Profile>
+  )
+}
+
+export default EmployerProfile

@@ -14,6 +14,8 @@ import SetInfomation from '../pages/SetInfomation'
 import JobDetail from '../pages/JobDetail'
 import EmployerInfo from '../pages/EmployerInfo'
 import ProtectedRoute from './ProtectedRoute'
+import EmployerProfile from '../pages/EmployerProfile'
+import StudentProfile from '../pages/StudentProfile'
 
 export const router = createBrowserRouter([
   {
@@ -64,10 +66,20 @@ export const router = createBrowserRouter([
         element: <ProtectedRoute><SetInfomation /></ProtectedRoute>
       },
       {
-        path: '/employer-info',
+        path: ROUTES.EMPLOYER_INFO,
         element: <EmployerInfo />
       }
     ]
+  },
+
+  // PROFILE ROUTES
+  {
+    path: ROUTES.EMPLOYER_PROFILE,
+    element: <EmployerProfile />
+  },
+  {
+    path: ROUTES.STUDENT_PROFILE,
+    element: <StudentProfile />
   },
 
   // AUTH ROUTES

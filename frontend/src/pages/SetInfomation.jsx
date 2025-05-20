@@ -215,7 +215,7 @@ const SetInfomation = () => {
                     type="submit"
                     disabled={loadingSubmit}
                     className={`px-6 py-2 text-white transition rounded-full cursor-pointer bg-blue hover:opacity-90 ${loadingSubmit ? 'opacity-50 cursor-not-allowed' : ''
-                      }`}
+                    }`}
                   >
                     {loadingSubmit ? 'Đang lưu...' : 'Lưu lại'}
                   </button>
