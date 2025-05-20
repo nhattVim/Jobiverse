@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react'
 import UserContext from './UserContext'
 
 const UserProvider = ({ children }) => {
-  const [user, setUser] = useState()
+  const [user, setUser] = useState({})
 
   useEffect(() => {
     const storedUser = JSON.parse(localStorage.getItem('user'))
