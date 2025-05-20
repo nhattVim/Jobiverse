@@ -104,10 +104,6 @@ const SetInfomation = () => {
             <div className="flex items-center justify-center w-full h-full p-10">
               <p>Đang tải dữ liệu...</p>
             </div>
-          ) : fetchError ? (
-            <div className="flex items-center justify-center w-full h-full p-10">
-              <p className="text-red-600">{fetchError}</p>
-            </div>
           ) : (
             <form onSubmit={handleSubmit}>
               <section className="p-10 border border-gray-200 shadow-md bg-white-low rounded-medium">
