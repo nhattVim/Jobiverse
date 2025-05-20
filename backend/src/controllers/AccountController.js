@@ -46,27 +46,18 @@ class AdminController {
     }
   }
 
-  // [GET] /account
+  // [GET] /avatar
   async getAvatar(req, res, next) {
     try {
       const account = await Account.findById(req.account._id).select('-password -__v -deleted')
-      if (!account) return res.status(404).json({ message: 'Tài khoản không tồn tại' })
+      if (!account || !account.avatar) return res.status(404).json({ message: 'Tài khoản không tồn tại' })
 
-      let avatar = null
-
-      if (account.accountType === 'student') {
-        const student = await Student.findOne({ account: account._id })
-        avatar = student?.avatar || null
-      } else if (account.accountType === 'employer') {
-        const employer = await Employee.findOne({ account: account._id })
-        avatar = employer?.avatar || null
+      if (account.avatar && account.avatar.data) {
+        res.set('Content-Type', account.avatar.contentType)
+        return res.status(200).send(account.avatar.data)
       }
 
-      const result = account.toObject()
-      result.avatar = avatar
-
-      res.set('Content-Type', 'image/png')
-      res.status(200).send(avatar)
+      return res.status(404).json({ message: 'Không có ảnh đại diện' })
     } catch (err) {
       return res.status(500).json({ message: 'Lỗi máy chủ khi lấy thông tin tài khoản', error: err.message })
     }
@@ -124,6 +115,31 @@ class AdminController {
       res.json({ message: 'Đổi mật khẩu thành công.' })
     } catch (err) {
       res.status(500).json({ message: 'Lỗi máy chủ khi thay đổi mật khẩu', error: err.message })
+    }
+  }
+
+  // [PUT] /account/avatar
+  async changeAvatar(req, res) {
+    try {
+      const accountId = req.account.id
+      if (!accountId) return res.status(401).json({ message: 'Chưa đăng nhập' })
+      if (!req.file) return res.status(400).json({ message: 'Vui lòng chọn ảnh đại diện mới' })
+
+      const updated = await Account.findByIdAndUpdate(
+        accountId,
+        {
+          avatar: {
+            data: req.file.buffer,
+            contentType: req.file.mimetype
+          }
+        },
+        { new: true }
+      )
+
+      if (!updated) return res.status(404).json({ message: 'Không tìm thấy tài khoản' })
+      res.json({ message: 'Cập nhật ảnh đại diện thành công' })
+    } catch (err) {
+      res.status(500).json({ message: 'Lỗi máy chủ khi cập nhật ảnh đại diện', error: err.message })
     }
   }
 }
