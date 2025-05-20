@@ -1,7 +1,7 @@
 const Specialization = require('../models/Specialization')
 
 class SpecializationController {
-  // [GET] /spec
+  // [GET] /specx
   async getAllSpecializations(req, res, next) {
     try {
       const specializations = await Specialization.find().select('-__v')
@@ -11,7 +11,7 @@ class SpecializationController {
     }
   }
 
-  // [GET] /spec/:id
+  // [GET] /specs/:id
   async getSpecializationById(req, res, next) {
     try {
       const specialization = await Specialization.findById(req.params.id).select('-__v')

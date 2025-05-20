@@ -34,7 +34,7 @@ const SetInfomation = () => {
       try {
         const [majorsData, specsData, profileData] = await Promise.all([
           apiFetch('/majors'),
-          apiFetch('/spec'),
+          apiFetch('/specs'),
           apiFetch('/students/me')
         ])
 

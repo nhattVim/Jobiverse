@@ -6,30 +6,19 @@ const ProjectSchema = new mongoose.Schema({
     ref: 'Account',
     required: true
   },
-  title: {
-    type: String,
-    required: true
-  },
+  title: String,
   description: String,
-  location: {
-    type: String,
-    required: true
-  },
-  major: {
+  location: String,
+  major: [{
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Major'
-  },
-  specialization: {
+  }],
+  specialization: [{
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Specialization'
-  },
-  content: {
-    type: String,
-    required: true
-  },
-  workingTime: {
-    type: String
-  },
+  }],
+  content: String,
+  workingTime: String,
   status: {
     type: String,
     enum: ['open', 'closed', 'in-progress'],
@@ -43,21 +32,9 @@ const ProjectSchema = new mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Student'
   }],
-  salary: {
-    type: Number,
-    required: true
-  },
-  experiences: [{
-    position: String,
-    company: String,
-    start: String,
-    end: String,
-    description: String
-  }],
-  deadline: {
-    type: Date,
-    required: true
-  },
+  salary: Number,
+  experiences: String,
+  deadline: Date,
   hiringCount: {
     type: Number,
     default: 1

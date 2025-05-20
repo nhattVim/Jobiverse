@@ -19,7 +19,7 @@ function route(app) {
   app.use('/notify', notificationRouter)
   app.use('/favorites', favoriteRouter)
   app.use('/majors', majors)
-  app.use('/spec', specialization)
+  app.use('/specs', specialization)
 }
 
 module.exports = route
