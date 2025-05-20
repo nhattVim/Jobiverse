@@ -3,6 +3,7 @@ import Logo1 from '../assets/Logo1.svg'
 import { useNavigate, Link } from 'react-router-dom'
 import apiFetch from '../services/api'
 import { GoogleLogin } from '@react-oauth/google'
+import FacebookLogin from 'react-facebook-login/dist/facebook-login-render-props'
 
 const RegisterForm = ({ accountType, onBack }) => {
   const navigate = useNavigate()
@@ -37,16 +38,49 @@ const RegisterForm = ({ accountType, onBack }) => {
 
   const handleGoogleRegister = async (credentialResponse) => {
     try {
-      const res = await apiFetch('/register', 'POST', {
+      await apiFetch('/register', 'POST', {
         method: 'google',
         accountType,
         ggToken: credentialResponse.credential
       })
-      localStorage.setItem('user', JSON.stringify(res.user))
       navigate('/login')
     } catch (err) {
-      setError('Đăng nhập bằng Google thất bại.')
-      console.error('Google login error:', err)
+      setError('Đăng ký bằng Google thất bại.')
+      console.error('Google login error:', err.message)
+    }
+  }
+
+  const handleFacebookRegister = () => {
+    if (!window.FB) {
+      setError('Facebook SDK chưa sẵn sàng. Vui lòng thử lại sau.')
+      return
+    }
+
+    window.FB.login(
+      (response) => {
+        if (!response.authResponse || !response.authResponse.accessToken) {
+          setError('Đăng ký bằng Facebook thất bại hoặc bạn đã hủy.')
+          return
+        }
+
+        const accessToken = response.authResponse.accessToken
+        handleFacebookRegisterAsync(accessToken)
+      },
+      { scope: 'public_profile,email' }
+    )
+  }
+
+  const handleFacebookRegisterAsync = async (accessToken) => {
+    try {
+      await apiFetch('/register', 'POST', {
+        method: 'facebook',
+        accountType,
+        fbToken: accessToken
+      })
+      navigate('/login')
+    } catch (err) {
+      setError('Đăng ký bằng Facebook thất bại.')
+      console.error('Facebook login error:', err)
     }
   }
 
@@ -113,10 +147,29 @@ const RegisterForm = ({ accountType, onBack }) => {
           <hr className="flex-grow border-t border-gray-300" />
         </div>
 
-        <div className="flex flex-col items-center gap-4 mt-4">
+        <div className="flex flex-col items-center gap-4">
           <GoogleLogin
             onSuccess={handleGoogleRegister}
             onError={() => setError('Đăng ký bằng Google thất bại')}
+          />
+
+          <FacebookLogin
+            appId="1206494790558399"
+            fields="name,email,picture"
+            callback={handleFacebookRegister}
+            render={renderProps => (
+              <button
+                onClick={renderProps.onClick}
+                className="px-6 bg-white h-[50px] flex items-center justify-center gap-3 border border-gray-300 text-black font-medium rounded-lg hover:bg-gray-100 transition"
+              >
+                <img
+                  src="https://upload.wikimedia.org/wikipedia/commons/5/51/Facebook_f_logo_%282019%29.svg"
+                  alt="Facebook"
+                  className="w-5 h-5"
+                />
+                <span>Đăng ký bằng Facebook</span>
+              </button>
+            )}
           />
         </div>
 

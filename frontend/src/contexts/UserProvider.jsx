@@ -2,12 +2,10 @@ import React, { useState, useEffect } from 'react'
 import UserContext from './UserContext'
 
 const UserProvider = ({ children }) => {
-  const [user, setUser] = useState({})
-
-  useEffect(() => {
-    const storedUser = JSON.parse(localStorage.getItem('user'))
-    if (storedUser) setUser(storedUser)
-  }, [])
+  const [user, setUser] = useState(() => {
+    const stored = localStorage.getItem('user')
+    return stored ? JSON.parse(stored) : {}
+  })
 
   useEffect(() => {
     localStorage.setItem('user', JSON.stringify(user))

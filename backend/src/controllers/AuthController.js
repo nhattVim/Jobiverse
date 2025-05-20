@@ -18,6 +18,7 @@ class AccountController {
       console.log('Register method:', method)
 
       if (method === 'email') {
+
         const { accountType, email, password, phoneNumber } = req.body
         const avatar = req.file ? req.file.buffer : null
         const trimmedEmail = email?.trim()
@@ -44,7 +45,9 @@ class AccountController {
         })
 
         res.status(201).json({ message: 'Tạo tài khoản thành công', accountID: account._id })
+
       } else if (method === 'google') {
+
         const { ggToken, accountType } = req.body
         if (!ggToken || !accountType) return res.status(400).json({ message: 'Thiếu thông tin bắt buộc' })
 
@@ -70,6 +73,47 @@ class AccountController {
         const token = jwt.sign({ id: account._id, type: account.accountType }, JWT_SECRET, { expiresIn: '7d' })
         res.cookie('token', token, { httpOnly: true, secure: false, sameSite: 'strict', maxAge: 7 * 24 * 60 * 60 * 1000 })
         res.json({ message: 'Tăng nhập bằng Google thành công', token })
+
+      } else if (method === 'facebook') {
+
+        const { fbToken, accountType } = req.body
+        if (!fbToken || !accountType) return res.status(400).json({ message: 'Thiếu thông tin bắt buộc' })
+
+        const fbResponse = await axios.get('https://graph.facebook.com/me', {
+          params: {
+            access_token: fbToken,
+            fields: 'id,email,picture'
+          }
+        })
+
+        const { email, picture } = fbResponse.data
+        if (!email) return res.status(400).json({ message: 'Không lấy được email từ Facebook' })
+
+        let account = await Account.findOne({ email, deleted: false })
+
+        if (!account) {
+          const picUrl = picture?.data?.url
+          let avatarData = DefaultAvatar
+          let contentType = 'image/png'
+
+          if (picUrl) {
+            const response = await axios.get(picUrl, { responseType: 'arraybuffer' })
+            avatarData = Buffer.from(response.data, 'binary')
+            contentType = response.headers['content-type']
+          }
+
+          account = await Account.create({
+            accountType,
+            email,
+            password: null,
+            phoneNumber: null,
+            avatar: { data: avatarData, contentType }
+          })
+        }
+
+        const token = jwt.sign({ id: account._id, type: account.accountType }, JWT_SECRET, { expiresIn: '7d' })
+        res.cookie('token', token, { httpOnly: true, secure: false, sameSite: 'strict', maxAge: 7 * 24 * 60 * 60 * 1000 })
+        res.json({ message: 'Đăng kí bằng Facebook thành công', token })
       } else {
         res.status(400).json({ message: 'Phương thức đăng ký không hợp lệ' })
       }
@@ -84,6 +128,7 @@ class AccountController {
       const { method } = req.body
 
       if (method === 'email') {
+
         const { emailOrPhone, password } = req.body
         if (!emailOrPhone || !password) return res.status(400).json({ message: 'Thiếu thông tin bắt buộc' })
 
@@ -100,7 +145,9 @@ class AccountController {
         const token = jwt.sign({ id: account._id, type: account.accountType }, JWT_SECRET, { expiresIn: '7d' })
         res.cookie('token', token, { httpOnly: true, secure: false, sameSite: 'strict', maxAge: 7 * 24 * 60 * 60 * 1000 })
         res.json({ message: 'Đăng nhập thành công', token })
+
       } else if (method === 'google') {
+
         const { ggToken } = req.body
         if (!ggToken) return res.status(400).json({ message: 'Thiếu token Google' })
 
@@ -114,6 +161,29 @@ class AccountController {
         const token = jwt.sign({ id: account._id, type: account.accountType }, JWT_SECRET, { expiresIn: '7d' })
         res.cookie('token', token, { httpOnly: true, secure: false, sameSite: 'strict', maxAge: 7 * 24 * 60 * 60 * 1000 })
         res.json({ message: 'Đăng nhập Google thành công', token })
+
+      } else if (method === 'facebook') {
+
+        const { fbToken } = req.body
+        if (!fbToken) return res.status(400).json({ message: 'Thiếu token Facebook' })
+
+        const fbResponse = await axios.get('https://graph.facebook.com/me', {
+          params: {
+            access_token: fbToken,
+            fields: 'id,email'
+          }
+        })
+
+        const { email } = fbResponse.data
+        if (!email) return res.status(400).json({ message: 'Không lấy được email từ Facebook' })
+
+        const account = await Account.findOne({ email, deleted: false })
+        if (!account) return res.status(404).json({ message: 'Tài khoản Facebook chưa đăng ký' })
+
+        const token = jwt.sign({ id: account._id, type: account.accountType }, JWT_SECRET, { expiresIn: '7d' })
+        res.cookie('token', token, { httpOnly: true, secure: false, sameSite: 'strict', maxAge: 7 * 24 * 60 * 60 * 1000 })
+        res.json({ message: 'Đăng nhập Facebook thành công', token })
+
       } else {
         res.status(400).json({ message: 'Phương thức đăng nhập không hợp lệ' })
       }

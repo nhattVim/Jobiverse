@@ -4,7 +4,6 @@ import CVForm from '../components/CVForm'
 import CVPreview from '../components/CVPreview'
 import apiFetch from '../services/api'
 import BannerText from '../components/BannerText'
-import DownloadPDFButton from '../components/DownloadPDFButton'
 
 export default function CVEditor() {
   const cvPreviewId = 'cv-preview'
@@ -134,13 +133,6 @@ export default function CVEditor() {
               />
             </div>
             <div className='space-x-4'>
-              <DownloadPDFButton
-                targetId={cvPreviewId}
-                fileName={`${cvData.title || 'CV'}.pdf`}
-                className="px-4 py-2 font-medium text-white rounded-full cursor-pointer bg-blue hover:bg-yellow hover:text-black"
-              >
-                Tải xuống
-              </DownloadPDFButton>
               <button
                 onClick={generatePDF}
                 className="px-4 py-2 font-medium text-white rounded-full cursor-pointer bg-blue hover:bg-yellow hover:text-black"

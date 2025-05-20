@@ -16,7 +16,7 @@ const NavBar = () => {
   const [isTopOfPage, setIsTopOfPage] = useState(true)
   const [hoveredMenu, setHoveredMenu] = useState(null)
   const [isLoggedIn, setIsLoggedIn] = useState(false)
-  const { user, setUser } = useContext(UserContext)
+  const { user } = useContext(UserContext)
 
   useEffect(() => {
     const handleScroll = () => {
@@ -30,16 +30,12 @@ const NavBar = () => {
   }, [])
 
   useEffect(() => {
-    const user = JSON.parse(localStorage.getItem('user'))
-    if (user) {
-      setIsLoggedIn(true)
-    }
-  }, [])
+    if (user) setIsLoggedIn(true)
+  }, [user])
 
   const handleLogout = async () => {
     try {
       await apiFetch('/logout', 'POST')
-      setUser({})
       localStorage.removeItem('user')
       setIsLoggedIn(false)
       navigate(ROUTES.LOGIN)

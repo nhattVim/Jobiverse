@@ -3,7 +3,6 @@ import Logo1 from '../assets/Logo1.svg'
 import { useNavigate, Link } from 'react-router-dom'
 import apiFetch from '../services/api'
 import { GoogleLogin } from '@react-oauth/google'
-import FacebookLogin from 'react-facebook-login/dist/facebook-login-render-props'
 import { UserIcon, LockClosedIcon } from '@heroicons/react/24/solid'
 import { ROUTES } from '../routes/routePaths'
 import UserContext from '../contexts/UserContext'
@@ -15,6 +14,18 @@ const Login = () => {
   const [error, setError] = useState('')
   const [step, setStep] = useState(1)
   const { setUser, updateTimestamp } = useContext(UserContext)
+
+  const handleContinue = () => {
+    if (!emailOrPhone.trim()) return setError('Vui lòng nhập email hoặc số điện thoại')
+    setError('')
+    setStep(2)
+  }
+
+  const handleStepBack = () => {
+    setStep(1)
+    setPassword('')
+    setError('')
+  }
 
   const handleLogin = async (e) => {
     e.preventDefault()
@@ -48,30 +59,42 @@ const Login = () => {
       })
 
       const user = await apiFetch('/account/detail', 'GET')
-      console.log('User:', user)
       setUser(user)
       updateTimestamp()
 
       navigate('/')
     } catch (err) {
-      setError('Đăng nhập bằng Google thất bại.')
+      setError('Đăng nhập bằng Google thất bại. ' + err.message)
       console.error('Google login error:', err)
     }
   }
 
-  const handleFacebookLogin = async (response) => {
-    // try {
-    //   const res = await apiFetch('/auth/facebook', 'POST', {
-    //     accessToken: response.accessToken,
-    //     userID: response.userID
-    //   })
-    //   localStorage.setItem('user', JSON.stringify(res.user))
-    //   navigate('/')
-    // } catch (err) {
-    //   setError('Đăng nhập bằng Facebook thất bại.')
-    //   console.error(err)
-    // }
-    alert('Đăng nhập bằng Facebook chưa được hỗ trợ.', response)
+  const handleFacebookLogin = () => {
+    window.FB.login(response => {
+      if (!response.authResponse?.accessToken) {
+        setError('Đăng nhập bằng Facebook thất bại.')
+        return
+      }
+
+      handleFacebookLoginAsync(response.authResponse.accessToken)
+    }, { scope: 'public_profile,email' })
+  }
+
+  const handleFacebookLoginAsync = async (accessToken) => {
+    try {
+      await apiFetch('/login', 'POST', {
+        method: 'facebook',
+        fbToken: accessToken
+      })
+
+      const user = await apiFetch('/account/detail', 'GET')
+      setUser(user)
+      updateTimestamp()
+      navigate('/')
+    } catch (err) {
+      setError('Đăng nhập bằng Facebook thất bại.')
+      console.error('Facebook login error:', err)
+    }
   }
 
   return (
@@ -126,11 +149,7 @@ const Login = () => {
                 </div>
                 <button
                   type="button"
-                  onClick={() => {
-                    if (!emailOrPhone.trim()) return setError('Vui lòng nhập email hoặc số điện thoại')
-                    setError('')
-                    setStep(2)
-                  }}
+                  onClick={handleContinue}
                   className="w-full h-[50px] bg-blue-600 text-white font-bold rounded-full hover:bg-blue-700 transition"
                 >
                   Tiếp tục
@@ -165,7 +184,7 @@ const Login = () => {
                 </button>
                 <button
                   type="button"
-                  onClick={() => setStep(1)}
+                  onClick={handleStepBack}
                   className="text-sm underline text-blue"
                 >
                   Quay lại
@@ -188,25 +207,19 @@ const Login = () => {
                 onSuccess={handleGoogleLogin}
                 onError={() => setError('Đăng nhập bằng Google thất bại')}
               />
-            </div>
 
-            <FacebookLogin
-              appId="YOUR_FACEBOOK_APP_ID"
-              callback={handleFacebookLogin}
-              render={renderProps => (
-                <button
-                  onClick={renderProps.onClick}
-                  className="w-full h-[50px] flex items-center justify-center gap-3 border border-gray-300 text-black font-medium rounded-lg hover:bg-gray-100 transition"
-                >
-                  <img
-                    src="https://upload.wikimedia.org/wikipedia/commons/5/51/Facebook_f_logo_%282019%29.svg"
-                    alt="Facebook"
-                    className="w-5 h-5"
-                  />
-                  <span>Continue with Facebook</span>
-                </button>
-              )}
-            />
+              <button
+                onClick={handleFacebookLogin}
+                className="px-6 bg-white h-[50px] flex items-center justify-center gap-3 border border-gray-300 text-black font-medium rounded-lg hover:bg-gray-100 transition"
+              >
+                <img
+                  src="https://upload.wikimedia.org/wikipedia/commons/5/51/Facebook_f_logo_%282019%29.svg"
+                  alt="Facebook"
+                  className="w-5 h-5"
+                />
+                <span>Continue with Facebook</span>
+              </button>
+            </div>
 
             <div className="flex items-center justify-between w-full mt-10">
               <p className="font-medium leading-6">
