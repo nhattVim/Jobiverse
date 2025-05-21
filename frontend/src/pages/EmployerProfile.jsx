@@ -34,7 +34,8 @@ const EmployerProfile = () => {
     }
 
     try {
-      await apiFetch('/employer', 'POST', form)
+      await apiFetch('/employers', 'POST', form)
+      navigate('login')
     } catch (err) {
       console.error(err)
       setError('Tạo profile thất bại, vui lòng thử lại.')
@@ -47,17 +48,18 @@ const EmployerProfile = () => {
       caption="Bắt đầu hành trình tuyển dụng hiệu quả bằng cách xây dựng hồ sơ nhà tuyển dụng rõ ràng, uy tín và hấp dẫn."
     >
       {error && <p className="text-sm text-red-600">{error}</p>}
-      <form onSubmit={handleSubmit} className='pb-20'>
+      <form onSubmit={handleSubmit} className="pb-20">
         <section className="p-10 border border-gray-200 shadow-md bg-white-low rounded-medium">
           <h2 className="mb-6 text-xl font-bold">Thông tin nhà tuyển dụng</h2>
           <div className="space-y-4">
-
             {/* Họ và tên HR */}
             <div>
-              <label className="block mb-1 text-sm font-bold text-gray-700">Họ và tên</label>
+              <label className="block mb-1 text-sm font-bold text-gray-700">
+                Họ và tên
+              </label>
               <input
                 type="text"
-                name="title"
+                name="representativeName"
                 value={form.representativeName}
                 onChange={handleChange}
                 className="w-full px-4 py-2 bg-white rounded-full focus:outline-none focus:ring-2 focus:ring-blue"
@@ -67,10 +69,12 @@ const EmployerProfile = () => {
 
             {/* Tên công ty */}
             <div>
-              <label className="block mb-1 text-sm font-bold text-gray-700">Công ty</label>
+              <label className="block mb-1 text-sm font-bold text-gray-700">
+                Công ty
+              </label>
               <input
                 type="text"
-                name="location"
+                name="companyName"
                 value={form.companyName}
                 onChange={handleChange}
                 className="w-full px-4 py-2 bg-white rounded-full focus:outline-none focus:ring-2 focus:ring-blue"
@@ -81,10 +85,12 @@ const EmployerProfile = () => {
             {/* Lĩnh vực & Vị trí */}
             <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
               <div>
-                <label className="block mb-1 text-sm font-bold text-gray-700">Lĩnh vực</label>
+                <label className="block mb-1 text-sm font-bold text-gray-700">
+                  Lĩnh vực
+                </label>
                 <input
-                  type="number"
-                  name="hiringCount"
+                  type="text"
+                  name="industry"
                   value={form.industry}
                   onChange={handleChange}
                   className="w-full px-4 py-2 bg-white rounded-full focus:outline-none focus:ring-2 focus:ring-blue"
@@ -93,10 +99,12 @@ const EmployerProfile = () => {
               </div>
 
               <div>
-                <label className="block mb-1 text-sm font-bold text-gray-700">Vị trí công tác</label>
+                <label className="block mb-1 text-sm font-bold text-gray-700">
+                  Vị trí công tác
+                </label>
                 <input
-                  type="number"
-                  name="salary"
+                  type="text"
+                  name="position"
                   value={form.position}
                   onChange={handleChange}
                   className="w-full px-4 py-2 bg-white rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500"
@@ -107,10 +115,12 @@ const EmployerProfile = () => {
 
             {/* Mô tả công ty */}
             <div>
-              <label className="block mb-1 text-sm font-bold text-gray-700">Mô tả công ty</label>
+              <label className="block mb-1 text-sm font-bold text-gray-700">
+                Mô tả công ty
+              </label>
               <textarea
                 type="text"
-                name="experiences"
+                name="companyInfo"
                 value={form.companyInfo}
                 onChange={handleChange}
                 rows={5}
@@ -122,7 +132,9 @@ const EmployerProfile = () => {
             {/* Quy mô doanh nghiệp & Mã số thuế */}
             <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
               <div>
-                <label className="block mb-1 text-sm font-bold text-gray-700">Quy mô doanh nghiệp</label>
+                <label className="block mb-1 text-sm font-bold text-gray-700">
+                  Quy mô doanh nghiệp
+                </label>
                 <select
                   name="businessScale"
                   value={form.businessScale}
@@ -130,16 +142,18 @@ const EmployerProfile = () => {
                   className="w-full px-4 py-2 bg-white rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500"
                 >
                   <option value="">-- Chọn -- </option>
-                  <option value="online">Cá nhân</option>
-                  <option value="offline">Doanh nghiệp</option>
+                  <option value="Private individuals">Cá nhân</option>
+                  <option value="Companies">Doanh nghiệp</option>
                 </select>
               </div>
 
               <div>
-                <label className="block mb-1 text-sm font-bold text-gray-700">Mã số thuế</label>
+                <label className="block mb-1 text-sm font-bold text-gray-700">
+                  Mã số thuế
+                </label>
                 <input
                   type="number"
-                  name="salary"
+                  name="prove"
                   value={form.prove}
                   onChange={handleChange}
                   className="w-full px-4 py-2 bg-white rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500"
@@ -150,10 +164,12 @@ const EmployerProfile = () => {
 
             {/* Địa chỉ công ty */}
             <div>
-              <label className="block mb-1 text-sm font-bold text-gray-700">Địa chỉ</label>
+              <label className="block mb-1 text-sm font-bold text-gray-700">
+                Địa chỉ
+              </label>
               <input
                 type="text"
-                name="location"
+                name="address"
                 value={form.address}
                 onChange={handleChange}
                 className="w-full px-4 py-2 bg-white rounded-full focus:outline-none focus:ring-2 focus:ring-blue"
@@ -162,18 +178,17 @@ const EmployerProfile = () => {
             </div>
 
             {/* Nút submit */}
-            <button
-              type="submit"
-              className="px-6 py-2 text-white transition rounded-full bg-red hover:bg-red-700 cursor-pointer mr-4"
-            >
+            <div className="flex items-center gap-4">
+              <button className="px-6 py-2 text-white transition rounded-full bg-red hover:bg-red-700 cursor-pointer">
                 Huỷ
-            </button>
-            <button
-              type="submit"
-              className="px-6 py-2 text-white transition rounded-full bg-blue hover:bg-blue-700 cursor-pointer"
-            >
+              </button>
+              <button
+                type="submit"
+                className="px-6 py-2 text-white transition rounded-full bg-blue hover:bg-blue-700 cursor-pointer"
+              >
                 Hoàn tất
-            </button>
+              </button>
+            </div>
           </div>
         </section>
       </form>

@@ -4,7 +4,7 @@ import UserContext from './UserContext'
 const UserProvider = ({ children }) => {
   const [user, setUser] = useState(() => {
     const stored = localStorage.getItem('user')
-    return stored ? JSON.parse(stored) : {}
+    return stored ? JSON.parse(stored) : null
   })
 
   useEffect(() => {

@@ -1,14 +1,16 @@
 import { ArrowLeftIcon } from '@heroicons/react/24/outline'
 import React from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { ROUTES } from '../routes/routePaths'
 
 const Profile = ({ children, title, caption }) => {
+  const navigate = useNavigate()
+
   return (
     <>
       <div className='relative flex justify-center items-center bg-gradient-blue-left w-full h-[340px]'>
         <div className="absolute top-0 left-0 flex justify-between items-center w-full p-10">
-          <div className="flex items-center gap-2 text-white cursor-pointer hover:text-yellow transition-colors duration-300">
+          <div onClick={() => navigate(-1)} className="flex items-center gap-2 text-white cursor-pointer hover:text-yellow transition-colors duration-300">
             <ArrowLeftIcon className='w-5 h-5'/>
             <span>Quay lại</span>
           </div>
