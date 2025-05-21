@@ -1,3 +1,5 @@
+import CVPreviewSection from './CVPreviewSection'
+
 const personalFields = {
   birthday: { label: 'Ngày sinh', placeholder: 'DD/MM/YYYY' },
   gender: { label: 'Giới tính', placeholder: 'Nam/Nữ' },
@@ -63,7 +65,7 @@ const sectionFields = {
 
 export default function CVPreview({ cvData, id }) {
   return (
-    <div className="w-full bg-white-bright  border border-[#cccccc] p-6 text-[#1c1c1c] grid grid-cols-3 gap-2 font-sans" id={id}>
+    <div className="w-full bg-white-bright border border-[#cccccc] p-6 text-[#1c1c1c] grid grid-cols-3 gap-2 font-sans" id={id}>
       <div className="col-span-1 space-y-2">
         <h1 className="text-3xl font-bold font-['Noto_Sans'] leading-9 mt-2">{cvData.name || 'Họ tên ứng viên'}</h1>
 
@@ -100,50 +102,7 @@ export default function CVPreview({ cvData, id }) {
 
         <div className="mt-4">
           {Object.entries(sectionFields).map(([key, section]) => (
-            <div key={key} className="p-3 mb-4 bg-gray-200 rounded-sm shadow">
-              <div className="flex items-center mb-1">
-                <h3 className="overflow-hidden font-bold uppercase truncate whitespace-nowrap">{section.title}</h3>
-                <span className="flex-grow ml-2 border-t border-gray-400"></span>
-              </div>
-
-              {cvData[key].map((item, i) => {
-                const hasStartEnd = section.fields.some(f => f.name === 'start') && section.fields.some(f => f.name === 'end')
-                const firstField = section.fields[0]?.name || 'Tên'
-
-                return (
-                  <div key={i} className="mb-2">
-                    {hasStartEnd ? (
-                      <>
-                        <div className="flex justify-between py-2 text-sm italic text-gray-600">
-                          <span className="w-1/2 overflow-hidden truncate">
-                            {item[firstField] || section.fields[0]?.placeholder}
-                          </span>
-                          <span className="flex gap-3">
-                            <span>{item.start || 'Bắt đầu'}</span>
-                            <span>-</span>
-                            <span>{item.end || 'Kết thúc'}</span>
-                          </span>
-                        </div>
-
-                        {section.fields
-                          .filter(f => !['start', 'end', firstField].includes(f.name))
-                          .map((f, j) => (
-                            <p key={j} className="w-full py-2 text-sm italic text-gray-600 break-words">{item[f.name] || f.placeholder}</p>
-                          ))}
-                      </>
-                    ) : (
-                      section.fields.map((f, j) => (
-                        <p key={j} className="py-2 text-sm italic text-gray-600">{item[f.name] || f.placeholder}</p>
-                      ))
-                    )}
-
-                    {cvData[key].length > 1 && i < cvData[key].length - 1 && (
-                      <hr className="my-2 border-t border-dashed" />
-                    )}
-                  </div>
-                )
-              })}
-            </div>
+            <CVPreviewSection key={key} section={section} data={cvData[key]} />
           ))}
         </div>
       </div>
