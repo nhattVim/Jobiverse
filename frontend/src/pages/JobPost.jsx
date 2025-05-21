@@ -19,7 +19,7 @@ const JobPost = () => {
     description: '',
     location: '',
     major: [],
-    spec: [],
+    specialization: [],
     content: '',
     workingTime: '',
     applicants: [null],
@@ -245,12 +245,12 @@ const JobPost = () => {
                     .filter((s) => form.major.includes(s.major))
                     .map((s) => ({ value: s._id, label: s.name }))
                   }
-                  value={form.spec.map((id) => {
+                  value={form.specialization.map((id) => {
                     const spec = specs.find((s) => s._id === id)
                     return spec ? { value: spec._id, label: spec.name } : null
                   }).filter(Boolean)}
                   onChange={(selected) =>
-                    setForm({ ...form, spec: selected.map((s) => s.value) })
+                    setForm({ ...form, specialization: selected.map((s) => s.value) })
                   }
                   className="text-sm"
                 />

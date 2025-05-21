@@ -1,9 +1,36 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import Banner from '../components/Banner'
 import { CheckIcon, FunnelIcon } from '@heroicons/react/24/solid'
 import JobListItem from '../components/JobListItem'
+import apiFetch from '../services/api'
 
 const JobList = () => {
+  const [jobLists, setJobLists] = useState([])
+  const [sortOption, setSortOption] = useState('default')
+
+  useEffect(() => {
+    const loadData = async () => {
+      const data = await apiFetch('/projects')
+      setJobLists(data)
+    }
+    loadData()
+  }, [])
+
+  const getSortedJobs = () => {
+    if (!Array.isArray(jobLists) && !jobLists.length > 0) return
+    const sortedJobs = [...jobLists]
+    if (sortOption === 'newest') {
+      sortedJobs.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
+    } else if (sortOption === 'oldest') {
+      sortedJobs.sort((a, b) => new Date(a.createdAt) - new Date(b.createdAt))
+    } else if (sortOption === 'salary') {
+      sortedJobs.sort((a, b) => b.salary - a.salary)
+    } else if (sortOption === 'salary-low') {
+      sortedJobs.sort((a, b) => a.salary - b.salary)
+    }
+    return sortedJobs
+  }
+
   const categoriesItem = [
     { id: 1, name: 'Fullstack Developer' },
     { id: 2, name: 'Backend Developer' },
@@ -28,20 +55,6 @@ const JobList = () => {
     { id: 2, name: 'Offline' }
   ]
 
-  const jobItem = {
-    jobTitle: 'Backend Developer (C#, .NET)',
-    companyInfo: {
-      img: 'https://cdn.prod.website-files.com/66b757e42412d2f5e0906c5f/66bf2b9a2ff5d8f19427f6db_job-07.svg',
-      name: 'CodeLink',
-      location: 'TP Hồ Chí Minh'
-    },
-    jobType: 'Thực tập',
-    salary: 'Từ 2 - 4 triệu',
-    location: 'TP Hồ Chí Minh',
-    skill: ['C#', '.NET', 'SQL Server', 'REST API']
-  }
-
-  const jobItems = Array(4).fill(jobItem)
   const [selectedExp, setSelectedExp] = useState('Tất cả')
   const [selectedType, setSelectedType] = useState('Tất cả')
 
@@ -62,7 +75,7 @@ const JobList = () => {
               <div className="sticky top-[130px]">
                 <div className="flex flex-col gap-5 p-10 rounded-medium bg-white-mid">
                   <div className="flex items-center gap-2.5">
-                    <FunnelIcon className="h-10 w-10" />
+                    <FunnelIcon className="w-10 h-10" />
                     <h6 className="text-[22px] font-semibold leading-0">
                       Lọc nâng cao
                     </h6>
@@ -143,7 +156,7 @@ const JobList = () => {
             </div>
 
             <div className="flex flex-col gap-[50px]">
-              <div className="flex justify-center items-center bg-white-mid rounded-full py-5">
+              <div className="flex items-center justify-center py-5 rounded-full bg-white-mid">
                 <div className="flex items-center gap-5 px-5 border-r border-gray">
                   <p className="font-semibold">Tìm kiếm theo:</p>
 
@@ -166,11 +179,10 @@ const JobList = () => {
 
                   <div className="text-center py-1 px-2.5 bg-white-bright rounded-full">
                     <select
-                      name="sort"
-                      id="sort"
-                      className="focus:outline-none w-full"
+                      name="sort" id="sort" className="w-full focus:outline-none"
+                      onChange={(e) => setSortOption(e.target.value)}
                     >
-                      <option value="default">Mặc định</option>
+                      <option value="">Mặc định</option>
                       <option value="newest">Mới nhất</option>
                       <option value="oldest">Cũ nhất</option>
                       <option value="salary">Lương cao nhất</option>
@@ -180,15 +192,10 @@ const JobList = () => {
                 </div>
               </div>
 
-              {jobItems.map((item, index) => (
+              {getSortedJobs().map((item, index) => (
                 <JobListItem
                   key={index}
-                  jobTitle={item.jobTitle}
-                  companyInfo={item.companyInfo}
-                  jobType={item.jobType}
-                  salary={item.salary}
-                  location={item.location}
-                  skill={item.skill}
+                  job={item}
                 />
               ))}
             </div>

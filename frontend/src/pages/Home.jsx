@@ -90,9 +90,9 @@ const Home = () => {
                     name="address"
                     id="address"
                     className="flex-1 cursor-pointer bg-black-low focus:outline-none"
-                    defaultValue="1"
+                    defaultValue=""
                   >
-                    <option value="1" disabled hidden>
+                    <option value="" disabled hidden>
                       Địa điểm
                     </option>
                     <option value="hanoi">Hà Nội</option>
@@ -192,16 +192,12 @@ const Home = () => {
             </div>
             <div className="w-full">
               <div className="h-full overflow-hidden whitespace-nowrap">
-                {projects.map((job, index) => (
+                {projects.map((item, index) => (
                   <JobCard
                     key={index}
-                    jobTitle={job.title}
-                    imgCompany={'https://cdn.prod.website-files.com/66b757e42412d2f5e0906c5f/66bf2b9a2ff5d8f19427f6db_job-07.svg'}
-                    salary={job.salary}
-                    location={job.location}
+                    job={item}
                     currentIndex={currentIndex}
-                    projectId={job._id}
-                    isFavoritedInitially={favorites.includes(job._id)}
+                    isFavoritedInitially={favorites.includes(item._id)}
                   />
                 ))}
               </div>

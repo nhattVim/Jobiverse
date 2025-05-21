@@ -14,7 +14,7 @@ class ProjectController {
         .select('-__v')
         .populate({
           path: 'account',
-          select: 'accountType'
+          select: 'accountType avatar'
         })
 
       const populatedProjects = await Promise.all(
@@ -24,9 +24,9 @@ class ProjectController {
           let profile = null
 
           if (project.account.accountType === 'student') {
-            profile = await Student.findOne({ account: project.account._id }).select('name avatar')
+            profile = await Student.findOne({ account: project.account._id }).select('name')
           } else if (project.account.accountType === 'employer') {
-            profile = await Employer.findOne({ account: project.account._id }).select('companyName avatar')
+            profile = await Employer.findOne({ account: project.account._id }).select('companyName')
           }
 
           return {
@@ -119,7 +119,8 @@ class ProjectController {
       const accountId = req.account._id
       const projectId = req.params.id
 
-      const deletedProject = await Project.findOneAndDelete({ _id: projectId, account: accountId })
+      // const deletedProject = await Project.findOneAndDelete({ _id: projectId, account: accountId })
+      const deletedProject = await Project.findOneAndDelete({ _id: projectId })
       if (!deletedProject) return res.status(404).json({ message: 'Dự án không tồn tại' })
 
       res.status(200).json({ message: 'Dự án đã được xóa thành công' })
@@ -278,8 +279,6 @@ class ProjectController {
       res.status(500).json({ message: 'Lỗi server', error: err.message })
     }
   }
-
-
 }
 
 module.exports = new ProjectController()
