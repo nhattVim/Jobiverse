@@ -199,8 +199,8 @@ class AccountController {
     try {
       res.clearCookie('token', {
         httpOnly: true,
-        secure: false,
-        sameSite: 'strict'
+        secure: true,
+        sameSite: 'none'
       })
       res.json({ message: 'Đăng xuất thành công' })
     } catch (err) {
