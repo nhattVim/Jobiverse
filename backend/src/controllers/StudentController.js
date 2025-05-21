@@ -70,7 +70,7 @@ class StudentController {
       const student = await Student.create({ ...req.body, account: accountId })
       return res.status(201).json({ message: 'Tạo hồ sơ sinh viên thành công', student })
     } catch (err) {
-      res.status(500).json({ message: 'Lỗi khi lưu hồ sơ sinh viên', error: err.message })
+      res.status(500).json({ message: 'Lỗi khi lưu hồ sơ sinh viên' + err.message })
     }
   }
 

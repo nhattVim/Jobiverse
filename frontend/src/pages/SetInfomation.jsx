@@ -5,60 +5,72 @@ import BannerText from '../components/BannerText'
 import { ToastContainer, toast } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
 import UserContext from '../contexts/UserContext'
+import EmployerInfo from '../components/EmployerInfo'
+import StudentInfo from '../components/StudentInfo'
 
-const SetInfomation = () => {
-  const [profile, setProfile] = useState({
+const defaultProfiles = {
+  student: {
     name: '',
     mssv: '',
     major: '',
     specialization: '',
-    interests: [''],
-    university: ''
-  })
+    university: '',
+    interests: ['']
+  },
+  employer: {
+    companyName: '',
+    representativeName: '',
+    position: '',
+    businessScale: '',
+    industry: '',
+    address: '',
+    prove: '',
+    interests: ['']
+  }
+}
 
+const SetInformation = () => {
+  const [profile, setProfile] = useState({})
   const [email, setEmail] = useState('')
-  const [majorList, setMajorList] = useState([])
-  const [specList, setSpecList] = useState([])
   const [loading, setLoading] = useState(false)
   const [loadingSubmit, setLoadingSubmit] = useState(false)
-  const [fetchError, setFetchError] = useState('')
   const { user } = useContext(UserContext)
 
+  const fetchProfile = async (type, endpoint) => {
+    const profileData = await apiFetch(endpoint)
+    if (!profileData) return
+
+    const defaultData = defaultProfiles[type]
+    const filledProfile = Object.fromEntries(
+      Object.entries(defaultData).map(([key, defaultValue]) => [
+        key,
+        profileData[key] ?? defaultValue
+      ])
+    )
+    setProfile(filledProfile)
+  }
+
   useEffect(() => {
-    setEmail(user.email)
+    setEmail(user?.email || '')
+    if (!user?.accountType) return
 
     const loadData = async () => {
       setLoading(true)
       try {
-        const [majorsData, specsData, profileData] = await Promise.all([
-          apiFetch('/majors'),
-          apiFetch('/specs'),
-          apiFetch('/students/me')
-        ])
-
-        setMajorList(majorsData)
-        setSpecList(specsData)
-
-        if (profileData) {
-          setProfile({
-            name: profileData.name || '',
-            mssv: profileData.mssv || '',
-            major: profileData.major || '',
-            specialization: profileData.specialization || '',
-            university: profileData.university || '',
-            interests: profileData.interests || ['']
-          })
+        if (user.accountType === 'student') {
+          await fetchProfile('student', '/students/me')
+        } else if (user.accountType === 'employer') {
+          await fetchProfile('employer', '/employers/me')
         }
       } catch (err) {
         console.error('Fetch data failed:', err)
-        setFetchError('Không tải được dữ liệu. Vui lòng thử lại sau.')
       } finally {
         setLoading(false)
       }
     }
 
     loadData()
-  }, [])
+  }, [user])
 
   const handleChange = (e) => {
     const { name, value } = e.target
@@ -67,20 +79,44 @@ const SetInfomation = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault()
-    if (!profile.name.trim() || !profile.mssv.trim() || !profile.university.trim()) {
-      toast.error('Vui lòng điền đầy đủ thông tin bắt buộc.')
-      return
-    }
-
     setLoadingSubmit(true)
     try {
-      await apiFetch('/students', 'POST', profile)
+      const endpoint =
+        user.accountType === 'student' ? '/students' : '/employers'
+      await apiFetch(endpoint, 'PUT', profile)
       toast.success('Cập nhật thông tin thành công!')
     } catch (err) {
       console.error(err)
       toast.error('Cập nhật thất bại. Vui lòng thử lại.')
     } finally {
       setLoadingSubmit(false)
+    }
+  }
+
+  const renderForm = () => {
+    if (user.accountType === 'student') {
+      return (
+        <StudentInfo
+          profile={profile}
+          email={email}
+          handleChange={handleChange}
+          handleSubmit={handleSubmit}
+          loadingSubmit={loadingSubmit}
+          setProfile={setProfile}
+        />
+      )
+    } else if (user.accountType === 'employer') {
+      return (
+        <EmployerInfo
+          profile={profile}
+          email={email}
+          handleChange={handleChange}
+          handleSubmit={handleSubmit}
+          loadingSubmit={loadingSubmit}
+        />
+      )
+    } else {
+      return null
     }
   }
 
@@ -103,123 +139,7 @@ const SetInfomation = () => {
               <p>Đang tải dữ liệu...</p>
             </div>
           ) : (
-            <form onSubmit={handleSubmit}>
-              <section className="p-10 border border-gray-200 shadow-md bg-white-low rounded-medium">
-                <h2 className="mb-2 text-2xl font-bold">Cài đặt thông tin cá nhân</h2>
-                <p className="mb-6 text-sm text-black">
-                  <span className="text-red-500">*</span> Các thông tin bắt buộc
-                </p>
-
-                <div className="space-y-6">
-                  <div>
-                    <label className="block mb-1 text-sm font-bold text-gray-700">
-                      Họ và tên <span className="text-red-500">*</span>
-                    </label>
-                    <input
-                      type="text"
-                      name="name"
-                      value={profile.name}
-                      onChange={handleChange}
-                      className="w-full px-4 py-2 bg-white border border-gray-300 rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500"
-                      placeholder="VD: Nguyen Van A"
-                    />
-                  </div>
-
-                  <div>
-                    <label className="block mb-1 text-sm font-bold text-gray-700">
-                      Mã sinh viên <span className="text-red-500">*</span>
-                    </label>
-                    <input
-                      type="text"
-                      name="mssv"
-                      value={profile.mssv}
-                      onChange={handleChange}
-                      className="w-full px-4 py-2 bg-white border border-gray-300 rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500"
-                      placeholder="VD: 4551050232"
-                    />
-                  </div>
-
-                  <div>
-                    <label className="block mb-1 text-sm font-bold text-gray-700">
-                      Trường <span className="text-red-500">*</span>
-                    </label>
-                    <input
-                      type="text"
-                      name="university"
-                      value={profile.university}
-                      onChange={handleChange}
-                      className="w-full px-4 py-2 bg-white border border-gray-300 rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500"
-                      placeholder="VD: Đại học Quy Nhơn"
-                    />
-                  </div>
-
-                  <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-                    <div>
-                      <label className="block mb-1 text-sm font-bold text-gray-700">Ngành</label>
-                      <select
-                        name="major"
-                        value={profile.major}
-                        onChange={e =>
-                          setProfile(prev => ({ ...prev, major: e.target.value, specialization: '' }))
-                        }
-                        className="w-full px-4 py-2 bg-white border border-gray-300 rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500"
-                      >
-                        <option value="">-- Chọn ngành --</option>
-                        {majorList.map((major) => (
-                          <option key={major._id} value={major._id}>
-                            {major.name}
-                          </option>
-                        ))}
-                      </select>
-                    </div>
-
-                    <div>
-                      <label className="block mb-1 text-sm font-bold text-gray-700">Chuyên Ngành</label>
-                      <select
-                        name="specialization"
-                        value={profile.specialization}
-                        onChange={e =>
-                          setProfile(prev => ({ ...prev, specialization: e.target.value }))
-                        }
-                        className="w-full px-4 py-2 bg-white border border-gray-300 rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500"
-                      >
-                        <option value="">-- Chọn chuyên ngành --</option>
-                        {specList
-                          .filter(spec => spec.major === profile.major)
-                          .map((spec) => (
-                            <option key={spec._id} value={spec._id}>
-                              {spec.name}
-                            </option>
-                          ))}
-                      </select>
-                    </div>
-                  </div>
-
-                  <div>
-                    <label className="block mb-1 text-sm font-bold text-gray-700">
-                      Email <span className="text-red-500">*</span>
-                    </label>
-                    <input
-                      type="email"
-                      name="email"
-                      value={email}
-                      readOnly
-                      className="w-full px-4 py-2 text-gray-800 bg-gray-300 rounded-full cursor-not-allowed focus:outline-none"
-                      placeholder="Email"
-                    />
-                  </div>
-
-                  <button
-                    type="submit"
-                    disabled={loadingSubmit}
-                    className={`px-6 py-2 text-white transition rounded-full cursor-pointer bg-blue hover:opacity-90 ${loadingSubmit ? 'opacity-50 cursor-not-allowed' : ''
-                    }`}
-                  >
-                    {loadingSubmit ? 'Đang lưu...' : 'Lưu lại'}
-                  </button>
-                </div>
-              </section>
-            </form>
+            renderForm()
           )}
         </div>
       </div>
@@ -227,4 +147,4 @@ const SetInfomation = () => {
   )
 }
 
-export default SetInfomation
+export default SetInformation
