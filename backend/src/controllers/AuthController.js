@@ -118,7 +118,7 @@ class AccountController {
         res.status(400).json({ message: 'Phương thức đăng ký không hợp lệ' })
       }
     } catch (err) {
-      res.status(500).json({ message: 'Lỗi khi tạo tài khoản', error: err.message })
+      res.status(500).json({ message: 'Lỗi khi tạo tài khoản ' + err.message })
     }
   }
 
