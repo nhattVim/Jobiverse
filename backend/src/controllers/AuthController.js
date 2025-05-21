@@ -71,7 +71,7 @@ class AccountController {
         }
 
         const token = jwt.sign({ id: account._id, type: account.accountType }, JWT_SECRET, { expiresIn: '7d' })
-        res.cookie('token', token, { httpOnly: true, secure: false, sameSite: 'strict', maxAge: 7 * 24 * 60 * 60 * 1000 })
+        res.cookie('token', token, { httpOnly: true, secure: true, sameSite: 'none', maxAge: 7 * 24 * 60 * 60 * 1000 })
         res.json({ message: 'Tăng nhập bằng Google thành công', token })
 
       } else if (method === 'facebook') {
@@ -112,7 +112,7 @@ class AccountController {
         }
 
         const token = jwt.sign({ id: account._id, type: account.accountType }, JWT_SECRET, { expiresIn: '7d' })
-        res.cookie('token', token, { httpOnly: true, secure: false, sameSite: 'strict', maxAge: 7 * 24 * 60 * 60 * 1000 })
+        res.cookie('token', token, { httpOnly: true, secure: true, sameSite: 'none', maxAge: 7 * 24 * 60 * 60 * 1000 })
         res.json({ message: 'Đăng kí bằng Facebook thành công', token })
       } else {
         res.status(400).json({ message: 'Phương thức đăng ký không hợp lệ' })
@@ -143,7 +143,7 @@ class AccountController {
         if (!isMatch) return res.status(401).json({ message: 'Sai mật khẩu' })
 
         const token = jwt.sign({ id: account._id, type: account.accountType }, JWT_SECRET, { expiresIn: '7d' })
-        res.cookie('token', token, { httpOnly: true, secure: false, sameSite: 'strict', maxAge: 7 * 24 * 60 * 60 * 1000 })
+        res.cookie('token', token, { httpOnly: true, secure: true, sameSite: 'none', maxAge: 7 * 24 * 60 * 60 * 1000 })
         res.json({ message: 'Đăng nhập thành công', token })
 
       } else if (method === 'google') {
@@ -156,10 +156,11 @@ class AccountController {
         const { email } = payload
 
         const account = await Account.findOne({ email, deleted: false })
+        console.log(account)
         if (!account) return res.status(404).json({ message: 'Tài khoản Google chưa đăng ký' })
 
         const token = jwt.sign({ id: account._id, type: account.accountType }, JWT_SECRET, { expiresIn: '7d' })
-        res.cookie('token', token, { httpOnly: true, secure: false, sameSite: 'strict', maxAge: 7 * 24 * 60 * 60 * 1000 })
+        res.cookie('token', token, { httpOnly: true, secure: true, sameSite: 'none', maxAge: 7 * 24 * 60 * 60 * 1000 })
         res.json({ message: 'Đăng nhập Google thành công', token })
 
       } else if (method === 'facebook') {
@@ -181,13 +182,14 @@ class AccountController {
         if (!account) return res.status(404).json({ message: 'Tài khoản Facebook chưa đăng ký' })
 
         const token = jwt.sign({ id: account._id, type: account.accountType }, JWT_SECRET, { expiresIn: '7d' })
-        res.cookie('token', token, { httpOnly: true, secure: false, sameSite: 'strict', maxAge: 7 * 24 * 60 * 60 * 1000 })
+        res.cookie('token', token, { httpOnly: true, secure: true, sameSite: 'none', maxAge: 7 * 24 * 60 * 60 * 1000 })
         res.json({ message: 'Đăng nhập Facebook thành công', token })
 
       } else {
         res.status(400).json({ message: 'Phương thức đăng nhập không hợp lệ' })
       }
     } catch (err) {
+      console.log(err)
       res.status(500).json({ message: 'Lỗi khi đăng nhập', error: err.message })
     }
   }
