@@ -5,7 +5,7 @@ const Project = require('../models/Project')
 
 class StudentController {
   // [GET] /students
-  async getAllStudents(req, res, next) {
+  async getAllProfiles(req, res, next) {
     try {
       const students = (await Student.find()
         .select('-__v')
@@ -21,7 +21,7 @@ class StudentController {
   }
 
   // [GET] /students/:id
-  async getStudentById(req, res, next) {
+  async getProfileById(req, res, next) {
     try {
       const student = await Student.findById(req.params.id)
         .select('-__v')
@@ -60,42 +60,34 @@ class StudentController {
   }
 
   // [POST] /students
-  async saveStudentProfile(req, res, next) {
+  async createProfile(req, res, next) {
     try {
       const accountId = req.account._id
-      let student = await Student.findOne({ account: accountId })
 
-      if (student) {
-        student.set(req.body)
-        if (req.file) {
-          student.avatar = req.file.buffer
-          student.avatarType = req.file.mimetype
-        }
+      const existingStudent = await Student.find({ account: accountId })
+      if (existingStudent.length > 0) return res.status(400).json({ message: 'Tài khoản đã có hồ sơ sinh viên' })
 
-        await student.save()
-        return res.status(200).json({ message: 'Cập nhật hồ sơ sinh viên thành công', student })
-      }
-
-      const newStudent = new Student({
-        ...req.body,
-        account: accountId
-      })
-
-      if (req.file) {
-        newStudent.avatar = req.file.buffer
-        newStudent.avatarType = req.file.mimetype
-      }
-
-      await newStudent.save()
-      return res.status(201).json({ message: 'Tạo hồ sơ sinh viên thành công', student: newStudent })
+      const student = await Student.create({ ...req.body, account: accountId })
+      return res.status(201).json({ message: 'Tạo hồ sơ sinh viên thành công', student })
     } catch (err) {
       res.status(500).json({ message: 'Lỗi khi lưu hồ sơ sinh viên', error: err.message })
     }
   }
 
+  // [PUT] /students
+  async updateMyProfile(req, res, next) {
+    try {
+      const accountId = req.account._id
+      const student = await Student.findOneAndUpdate({ account: accountId }, req.body, { new: true })
+      if (!student) return res.status(404).json({ message: 'Không tìm thấy sinh viên' })
+      return res.status(200).json({ message: 'Cập nhật hồ sơ sinh viên thành công', student })
+    } catch (err) {
+      res.status(500).json({ message: 'Lỗi khi cập nhật hồ sơ sinh viên', error: err.message })
+    }
+  }
 
   // [GET] /students/search
-  async searchStudents(req, res, next) {
+  async searchProfiles(req, res, next) {
     try {
       const { mssv, name } = req.query
 
@@ -114,7 +106,7 @@ class StudentController {
   }
 
   // [GET] /student/filter
-  async filterStudent(req, res, next) {
+  async filterProfile(req, res, next) {
     try {
       const majorName = req.query.major
       const specializationName = req.query.specialization
@@ -155,7 +147,7 @@ class StudentController {
     }
   }
 
-  async recommendStudent(req, res, next) {
+  async recommendProfile(req, res, next) {
     try {
       const projectId = req.params.id
       const project = await Project.findById(projectId)

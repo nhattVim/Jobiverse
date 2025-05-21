@@ -1,151 +1,91 @@
 import React, { useState } from 'react'
-import Logo1 from '../assets/Logo1.svg'
-import { useNavigate, Link } from 'react-router-dom'
-import apiFetch from '../services/api'
+import { AcademicCapIcon, BriefcaseIcon } from '@heroicons/react/24/outline'
+import RegisterForm from '../components/RegisterForm'
 
-const Register = () => {
-  const navigate = useNavigate()
-  const [email, setEmail] = useState('')
-  const [phone, setPhone] = useState('')
-  const [password, setPassword] = useState('')
-  const [accountType, setAccountType] = useState('')
-  const [acceptPolicy, setAcceptPolicy] = useState(false)
-  const [error, setError] = useState('')
+const options = [
+  {
+    value: 'employer',
+    label: 'Tôi là nhà tuyển dụng',
+    desc: 'Tìm ứng viên cho dự án của bạn',
+    icon: <AcademicCapIcon className="w-10 h-10 mb-2" />
+  },
+  {
+    value: 'student',
+    label: 'Tôi là ứng viên',
+    desc: 'Tìm việc làm, dự án phù hợp',
+    icon: <BriefcaseIcon className="w-10 h-10 mb-2" />
+  }
+]
 
-  const handleRegister = async (e) => {
-    e.preventDefault()
+const ChooseAccountType = () => {
+  const [selectedType, setSelectedType] = useState('')
+  const [showForm, setShowForm] = useState(false)
 
-    if (!email.trim()) return setError('Email không được để trống')
-    if (!phone.trim()) return setError('Số điện thoại không được để trống')
-    if (!password.trim()) return setError('Mật khẩu không được để trống')
-    if (!accountType) return setError('Vui lòng chọn loại tài khoản')
-    if (!acceptPolicy) return setError('Bạn phải đồng ý với Điều khoản & Điều kiện.')
-
-    try {
-      await apiFetch('/register', 'POST', {
-        email,
-        phoneNumber: phone,
-        password,
-        accountType
-      })
-      navigate('/login')
-    } catch (error) {
-      setError(error.message || 'Đăng ký thất bại, vui lòng thử lại.')
-      console.error('Đăng ký thất bại', error)
-    }
+  const handleContinue = () => {
+    if (selectedType) setShowForm(true)
   }
 
   return (
-    <div className="flex items-center justify-center h-screen bg-white">
-      <div className="flex flex-col justify-start items-start w-[660px] p-[60px] gap-5 rounded-medium bg-white-mid my-6">
-        <div className="flex justify-center items-center w-[100px] h-[100px] bg-white rounded-full">
-          <img src={Logo1} alt="logo1" className="w-[68px]" />
-        </div>
-
-        <div className="flex flex-col gap-2.5">
-          <h2 className="text-3xl font-bold">Đăng ký tài khoản</h2>
-          <p className="font-medium leading-6">
-            Tạo tài khoản và bắt đầu sử dụng Jobiverse.
-          </p>
-        </div>
-
-        {error && <p className="text-sm text-red-600">{error}</p>}
-
-        <form onSubmit={handleRegister} className="w-full">
-          <div className="flex flex-col gap-5">
-            <div className="flex flex-col gap-1.5">
-              <label htmlFor="email" className="font-medium leading-6">
-                Email
-              </label>
-              <input
-                type="email"
-                id="email"
-                placeholder="Nhập email của bạn"
-                className="w-full h-[50px] px-4 py-2 bg-white-bright rounded-full focus:outline-none focus:ring-2 focus:ring-blue"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-              />
-            </div>
-            <div className="flex flex-col gap-1.5">
-              <label htmlFor="Phone" className="font-medium leading-6">
-                Phone
-              </label>
-              <input
-                type="number"
-                id="phone"
-                placeholder="Nhập số điện thoại của bạn"
-                className="w-full h-[50px] px-4 py-2 bg-white-bright rounded-full focus:outline-none focus:ring-2 focus:ring-blue"
-                value={phone}
-                onChange={(e) => setPhone(e.target.value)}
-              />
+    <div className="flex items-center justify-center min-h-screen bg-white">
+      <div className="w-full max-w-[700px] px-6 py-10 text-center">
+        {!showForm ? (
+          <>
+            <div className="mb-6">
+              <h1 className="text-3xl font-semibold">
+                Tham gia với tư cách khách hàng hoặc sinh viên
+              </h1>
             </div>
 
-            <div className="flex flex-col gap-1.5">
-              <label htmlFor="password" className="font-medium leading-6">
-                Mật khẩu
-              </label>
-              <input
-                type="password"
-                id="password"
-                placeholder="Nhập mật khẩu của bạn"
-                className="w-full h-[50px] px-4 py-2 bg-white-bright rounded-full focus:outline-none focus:ring-2 focus:ring-blue"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-              />
-            </div>
-
-            <div className="flex flex-col gap-1.5">
-              <label name="account" className="font-medium leading-6">
-                Loại tài khoản
-              </label>
-              <select
-                name="account"
-                className="w-full h-[50px] px-4 py-2 bg-white-bright rounded-full focus:outline-none focus:ring-2 focus:ring-blue"
-                value={accountType}
-                onChange={(e) => setAccountType(e.target.value)}
-              >
-                <option value="">Chọn loại tài khoản</option>
-                <option value="employer">Nhà tuyển dụng</option>
-                <option value="student">Người tìm việc</option>
-              </select>
-            </div>
-
-            <div className="flex items-center gap-2.5">
-              <input
-                type="checkbox"
-                name="policy"
-                id="policy"
-                checked={acceptPolicy}
-                onChange={(e) => setAcceptPolicy(e.target.checked)}
-              />
-              <p className="font-medium leading-6">
-                Tôi đã đọc và đồng ý với các{' '}
-                <Link to="/register" className="underline text-blue">
-                  Điều khoản & Điều kiện.
-                </Link>
-              </p>
+            <div className="flex justify-center gap-8 mt-12">
+              {options.map((opt) => (
+                <label
+                  key={opt.value}
+                  className={`flex flex-col items-center border-2 rounded-xl p-8 cursor-pointer transition
+                    ${selectedType === opt.value ? 'border-blue-600 shadow-lg bg-white' : 'border-gray-300 bg-gray-50 hover:border-blue-400'}
+                  `}
+                >
+                  {opt.icon}
+                  <div className="mb-1 text-lg font-semibold">{opt.label}</div>
+                  <div className="mb-3 text-gray-500">{opt.desc}</div>
+                  <input
+                    type="radio"
+                    name="accountType"
+                    value={opt.value}
+                    checked={selectedType === opt.value}
+                    onChange={() => setSelectedType(opt.value)}
+                    className="w-5 h-5 accent-blue-600"
+                  />
+                </label>
+              ))}
             </div>
 
             <button
-              type="submit"
-              className="w-full h-[50px] bg-blue text-white font-bold rounded-full hover:bg-blue-mid transition duration-300 cursor-pointer"
+              onClick={handleContinue}
+              disabled={!selectedType}
+              className={`py-3 rounded-md font-semibold text-white transition w-2/3 mt-6
+                ${selectedType ? 'bg-blue hover:bg-blue-mid' : 'bg-gray-300 cursor-not-allowed'}
+              `}
             >
-              Đăng ký
+              {selectedType === 'employer'
+                ? 'Tham gia với tư cách Nhà tuyển dụng'
+                : selectedType === 'student'
+                  ? 'Ứng tuyển với tư cách Ứng viên'
+                  : 'Tạo tài khoản'}
             </button>
-          </div>
-        </form>
 
-        <div className="flex items-center justify-center w-full">
-          <p className="font-medium leading-6">
-            Bạn đã có tài khoản?{' '}
-            <Link to="/login" className="underline text-blue">
-              Đăng nhập
-            </Link>
-          </p>
-        </div>
+            <p className="mt-4 text-sm">
+              Bạn đã có tài khoản?{' '}
+              <a href="/login" className="underline text-blue">
+                Đăng nhập
+              </a>
+            </p>
+          </>
+        ) : (
+          <RegisterForm accountType={selectedType} onBack={() => setShowForm(false)} />
+        )}
       </div>
     </div>
   )
 }
 
-export default Register
+export default ChooseAccountType

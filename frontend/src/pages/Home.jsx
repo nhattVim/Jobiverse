@@ -90,8 +90,9 @@ const Home = () => {
                     name="address"
                     id="address"
                     className="flex-1 cursor-pointer bg-black-low focus:outline-none"
+                    defaultValue="1"
                   >
-                    <option value="" disabled selected hidden>
+                    <option value="1" disabled hidden>
                       Địa điểm
                     </option>
                     <option value="hanoi">Hà Nội</option>

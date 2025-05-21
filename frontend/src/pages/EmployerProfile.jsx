@@ -1,7 +1,10 @@
 import React, { useState } from 'react'
 import Profile from '../components/Profile'
+import { useNavigate } from 'react-router-dom'
+import apiFetch from '../services/api'
 
 const EmployerProfile = () => {
+  const navigate = useNavigate()
   const [error, setError] = useState('')
   const [form, setForm] = useState({
     representativeName: '',
@@ -9,7 +12,7 @@ const EmployerProfile = () => {
     industry: '',
     position: '',
     companyInfo: '',
-    businessScale: [null],
+    businessScale: '',
     prove: 0,
     address: ''
   })
@@ -19,13 +22,32 @@ const EmployerProfile = () => {
     setForm({ ...form, [name]: value })
   }
 
+  const handleSubmit = async (e) => {
+    e.preventDefault()
+
+    const requiredFields = ['representativeName', 'companyName', 'position']
+    for (const field of requiredFields) {
+      if (!form[field]) {
+        setError('Vui lòng điền đầy đủ thông tin bắt buộc.')
+        return
+      }
+    }
+
+    try {
+      await apiFetch('/employer', 'POST', form)
+    } catch (err) {
+      console.error(err)
+      setError('Tạo profile thất bại, vui lòng thử lại.')
+    }
+  }
+
   return (
     <Profile
       title="Tạo profile cho nhà tuyển dụng"
       caption="Bắt đầu hành trình tuyển dụng hiệu quả bằng cách xây dựng hồ sơ nhà tuyển dụng rõ ràng, uy tín và hấp dẫn."
     >
       {error && <p className="text-sm text-red-600">{error}</p>}
-      <form className='pb-20'>
+      <form onSubmit={handleSubmit} className='pb-20'>
         <section className="p-10 border border-gray-200 shadow-md bg-white-low rounded-medium">
           <h2 className="mb-6 text-xl font-bold">Thông tin nhà tuyển dụng</h2>
           <div className="space-y-4">

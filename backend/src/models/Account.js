@@ -7,20 +7,17 @@ const AccountSchema = new mongoose.Schema({
     enum: ['student', 'employer', 'admin'],
     required: true
   },
-  phoneNumber: {
-    type: Number,
-    unique: true,
-    required: true
-  },
   email: {
     type: String,
     unique: true,
     required: true
   },
-  password: {
-    type: String,
-    required: true
+  avatar: {
+    data: Buffer,
+    contentType: String
   },
+  phoneNumber: Number,
+  password: String,
   deleted: {
     type: Boolean,
     default: false
@@ -29,7 +26,7 @@ const AccountSchema = new mongoose.Schema({
 
 // Hash password before saving
 AccountSchema.pre('save', async function (next) {
-  if (this.isModified('password')) {
+  if (this.isModified('password') && this.password) {
     this.password = await bcrypt.hash(this.password, 10)
   }
   next()

@@ -1,31 +1,21 @@
-import React, { useRef, useState, useEffect } from 'react'
+import React, { useRef, useContext } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
+import UserContext from '../contexts/UserContext'
 import { ROUTES } from '../routes/routePaths'
 import apiFetch from '../services/api'
-import { ArchiveBoxIcon, BriefcaseIcon, DocumentTextIcon, HeartIcon, UserIcon } from '@heroicons/react/24/outline'
+import {
+  ArchiveBoxIcon,
+  BriefcaseIcon,
+  DocumentTextIcon,
+  HeartIcon,
+  UserIcon
+} from '@heroicons/react/24/outline'
 
 const Sidebar = () => {
   const location = useLocation()
   const navigate = useNavigate()
   const fileInputRef = useRef(null)
-  const [avatar, setAvatar] = useState('http://localhost:3000/account/avatar')
-  const [userName, setUserName] = useState('Người dùng')
-
-  const fetchAvatar = async () => {
-    try {
-      const response = await apiFetch('/account/avatar', 'GET')
-      const imageUrl = URL.createObjectURL(response)
-      setAvatar(imageUrl)
-    } catch (err) {
-      console.error('Không thể lấy avatar:', err)
-    }
-  }
-
-  useEffect(() => {
-    const userData = JSON.parse(localStorage.getItem('user'))
-    if (userData?.name) setUserName(userData.name)
-    fetchAvatar()
-  }, [])
+  const { user, updateTimestamp } = useContext(UserContext)
 
   const handleAvatarClick = () => {
     fileInputRef.current.click()
@@ -38,8 +28,8 @@ const Sidebar = () => {
       formData.append('avatar', file)
 
       try {
-        await apiFetch('/students', 'POST', formData)
-        await fetchAvatar()
+        await apiFetch('/account/avatar', 'PUT', formData)
+        updateTimestamp()
       } catch (err) {
         console.error('Lỗi khi upload avatar:', err)
       }
@@ -58,7 +48,11 @@ const Sidebar = () => {
     <div className="w-full p-6 space-y-6 shadow-lg bg-white-low rounded-medium">
       <div className="flex items-center space-x-3">
         <div className="relative w-12 h-12">
-          <img src={avatar} alt="Avatar" className="object-cover w-full h-full rounded-full" />
+          <img
+            src={`http://localhost:3000/account/avatar?timestamp=${user?.avatarTimestamp || ''}`}
+            alt="Avatar"
+            className="object-cover w-full h-full rounded-full"
+          />
           <div
             className="absolute bottom-0 right-0 bg-white rounded-full p-[2px] shadow cursor-pointer"
             onClick={handleAvatarClick}
@@ -79,7 +73,7 @@ const Sidebar = () => {
         </div>
         <div>
           <p className="text-xs text-gray-500">Xin chào</p>
-          <p className="text-base font-bold">{userName}</p>
+          <p className="text-base font-bold">{user?.name || 'Người dùng'}</p>
         </div>
       </div>
 

@@ -2,10 +2,12 @@ const express = require('express')
 const router = express.Router()
 const accountController = require('../controllers/AccountController')
 const verifyToken = require('../middlewares/verifyToken')
+const { uploadSingle } = require('../middlewares/upload')
 
 router.get('/detail', verifyToken([]), accountController.getAccountDetail)
 router.put('/change-password', verifyToken([]), accountController.changePassword)
 router.get('/avatar', verifyToken([]), accountController.getAvatar)
+router.put('/avatar', verifyToken([]), uploadSingle('avatar'), accountController.changeAvatar)
 
 router.use(verifyToken(['admin']))
 router.get('/', accountController.getAllAccount)

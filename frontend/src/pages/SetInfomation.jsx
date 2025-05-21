@@ -1,9 +1,10 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useContext } from 'react'
 import Sidebar from '../components/Sidebar'
 import apiFetch from '../services/api'
 import BannerText from '../components/BannerText'
 import { ToastContainer, toast } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
+import UserContext from '../contexts/UserContext'
 
 const SetInfomation = () => {
   const [profile, setProfile] = useState({
@@ -21,13 +22,10 @@ const SetInfomation = () => {
   const [loading, setLoading] = useState(false)
   const [loadingSubmit, setLoadingSubmit] = useState(false)
   const [fetchError, setFetchError] = useState('')
+  const { user } = useContext(UserContext)
 
   useEffect(() => {
-    const storedUser = localStorage.getItem('user')
-    if (storedUser) {
-      const userObj = JSON.parse(storedUser)
-      setEmail(userObj.email)
-    }
+    setEmail(user.email)
 
     const loadData = async () => {
       setLoading(true)

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useContext } from 'react'
 import Logo2 from '../assets/Logo2.svg'
 import { Link, useNavigate } from 'react-router-dom'
 import {
@@ -9,13 +9,14 @@ import {
 import ButtonArrowOne from '../shared/ButtonArrowOne'
 import { ROUTES } from '../routes/routePaths'
 import apiFetch from '../services/api'
+import UserContext from '../contexts/UserContext'
 
 const NavBar = () => {
   const navigate = useNavigate()
   const [isTopOfPage, setIsTopOfPage] = useState(true)
   const [hoveredMenu, setHoveredMenu] = useState(null)
   const [isLoggedIn, setIsLoggedIn] = useState(false)
-  const [userInfo, setUserInfo] = useState(null)
+  const { user } = useContext(UserContext)
 
   useEffect(() => {
     const handleScroll = () => {
@@ -29,20 +30,15 @@ const NavBar = () => {
   }, [])
 
   useEffect(() => {
-    const user = JSON.parse(localStorage.getItem('user'))
-    if (user) {
-      setIsLoggedIn(true)
-      setUserInfo(user)
-    }
-  }, [])
+    if (user) setIsLoggedIn(true)
+  }, [user])
 
   const handleLogout = async () => {
     try {
       await apiFetch('/logout', 'POST')
       localStorage.removeItem('user')
       setIsLoggedIn(false)
-      setUserInfo(null)
-      navigate(ROUTES.HOME)
+      navigate(ROUTES.LOGIN)
     } catch (error) {
       console.log('Đăng xuất thất bại', error)
     }
@@ -166,13 +162,13 @@ const NavBar = () => {
                       <ul className="grid grid-cols-1 p-5 mt-6 transition-all duration-500 shadow-md bg-white-bright rounded-small">
                         <li className="flex items-center gap-5 px-4 pt-2 pb-4 mb-2 border-b border-gray-light">
                           <img
-                            src={`http://localhost:3000/account/avatar?timestamp=${Date.now()}`}
+                            src={`http://localhost:3000/account/avatar?timestamp=${user?.avatarTimestamp || ''}`}
                             alt="avatar"
                             className="flex-shrink-0 w-10 h-10 rounded-full"
                           />
                           <div className="flex flex-col justify-between w-full overflow-hidden">
-                            <p className="font-semibold truncate">{userInfo?.accountType}</p>
-                            <p className="text-sm truncate">{userInfo?.email}</p>
+                            <p className="font-semibold truncate">{user?.accountType}</p>
+                            <p className="text-sm truncate">{user?.email}</p>
                           </div>
                         </li>
                         <li className="px-4 py-2 transition-colors duration-300 hover:text-blue">

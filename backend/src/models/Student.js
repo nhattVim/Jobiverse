@@ -7,8 +7,6 @@ const StudentSchema = new mongoose.Schema({
     required: true,
     unique: true
   },
-  avatar: Buffer,
-  avatarType: String,
   mssv: {
     type: String,
     required: true,

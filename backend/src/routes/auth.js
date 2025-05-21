@@ -1,12 +1,10 @@
 const express = require('express')
 const router = express.Router()
-const multer = require('multer')
 const authController = require('../controllers/AuthController')
-const storage = multer.memoryStorage()
-const upload = multer({ storage: storage })
+const { uploadSingle } = require('../middlewares/upload')
 
-router.post('/login', authController.loginAccount)
-router.post('/register', upload.single('avatar'), authController.registerAccount)
-router.post('/logout', authController.logoutAccount)
+router.post('/login', authController.login)
+router.post('/register', uploadSingle('avatar'), authController.register)
+router.post('/logout', authController.logout)
 
 module.exports = router

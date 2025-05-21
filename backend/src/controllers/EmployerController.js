@@ -2,7 +2,7 @@ const Employer = require('../models/Employer')
 
 class EmployerController {
   // [GET] /employers
-  async getAllEmployers(req, res, next) {
+  async getAllProfiles(req, res, next) {
     try {
       const employers = (await Employer.find()
         .select('-__v')
@@ -18,7 +18,7 @@ class EmployerController {
   }
 
   // [GET] /employers/:id
-  async getEmployerById(req, res, next) {
+  async getProfileById(req, res, next) {
     try {
       const employer = await Employer.findById(req.params.id)
         .select('-__v')
@@ -39,7 +39,7 @@ class EmployerController {
   }
 
   // [GET] /employers/me
-  async getMyEmployerProfile(req, res, next) {
+  async getMyProfile(req, res, next) {
     const accountId = req.account._id
     try {
       const employer = await Employer.findOne({ account: accountId }).select('-__v')
@@ -51,7 +51,7 @@ class EmployerController {
   }
 
   // [POST] /employers
-  async createEmployerProfile(req, res, next) {
+  async createProfile(req, res, next) {
     try {
       const accountId = req.account._id
 
@@ -68,7 +68,7 @@ class EmployerController {
   }
 
   // [GET] /employers/search
-  async searchEmployers(req, res, next) {
+  async searchProfiles(req, res, next) {
     try {
       const { companyName, representativeName } = req.query
 
@@ -86,19 +86,12 @@ class EmployerController {
   }
 
   // [PUT] /employers
-  async updateEmployerProfile(req, res, next) {
+  async updateMyProfile(req, res, next) {
     try {
       const accountId = req.account._id
-      const { companyName, representativeName, position, industry, companyInfo } = req.body
-      const updatedEmployer = await Employer.findOneAndUpdate(
-        { account: accountId },
-        { companyName, representativeName, position, industry, companyInfo },
-        { new: true }
-      )
-      if (!updatedEmployer) {
-        return res.status(404).json({ message: 'Employer not found' })
-      }
-      res.status(200).json({ message: 'Employer updated successfully', updatedEmployer })
+      const updatedEmployer = await Employer.findOneAndUpdate({ account: accountId }, req.body, { new: true })
+      if (!updatedEmployer) return res.status(404).json({ message: 'Không tìm thấy employer' })
+      res.status(200).json({ message: 'Cập nhật hồ sơ employer thành công', updatedEmployer })
     }
     catch (err) {
       res.status(500).json({ message: 'Lỗi khi cập nhật employer', error: err.message })
