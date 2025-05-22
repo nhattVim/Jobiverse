@@ -33,7 +33,7 @@ const ProjectSchema = new mongoose.Schema({
     ref: 'Student'
   }],
   salary: Number,
-  experiences: String,
+  expRequired: Number,
   deadline: Date,
   hiringCount: {
     type: Number,
