@@ -1,11 +1,13 @@
 import { ArrowLeftIcon } from '@heroicons/react/24/outline'
-import React, { useEffect } from 'react'
+import React, { useContext, useEffect } from 'react'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { ROUTES } from '../routes/routePaths'
+import UserContext from '../contexts/UserContext'
 
 const Profile = ({ children, title, caption }) => {
   const navigate = useNavigate()
   const { pathname } = useLocation()
+  const { user } = useContext(UserContext)
   useEffect(() => {
     window.scrollTo(0, 0)
   }, [pathname])
@@ -28,7 +30,18 @@ const Profile = ({ children, title, caption }) => {
 
       <div className="relative max-w-4xl mx-auto w-full">
         <div className="absolute -top-20 w-full bg-white-low h-full rounded-medium">
-          {children}
+          {user.profile === true ?
+            <div className="flex flex-col justify-end items-center gap-5 w-full h-[340px]">
+              <p className='text-xl font-semibold'>Bạn đã có profile ! Vui lòng kiểm tra thông tin cá nhân !</p>
+
+              <Link to={ROUTES.SET_INFORMATION}
+                className="px-6 py-2 text-white transition rounded-full bg-blue hover:bg-blue-700 cursor-pointer"
+              >
+                Xem chi tiết
+              </Link>
+            </div>
+            : children
+          }
         </div>
       </div>
     </>

@@ -1,7 +1,8 @@
-import React, { useEffect, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import Profile from '../components/Profile'
 import apiFetch from '../services/api'
 import { useNavigate } from 'react-router-dom'
+import UserContext from '../contexts/UserContext'
 
 const StudentProfile = () => {
   const navigate = useNavigate()
@@ -17,6 +18,7 @@ const StudentProfile = () => {
 
   const [majorList, setMajorList] = useState([])
   const [specList, setSpecList] = useState([])
+  const { setUser, updateTimestamp } = useContext(UserContext)
 
   const handleChange = (e) => {
     const { name, value } = e.target
@@ -53,6 +55,10 @@ const StudentProfile = () => {
 
     try {
       await apiFetch('/students', 'POST', form)
+      await apiFetch('/account/profile', 'PUT')
+      const user = await apiFetch('/account/detail', 'GET')
+      setUser(user)
+      updateTimestamp()
       navigate('/')
     } catch (err) {
       console.error(err)
@@ -62,8 +68,8 @@ const StudentProfile = () => {
 
   return (
     <Profile
-      title="Tạo profile cho nhà tuyển dụng"
-      caption="Bắt đầu hành trình tuyển dụng hiệu quả bằng cách xây dựng hồ sơ nhà tuyển dụng rõ ràng, uy tín và hấp dẫn."
+      title="Tạo profile cho người tìm việc"
+      caption="Tạo hồ sơ cá nhân để gây ấn tượng với nhà tuyển dụng và mở ra những cơ hội nghề nghiệp phù hợp."
     >
       <form onSubmit={handleSubmit} className="pb-20">
         <section className="p-10 border border-gray-200 shadow-md bg-white-low rounded-medium">

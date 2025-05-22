@@ -87,7 +87,7 @@ const RegisterForm = ({ accountType, onBack }) => {
 
   return (
     <div className="flex items-center justify-center min-h-screen bg-white">
-      <div className="flex flex-col w-[660px] p-[60px] gap-5 rounded bg-white-mid my-6">
+      <div className="flex flex-col w-[660px] p-[60px] gap-5 rounded-medium bg-white-mid my-6">
         <div className="flex justify-center items-center w-[100px] h-[100px] bg-white rounded-full">
           <img src={Logo1} alt="logo" className="w-[68px]" />
         </div>

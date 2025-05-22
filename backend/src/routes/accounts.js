@@ -8,6 +8,7 @@ router.get('/detail', verifyToken([]), accountController.getAccountDetail)
 router.put('/change-password', verifyToken([]), accountController.changePassword)
 router.get('/avatar', verifyToken([]), accountController.getAvatar)
 router.put('/avatar', verifyToken([]), uploadSingle('avatar'), accountController.changeAvatar)
+router.put('/profile', verifyToken([]), accountController.hasProfile)
 
 router.use(verifyToken(['admin']))
 router.get('/', accountController.getAllAccount)
