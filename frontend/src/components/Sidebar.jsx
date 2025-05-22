@@ -10,12 +10,14 @@ import {
   HeartIcon,
   UserIcon
 } from '@heroicons/react/24/outline'
+import { HandRaisedIcon } from '@heroicons/react/24/solid'
 
 const Sidebar = () => {
   const location = useLocation()
   const navigate = useNavigate()
   const fileInputRef = useRef(null)
   const { user, updateTimestamp } = useContext(UserContext)
+  const defName = (user.email).split('@')[0]
 
   const handleAvatarClick = () => {
     fileInputRef.current.click()
@@ -72,8 +74,11 @@ const Sidebar = () => {
           </div>
         </div>
         <div>
-          <p className="text-xs text-gray-500">Xin chào</p>
-          <p className="text-base font-bold">{user?.name || 'Người dùng'}</p>
+          <div className="flex items-center gap-2">
+            <HandRaisedIcon className='w-4 h-4 text-blue rotate-45'/>
+            <p className="text-sm">Xin chào</p>
+          </div>
+          <p className="text-base font-bold">{user?.name || defName}</p>
         </div>
       </div>
 

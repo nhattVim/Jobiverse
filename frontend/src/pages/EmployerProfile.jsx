@@ -35,7 +35,7 @@ const EmployerProfile = () => {
 
     try {
       await apiFetch('/employers', 'POST', form)
-      navigate('/login')
+      navigate('/')
     } catch (err) {
       console.error(err)
       setError('Tạo profile thất bại, vui lòng thử lại.')
@@ -47,10 +47,10 @@ const EmployerProfile = () => {
       title="Tạo profile cho nhà tuyển dụng"
       caption="Bắt đầu hành trình tuyển dụng hiệu quả bằng cách xây dựng hồ sơ nhà tuyển dụng rõ ràng, uy tín và hấp dẫn."
     >
-      {error && <p className="text-sm text-red-600">{error}</p>}
       <form onSubmit={handleSubmit} className="pb-20">
         <section className="p-10 border border-gray-200 shadow-md bg-white-low rounded-medium">
           <h2 className="mb-6 text-xl font-bold">Thông tin nhà tuyển dụng</h2>
+          {error && <p className="text-sm text-red-600">{error}</p>}
           <div className="space-y-4">
             {/* Họ và tên HR */}
             <div>
@@ -179,7 +179,7 @@ const EmployerProfile = () => {
 
             {/* Nút submit */}
             <div className="flex items-center gap-4">
-              <button onClick={() => navigate('/login')} className="px-6 py-2 text-white transition rounded-full bg-red hover:bg-red-700 cursor-pointer">
+              <button onClick={() => navigate('/')} className="px-6 py-2 text-white transition rounded-full bg-red hover:bg-red-700 cursor-pointer">
                 Huỷ
               </button>
               <button

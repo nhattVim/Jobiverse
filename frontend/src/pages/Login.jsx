@@ -44,7 +44,21 @@ const Login = () => {
       setUser(user)
       updateTimestamp()
 
-      navigate('/')
+      if (user.accountType === 'employer') {
+        try {
+          await apiFetch('/employers/me', 'GET')
+          navigate(ROUTES.HOME)
+        } catch {
+          navigate(ROUTES.EMPLOYER_PROFILE)
+        }
+      } else {
+        try {
+          await apiFetch('/students/me', 'GET')
+          navigate(ROUTES.HOME)
+        } catch {
+          navigate(ROUTES.STUDENT_PROFILE)
+        }
+      }
     } catch (error) {
       setError(error.message || 'Đăng nhập thất bại, vui lòng thử lại.')
       console.error('Đăng nhập thất bại', error)
@@ -62,7 +76,21 @@ const Login = () => {
       setUser(user)
       updateTimestamp()
 
-      navigate('/')
+      if (user.accountType === 'employer') {
+        try {
+          await apiFetch('/employers/me', 'GET')
+          navigate(ROUTES.HOME)
+        } catch {
+          navigate(ROUTES.EMPLOYER_PROFILE)
+        }
+      } else {
+        try {
+          await apiFetch('/students/me', 'GET')
+          navigate(ROUTES.HOME)
+        } catch {
+          navigate(ROUTES.STUDENT_PROFILE)
+        }
+      }
     } catch (err) {
       setError('Đăng nhập bằng Google thất bại. ' + err.message)
       console.error('Google login error:', err)
@@ -90,7 +118,22 @@ const Login = () => {
       const user = await apiFetch('/account/detail', 'GET')
       setUser(user)
       updateTimestamp()
-      navigate('/')
+
+      if (user.accountType === 'employer') {
+        try {
+          await apiFetch('/employers/me', 'GET')
+          navigate(ROUTES.HOME)
+        } catch {
+          navigate(ROUTES.EMPLOYER_PROFILE)
+        }
+      } else {
+        try {
+          await apiFetch('/students/me', 'GET')
+          navigate(ROUTES.HOME)
+        } catch {
+          navigate(ROUTES.STUDENT_PROFILE)
+        }
+      }
     } catch (err) {
       setError('Đăng nhập bằng Facebook thất bại.')
       console.error('Facebook login error:', err)

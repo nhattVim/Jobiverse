@@ -31,7 +31,7 @@ const RegisterForm = ({ accountType, onBack }) => {
         password,
         accountType
       })
-      accountType === 'employer' ? navigate(ROUTES.EMPLOYER_PROFILE) : navigate(ROUTES.STUDENT_PROFILE)
+      navigate(ROUTES.LOGIN)
     } catch (err) {
       setError(err.message || 'Đăng ký thất bại, vui lòng thử lại.')
     }
@@ -44,7 +44,7 @@ const RegisterForm = ({ accountType, onBack }) => {
         accountType,
         ggToken: credentialResponse.credential
       })
-      accountType === 'employer' ? navigate(ROUTES.EMPLOYER_PROFILE) : navigate(ROUTES.STUDENT_PROFILE)
+      navigate(ROUTES.LOGIN)
     } catch (err) {
       setError('Đăng ký bằng Google thất bại.')
       console.error('Google login error:', err.message)
@@ -78,7 +78,7 @@ const RegisterForm = ({ accountType, onBack }) => {
         accountType,
         fbToken: accessToken
       })
-      accountType === 'employer' ? navigate(ROUTES.EMPLOYER_PROFILE) : navigate(ROUTES.STUDENT_PROFILE)
+      navigate(ROUTES.LOGIN)
     } catch (err) {
       setError('Đăng ký bằng Facebook thất bại.')
       console.error('Facebook login error:', err)

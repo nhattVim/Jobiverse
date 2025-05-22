@@ -53,7 +53,7 @@ const StudentProfile = () => {
 
     try {
       await apiFetch('/students', 'POST', form)
-      navigate('/login')
+      navigate('/')
     } catch (err) {
       console.error(err)
       setError('Tạo profile thất bại, vui lòng thử lại.')
@@ -167,12 +167,12 @@ const StudentProfile = () => {
 
             {/* Nút huỷ */}
             <div className="flex items-center gap-4">
-              <button
-                onClick={() => navigate('/login')}
+              <div
+                onClick={() => navigate('/')}
                 className="px-6 py-2 text-white transition rounded-full bg-red hover:bg-red-700 cursor-pointer"
               >
                 Huỷ
-              </button>
+              </div>
               {/* Nút submit */}
               <button
                 type="submit"
