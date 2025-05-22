@@ -62,7 +62,7 @@ const Chooserole = () => {
             <button
               onClick={handleContinue}
               disabled={!selectedType}
-              className={`py-3 rounded-md font-semibold text-white transition w-2/3 mt-6
+              className={`py-3 cursor-pointer rounded-md font-semibold text-white transition w-2/3 mt-6
                 ${selectedType ? 'bg-blue hover:bg-blue-mid' : 'bg-gray-300 cursor-not-allowed'}
               `}
             >

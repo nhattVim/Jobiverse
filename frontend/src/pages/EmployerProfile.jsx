@@ -1,7 +1,8 @@
-import React, { useState } from 'react'
+import React, { useContext, useState } from 'react'
 import Profile from '../components/Profile'
 import { useNavigate } from 'react-router-dom'
 import apiFetch from '../services/api'
+import UserContext from '../contexts/UserContext'
 
 const EmployerProfile = () => {
   const navigate = useNavigate()
@@ -16,6 +17,7 @@ const EmployerProfile = () => {
     prove: 0,
     address: ''
   })
+  const { setUser, updateTimestamp } = useContext(UserContext)
 
   const handleChange = (e) => {
     const { name, value } = e.target
@@ -35,6 +37,10 @@ const EmployerProfile = () => {
 
     try {
       await apiFetch('/employers', 'POST', form)
+      await apiFetch('/account/profile', 'PUT')
+      const user = await apiFetch('/account/detail', 'GET')
+      setUser(user)
+      updateTimestamp()
       navigate('/')
     } catch (err) {
       console.error(err)

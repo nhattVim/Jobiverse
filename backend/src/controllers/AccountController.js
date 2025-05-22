@@ -142,6 +142,21 @@ class AdminController {
       res.status(500).json({ message: 'Lỗi máy chủ khi cập nhật ảnh đại diện', error: err.message })
     }
   }
+
+  // [PUT] /account/profile
+  async hasProfile(req, res, next) {
+    try {
+      const accountId = req.account.id
+      if (!accountId) return res.status(401).json({ message: 'Chưa đăng nhập' })
+
+      const updated = await Account.findByIdAndUpdate(accountId, { profile: true })
+
+      if (!updated) return res.status(404).json({ message: 'Không tìm thấy tài khoản' })
+      res.json({ message: 'Cập nhật tài khoản thành công' })
+    } catch (err) {
+      res.status(500).json({ message: 'Lỗi máy chủ khi cập nhật tài khoản', error: err.message })
+    }
+  }
 }
 
 module.exports = new AdminController()

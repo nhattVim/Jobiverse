@@ -44,20 +44,12 @@ const Login = () => {
       setUser(user)
       updateTimestamp()
 
-      if (user.role === 'employer') {
-        try {
-          await apiFetch('/employers/me', 'GET')
-          navigate(ROUTES.HOME)
-        } catch {
-          navigate(ROUTES.EMPLOYER_PROFILE)
-        }
+      if (user.profile === false && user.role === 'employer') {
+        navigate(ROUTES.EMPLOYER_PROFILE)
+      } else if (user.profile === false && user.role === 'student') {
+        navigate(ROUTES.STUDENT_PROFILE)
       } else {
-        try {
-          await apiFetch('/students/me', 'GET')
-          navigate(ROUTES.HOME)
-        } catch {
-          navigate(ROUTES.STUDENT_PROFILE)
-        }
+        navigate(ROUTES.HOME)
       }
     } catch (error) {
       setError(error.message || 'Đăng nhập thất bại, vui lòng thử lại.')
@@ -76,20 +68,12 @@ const Login = () => {
       setUser(user)
       updateTimestamp()
 
-      if (user.role === 'employer') {
-        try {
-          await apiFetch('/employers/me', 'GET')
-          navigate(ROUTES.HOME)
-        } catch {
-          navigate(ROUTES.EMPLOYER_PROFILE)
-        }
+      if (user.profile === false && user.role === 'employer') {
+        navigate(ROUTES.EMPLOYER_PROFILE)
+      } else if (user.profile === false && user.role === 'student') {
+        navigate(ROUTES.STUDENT_PROFILE)
       } else {
-        try {
-          await apiFetch('/students/me', 'GET')
-          navigate(ROUTES.HOME)
-        } catch {
-          navigate(ROUTES.STUDENT_PROFILE)
-        }
+        navigate(ROUTES.HOME)
       }
     } catch (err) {
       setError('Đăng nhập bằng Google thất bại. ' + err.message)
@@ -119,20 +103,12 @@ const Login = () => {
       setUser(user)
       updateTimestamp()
 
-      if (user.role === 'employer') {
-        try {
-          await apiFetch('/employers/me', 'GET')
-          navigate(ROUTES.HOME)
-        } catch {
-          navigate(ROUTES.EMPLOYER_PROFILE)
-        }
+      if (user.profile === false && user.role === 'employer') {
+        navigate(ROUTES.EMPLOYER_PROFILE)
+      } else if (user.profile === false && user.role === 'student') {
+        navigate(ROUTES.STUDENT_PROFILE)
       } else {
-        try {
-          await apiFetch('/students/me', 'GET')
-          navigate(ROUTES.HOME)
-        } catch {
-          navigate(ROUTES.STUDENT_PROFILE)
-        }
+        navigate(ROUTES.HOME)
       }
     } catch (err) {
       setError('Đăng nhập bằng Facebook thất bại.')
@@ -141,7 +117,7 @@ const Login = () => {
   }
 
   return (
-    <div className="flex items-center justify-center h-screen bg-white">
+    <div className="flex items-center justify-center min-h-screen bg-white">
       <div className="flex flex-col justify-start items-start w-[660px] p-[60px] gap-5 rounded-medium bg-white-mid">
         <div className="flex justify-center items-center w-[100px] h-[100px] bg-white rounded-full">
           <img src={Logo1} alt="logo1" className="w-[68px]" />
@@ -193,7 +169,7 @@ const Login = () => {
                 <button
                   type="button"
                   onClick={handleContinue}
-                  className="w-full h-[50px] bg-blue-600 text-white font-bold rounded-full hover:bg-blue-700 transition"
+                  className="w-full h-[50px] bg-blue text-white font-bold rounded-full hover:bg-blue-mid transition"
                 >
                   Tiếp tục
                 </button>
@@ -264,7 +240,7 @@ const Login = () => {
               </button>
             </div>
 
-            <div className="flex items-center justify-between w-full mt-10">
+            <div className="flex items-center justify-between w-full mt-5">
               <p className="font-medium leading-6">
                 Bạn chưa có tài khoản?{' '}
                 <Link to={ROUTES.REGISTER} className="underline text-blue">
