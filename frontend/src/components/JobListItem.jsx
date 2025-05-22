@@ -1,21 +1,15 @@
 import { useState, useMemo, useEffect } from 'react'
 import { MapPinIcon, CurrencyDollarIcon } from '@heroicons/react/24/outline'
 import ButtonArrowOne from '../shared/ButtonArrowOne'
-import apiFetch from '../services/api'
 
-const JobListItem = ({ job }) => {
+const JobListItem = ({ job, a, b }) => {
   const [majors, setMajors] = useState([])
   const [specs, setSpecs] = useState([])
 
   useEffect(() => {
-    const fetchData = async () => {
-      const majorData = await apiFetch('/majors', 'GET')
-      const specData = await apiFetch('/specs', 'GET')
-      setMajors(majorData)
-      setSpecs(specData)
-    }
-    fetchData()
-  }, [])
+    setMajors(a)
+    setSpecs(b)
+  }, [a, b])
 
   const majorMap = useMemo(() => {
     const map = {}
@@ -50,8 +44,8 @@ const JobListItem = ({ job }) => {
     <div className="flex flex-col items-start gap-[30px] p-10 bg-white-mid rounded-medium w-full">
       <div className="flex flex-col items-start gap-5 w-full pb-[15px] border-b border-b-gray-light">
         <div className="flex items-start justify-between w-full">
-          <div className="flex items-center gap-5">
-            <div className="w-[70px] h-[70px] bg-white border border-white-low rounded-small flex justify-center items-center">
+          <div className="flex items-center w-full gap-5">
+            <div className="w-[60px] h-[60px] bg-white border border-white-low rounded-small flex justify-center items-center shrink-0">
               <img
                 src={`data:image/png;base64,${job.account?.avatar?.data}`}
                 alt="imgcompany"
@@ -59,20 +53,21 @@ const JobListItem = ({ job }) => {
               />
             </div>
 
-            <div className="flex flex-col justify-center gap-1">
-              <h6 className="text-[22px] font-semibold leading-[28.6px]">
+            <div className="flex flex-col justify-center w-full gap-1">
+              <h6 className="text-[22px] font-semibold leading-[28.6px] line-clamp-1 w-1/2">
                 {job.title}
               </h6>
-              <p>{job.description}</p>
+              <p className="text-[16px] font-normal leading-[21px] text-black-low line-clamp-2 w-4/5">
+                {job.description}
+              </p>
             </div>
           </div>
 
-          <div className="px-2 py-1 bg-yellow rounded-[5px]">{job.workType}</div>
+          <div className="px-2 py-1  bg-yellow rounded-[5px] whitespace-nowrap">
+            {job.workType}
+          </div>
         </div>
 
-        <h6 className="text-[22px] font-semibold leading-[28.6px]">
-          {job.content}
-        </h6>
 
         <div className="flex flex-col gap-3">
           <div className="flex items-center">

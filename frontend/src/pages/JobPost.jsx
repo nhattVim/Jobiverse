@@ -25,7 +25,7 @@ const JobPost = () => {
     applicants: [null],
     assignedStudents: [null],
     salary: 0,
-    experiences: '',
+    expRequired: 0,
     deadline: '',
     hiringCount: 0,
     workType: ''
@@ -157,9 +157,9 @@ const JobPost = () => {
               <div>
                 <label className="block mb-1 text-sm font-bold text-gray-700">Kinh nghiệm yêu cầu</label>
                 <input
-                  type="text"
-                  name="experiences"
-                  value={form.experiences}
+                  type="input"
+                  name="expRequired"
+                  value={form.expRequired}
                   onChange={handleChange}
                   className="w-full px-4 py-2 bg-white rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500"
                   placeholder="VD: 1 năm"
