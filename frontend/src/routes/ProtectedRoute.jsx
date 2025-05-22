@@ -1,9 +1,12 @@
 import { Navigate } from 'react-router-dom'
+import UserContext from '../contexts/UserContext'
+import { useContext } from 'react'
+import { ROUTES } from './routePaths'
 
 const ProtectedRoute = ({ children }) => {
-  const user = localStorage.getItem('user')
+  const { user } = useContext(UserContext)
   if (!user) {
-    return <Navigate to="/login" replace />
+    return <Navigate to={ROUTES.LOGIN} replace />
   }
   return children
 }

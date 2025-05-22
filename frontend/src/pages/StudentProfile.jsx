@@ -1,8 +1,10 @@
 import React, { useEffect, useState } from 'react'
 import Profile from '../components/Profile'
 import apiFetch from '../services/api'
+import { useNavigate } from 'react-router-dom'
 
 const StudentProfile = () => {
+  const navigate = useNavigate()
   const [error, setError] = useState('')
   const [form, setForm] = useState({
     name: '',
@@ -37,19 +39,40 @@ const StudentProfile = () => {
     }
     loadData()
   }, [])
+
+  const handleSubmit = async (e) => {
+    e.preventDefault()
+
+    const requiredFields = ['name', 'mssv', 'university']
+    for (const field of requiredFields) {
+      if (!form[field]) {
+        setError('Vui lòng điền đầy đủ thông tin bắt buộc.')
+        return
+      }
+    }
+
+    try {
+      await apiFetch('/students', 'POST', form)
+      navigate('/login')
+    } catch (err) {
+      console.error(err)
+      setError('Tạo profile thất bại, vui lòng thử lại.')
+    }
+  }
+
   return (
     <Profile
       title="Tạo profile cho nhà tuyển dụng"
       caption="Bắt đầu hành trình tuyển dụng hiệu quả bằng cách xây dựng hồ sơ nhà tuyển dụng rõ ràng, uy tín và hấp dẫn."
     >
-      {error && <p className="text-sm text-red-600">{error}</p>}
-      <form className="pb-20">
+      <form onSubmit={handleSubmit} className="pb-20">
         <section className="p-10 border border-gray-200 shadow-md bg-white-low rounded-medium">
           <h2 className="mb-6 text-xl font-bold">Thông tin ứng viên</h2>
+          {error && <p className="text-sm text-red-600">{error}</p>}
           <div className="space-y-6">
             <div>
               <label className="block mb-1 text-sm font-bold text-gray-700">
-                Họ và tên <span className="text-red-500">*</span>
+                Họ và tên
               </label>
               <input
                 type="text"
@@ -63,7 +86,7 @@ const StudentProfile = () => {
 
             <div>
               <label className="block mb-1 text-sm font-bold text-gray-700">
-                Mã sinh viên <span className="text-red-500">*</span>
+                Mã sinh viên
               </label>
               <input
                 type="text"
@@ -77,7 +100,7 @@ const StudentProfile = () => {
 
             <div>
               <label className="block mb-1 text-sm font-bold text-gray-700">
-                Trường <span className="text-red-500">*</span>
+                Trường
               </label>
               <input
                 type="text"
@@ -142,11 +165,15 @@ const StudentProfile = () => {
               </div>
             </div>
 
-            {/* Nút submit */}
+            {/* Nút huỷ */}
             <div className="flex items-center gap-4">
-              <button className="px-6 py-2 text-white transition rounded-full bg-red hover:bg-red-700 cursor-pointer">
+              <button
+                onClick={() => navigate('/login')}
+                className="px-6 py-2 text-white transition rounded-full bg-red hover:bg-red-700 cursor-pointer"
+              >
                 Huỷ
               </button>
+              {/* Nút submit */}
               <button
                 type="submit"
                 className="px-6 py-2 text-white transition rounded-full bg-blue hover:bg-blue-700 cursor-pointer"

@@ -35,7 +35,7 @@ const EmployerProfile = () => {
 
     try {
       await apiFetch('/employers', 'POST', form)
-      navigate('login')
+      navigate('/login')
     } catch (err) {
       console.error(err)
       setError('Tạo profile thất bại, vui lòng thử lại.')
@@ -179,7 +179,7 @@ const EmployerProfile = () => {
 
             {/* Nút submit */}
             <div className="flex items-center gap-4">
-              <button className="px-6 py-2 text-white transition rounded-full bg-red hover:bg-red-700 cursor-pointer">
+              <button onClick={() => navigate('/login')} className="px-6 py-2 text-white transition rounded-full bg-red hover:bg-red-700 cursor-pointer">
                 Huỷ
               </button>
               <button

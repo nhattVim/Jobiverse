@@ -1,9 +1,9 @@
-import React, { useEffect, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import HeroImg from '../assets/HeroImg.jpg'
 import Type1 from '../assets/Type1.jpg'
 import Type2 from '../assets/Type2.jpg'
 import { MapPinIcon, MagnifyingGlassIcon } from '@heroicons/react/24/outline'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import {
   ArrowUpRightIcon,
   ArrowLongLeftIcon,
@@ -15,11 +15,14 @@ import JobCard from '../components/JobCard'
 import ButtonArrowOne from '../shared/ButtonArrowOne'
 import { ROUTES } from '../routes/routePaths'
 import apiFetch from '../services/api'
+import UserContext from '../contexts/UserContext'
 
 const Home = () => {
   const [currentIndex, setCurrentIndex] = useState(0)
   const [projects, setProjects] = useState([])
   const [favorites, setFavorites] = useState([])
+  const { user } = useContext(UserContext)
+  const navigate = useNavigate()
 
   const goToPrevious = () => {
     const isFirstSlide = currentIndex === 0
@@ -27,15 +30,17 @@ const Home = () => {
   }
 
   const goToNext = () => {
-    const isLastSlide = currentIndex === projects.length - 3
+    const isLastSlide =
+      projects.length > 3
+        ? currentIndex === projects.length - 3
+        : currentIndex === 0
     setCurrentIndex(isLastSlide ? 0 : currentIndex + 1)
   }
 
   useEffect(() => {
-    const storedUser = localStorage.getItem('user')
     const loadProjectsAndFavorites = async () => {
       try {
-        const favoritesPromise = storedUser
+        const favoritesPromise = user
           ? apiFetch('/favorites', 'GET')
           : Promise.resolve([])
 
@@ -56,12 +61,12 @@ const Home = () => {
     }
 
     loadProjectsAndFavorites()
-  }, [])
+  }, [user])
 
   return (
     <>
+      {/* Hero Section */}
       <div className="container-responsive">
-        {/* Hero Section */}
         <div className="grid grid-cols-[1fr_0.75fr] h-[571px] grid-rows-auto">
           <div className="relative">
             <div className="absolute inset-0 h-full -left-[60px]">
@@ -123,7 +128,10 @@ const Home = () => {
             <h2 className="text-5xl font-semibold leading-[62.4px]">
               Khám phá việc làm theo loại
             </h2>
-            <Link to={ROUTES.JOB_LIST} className="group flex items-center justify-center bg-yellow text-black rounded-full py-2 pl-3 pr-2 font-semibold gap-2.5 hover:bg-blue hover:text-white transition-all duration-500 ease-in-out">
+            <Link
+              to={ROUTES.JOB_LIST}
+              className="group flex items-center justify-center bg-yellow text-black rounded-full py-2 pl-3 pr-2 font-semibold gap-2.5 hover:bg-blue hover:text-white transition-all duration-500 ease-in-out"
+            >
               Xem tất cả
               <div className="bg-black rounded-full flex items-center justify-center w-[30px] h-[30px] group-hover:bg-white transition-all duration-500 ease-in-out">
                 <ArrowUpRightIcon className="w-5 h-5 font-semibold text-white transition-all duration-500 ease-in-out group-hover:text-blue" />
@@ -141,9 +149,7 @@ const Home = () => {
                 />
               </div>
               <div className="flex justify-between items-center w-[75%] absolute z-40">
-                <h3 className="text-[28px] font-semibold text-white">
-                  Online
-                </h3>
+                <h3 className="text-[28px] font-semibold text-white">Online</h3>
                 <div className="bg-yellow rounded-full flex items-center justify-center w-[40px] h-[40px]">
                   <ArrowUpRightIcon className="w-6 h-6 font-semibold text-black" />
                 </div>
@@ -226,7 +232,15 @@ const Home = () => {
                     cá nhân, thể hiện thế mạnh của bản thân thông qua việc đính
                     kèm học vấn, kinh nghiệm, dự án, kỹ năng,... của mình
                   </p>
-                  <ButtonArrowOne selectedPage={ROUTES.SET_INFORMATION}>
+                  <ButtonArrowOne
+                    onClick={() =>
+                      navigate(
+                        user.accountType === 'employer'
+                          ? ROUTES.EMPLOYER_PROFILE
+                          : ROUTES.STUDENT_PROFILE
+                      )
+                    }
+                  >
                     Tạo profile
                   </ButtonArrowOne>
                 </div>

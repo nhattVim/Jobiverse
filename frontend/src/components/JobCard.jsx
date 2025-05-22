@@ -1,17 +1,18 @@
 import { MapPinIcon, CurrencyDollarIcon, HeartIcon } from '@heroicons/react/24/outline'
 import { HeartIcon as HeartSolidIcon } from '@heroicons/react/24/solid'
-import React, { useState } from 'react'
+import React, { useContext, useState } from 'react'
 import ButtonArrowOne from '../shared/ButtonArrowOne'
 import apiFetch from '../services/api'
 import { ROUTES } from '../routes/routePaths'
+import UserContext from '../contexts/UserContext'
 
 const JobCard = ({ job, currentIndex, isFavoritedInitially }) => {
 
   const [isFavorited, setIsFavorited] = useState(isFavoritedInitially)
+  const { user } = useContext(UserContext)
 
   const handleFavorite = async () => {
-    const storedUser = localStorage.getItem('user')
-    if (!storedUser) {
+    if (!user) {
       alert('Vui lòng đăng nhập để sử dụng chức năng này!')
       return
     }

@@ -1,10 +1,14 @@
 import { ArrowLeftIcon } from '@heroicons/react/24/outline'
-import React from 'react'
-import { Link, useNavigate } from 'react-router-dom'
+import React, { useEffect } from 'react'
+import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { ROUTES } from '../routes/routePaths'
 
 const Profile = ({ children, title, caption }) => {
   const navigate = useNavigate()
+  const { pathname } = useLocation()
+  useEffect(() => {
+    window.scrollTo(0, 0)
+  }, [pathname])
 
   return (
     <>

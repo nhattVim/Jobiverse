@@ -21,7 +21,7 @@ const jobItem = {
 }
 
 const jobItems = Array(4).fill(jobItem)
-const EmployerInfo = () => {
+const EmployerDetail = () => {
   return (
     <>
       <div className="container-responsive">
@@ -176,4 +176,4 @@ const EmployerInfo = () => {
   )
 }
 
-export default EmployerInfo
+export default EmployerDetail

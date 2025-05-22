@@ -12,10 +12,10 @@ import CVManager from '../pages/CVManager'
 import SavedJob from '../pages/SavedJob'
 import SetInfomation from '../pages/SetInfomation'
 import JobDetail from '../pages/JobDetail'
-import EmployerInfo from '../pages/EmployerInfo'
 import ProtectedRoute from './ProtectedRoute'
 import EmployerProfile from '../pages/EmployerProfile'
 import StudentProfile from '../pages/StudentProfile'
+import EmployerDetail from '../pages/EmployerDetail'
 
 export const router = createBrowserRouter([
   {
@@ -66,8 +66,8 @@ export const router = createBrowserRouter([
         element: <ProtectedRoute><SetInfomation /></ProtectedRoute>
       },
       {
-        path: ROUTES.EMPLOYER_INFO,
-        element: <EmployerInfo />
+        path: ROUTES.EMPLOYER_DETAIL,
+        element: <EmployerDetail />
       }
     ]
   },
