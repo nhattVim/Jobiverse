@@ -52,14 +52,14 @@ const SetInformation = () => {
 
   useEffect(() => {
     setEmail(user?.email || '')
-    if (!user?.accountType) return
+    if (!user?.role) return
 
     const loadData = async () => {
       setLoading(true)
       try {
-        if (user.accountType === 'student') {
+        if (user.role === 'student') {
           await fetchProfile('student', '/students/me')
-        } else if (user.accountType === 'employer') {
+        } else if (user.role === 'employer') {
           await fetchProfile('employer', '/employers/me')
         }
       } catch (err) {
@@ -82,7 +82,7 @@ const SetInformation = () => {
     setLoadingSubmit(true)
     try {
       const endpoint =
-        user.accountType === 'student' ? '/students' : '/employers'
+        user.role === 'student' ? '/students' : '/employers'
       await apiFetch(endpoint, 'PUT', profile)
       toast.success('Cập nhật thông tin thành công!')
     } catch (err) {
@@ -94,7 +94,7 @@ const SetInformation = () => {
   }
 
   const renderForm = () => {
-    if (user.accountType === 'student') {
+    if (user.role === 'student') {
       return (
         <StudentInfo
           profile={profile}
@@ -105,7 +105,7 @@ const SetInformation = () => {
           setProfile={setProfile}
         />
       )
-    } else if (user.accountType === 'employer') {
+    } else if (user.role === 'employer') {
       return (
         <EmployerInfo
           profile={profile}

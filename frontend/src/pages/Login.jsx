@@ -35,7 +35,7 @@ const Login = () => {
 
     try {
       await apiFetch('/login', 'POST', {
-        method: 'email',
+        authProvider: 'local',
         emailOrPhone,
         password
       })
@@ -44,7 +44,7 @@ const Login = () => {
       setUser(user)
       updateTimestamp()
 
-      if (user.accountType === 'employer') {
+      if (user.role === 'employer') {
         try {
           await apiFetch('/employers/me', 'GET')
           navigate(ROUTES.HOME)
@@ -68,7 +68,7 @@ const Login = () => {
   const handleGoogleLogin = async (credentialResponse) => {
     try {
       await apiFetch('/login', 'POST', {
-        method: 'google',
+        authProvider: 'google',
         ggToken: credentialResponse.credential
       })
 
@@ -76,7 +76,7 @@ const Login = () => {
       setUser(user)
       updateTimestamp()
 
-      if (user.accountType === 'employer') {
+      if (user.role === 'employer') {
         try {
           await apiFetch('/employers/me', 'GET')
           navigate(ROUTES.HOME)
@@ -111,7 +111,7 @@ const Login = () => {
   const handleFacebookLoginAsync = async (accessToken) => {
     try {
       await apiFetch('/login', 'POST', {
-        method: 'facebook',
+        authProvider: 'facebook',
         fbToken: accessToken
       })
 
@@ -119,7 +119,7 @@ const Login = () => {
       setUser(user)
       updateTimestamp()
 
-      if (user.accountType === 'employer') {
+      if (user.role === 'employer') {
         try {
           await apiFetch('/employers/me', 'GET')
           navigate(ROUTES.HOME)

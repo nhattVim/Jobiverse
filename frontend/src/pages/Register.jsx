@@ -17,7 +17,7 @@ const options = [
   }
 ]
 
-const ChooseAccountType = () => {
+const Chooserole = () => {
   const [selectedType, setSelectedType] = useState('')
   const [showForm, setShowForm] = useState(false)
 
@@ -49,7 +49,7 @@ const ChooseAccountType = () => {
                   <div className="mb-3 text-gray-500">{opt.desc}</div>
                   <input
                     type="radio"
-                    name="accountType"
+                    name="role"
                     value={opt.value}
                     checked={selectedType === opt.value}
                     onChange={() => setSelectedType(opt.value)}
@@ -81,11 +81,11 @@ const ChooseAccountType = () => {
             </p>
           </>
         ) : (
-          <RegisterForm accountType={selectedType} onBack={() => setShowForm(false)} />
+          <RegisterForm role={selectedType} onBack={() => setShowForm(false)} />
         )}
       </div>
     </div>
   )
 }
 
-export default ChooseAccountType
+export default Chooserole

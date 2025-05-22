@@ -14,17 +14,16 @@ class AccountController {
   // [POST] /register
   async register(req, res) {
     try {
-      const { method } = req.body
-      console.log('Register method:', method)
+      const { authProvider } = req.body
+      console.log('Register authProvider:', authProvider)
 
-      if (method === 'email') {
+      if (authProvider === 'local') {
 
-        const { accountType, email, password, phoneNumber } = req.body
-        const avatar = req.file ? req.file.buffer : null
+        const { role, email, password, phoneNumber } = req.body
         const trimmedEmail = email?.trim()
         const trimmedPhone = phoneNumber?.trim()
 
-        if (!trimmedEmail || !trimmedPhone || !password || !accountType) {
+        if (!trimmedEmail || !trimmedPhone || !password || !role) {
           return res.status(400).json({ message: 'Thiếu thông tin bắt buộc' })
         }
 
@@ -35,10 +34,11 @@ class AccountController {
         if (phoneExists) return res.status(400).json({ message: 'Số điện thoại đã được sử dụng' })
 
         const account = await Account.create({
-          accountType,
+          role,
           email: trimmedEmail,
           password,
           phoneNumber: trimmedPhone,
+          authProvider,
           avatar: req.file
             ? { data: req.file.buffer, contentType: req.file.mimetype }
             : { data: DefaultAvatar, contentType: 'image/png' }
@@ -46,10 +46,10 @@ class AccountController {
 
         res.status(201).json({ message: 'Tạo tài khoản thành công', accountID: account._id })
 
-      } else if (method === 'google') {
+      } else if (authProvider === 'google') {
 
-        const { ggToken, accountType } = req.body
-        if (!ggToken || !accountType) return res.status(400).json({ message: 'Thiếu thông tin bắt buộc' })
+        const { ggToken, role } = req.body
+        if (!ggToken || !role) return res.status(400).json({ message: 'Thiếu thông tin bắt buộc' })
 
         const ticket = await client.verifyIdToken({ idToken: ggToken, audience: process.env.GOOGLE_CLIENT_ID })
         const payload = ticket.getPayload()
@@ -62,22 +62,23 @@ class AccountController {
           const contentType = response.headers['content-type']
 
           account = await Account.create({
-            accountType,
+            role,
             email,
             password: null,
             phoneNumber: null,
+            authProvider,
             avatar: { data: buffer, contentType }
           })
         }
 
-        const token = jwt.sign({ id: account._id, type: account.accountType }, JWT_SECRET, { expiresIn: '7d' })
+        const token = jwt.sign({ id: account._id, type: account.role }, JWT_SECRET, { expiresIn: '7d' })
         res.cookie('token', token, { httpOnly: true, secure: true, sameSite: 'none', maxAge: 7 * 24 * 60 * 60 * 1000 })
         res.json({ message: 'Tăng nhập bằng Google thành công', token })
 
-      } else if (method === 'facebook') {
+      } else if (authProvider === 'facebook') {
 
-        const { fbToken, accountType } = req.body
-        if (!fbToken || !accountType) return res.status(400).json({ message: 'Thiếu thông tin bắt buộc' })
+        const { fbToken, role } = req.body
+        if (!fbToken || !role) return res.status(400).json({ message: 'Thiếu thông tin bắt buộc' })
 
         const fbResponse = await axios.get('https://graph.facebook.com/me', {
           params: {
@@ -103,15 +104,16 @@ class AccountController {
           }
 
           account = await Account.create({
-            accountType,
+            role,
             email,
             password: null,
             phoneNumber: null,
+            authProvider,
             avatar: { data: avatarData, contentType }
           })
         }
 
-        const token = jwt.sign({ id: account._id, type: account.accountType }, JWT_SECRET, { expiresIn: '7d' })
+        const token = jwt.sign({ id: account._id, type: account.role }, JWT_SECRET, { expiresIn: '7d' })
         res.cookie('token', token, { httpOnly: true, secure: true, sameSite: 'none', maxAge: 7 * 24 * 60 * 60 * 1000 })
         res.json({ message: 'Đăng kí bằng Facebook thành công', token })
       } else {
@@ -125,9 +127,9 @@ class AccountController {
   // [POST] /login
   async login(req, res) {
     try {
-      const { method } = req.body
+      const { authProvider } = req.body
 
-      if (method === 'email') {
+      if (authProvider === 'local') {
 
         const { emailOrPhone, password } = req.body
         if (!emailOrPhone || !password) return res.status(400).json({ message: 'Thiếu thông tin bắt buộc' })
@@ -142,11 +144,11 @@ class AccountController {
         const isMatch = await bcrypt.compare(password, account.password)
         if (!isMatch) return res.status(401).json({ message: 'Sai mật khẩu' })
 
-        const token = jwt.sign({ id: account._id, type: account.accountType }, JWT_SECRET, { expiresIn: '7d' })
+        const token = jwt.sign({ id: account._id, type: account.role }, JWT_SECRET, { expiresIn: '7d' })
         res.cookie('token', token, { httpOnly: true, secure: true, sameSite: 'none', maxAge: 7 * 24 * 60 * 60 * 1000 })
         res.json({ message: 'Đăng nhập thành công', token })
 
-      } else if (method === 'google') {
+      } else if (authProvider === 'google') {
 
         const { ggToken } = req.body
         if (!ggToken) return res.status(400).json({ message: 'Thiếu token Google' })
@@ -159,14 +161,15 @@ class AccountController {
         console.log(account)
         if (!account) return res.status(404).json({ message: 'Tài khoản Google chưa đăng ký' })
 
-        const token = jwt.sign({ id: account._id, type: account.accountType }, JWT_SECRET, { expiresIn: '7d' })
+        const token = jwt.sign({ id: account._id, type: account.role }, JWT_SECRET, { expiresIn: '7d' })
         res.cookie('token', token, { httpOnly: true, secure: true, sameSite: 'none', maxAge: 7 * 24 * 60 * 60 * 1000 })
         res.json({ message: 'Đăng nhập Google thành công', token })
 
-      } else if (method === 'facebook') {
+      } else if (authProvider === 'facebook') {
 
         const { fbToken } = req.body
         if (!fbToken) return res.status(400).json({ message: 'Thiếu token Facebook' })
+        console.log('fbToken:', fbToken)
 
         const fbResponse = await axios.get('https://graph.facebook.com/me', {
           params: {
@@ -181,7 +184,7 @@ class AccountController {
         const account = await Account.findOne({ email, deleted: false })
         if (!account) return res.status(404).json({ message: 'Tài khoản Facebook chưa đăng ký' })
 
-        const token = jwt.sign({ id: account._id, type: account.accountType }, JWT_SECRET, { expiresIn: '7d' })
+        const token = jwt.sign({ id: account._id, type: account.role }, JWT_SECRET, { expiresIn: '7d' })
         res.cookie('token', token, { httpOnly: true, secure: true, sameSite: 'none', maxAge: 7 * 24 * 60 * 60 * 1000 })
         res.json({ message: 'Đăng nhập Facebook thành công', token })
 

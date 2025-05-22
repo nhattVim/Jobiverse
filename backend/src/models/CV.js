@@ -58,15 +58,6 @@ const CVSchema = new mongoose.Schema({
 
   skills: [String],
 
-  files: [{
-    fileName: String,
-    fileURL: String,
-    uploadedAt: {
-      type: Date,
-      default: Date.now
-    }
-  }],
-
   lastUpdated: {
     type: Date,
     default: Date.now

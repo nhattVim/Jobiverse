@@ -235,7 +235,7 @@ const Home = () => {
                   <ButtonArrowOne
                     onClick={() =>
                       navigate(
-                        user.accountType === 'employer'
+                        user.role === 'employer'
                           ? ROUTES.EMPLOYER_PROFILE
                           : ROUTES.STUDENT_PROFILE
                       )

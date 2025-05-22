@@ -17,12 +17,12 @@ const verifyToken = ([...role]) => {
 
       console.log()
       console.log('========================')
-      console.log('Token role:', account.accountType)
+      console.log('Token role:', account.role)
       console.log('Required role:', role)
       console.log('========================')
       console.log()
 
-      if (role.length > 0 && !role.includes(account.accountType)) {
+      if (role.length > 0 && !role.includes(account.role)) {
         return res.status(403).json({ message: 'Account không có quyền truy cập' })
       }
 

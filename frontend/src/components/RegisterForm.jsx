@@ -6,7 +6,7 @@ import { GoogleLogin } from '@react-oauth/google'
 import FacebookLogin from 'react-facebook-login/dist/facebook-login-render-props'
 import { ROUTES } from '../routes/routePaths'
 
-const RegisterForm = ({ accountType, onBack }) => {
+const RegisterForm = ({ role, onBack }) => {
   const navigate = useNavigate()
   const [email, setEmail] = useState('')
   const [phone, setPhone] = useState('')
@@ -25,11 +25,11 @@ const RegisterForm = ({ accountType, onBack }) => {
 
     try {
       await apiFetch('/register', 'POST', {
-        method: 'email',
+        authProvider: 'local',
         email,
         phoneNumber: phone,
         password,
-        accountType
+        role
       })
       navigate(ROUTES.LOGIN)
     } catch (err) {
@@ -40,8 +40,8 @@ const RegisterForm = ({ accountType, onBack }) => {
   const handleGoogleRegister = async (credentialResponse) => {
     try {
       await apiFetch('/register', 'POST', {
-        method: 'google',
-        accountType,
+        authProvider: 'google',
+        role,
         ggToken: credentialResponse.credential
       })
       navigate(ROUTES.LOGIN)
@@ -74,8 +74,8 @@ const RegisterForm = ({ accountType, onBack }) => {
   const handleFacebookRegisterAsync = async (accessToken) => {
     try {
       await apiFetch('/register', 'POST', {
-        method: 'facebook',
-        accountType,
+        authProvider: 'facebook',
+        role,
         fbToken: accessToken
       })
       navigate(ROUTES.LOGIN)

@@ -6,6 +6,7 @@ yarn-error.log*
 pnpm-lock.yaml
 package-lock.json
 yarn.lock
+backend.NET
 
 # Vite cache (frontend)
 frontend/dist/

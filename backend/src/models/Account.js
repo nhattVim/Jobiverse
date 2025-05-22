@@ -2,27 +2,42 @@ const mongoose = require('mongoose')
 const bcrypt = require('bcryptjs')
 
 const AccountSchema = new mongoose.Schema({
-  accountType: {
+  role: {
     type: String,
     enum: ['student', 'employer', 'admin'],
     required: true
   },
+  authProvider: {
+    type: String,
+    enum: ['local', 'google', 'facebook'],
+    required: true
+  },
   email: {
     type: String,
-    unique: true,
-    required: true
+    unique: true
   },
   avatar: {
     data: Buffer,
     contentType: String
   },
-  phoneNumber: Number,
+  phoneNumber: {
+    type: Number,
+    trim: true
+  },
   password: String,
   deleted: {
     type: Boolean,
     default: false
   }
 }, { timestamps: true })
+
+// Middleware to check before validating
+AccountSchema.pre('validate', function (next) {
+  if (this.type === 'local' && !this.password) {
+    this.invalidate('password', 'Password is required for local accounts')
+  }
+  next()
+})
 
 // Hash password before saving
 AccountSchema.pre('save', async function (next) {
@@ -31,5 +46,12 @@ AccountSchema.pre('save', async function (next) {
   }
   next()
 })
+
+// Hide password field when converting to JSON
+AccountSchema.method.toJSON = function () {
+  const obj = this.toObject()
+  delete obj.password
+  return obj
+}
 
 module.exports = mongoose.model('Account', AccountSchema)

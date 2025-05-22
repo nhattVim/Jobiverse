@@ -62,8 +62,8 @@ const StudentProfile = () => {
 
   return (
     <Profile
-      title="Tạo profile cho nhà tuyển dụng"
-      caption="Bắt đầu hành trình tuyển dụng hiệu quả bằng cách xây dựng hồ sơ nhà tuyển dụng rõ ràng, uy tín và hấp dẫn."
+      title="Tạo profile cho người ứng tuyển"
+      caption="Bắt đầu hành trình tuyển dụng hiệu quả bằng cách xây dựng hồ sơ người ứng tuyển rõ ràng, uy tín và hấp dẫn."
     >
       <form onSubmit={handleSubmit} className="pb-20">
         <section className="p-10 border border-gray-200 shadow-md bg-white-low rounded-medium">
@@ -169,14 +169,14 @@ const StudentProfile = () => {
             <div className="flex items-center gap-4">
               <div
                 onClick={() => navigate('/')}
-                className="px-6 py-2 text-white transition rounded-full bg-red hover:bg-red-700 cursor-pointer"
+                className="px-6 py-2 text-white transition rounded-full cursor-pointer bg-red hover:bg-red-700"
               >
                 Huỷ
               </div>
               {/* Nút submit */}
               <button
                 type="submit"
-                className="px-6 py-2 text-white transition rounded-full bg-blue hover:bg-blue-700 cursor-pointer"
+                className="px-6 py-2 text-white transition rounded-full cursor-pointer bg-blue hover:bg-blue-700"
               >
                 Hoàn tất
               </button>

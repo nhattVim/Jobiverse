@@ -14,7 +14,7 @@ class ProjectController {
         .select('-__v')
         .populate({
           path: 'account',
-          select: 'accountType avatar'
+          select: 'role avatar'
         })
 
       const populatedProjects = await Promise.all(
@@ -23,9 +23,9 @@ class ProjectController {
 
           let profile = null
 
-          if (project.account.accountType === 'student') {
+          if (project.account.role === 'student') {
             profile = await Student.findOne({ account: project.account._id }).select('name')
-          } else if (project.account.accountType === 'employer') {
+          } else if (project.account.role === 'employer') {
             profile = await Employer.findOne({ account: project.account._id }).select('companyName')
           }
 
