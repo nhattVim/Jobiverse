@@ -49,7 +49,7 @@ const JobCard = ({ job, currentIndex, isFavoritedInitially }) => {
               </div>
               <div className="px-2 py-1 bg-yellow rounded-[5px]">{job.workType}</div>
             </div>
-            <h6 className="text-[22px] font-semibold leading-[28.6px]">
+            <h6 className="text-[22px] font-semibold leading-[28.6px] line-clamp-1">
               {job.title}
             </h6>
             <div className="flex flex-col gap-3">
@@ -58,8 +58,10 @@ const JobCard = ({ job, currentIndex, isFavoritedInitially }) => {
                 <p className="text-black-low">{job.salary}</p>
               </div>
               <div className="flex items-center">
-                <MapPinIcon className="w-6 h-6 text-blue mr-[6px]" />
-                <p className="text-black-low">{job.location}</p>
+                <div>
+                  <MapPinIcon className="w-6 h-6 text-blue mr-[6px]" />
+                </div>
+                <p className="text-black-low line-clamp-1">{job.location}</p>
               </div>
             </div>
           </div>
