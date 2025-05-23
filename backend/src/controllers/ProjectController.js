@@ -10,8 +10,37 @@ class ProjectController {
   // [GET] /projects
   async getAllProjects(req, res, next) {
     try {
-      const projects = await Project.find()
-        .select('-__v')
+      const {
+        major,
+        spec,
+        expRequired,
+        workTypes,
+        sortBy,
+        search
+      } = req.query
+
+      const filter = {}
+      if (major) filter.major = { $in: major.split(',') }
+      if (spec) filter.specialization = { $in: spec.split(',') }
+      if (expRequired) filter.expRequired = { $in: expRequired.split(',') }
+      if (workTypes) filter.workType = { $in: workTypes.split(',') }
+      if (search) {
+        filter.$or = [
+          { title: new RegExp(search, 'i') },
+          { description: new RegExp(search, 'i') },
+          { location: new RegExp(search, 'i') }
+        ]
+      }
+
+      let sort = {}
+      if (sortBy === 'newest') sort = { createdAt: -1 }
+      else if (sortBy === 'oldest') sort = { createdAt: 1 }
+      else if (sortBy === 'salaryDesc') sort = { salary: -1 }
+      else if (sortBy === 'salaryAsc') sort = { salary: 1 }
+
+      console.log('filter', filter)
+      console.log('sort', sort)
+      const projects = await Project.find(filter).sort(sort).select('-__v')
         .populate({
           path: 'account',
           select: 'role avatar'
@@ -47,10 +76,7 @@ class ProjectController {
     try {
       const accountId = req.account._id
       const projects = await Project.find({ account: accountId }).select('-__v').sort({ createdAt: -1 })
-      if (!projects || projects.length === 0) {
-        return res.status(404).json({ message: 'No projects found' })
-      }
-
+      if (!projects || projects.length === 0) return res.status(404).json({ message: 'No projects found' })
       res.status(200).json(projects)
     } catch (err) {
       res.status(500).json({ message: 'Error retrieving project', error: err.message })
@@ -119,8 +145,7 @@ class ProjectController {
       const accountId = req.account._id
       const projectId = req.params.id
 
-      // const deletedProject = await Project.findOneAndDelete({ _id: projectId, account: accountId })
-      const deletedProject = await Project.findOneAndDelete({ _id: projectId })
+      const deletedProject = await Project.findOneAndDelete({ _id: projectId, account: accountId })
       if (!deletedProject) return res.status(404).json({ message: 'Dự án không tồn tại' })
 
       res.status(200).json({ message: 'Dự án đã được xóa thành công' })
@@ -252,134 +277,135 @@ class ProjectController {
 
 
   //recommend projects by projectId
-async RcmProjectByProject(req, res, next) {
-  try {
-    const projectId = req.params.id;
-    const project = await Project.findById(projectId);
+  async RcmProjectByProject(req, res, next) {
+    try {
+      const projectId = req.params.id
+      const project = await Project.findById(projectId)
 
-    if (!project) {
-      return res.status(404).json({ message: 'Không tồn tại project' });
-    }
-
-    // Lấy danh sách ID ngành và chuyên ngành
-    const majorIds = project.major.map(m => m._id || m);
-    const specializationIds = project.specialization.map(s => s._id || s);
-
-    // Aggregation pipeline
-    const projects = await Project.aggregate([
-      {
-        $match: {
-          _id: { $ne: project._id },
-          // kiểm tra 1 trong 2 điều kiện
-          $or: [
-            { major: { $in: majorIds } },
-            { specialization: { $in: specializationIds } }
-          ]
-        }
-      },
-      {
-        $addFields: {
-          matchingMajors: {
-            $size: {
-              $filter: {
-                input: "$major",
-                as: "m",
-                cond: { $in: ["$$m", majorIds] }
-              }
-            }
-          },
-          matchingSpecializations: {
-            $size: {
-              $filter: {
-                input: "$specialization",
-                as: "s",
-                cond: { $in: ["$$s", specializationIds] }
-              }
-            }
-          }
-        }
-      },
-      {
-        $addFields: {
-          score: { $add: [{ $multiply: ["$matchingMajors", 2] },
-          "$matchingSpecializations"
-        ]}
-        }
-      },
-      {
-        $sort: { score: -1 }
+      if (!project) {
+        return res.status(404).json({ message: 'Không tồn tại project' })
       }
-    ]);
 
-    if (!projects || projects.length === 0) {
-      return res.status(404).json({ message: 'Không tìm thấy project tương tự' });
-    }
+      // Lấy danh sách ID ngành và chuyên ngành
+      const majorIds = project.major.map(m => m._id || m)
+      const specializationIds = project.specialization.map(s => s._id || s)
 
-    await Project.populate(projects, [
-      { path: 'major', select: '-__v' },
-      { path: 'specialization', select: '-__v' }
-    ]);
-
-    res.status(200).json({ projects });
-
-  } catch (err) {
-    res.status(500).json({ message: 'Lỗi server', error: err.message });
-  }
-}
-
-
-//recommend projects by studentId
-async RcmProjectByStudent(req, res, next) {
-  try {
-    const studentId = req.params.id;
-    const student = await Student.findById(studentId); // Sửa lại: tìm Student chứ không phải Project
-
-    if (!student) {
-      return res.status(404).json({ message: 'Sinh viên không tồn tại' });
-    }
-
-    // Lấy danh sách ngành và chuyên ngành của sinh viên
-    const majorId = student.major._id;
-    const specializationId = student._id;
-
-const projects = await Project.aggregate([
-      {
-        $match: {
-          major: majorId // chỉ lấy project có ngành giống         
-        }
-      },
-      {
-        $addFields: {
-          specializationMatch: {
-            $cond: [
-              { $in: [specializationId, "$specialization"] }, // nếu specializationId nằm trong project.specialization
-              1, // khớp
-              0  // không khớp
+      // Aggregation pipeline
+      const projects = await Project.aggregate([
+        {
+          $match: {
+            _id: { $ne: project._id },
+            // kiểm tra 1 trong 2 điều kiện
+            $or: [
+              { major: { $in: majorIds } },
+              { specialization: { $in: specializationIds } }
             ]
           }
+        },
+        {
+          $addFields: {
+            matchingMajors: {
+              $size: {
+                $filter: {
+                  input: '$major',
+                  as: 'm',
+                  cond: { $in: ['$$m', majorIds] }
+                }
+              }
+            },
+            matchingSpecializations: {
+              $size: {
+                $filter: {
+                  input: '$specialization',
+                  as: 's',
+                  cond: { $in: ['$$s', specializationIds] }
+                }
+              }
+            }
+          }
+        },
+        {
+          $addFields: {
+            score: {
+              $add: [{ $multiply: ['$matchingMajors', 2] },
+                '$matchingSpecializations'
+              ]
+            }
+          }
+        },
+        {
+          $sort: { score: -1 }
         }
-      },
-      {
-        $sort: { specializationMatch: -1 } // Ưu tiên project có chuyên ngành trùng
+      ])
+
+      if (!projects || projects.length === 0) {
+        return res.status(404).json({ message: 'Không tìm thấy project tương tự' })
       }
-    ]);
 
-    // Populate sau aggregate
-    await Project.populate(projects, [
-      { path: "major", select: "-__v" },
-      { path: "specialization", select: "-__v" }
-    ]);
+      await Project.populate(projects, [
+        { path: 'major', select: '-__v' },
+        { path: 'specialization', select: '-__v' }
+      ])
 
-    if (!projects || projects.length === 0) {
-      return res.status(404).json({ message: 'Không tìm thấy project phù hợp' });
+      res.status(200).json({ projects })
+
+    } catch (err) {
+      res.status(500).json({ message: 'Lỗi server', error: err.message })
     }
+  }
 
-    res.status(200).json({ projects });
-  } catch (err) {
-    res.status(500).json({ message: 'Lỗi server', error: err.message });
+
+  //recommend projects by studentId
+  async RcmProjectByStudent(req, res, next) {
+    try {
+      const studentId = req.params.id
+      const student = await Student.findById(studentId) // Sửa lại: tìm Student chứ không phải Project
+
+      if (!student) {
+        return res.status(404).json({ message: 'Sinh viên không tồn tại' })
+      }
+
+      // Lấy danh sách ngành và chuyên ngành của sinh viên
+      const majorId = student.major._id
+      const specializationId = student._id
+
+      const projects = await Project.aggregate([
+        {
+          $match: {
+            major: majorId // chỉ lấy project có ngành giống
+          }
+        },
+        {
+          $addFields: {
+            specializationMatch: {
+              $cond: [
+                { $in: [specializationId, '$specialization'] }, // nếu specializationId nằm trong project.specialization
+                1, // khớp
+                0 // không khớp
+              ]
+            }
+          }
+        },
+        {
+          $sort: { specializationMatch: -1 } // Ưu tiên project có chuyên ngành trùng
+        }
+      ])
+
+      // Populate sau aggregate
+      await Project.populate(projects, [
+        { path: 'major', select: '-__v' },
+        { path: 'specialization', select: '-__v' }
+      ])
+
+      if (!projects || projects.length === 0) {
+        return res.status(404).json({ message: 'Không tìm thấy project phù hợp' })
+      }
+
+      res.status(200).json({ projects })
+    } catch (err) {
+      res.status(500).json({ message: 'Lỗi server', error: err.message })
+    }
   }
 }
-}
-
 
 module.exports = new ProjectController()
