@@ -19,6 +19,7 @@ namespace api.Controllers
         private readonly JobiverseContext _context;
         private readonly JwtSettings _jwtSettings;
         private readonly ILogger<CVController> _logger;
+        private readonly HttpClient _httpClient;
 
         public record RegisterDto
         {
@@ -41,11 +42,17 @@ namespace api.Controllers
             string authProvider = "local"
         );
 
-        public AuthController(JobiverseContext context, IOptions<JwtSettings> jwtOptions, ILogger<CVController> logger)
+        public AuthController(
+            JobiverseContext context,
+            IOptions<JwtSettings> jwtOptions,
+            ILogger<CVController> logger,
+            IHttpClientFactory httpClientFactory
+        )
         {
             _logger = logger;
             _context = context;
             _jwtSettings = jwtOptions.Value;
+            _httpClient = httpClientFactory.CreateClient();
         }
 
         [HttpPost("register")]
@@ -55,7 +62,6 @@ namespace api.Controllers
 
             if (provider == "local")
             {
-                // Validate the request
                 if (string.IsNullOrWhiteSpace(req.email) ||
                     string.IsNullOrWhiteSpace(req.password) ||
                     string.IsNullOrWhiteSpace(req.phoneNumber) ||
@@ -105,7 +111,6 @@ namespace api.Controllers
             }
             else if (provider == "google")
             {
-                // Validate the request
                 if (string.IsNullOrWhiteSpace(req.ggToken))
                     return BadRequest(new { message = "Missing Google ID token" });
 
@@ -125,11 +130,10 @@ namespace api.Controllers
 
                 if (!string.IsNullOrWhiteSpace(avatarUrl))
                 {
-                    using var httpClient = new HttpClient();
                     try
                     {
-                        avatar = await httpClient.GetByteArrayAsync(avatarUrl);
-                        var response = await httpClient.GetAsync(avatarUrl, HttpCompletionOption.ResponseHeadersRead);
+                        avatar = await _httpClient.GetByteArrayAsync(avatarUrl);
+                        var response = await _httpClient.GetAsync(avatarUrl, HttpCompletionOption.ResponseHeadersRead);
                         if (response.Content.Headers.ContentType != null)
                         {
                             avatarType = response.Content.Headers.ContentType.MediaType;
@@ -141,7 +145,7 @@ namespace api.Controllers
                     }
                     catch (Exception ex)
                     {
-                        Console.WriteLine($"Unexpected error while downloading avatar: {ex.Message}");
+                        _logger.LogError(ex, $"Unexpected error while downloading avatar from Google URL: {avatarUrl}");
                     }
                 }
 
@@ -165,8 +169,7 @@ namespace api.Controllers
                 if (string.IsNullOrWhiteSpace(req.fbToken))
                     return BadRequest(new { message = "Missing Facebook access token" });
 
-                using var httpClient = new HttpClient();
-                var fbResponse = await httpClient.GetStringAsync($"https://graph.facebook.com/me?fields=id,name,email,picture.width(200).height(200)&access_token={req.fbToken}");
+                var fbResponse = await _httpClient.GetStringAsync($"https://graph.facebook.com/me?fields=id,name,email,picture.width(200).height(200)&access_token={req.fbToken}");
                 var fbData = JsonSerializer.Deserialize<JsonElement>(fbResponse);
 
                 var email = fbData.GetProperty("email").GetString();
@@ -188,8 +191,8 @@ namespace api.Controllers
                 {
                     try
                     {
-                        avatar = await httpClient.GetByteArrayAsync(avatarUrl);
-                        var response = await httpClient.GetAsync(avatarUrl, HttpCompletionOption.ResponseHeadersRead);
+                        avatar = await _httpClient.GetByteArrayAsync(avatarUrl);
+                        var response = await _httpClient.GetAsync(avatarUrl, HttpCompletionOption.ResponseHeadersRead);
                         if (response.Content.Headers.ContentType != null)
                             avatarType = response.Content.Headers.ContentType.MediaType;
                         else
@@ -336,13 +339,12 @@ namespace api.Controllers
                 if (string.IsNullOrWhiteSpace(req.fbToken))
                     return BadRequest(new { message = "Missing Facebook access token" });
 
-                using var httpClient = new HttpClient();
-                var fbResponse = await httpClient.GetStringAsync($"https://graph.facebook.com/me?fields=id,name,email&access_token={req.fbToken}");
+                var fbResponse = await _httpClient.GetStringAsync($"https://graph.facebook.com/me?fields=id,name,email,picture.width(200).height(200)&access_token={req.fbToken}");
                 var fbData = JsonSerializer.Deserialize<JsonElement>(fbResponse);
+
                 var email = fbData.GetProperty("email").GetString();
 
-                if (email == null)
-                    return Unauthorized(new { message = "Facebook account must have an email" });
+                if (email == null) return BadRequest(new { message = "Facebook account must have an email" });
 
                 var account = await _context.Accounts
                     .AsNoTracking()
