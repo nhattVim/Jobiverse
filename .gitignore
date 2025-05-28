@@ -6,7 +6,6 @@ yarn-error.log*
 pnpm-lock.yaml
 package-lock.json
 yarn.lock
-backend.NET
 
 # Vite cache (frontend)
 frontend/dist/
@@ -36,3 +35,69 @@ Thumbs.db
 
 # Optional
 uploads/
+
+# ============================
+# ASP.NET Core
+# ============================
+bin/
+obj/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+# Publish & local development artifacts
+*.db
+*.sqlite
+*.db-journal
+*.pdb
+*.cache
+*.log
+*.pid
+*.pid.lock
+
+# Configuration
+appsettings.Development.json
+appsettings.*.json
+
+# dotnet tools
+.vscode/
+.idea/
+*.swp
+
+# Environment files
+.env
+.env.*
+
+# Logs
+logs/
+*.log
+*.log.*
+
+# Uploads (optional)
+uploads/
+
+# ============================
+# Node.js / Frontend
+# ============================
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-lock.yaml
+package-lock.json
+yarn.lock
+
+# Vite cache
+frontend/dist/
+frontend/.vite/
+
+# Build output (nếu có)
+dist/
+build/
+
+# ============================
+# OS-specific
+# ============================
+.DS_Store
+Thumbs.db
