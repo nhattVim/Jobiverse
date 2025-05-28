@@ -9,7 +9,7 @@ const CVSchema = new mongoose.Schema({
   title: String,
   avatar: String,
   name: String,
-  birthday: String,
+  birthday: Date,
   gender: String,
   phone: String,
   email: String,
@@ -21,23 +21,23 @@ const CVSchema = new mongoose.Schema({
   experiences: [{
     position: String,
     company: String,
-    start: String,
-    end: String,
+    start: Date,
+    end: Date,
     description: String
   }],
 
   educations: [{
     degree: String,
     school: String,
-    start: String,
-    end: String
+    start: Date,
+    end: Date
   }],
 
   activities: [{
     title: String,
     organization: String,
-    start: String,
-    end: String,
+    start: Date,
+    end: Date,
     description: String
   }],
 
@@ -63,5 +63,35 @@ const CVSchema = new mongoose.Schema({
     default: Date.now
   }
 }, { timestamps: true })
+
+CVSchema.set('toJSON', {
+  transform: function (doc, ret) {
+    const formatDate = (date) => {
+      if (!date) return null
+      const d = new Date(date)
+      const day = String(d.getUTCDate()).padStart(2, '0')
+      const month = String(d.getUTCMonth() + 1).padStart(2, '0')
+      const year = d.getUTCFullYear()
+      return `${day}/${month}/${year}`
+    }
+
+    ret.birthday = formatDate(ret.birthday)
+    ret.lastUpdated = formatDate(ret.lastUpdated)
+
+    const formatArrayDates = (arr) => {
+      if (!Array.isArray(arr)) return
+      arr.forEach(item => {
+        if (item.start) item.start = formatDate(item.start)
+        if (item.end) item.end = formatDate(item.end)
+      })
+    }
+
+    formatArrayDates(ret.educations)
+    formatArrayDates(ret.experiences)
+    formatArrayDates(ret.activities)
+
+    return ret
+  }
+})
 
 module.exports = mongoose.model('CV', CVSchema)

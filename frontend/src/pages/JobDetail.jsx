@@ -75,58 +75,58 @@ const JobDetail = () => {
       <div className="w-full py-30">
         <main className="container-responsive">
           <div className="grid grid-cols-[1fr_0.5fr] gap-[70px] min-h-full ">
-            <div className="overflow-visible w-full ">
+            <div className="w-full overflow-visible ">
               <div className="sticky top-[130px]">
                 <div className="flex flex-col gap-5 p-10 rounded-medium bg-white-mid">
-                  <h2 className="text-2xl font-bold text-gray-800 mb-2">
+                  <h2 className="mb-2 text-2xl font-bold text-gray-800">
                     {jobData.jobTitle}
                   </h2>
-                  <div className="flex flex-wrap items-center gap-x-6 gap-y-2 text-gray-600 text-sm mb-4">
+                  <div className="flex flex-wrap items-center mb-4 text-sm text-gray-600 gap-x-6 gap-y-2">
                     <div className="flex items-center space-x-1">
-                      <CurrencyDollarIcon className="h-4 w-4 text-blue-500" />
+                      <CurrencyDollarIcon className="w-4 h-4 text-blue-500" />
                       <span>Mức lương:</span>
                       <span className="font-medium text-gray-800">
                         {jobData.salary}
                       </span>
                     </div>
                     <div className="flex items-center space-x-1">
-                      <MapPinIcon className="h-4 w-4 text-blue-500" />
+                      <MapPinIcon className="w-4 h-4 text-blue-500" />
                       <span>Địa điểm:</span>
                       <span className="font-medium text-gray-800">
                         {jobData.location}
                       </span>
                     </div>
                     <div className="flex items-center space-x-1">
-                      <BriefcaseIcon className="h-4 w-4 text-blue-500" />
+                      <BriefcaseIcon className="w-4 h-4 text-blue-500" />
                       <span>Kinh nghiệm:</span>
                       <span className="font-medium text-gray-800">
                         {jobData.experience}
                       </span>
                     </div>
                   </div>
-                  <div className="mt-4 flex flex-wrap items-center gap-4">
-                    <div className="flex items-center bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-xs font-medium">
-                      <CalendarDaysIcon className="h-4 w-4 mr-1" />
+                  <div className="flex flex-wrap items-center gap-4 mt-4">
+                    <div className="flex items-center px-3 py-1 text-xs font-medium text-blue-800 bg-blue-100 rounded-full">
+                      <CalendarDaysIcon className="w-4 h-4 mr-1" />
                       Hạn nộp hồ sơ: {jobData.deadline}
                     </div>
-                    <div class="flex ml-auto gap-4">
+                    <div className="flex gap-4 ml-auto">
                       <ButtonArrowOne>Ứng tuyển</ButtonArrowOne>
-                      <button className="p-2 rounded-full border border-blue-500 text-blue-500 hover:bg-yellow-500 transition duration-300 flex items-center justify-center w-10 h-10">
-                        <HeartIcon className="h-5 w-5" />
+                      <button className="flex items-center justify-center w-10 h-10 p-2 text-blue-500 transition duration-300 border border-blue-500 rounded-full hover:bg-yellow-500">
+                        <HeartIcon className="w-5 h-5" />
                       </button>
                     </div>
                   </div>
                 </div>
-                <div className="flex flex-col gap-5 p-10 rounded-medium bg-white-mid mt-5">
-                  <h3 className="text-xl font-semibold text-gray-800 mb-3">
+                <div className="flex flex-col gap-5 p-10 mt-5 rounded-medium bg-white-mid">
+                  <h3 className="mb-3 text-xl font-semibold text-gray-800">
                     Chi tiết tin tuyển dụng
                   </h3>
                   {jobData.description && (
                     <div className="mb-4">
-                      <h4 className="font-medium text-gray-700 mb-2">
+                      <h4 className="mb-2 font-medium text-gray-700">
                         Mô tả công việc
                       </h4>
-                      <ul className="list-disc list-inside text-gray-700 text-sm space-y-1">
+                      <ul className="space-y-1 text-sm text-gray-700 list-disc list-inside">
                         {jobData.description.map((item, index) => (
                           <li key={index}>{item}</li>
                         ))}
@@ -135,10 +135,10 @@ const JobDetail = () => {
                   )}
                   {jobData.requirements && (
                     <div className="mb-4">
-                      <h4 className="font-medium text-gray-700 mb-2">
+                      <h4 className="mb-2 font-medium text-gray-700">
                         Yêu cầu ứng viên
                       </h4>
-                      <ul className="list-disc list-inside text-gray-700 text-sm space-y-1">
+                      <ul className="space-y-1 text-sm text-gray-700 list-disc list-inside">
                         {jobData.requirements.map((item, index) => (
                           <li key={index}>{item}</li>
                         ))}
@@ -147,10 +147,10 @@ const JobDetail = () => {
                   )}
                   {jobData.benefits && (
                     <div className="mb-4">
-                      <h4 className="font-medium text-gray-700 mb-2">
+                      <h4 className="mb-2 font-medium text-gray-700">
                         Quyền lợi
                       </h4>
-                      <ul className="list-disc list-inside text-gray-700 text-sm space-y-1">
+                      <ul className="space-y-1 text-sm text-gray-700 list-disc list-inside">
                         {jobData.benefits.map((item, index) => (
                           <li key={index}>{item}</li>
                         ))}
@@ -159,20 +159,20 @@ const JobDetail = () => {
                   )}
                   {jobData.workplaceLocation && (
                     <div className="mb-4">
-                      <h4 className="font-medium text-gray-700 mb-2">
+                      <h4 className="mb-2 font-medium text-gray-700">
                         Địa điểm làm việc
                       </h4>
-                      <ul className="list-disc list-inside text-gray-700 text-sm space-y-1">
+                      <ul className="space-y-1 text-sm text-gray-700 list-disc list-inside">
                         <li>{jobData.workplaceLocation}</li>
                       </ul>
                     </div>
                   )}
                   {jobData.workSchedule && (
                     <div className="mb-4">
-                      <h4 className="font-medium text-gray-700 mb-2">
+                      <h4 className="mb-2 font-medium text-gray-700">
                         Thời gian làm việc
                       </h4>
-                      <ul className="list-disc list-inside text-gray-700 text-sm space-y-1">
+                      <ul className="space-y-1 text-sm text-gray-700 list-disc list-inside">
                         <li>{jobData.workSchedule}</li>
                       </ul>
                     </div>
@@ -182,14 +182,14 @@ const JobDetail = () => {
             </div>
 
             {/* Cột phải: Thông tin công ty */}
-            <div className="overflow-visible w-full">
+            <div className="w-full overflow-visible">
               <div className="sticky top-[130px]">
                 <div className="flex flex-col gap-5 p-10 rounded-medium bg-white-mid">
                   <div className="flex items-center mb-4">
                     <img
                       src={jobData.company.logo}
                       alt={`${jobData.company.name} Logo`}
-                      className="w-16 h-16 rounded-full mr-4 border border-gray-200"
+                      className="w-16 h-16 mr-4 border border-gray-200 rounded-full"
                     />
                     <div>
                       <h3 className="text-xl font-bold text-gray-800">
@@ -197,33 +197,33 @@ const JobDetail = () => {
                       </h3>
                     </div>
                   </div>
-                  <ul className="text-gray-700 text-sm space-y-2 mb-4">
+                  <ul className="mb-4 space-y-2 text-sm text-gray-700">
                     <li className="flex items-center space-x-2">
-                      <UsersIcon className="h-4 w-4 text-gray-500" />
+                      <UsersIcon className="w-4 h-4 text-gray-500" />
                       <span>Quy mô: {jobData.company.size}</span>
                     </li>
                     <li className="flex items-center space-x-2">
-                      <TagIcon className="h-4 w-4 text-gray-500" />
+                      <TagIcon className="w-4 h-4 text-gray-500" />
                       <span>Lĩnh vực: {jobData.company.industry}</span>
                     </li>
                     <li className="flex items-center space-x-2">
-                      <BuildingOfficeIcon className="h-4 w-4 text-gray-500" />
+                      <BuildingOfficeIcon className="w-4 h-4 text-gray-500" />
                       <span>Địa điểm: {jobData.company.address}</span>
                     </li>
                   </ul>
-                  <button className="w-full bg-blue-100 text-blue-700 px-4 py-2 rounded-lg hover:bg-blue-200 transition duration-300">
+                  <button className="w-full px-4 py-2 text-blue-700 transition duration-300 bg-blue-100 rounded-lg hover:bg-blue-200">
                     Xem chi tiết
                   </button>
                 </div>
 
-                <div className="flex flex-col gap-5 p-10 rounded-medium bg-white-mid mt-5">
-                  <h3 className="text-xl font-semibold text-gray-800 mb-4">
+                <div className="flex flex-col gap-5 p-10 mt-5 rounded-medium bg-white-mid">
+                  <h3 className="mb-4 text-xl font-semibold text-gray-800">
                     Thông tin chung
                   </h3>
-                  <ul className="text-gray-700 text-sm space-y-2">
+                  <ul className="space-y-2 text-sm text-gray-700">
                     <li className="flex items-center justify-between">
                       <span className="flex items-center space-x-2">
-                        <BookOpenIcon className="h-4 w-4 text-blue-500" />
+                        <BookOpenIcon className="w-4 h-4 text-blue-500" />
                         <span>Học vấn</span>
                       </span>
                       <span className="font-medium">
@@ -232,7 +232,7 @@ const JobDetail = () => {
                     </li>
                     <li className="flex items-center justify-between">
                       <span className="flex items-center space-x-2">
-                        <Bars3CenterLeftIcon className="h-4 w-4 text-blue-500" />{' '}
+                        <Bars3CenterLeftIcon className="w-4 h-4 text-blue-500" />{' '}
                         {/* Icon placeholder cho GPA */}
                         <span>GPA</span>
                       </span>
@@ -242,7 +242,7 @@ const JobDetail = () => {
                     </li>
                     <li className="flex items-center justify-between">
                       <span className="flex items-center space-x-2">
-                        <UserGroupIcon className="h-4 w-4 text-blue-500" />
+                        <UserGroupIcon className="w-4 h-4 text-blue-500" />
                         <span>Số lượng tuyển</span>
                       </span>
                       <span className="font-medium">
@@ -251,7 +251,7 @@ const JobDetail = () => {
                     </li>
                     <li className="flex items-center justify-between">
                       <span className="flex items-center space-x-2">
-                        <ClockIcon className="h-4 w-4 text-blue-500" />
+                        <ClockIcon className="w-4 h-4 text-blue-500" />
                         <span>Hình thức làm việc</span>
                       </span>
                       <span className="font-medium">

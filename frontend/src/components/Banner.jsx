@@ -1,7 +1,7 @@
 import { MagnifyingGlassIcon, MapPinIcon } from '@heroicons/react/24/outline'
 import React from 'react'
 
-const Banner = () => {
+const Banner = ({ searchQuery, setSearchQuery }) => {
   return (
     <div className="container-responsive">
       <div className="relative h-[240px] w-full">
@@ -29,6 +29,8 @@ const Banner = () => {
                   id="search"
                   placeholder="Tìm kiếm việc làm"
                   className="flex-1 border-none outline-none"
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
                 />
               </div>
               <div className="flex justify-end pl-5 border-l border-l-gray-dark">

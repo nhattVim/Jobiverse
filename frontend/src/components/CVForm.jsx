@@ -18,23 +18,23 @@ const personalFields = {
 const experienceFields = [
   { name: 'position', placeholder: 'Vị trí' },
   { name: 'company', placeholder: 'Công ty' },
-  { name: 'start', placeholder: 'Bắt đầu (VD: 01/2020)' },
-  { name: 'end', placeholder: 'Kết thúc (VD: 12/2022)' },
+  { name: 'start', placeholder: 'Bắt đầu (VD: 01/2020)', type: 'date' },
+  { name: 'end', placeholder: 'Kết thúc (VD: 12/2022)', type: 'date' },
   { name: 'description', placeholder: 'Mô tả công việc', textarea: true }
 ]
 
 const educationFields = [
   { name: 'degree', placeholder: 'Bằng cấp' },
   { name: 'school', placeholder: 'Trường học' },
-  { name: 'start', placeholder: 'Bắt đầu (VD: 2016)' },
-  { name: 'end', placeholder: 'Kết thúc (VD: 2020)' }
+  { name: 'start', placeholder: 'Bắt đầu (VD: 2016)', type: 'date' },
+  { name: 'end', placeholder: 'Kết thúc (VD: 2020)', type: 'date' }
 ]
 
 const activityFields = [
   { name: 'title', placeholder: 'Tên hoạt động' },
   { name: 'organization', placeholder: 'Tổ chức' },
-  { name: 'start', placeholder: 'Bắt đầu (VD: 01/2021)' },
-  { name: 'end', placeholder: 'Kết thúc (VD: 06/2022)' },
+  { name: 'start', placeholder: 'Bắt đầu (VD: 01/2021)', type: 'date' },
+  { name: 'end', placeholder: 'Kết thúc (VD: 06/2022)', type: 'date' },
   { name: 'description', placeholder: 'Mô tả', textarea: true }
 ]
 
@@ -57,6 +57,7 @@ export default function CVForm({ cvData, setCvData, onSubmit }) {
   const { id } = useParams()
   const [skill, setSkill] = useState('')
   const [mess, setMess] = useState('Tạo mới')
+  const [focusedField, setFocusedField] = useState(null)
 
   useEffect(() => {
     if (id) return setMess('Cập nhật')
@@ -106,11 +107,13 @@ export default function CVForm({ cvData, setCvData, onSubmit }) {
             </select>
           ) : (
             <input
-              type={field.type || 'text'}
+              type={field.type === 'date' && focusedField !== key ? 'text' : field.type}
               name={key}
               placeholder={field.placeholder}
-              value={cvData[key]}
+              value={cvData[key] ?? ''}
               onChange={handleChange}
+              onFocus={() => field.type === 'date' && setFocusedField(key)}
+              onBlur={() => field.type === 'date' && !cvData[key] && setFocusedField(null)}
               className="w-full p-2 mt-1 border rounded"
             />
           )}
@@ -124,6 +127,8 @@ export default function CVForm({ cvData, setCvData, onSubmit }) {
         onChange={(e, idx) => handleListChange(e, idx, 'experiences')}
         onAdd={() => addItem('experiences', { position: '', company: '', start: '', end: '', description: '' })}
         onRemove={(idx) => removeItem(idx, 'experiences')}
+        focusedField={focusedField}
+        setFocusedField={setFocusedField}
       />
 
       <CVFormSection
@@ -133,6 +138,8 @@ export default function CVForm({ cvData, setCvData, onSubmit }) {
         onChange={(e, idx) => handleListChange(e, idx, 'activities')}
         onAdd={() => addItem('activities', { title: '', organization: '', start: '', end: '', description: '' })}
         onRemove={(idx) => removeItem(idx, 'activities')}
+        focusedField={focusedField}
+        setFocusedField={setFocusedField}
       />
 
       <CVFormSection
@@ -160,6 +167,8 @@ export default function CVForm({ cvData, setCvData, onSubmit }) {
         onChange={(e, idx) => handleListChange(e, idx, 'educations')}
         onAdd={() => addItem('educations', { language: '', level: '' })}
         onRemove={(idx) => removeItem(idx, 'educations')}
+        focusedField={focusedField}
+        setFocusedField={setFocusedField}
       />
 
       <CVFormSection

@@ -6,8 +6,9 @@ const CVRouter = require('./cv')
 const projectRouter = require('./projects')
 const notificationRouter = require('./notifications')
 const favoriteRouter = require('./favorite')
-const majors = require('./majors')
-const specialization = require('./specialization')
+const majorsRouter = require('./majors')
+const specsRouter = require('./specialization')
+const openapiRouter = require('./openapi')
 
 function route(app) {
   app.use('/', authRouter)
@@ -18,8 +19,9 @@ function route(app) {
   app.use('/projects', projectRouter)
   app.use('/notify', notificationRouter)
   app.use('/favorites', favoriteRouter)
-  app.use('/majors', majors)
-  app.use('/specs', specialization)
+  app.use('/majors', majorsRouter)
+  app.use('/specs', specsRouter)
+  app.use('/openapi', openapiRouter)
 }
 
 module.exports = route

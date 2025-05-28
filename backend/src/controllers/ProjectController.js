@@ -25,10 +25,13 @@ class ProjectController {
       if (expRequired) filter.expRequired = { $in: expRequired.split(',') }
       if (workTypes) filter.workType = { $in: workTypes.split(',') }
       if (search) {
+        const regex = new RegExp(search, 'i')
         filter.$or = [
-          { title: new RegExp(search, 'i') },
-          { description: new RegExp(search, 'i') },
-          { location: new RegExp(search, 'i') }
+          { title: regex },
+          { description: regex },
+          { 'location.province': regex },
+          { 'location.district': regex },
+          { 'location.ward': regex }
         ]
       }
 
@@ -38,31 +41,31 @@ class ProjectController {
       else if (sortBy === 'salaryDesc') sort = { salary: -1 }
       else if (sortBy === 'salaryAsc') sort = { salary: 1 }
 
-      console.log('filter', filter)
-      console.log('sort', sort)
       const projects = await Project.find(filter).sort(sort).select('-__v')
         .populate({
           path: 'account',
-          select: 'role avatar'
+          select: 'role avatar deleted'
         })
 
       const populatedProjects = await Promise.all(
-        projects.map(async (project) => {
-          if (!project.account) return project
+        projects
+          .filter(project => project.account && !project.account.deleted)
+          .map(async (project) => {
+            if (!project.account) return project
 
-          let profile = null
+            let profile = null
 
-          if (project.account.role === 'student') {
-            profile = await Student.findOne({ account: project.account._id }).select('name')
-          } else if (project.account.role === 'employer') {
-            profile = await Employer.findOne({ account: project.account._id }).select('companyName')
-          }
+            if (project.account.role === 'student') {
+              profile = await Student.findOne({ account: project.account._id }).select('name').lean()
+            } else if (project.account.role === 'employer') {
+              profile = await Employer.findOne({ account: project.account._id }).select('companyName').lean()
+            }
 
-          return {
-            ...project.toObject(),
-            profile
-          }
-        })
+            return {
+              ...project.toObject(),
+              profile
+            }
+          })
       )
 
       res.status(200).json(populatedProjects)
@@ -76,7 +79,6 @@ class ProjectController {
     try {
       const accountId = req.account._id
       const projects = await Project.find({ account: accountId }).select('-__v').sort({ createdAt: -1 })
-      if (!projects || projects.length === 0) return res.status(404).json({ message: 'No projects found' })
       res.status(200).json(projects)
     } catch (err) {
       res.status(500).json({ message: 'Error retrieving project', error: err.message })

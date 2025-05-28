@@ -30,22 +30,24 @@ const SavedJob = () => {
     }
   }
 
-  return (
-    <div className="min-h-screen relative">
-      <BannerText title="Việc làm đã lưu" caption="Xem lại danh sách những việc làm mà bạn đã lưu trước đó. Ứng tuyển ngay để không bỏ lỡ cơ hội nghề nghiệp dành cho bạn."/>
+  console.log('favoriteJobs', favoriteJobs)
 
-      <div className="max-w-7xl mx-auto flex px-6 py-20 gap-16 items-start">
-        <div className="w-1/4 flex-shrink-0">
+  return (
+    <div className="relative min-h-screen">
+      <BannerText title="Việc làm đã lưu" caption="Xem lại danh sách những việc làm mà bạn đã lưu trước đó. Ứng tuyển ngay để không bỏ lỡ cơ hội nghề nghiệp dành cho bạn." />
+
+      <div className="flex items-start gap-16 px-6 py-20 mx-auto max-w-7xl">
+        <div className="flex-shrink-0 w-1/4">
           <Sidebar />
         </div>
         <div className="flex-1 space-y-6">
           {favoriteJobs.length === 0 ? (
-            <div className="text-center text-gray-500 text-sm">Bạn chưa lưu việc làm nào.</div>
+            <div className="text-sm text-center text-gray-500">Bạn chưa lưu việc làm nào.</div>
           ) : (
             favoriteJobs.map((job, index) => (
               <div
                 key={index}
-                className="bg-white-mid p-6 rounded-medium shadow flex items-center justify-between hover:shadow-md transition"
+                className="flex items-center justify-between p-6 transition shadow bg-white-mid rounded-medium hover:shadow-md"
               >
                 <div className="flex items-center space-x-5">
                   <div className="w-16 h-16 bg-[#d5f5f6] rounded-xl flex items-center justify-center">
@@ -57,17 +59,18 @@ const SavedJob = () => {
                   </div>
                   <div>
                     <h3 className="font-semibold text-[22px]">{job.project.title}</h3>
-                    <p className="text-black-low mt-2.5">{job.project.content}</p>
+                    <p className="text-black-low mt-2.5">{job.project.description}</p>
                     <div className="flex items-center text-black-low space-x-2 mt-2.5">
-                      <span className='flex gap-2 items-center'><InboxStackIcon className='text-blue w-6 h-6'/> {job.project.status}</span>
+                      <span className='flex items-center gap-2'><InboxStackIcon className='w-6 h-6 text-blue' /> {job.project.status}</span>
                       <span>|</span>
-                      <span><MapPinIcon className='text-blue w-6 h-6'/> {job.location}</span>
+                      <span><MapPinIcon className='w-6 h-6 text-blue' /></span>
+                      {job.project.location}
                     </div>
                   </div>
                 </div>
-                <div className="flex flex-col justify-between h-full text-right gap-5">
+                <div className="flex flex-col justify-between h-full gap-5 text-right">
                   <p className="text-sm text-black-low">Đã lưu: {new Date(job.createdAt).toLocaleDateString()}</p>
-                  <div className="flex items-center space-x-3 justify-end">
+                  <div className="flex items-center justify-end space-x-3">
                     <ButtonArrowOne>Ứng tuyển</ButtonArrowOne>
                     <button
                       onClick={() => handleDelete(job.project._id)}

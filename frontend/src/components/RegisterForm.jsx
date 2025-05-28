@@ -9,7 +9,7 @@ import { ROUTES } from '../routes/routePaths'
 const RegisterForm = ({ role, onBack }) => {
   const navigate = useNavigate()
   const [email, setEmail] = useState('')
-  const [phone, setPhone] = useState('')
+  const [phoneNumber, setPhoneNumber] = useState('')
   const [password, setPassword] = useState('')
   const [acceptPolicy, setAcceptPolicy] = useState(false)
   const [error, setError] = useState('')
@@ -19,7 +19,7 @@ const RegisterForm = ({ role, onBack }) => {
     setError('')
 
     if (!email.trim()) return setError('Email không được để trống')
-    if (!phone.trim()) return setError('Số điện thoại không được để trống')
+    if (!phoneNumber.trim()) return setError('Số điện thoại không được để trống')
     if (!password.trim()) return setError('Mật khẩu không được để trống')
     if (!acceptPolicy) return setError('Bạn phải đồng ý với Điều khoản & Điều kiện.')
 
@@ -27,7 +27,7 @@ const RegisterForm = ({ role, onBack }) => {
       await apiFetch('/register', 'POST', {
         authProvider: 'local',
         email,
-        phoneNumber: phone,
+        phoneNumber,
         password,
         role
       })
@@ -111,8 +111,8 @@ const RegisterForm = ({ role, onBack }) => {
             type="tel"
             placeholder="Số điện thoại của bạn"
             className="input-field"
-            value={phone}
-            onChange={(e) => setPhone(e.target.value)}
+            value={phoneNumber}
+            onChange={(e) => setPhoneNumber(e.target.value)}
           />
           <input
             type="password"

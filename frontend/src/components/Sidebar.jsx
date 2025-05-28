@@ -1,5 +1,5 @@
 import React, { useRef, useContext } from 'react'
-import { useLocation, useNavigate } from 'react-router-dom'
+import { Routes, useLocation, useNavigate } from 'react-router-dom'
 import UserContext from '../contexts/UserContext'
 import { ROUTES } from '../routes/routePaths'
 import apiFetch from '../services/api'
@@ -40,7 +40,10 @@ const Sidebar = () => {
 
   const menuItems = [
     { path: ROUTES.SET_INFORMATION, icon: <UserIcon className='w-6 h-6' />, label: 'Thông tin cá nhân' },
-    { path: ROUTES.CV_MANAGER, icon: <DocumentTextIcon className='w-6 h-6' />, label: 'CV của tôi' },
+    ...(user.role === 'student' ? [
+      { path: ROUTES.CV_MANAGER, icon: <DocumentTextIcon className='w-6 h-6' />, label: 'CV của tôi' }
+    ] : []),
+    { path: ROUTES.JOB_MANAGER, icon: <BriefcaseIcon className="w-6 h-6" />, label: 'Dự án đã đăng' },
     { path: ROUTES.SAVED_JOB, icon: <HeartIcon className='w-6 h-6' />, label: 'Việc làm đã lưu' },
     { path: '/applied-jobs', icon: <BriefcaseIcon className='w-6 h-6' />, label: 'Việc làm đã ứng tuyển' },
     { path: '/job-invites', icon: <ArchiveBoxIcon className='w-6 h-6' />, label: 'Lời mời công việc' }
@@ -75,7 +78,7 @@ const Sidebar = () => {
         </div>
         <div>
           <div className="flex items-center gap-2">
-            <HandRaisedIcon className='w-4 h-4 text-blue rotate-45'/>
+            <HandRaisedIcon className='w-4 h-4 rotate-45 text-blue' />
             <p className="text-sm">Xin chào</p>
           </div>
           <p className="text-base font-bold">{user?.name || defName}</p>
