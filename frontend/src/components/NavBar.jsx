@@ -82,7 +82,7 @@ const NavBar = () => {
                 </Link>
                 {hoveredMenu === 'jobList' && (
                   <div className="absolute z-50 w-md top-full -left-1/2">
-                    <ul className="grid grid-cols-2 p-5 mt-6 transition-all duration-500 shadow-md bg-white-bright rounded-small">
+                    <ul className="grid grid-cols-2 p-5 mt-6 transition-all animate-slideUp duration-500 shadow-md bg-white-bright rounded-small">
                       <li className="px-4 py-2 transition-colors duration-300 hover:text-blue">
                         <Link to={ROUTES.JOB_LIST}>Danh sách việc làm</Link>
                       </li>
@@ -113,7 +113,7 @@ const NavBar = () => {
                 </Link>
                 {hoveredMenu === 'createCV' && (
                   <div className="absolute z-50 w-2xs top-full -left-1/2">
-                    <ul className="grid grid-cols-2 p-5 mt-6 transition-all duration-500 shadow-md bg-white-bright rounded-small">
+                    <ul className="grid grid-cols-2 p-5 mt-6 transition-all duration-500 animate-slideUp shadow-md bg-white-bright rounded-small">
                       <li className="px-4 py-2 transition-colors duration-300 hover:text-blue">
                         <Link to={ROUTES.CV_MANAGER}>Quản lý CV</Link>
                       </li>
@@ -159,7 +159,7 @@ const NavBar = () => {
                   <ChevronDownIcon className="w-4 h-4" />
                   {hoveredMenu === 'account' && (
                     <div className="w-[300px] absolute top-full right-0 z-50">
-                      <ul className="grid grid-cols-1 p-5 mt-6 transition-all duration-500 shadow-md bg-white-bright rounded-small">
+                      <ul className="grid grid-cols-1 p-5 mt-6 transition-all duration-500 animate-slideUp shadow-md bg-white-bright rounded-small">
                         <li className="flex items-center gap-5 px-4 pt-2 pb-4 mb-2 border-b border-gray-light">
                           <img
                             src={`http://localhost:3000/account/avatar?timestamp=${user?.avatarTimestamp || ''}`}

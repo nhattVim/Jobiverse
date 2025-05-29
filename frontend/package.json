@@ -13,7 +13,9 @@
     "@heroicons/react": "^2.2.0",
     "@react-oauth/google": "^0.12.2",
     "@tailwindcss/vite": "^4.1.4",
+    "@tinymce/tinymce-react": "^6.1.0",
     "culori": "^4.0.1",
+    "framer-motion": "^12.15.0",
     "html2canvas": "^1.4.1",
     "html2pdf.js": "^0.10.3",
     "jspdf": "^3.0.1",
@@ -34,6 +36,7 @@
     "eslint-plugin-react-hooks": "^5.1.0",
     "eslint-plugin-react-refresh": "^0.4.19",
     "globals": "^15.15.0",
+    "tailwind-scrollbar": "^4.0.2",
     "vite": "^6.2.0",
     "vite-plugin-mkcert": "^1.17.8"
   }

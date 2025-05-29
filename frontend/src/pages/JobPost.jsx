@@ -6,6 +6,7 @@ import Select from 'react-select'
 import makeAnimated from 'react-select/animated'
 import { ToastContainer, toast } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
+import { Editor } from '@tinymce/tinymce-react'
 
 const animatedComponents = makeAnimated()
 
@@ -181,27 +182,45 @@ const JobPost = () => {
 
               {/* Mô tả công việc */}
               <div>
-                <label className="block mb-1 text-sm font-bold text-gray-700">Giới thiệu</label>
-                <textarea
+                <label className="block mb-1 text-sm font-bold text-gray-700">Mô tả công việc</label>
+                <Editor
+                  tinymceScriptSrc="/tinymce/js/tinymce/tinymce.min.js"
+                  apiKey='no-api-key'
                   name="description"
                   value={form.description}
-                  onChange={handleChange}
-                  rows={2}
-                  className="w-full px-4 py-2 bg-white rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  placeholder="Mô tả"
+                  onEditorChange={(newValue) =>
+                    setForm({ ...form, description: newValue })
+                  }
+                  init={{
+                    selector: 'textarea',
+                    height: 300,
+                    statusbar: false,
+                    menubar: false,
+                    plugins: ['link', 'table', 'lists', 'code'],
+                    toolbar: 'undo redo | bold italic | alignleft aligncenter alignright | bullist numlist'
+                  }}
                 />
               </div>
 
               {/* Nội dung công việc */}
               <div>
-                <label className="block mb-1 text-sm font-bold text-gray-700">Mô tả công việc</label>
-                <textarea
+                <label className="block mb-1 text-sm font-bold text-gray-700">Nội dung công việc</label>
+                <Editor
+                  tinymceScriptSrc="/tinymce/js/tinymce/tinymce.min.js"
+                  apiKey='no-api-key'
                   name="content"
                   value={form.content}
-                  onChange={handleChange}
-                  rows={5}
-                  className="w-full px-4 py-2 bg-white rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  placeholder="Mô tả"
+                  onEditorChange={(newValue) =>
+                    setForm({ ...form, content: newValue })
+                  }
+                  init={{
+                    selector: 'textarea',
+                    height: 300,
+                    statusbar: false,
+                    menubar: false,
+                    plugins: ['link', 'table', 'lists', 'code'],
+                    toolbar: 'undo redo | bold italic | alignleft aligncenter alignright | bullist numlist'
+                  }}
                 />
               </div>
 

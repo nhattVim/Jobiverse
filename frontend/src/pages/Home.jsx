@@ -49,6 +49,7 @@ const Home = () => {
           favoritesPromise
         ])
 
+        console.log(projectsData)
         setProjects(projectsData)
         setFavorites(
           Array.isArray(favoritesData)

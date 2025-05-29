@@ -28,6 +28,7 @@ const JobList = () => {
           apiFetch('/majors', 'GET'),
           apiFetch('/specs', 'GET')
         ])
+        console.log(d1)
         setJobLists(d1)
         setMajors(d2)
         setSpecs(d3)

@@ -1,6 +1,7 @@
 import { useState, useMemo, useEffect } from 'react'
 import { MapPinIcon, CurrencyDollarIcon } from '@heroicons/react/24/outline'
 import ButtonArrowOne from '../shared/ButtonArrowOne'
+import { Link } from 'react-router-dom'
 
 const JobListItem = ({ job, a, b }) => {
   const [majors, setMajors] = useState([])
@@ -54,11 +55,16 @@ const JobListItem = ({ job, a, b }) => {
             </div>
 
             <div className="flex flex-col justify-center w-full gap-1">
-              <h6 className="text-[22px] font-semibold leading-[28.6px] line-clamp-1 w-1/2">
+              <Link
+                to={`/job-detail/${job._id}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-[22px] font-semibold leading-[28.6px] line-clamp-1 hover:text-blue transition-colors duration-300"
+              >
                 {job.title}
-              </h6>
+              </Link>
               <p className="text-[16px] font-normal leading-[21px] text-black-low line-clamp-2 w-4/5">
-                {job.description}
+                {job.profile?.companyName}
               </p>
             </div>
           </div>
@@ -67,7 +73,6 @@ const JobListItem = ({ job, a, b }) => {
             {job.workType}
           </div>
         </div>
-
 
         <div className="flex flex-col gap-3">
           <div className="flex items-center">
@@ -95,7 +100,13 @@ const JobListItem = ({ job, a, b }) => {
           />
         </div>
 
-        <ButtonArrowOne selectedPage="/">Ứng tuyển</ButtonArrowOne>
+        <ButtonArrowOne
+          selectedPage={`/job-detail/${job._id}?openApply=true`}
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          Ứng tuyển
+        </ButtonArrowOne>
       </div>
     </div>
   )

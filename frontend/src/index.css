@@ -1,8 +1,13 @@
 @import url("https://fonts.googleapis.com/css2?family=Noto+Sans:ital,wght@0,100..900;1,100..900&display=swap");
 @import "tailwindcss";
+@plugin "tailwind-scrollbar";
+
+/* html {
+  scroll-behavior: smooth;
+} */
 
 html {
-  scroll-behavior: smooth;
+  @apply scrollbar-custom;
 }
 
 body {
@@ -10,6 +15,14 @@ body {
   @apply text-black;
   @apply bg-white;
   @apply font-medium;
+}
+
+.tinymce-content ul {
+  @apply list-disc list-inside space-y-1 text-sm;
+}
+
+.tinymce-content ol {
+  @apply list-decimal list-inside space-y-1 text-sm;
 }
 
 @theme {
@@ -36,6 +49,7 @@ body {
   --breakpoint-lg: 1100px;
 
   --animate-slideDown: slideDown 0.5s ease-in-out;
+  --animate-slideUp: slideUp 0.3s ease-in-out;
   --animate-pop: pop 0.3s ease;
 
   @keyframes slideDown {
@@ -45,6 +59,18 @@ body {
 
     to {
       transform: translateY(0);
+    }
+  }
+
+  @keyframes slideUp {
+    from {
+      transform: translateY(15%);
+      opacity: 0;
+    }
+
+    to {
+      transform: translateY(0);
+      opacity: 1;
     }
   }
 
@@ -77,6 +103,10 @@ body {
 
 @utility scrollbar-gutter-stable {
   scrollbar-gutter: stable;
+}
+
+@utility scrollbar-custom {
+  @apply scrollbar-thin scrollbar-thumb-gray-light scrollbar-track-white-bright;
 }
 
 @utility input-field {

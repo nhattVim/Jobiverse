@@ -3,7 +3,7 @@ export const ROUTES = {
   // JOB PATHS
   JOB_LIST: '/job-list',
   JOB_POST: '/job-post',
-  JOB_DETAIL: '/job-detail',
+  JOB_DETAIL: '/job-detail/:id',
   SAVED_JOB: '/saved-job',
   // CV PATHS
   CREATE_CV: '/cv',

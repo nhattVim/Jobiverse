@@ -1,13 +1,17 @@
-import { MapPinIcon, CurrencyDollarIcon, HeartIcon } from '@heroicons/react/24/outline'
+import {
+  MapPinIcon,
+  CurrencyDollarIcon,
+  HeartIcon
+} from '@heroicons/react/24/outline'
 import { HeartIcon as HeartSolidIcon } from '@heroicons/react/24/solid'
 import React, { useContext, useState } from 'react'
 import ButtonArrowOne from '../shared/ButtonArrowOne'
 import apiFetch from '../services/api'
 import { ROUTES } from '../routes/routePaths'
 import UserContext from '../contexts/UserContext'
+import { Link } from 'react-router-dom'
 
 const JobCard = ({ job, currentIndex, isFavoritedInitially }) => {
-
   const [isFavorited, setIsFavorited] = useState(isFavoritedInitially)
   const { user } = useContext(UserContext)
 
@@ -33,7 +37,9 @@ const JobCard = ({ job, currentIndex, isFavoritedInitially }) => {
 
   return (
     <div
-      className={'inline-block w-[33%] h-full whitespace-normal align-top transition-transform duration-500 ease-in-out'}
+      className={
+        'inline-block w-[33%] h-full whitespace-normal align-top transition-transform duration-500 ease-in-out'
+      }
       style={{ transform: `translateX(-${currentIndex * 100}%)` }}
     >
       <div className="mr-[50px]">
@@ -47,11 +53,18 @@ const JobCard = ({ job, currentIndex, isFavoritedInitially }) => {
                   className="object-cover w-10 h-10 rounded-full"
                 />
               </div>
-              <div className="px-2 py-1 bg-yellow rounded-[5px]">{job.workType}</div>
+              <div className="px-2 py-1 bg-yellow rounded-[5px]">
+                {job.workType}
+              </div>
             </div>
-            <h6 className="text-[22px] font-semibold leading-[28.6px] line-clamp-1">
+            <Link
+              to={`/job-detail/${job._id}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-[22px] font-semibold leading-[28.6px] line-clamp-1 hover:text-blue transition-colors duration-300"
+            >
               {job.title}
-            </h6>
+            </Link>
             <div className="flex flex-col gap-3">
               <div className="flex items-center">
                 <CurrencyDollarIcon className="w-6 h-6 text-blue mr-[6px]" />
@@ -66,11 +79,22 @@ const JobCard = ({ job, currentIndex, isFavoritedInitially }) => {
             </div>
           </div>
           <div className="flex items-center justify-between w-full">
-            <ButtonArrowOne selectedPage={ROUTES.JOB_DETAIL}>Ứng tuyển</ButtonArrowOne>
-            <div onClick={handleFavorite} className="h-[46px] w-[46px] flex justify-center items-center rounded-full border-2 border-blue invisible group-hover:visible">
-              {
-                isFavorited ? <HeartSolidIcon className='w-6 h-6 text-blue animate-pop' /> : <HeartIcon className='w-6 h-6 text-blue' />
-              }
+            <ButtonArrowOne
+              selectedPage={`/job-detail/${job._id}?openApply=true`}
+              target='_blank'
+              rel='noopener noreferrer'
+            >
+              Ứng tuyển
+            </ButtonArrowOne>
+            <div
+              onClick={handleFavorite}
+              className="h-[46px] w-[46px] flex justify-center items-center rounded-full border-2 border-blue invisible group-hover:visible"
+            >
+              {isFavorited ? (
+                <HeartSolidIcon className="w-6 h-6 text-blue animate-pop" />
+              ) : (
+                <HeartIcon className="w-6 h-6 text-blue" />
+              )}
             </div>
           </div>
         </div>
