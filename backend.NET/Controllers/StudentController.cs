@@ -1,8 +1,10 @@
 using System.Text.Json.Serialization;
+using System.Xml.Linq;
 using api.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace api.Controllers
 {
@@ -29,6 +31,22 @@ namespace api.Controllers
         {
             _context = context;
             _logger = logger;
+        }
+        [HttpGet]
+        public IActionResult GetAllStudent()
+        {
+            return StatusCode(200, _context.Students.ToList());
+        }
+
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetStudentByIDAsync(string id)
+        {
+            var student = await _context.Students.SingleOrDefaultAsync(t => t.StudentId.Equals(id));
+            if (student == null)
+            {
+                return BadRequest("Student not exist!");
+            }
+            return StatusCode(200, student);
         }
 
         [HttpGet("me")]
@@ -77,6 +95,79 @@ namespace api.Controllers
             await _context.SaveChangesAsync();
 
             return StatusCode(201, profile);
+        }
+
+        [HttpPut]
+        public async Task<IActionResult> UpdateProfile([FromBody] ProfileDto req)
+        {
+            var accountId = User.FindFirst("AccountId")?.Value;
+            if (accountId == null) return Unauthorized("AccountId not found in token");
+
+            var student = await _context.Students.SingleOrDefaultAsync(t => t.AccountId.Equals(accountId));
+            if (student == null)
+            {
+                return BadRequest("Student not exist!");
+            }
+            student.Mssv = req.mssv;
+            student.Name = req.name;
+            student.MajorId = req.major;
+            student.SpecializationId = req.spec;
+            student.University = req.university;
+            await _context.SaveChangesAsync();
+
+            return StatusCode(200);
+        }
+
+        [HttpGet("search")]
+        public async Task<IActionResult> SearchStudent([FromQuery] string mssv, [FromQuery] string name)
+        {
+            var query = _context.Students.AsQueryable();
+
+            if (!string.IsNullOrEmpty(mssv))
+            {
+                query = query.Where(s => s.Mssv == mssv);
+            }
+            if (!string.IsNullOrEmpty(name))
+            {
+                query = query.Where(s => s.Name == name);
+            }
+
+            var results = query.Select(student => new ProfileDto
+            {
+                mssv = student.Mssv,
+                name = student.Name,
+                major = student.MajorId,
+                spec = student.SpecializationId,
+                university = student.University
+            }).ToList();
+            return StatusCode(200, results);
+        }
+
+        // recommend students by major 
+        [HttpGet("recommend/{id}")]
+        public async Task<IActionResult> RecommendStudents(string id, [FromQuery] string major, [FromQuery] string specialization)
+        {
+            var query = _context.Students.AsQueryable();
+
+            if (!string.IsNullOrEmpty(specialization))
+            {
+                query = query.Where(s => s.SpecializationId == specialization);
+            }
+
+            if (!string.IsNullOrEmpty(major))
+            {
+                query = query.Where(s => s.MajorId ==major);
+            }
+
+            var results = await query.Select(student => new ProfileDto
+            {
+                mssv = student.Mssv,
+                name = student.Name,
+                major = student.MajorId,
+                spec = student.SpecializationId,
+                university = student.University
+            }).ToListAsync();
+            return Ok(results);
         }
     }
 }
