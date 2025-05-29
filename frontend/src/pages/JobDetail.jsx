@@ -82,7 +82,7 @@ const JobDetail = () => {
                       <div className="flex flex-col gap-1">
                         <span className='text-black-low'>Địa điểm</span>
                         <span className="font-semibold">
-                          {projectData.location}
+                          {projectData.location?.province}
                         </span>
                       </div>
                     </div>
@@ -134,16 +134,18 @@ const JobDetail = () => {
                       <div className="tinymce-content pl-5 text-sm text-black-low" dangerouslySetInnerHTML={{ __html: projectData.content }}></div>
                     </div>
                   )}
-                  {projectData.location && (
-                    <div className="">
-                      <h4 className="font-semibold mb-2">
+                  <div className="">
+                    <h4 className="font-semibold mb-2">
                         Địa điểm làm việc
-                      </h4>
-                      <ul className="list-disc list-inside pl-5 text-sm space-y-1">
-                        <li>{projectData.location}</li>
-                      </ul>
-                    </div>
-                  )}
+                    </h4>
+                    <ul className="list-disc list-inside pl-5 text-sm space-y-1">
+                      <li>
+                        {[projectData.location?.ward, projectData.location?.district, projectData.location?.province]
+                          .filter(Boolean)
+                          .join(', ')}
+                      </li>
+                    </ul>
+                  </div>
                   {projectData.workingTime && (
                     <div className="mb-4">
                       <h4 className="font-semibold mb-2">

@@ -346,17 +346,11 @@ class ProjectController {
         },
         {
           $addFields: {
-<<<<<<< HEAD
-            score: { $add: [{ $multiply: ['$matchingMajors', 2] },
-              '$matchingSpecializations'
-            ] }
-=======
             score: {
               $add: [{ $multiply: ['$matchingMajors', 2] },
                 '$matchingSpecializations'
               ]
             }
->>>>>>> 1045950e5f6c874623e56edf3d8d1ebfa3692c29
           }
         },
         {
@@ -377,7 +371,6 @@ class ProjectController {
 
     } catch (err) {
       res.status(500).json({ message: 'Lỗi server', error: err.message })
-<<<<<<< HEAD
     }
   }
 
@@ -434,64 +427,5 @@ class ProjectController {
     }
   }
 }
-
-=======
-    }
-  }
-
-
-  //recommend projects by studentId
-  async RcmProjectByStudent(req, res, next) {
-    try {
-      const studentId = req.params.id
-      const student = await Student.findById(studentId) // Sửa lại: tìm Student chứ không phải Project
-
-      if (!student) {
-        return res.status(404).json({ message: 'Sinh viên không tồn tại' })
-      }
-
-      // Lấy danh sách ngành và chuyên ngành của sinh viên
-      const majorId = student.major._id
-      const specializationId = student._id
-
-      const projects = await Project.aggregate([
-        {
-          $match: {
-            major: majorId // chỉ lấy project có ngành giống
-          }
-        },
-        {
-          $addFields: {
-            specializationMatch: {
-              $cond: [
-                { $in: [specializationId, '$specialization'] }, // nếu specializationId nằm trong project.specialization
-                1, // khớp
-                0 // không khớp
-              ]
-            }
-          }
-        },
-        {
-          $sort: { specializationMatch: -1 } // Ưu tiên project có chuyên ngành trùng
-        }
-      ])
-
-      // Populate sau aggregate
-      await Project.populate(projects, [
-        { path: 'major', select: '-__v' },
-        { path: 'specialization', select: '-__v' }
-      ])
-
-      if (!projects || projects.length === 0) {
-        return res.status(404).json({ message: 'Không tìm thấy project phù hợp' })
-      }
-
-      res.status(200).json({ projects })
-    } catch (err) {
-      res.status(500).json({ message: 'Lỗi server', error: err.message })
-    }
-  }
-}
->>>>>>> 1045950e5f6c874623e56edf3d8d1ebfa3692c29
 
 module.exports = new ProjectController()
