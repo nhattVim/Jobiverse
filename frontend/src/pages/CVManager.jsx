@@ -3,6 +3,7 @@ import Sidebar from '../components/Sidebar'
 import { useNavigate, Link } from 'react-router-dom'
 import apiFetch from '../services/api'
 import BannerText from '../components/BannerText'
+import { ToastContainer, toast } from 'react-toastify'
 import {
   PencilSquareIcon,
   TrashIcon,
@@ -19,19 +20,14 @@ const CVManagement = () => {
   useEffect(() => {
     const loadData = async () => {
       setLoading(true)
-      try {
-        const [created, uploads] = await Promise.all([
-          apiFetch('/cv', 'GET'),
-          apiFetch('/cv/uploads', 'GET')
-        ])
-        setCvList(created)
-        setCvUploads(uploads)
-      } catch (err) {
-        console.error('Lỗi khi lấy dữ liệu CV:', err)
-      } finally {
-        setLoading(false)
-        setCvUploadLoading(false)
-      }
+      const [created, uploads] = await Promise.all([
+        apiFetch('/cv', 'GET'),
+        apiFetch('/cv/uploads', 'GET')
+      ])
+      setCvList(created)
+      setCvUploads(uploads)
+      setLoading(false)
+      setCvUploadLoading(false)
     }
     loadData()
   }, [])
@@ -42,13 +38,16 @@ const CVManagement = () => {
     try {
       await apiFetch(`/cv/${id}`, 'DELETE')
       setCvList(cvList.filter(cv => cv._id !== id))
+      toast.success('Xoá thành công')
     } catch (err) {
       alert('Xoá thất bại: ' + err.message)
+      toast.error('Xoá thất bại: ' + err.message)
     }
   }
 
   return (
     <div className="min-h-screen">
+      <ToastContainer position="top-right" autoClose={3000} />
       <BannerText title="CV của tôi" caption="Tải CV của bạn bên dưới để có thể sử dụng xuyên suốt quá trình tìm việc." />
 
       <div className="flex items-start gap-16 px-6 py-20 mx-auto max-w-7xl">
@@ -85,7 +84,7 @@ const CVManagement = () => {
                   cvList.map(cv => (
                     <div
                       key={cv._id}
-                      className="flex items-center justify-between p-6 my-5 transition border bg-white-mid border-gray-light rounded-medium hover:shadow-md hover:bg-gray-50"
+                      className="flex items-center justify-between p-6 my-5 transition border shadow bg-white-mid border-gray-light rounded-medium hover:shadow-md hover:bg-gray-50"
                     >
                       <div>
                         <Link

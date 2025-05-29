@@ -10,30 +10,62 @@ class ProjectController {
   // [GET] /projects
   async getAllProjects(req, res, next) {
     try {
-      const projects = await Project.find()
-        .select('-__v')
+      const {
+        major,
+        spec,
+        expRequired,
+        workTypes,
+        sortBy,
+        search
+      } = req.query
+
+      const filter = {}
+      if (major) filter.major = { $in: major.split(',') }
+      if (spec) filter.specialization = { $in: spec.split(',') }
+      if (expRequired) filter.expRequired = { $in: expRequired.split(',') }
+      if (workTypes) filter.workType = { $in: workTypes.split(',') }
+      if (search) {
+        const regex = new RegExp(search, 'i')
+        filter.$or = [
+          { title: regex },
+          { description: regex },
+          { 'location.province': regex },
+          { 'location.district': regex },
+          { 'location.ward': regex }
+        ]
+      }
+
+      let sort = {}
+      if (sortBy === 'newest') sort = { createdAt: -1 }
+      else if (sortBy === 'oldest') sort = { createdAt: 1 }
+      else if (sortBy === 'salaryDesc') sort = { salary: -1 }
+      else if (sortBy === 'salaryAsc') sort = { salary: 1 }
+
+      const projects = await Project.find(filter).sort(sort).select('-__v')
         .populate({
           path: 'account',
-          select: 'role avatar'
+          select: 'role avatar deleted'
         })
 
       const populatedProjects = await Promise.all(
-        projects.map(async (project) => {
-          if (!project.account) return project
+        projects
+          .filter(project => project.account && !project.account.deleted)
+          .map(async (project) => {
+            if (!project.account) return project
 
-          let profile = null
+            let profile = null
 
-          if (project.account.role === 'student') {
-            profile = await Student.findOne({ account: project.account._id }).select('name')
-          } else if (project.account.role === 'employer') {
-            profile = await Employer.findOne({ account: project.account._id }).select('companyName')
-          }
+            if (project.account.role === 'student') {
+              profile = await Student.findOne({ account: project.account._id }).select('name').lean()
+            } else if (project.account.role === 'employer') {
+              profile = await Employer.findOne({ account: project.account._id }).select('companyName').lean()
+            }
 
-          return {
-            ...project.toObject(),
-            profile
-          }
-        })
+            return {
+              ...project.toObject(),
+              profile
+            }
+          })
       )
 
       res.status(200).json(populatedProjects)
@@ -47,10 +79,6 @@ class ProjectController {
     try {
       const accountId = req.account._id
       const projects = await Project.find({ account: accountId }).select('-__v').sort({ createdAt: -1 })
-      if (!projects || projects.length === 0) {
-        return res.status(404).json({ message: 'No projects found' })
-      }
-
       res.status(200).json(projects)
     } catch (err) {
       res.status(500).json({ message: 'Error retrieving project', error: err.message })
@@ -137,8 +165,7 @@ class ProjectController {
       const accountId = req.account._id
       const projectId = req.params.id
 
-      // const deletedProject = await Project.findOneAndDelete({ _id: projectId, account: accountId })
-      const deletedProject = await Project.findOneAndDelete({ _id: projectId })
+      const deletedProject = await Project.findOneAndDelete({ _id: projectId, account: accountId })
       if (!deletedProject) return res.status(404).json({ message: 'Dự án không tồn tại' })
 
       res.status(200).json({ message: 'Dự án đã được xóa thành công' })
@@ -319,9 +346,17 @@ class ProjectController {
         },
         {
           $addFields: {
+<<<<<<< HEAD
             score: { $add: [{ $multiply: ['$matchingMajors', 2] },
               '$matchingSpecializations'
             ] }
+=======
+            score: {
+              $add: [{ $multiply: ['$matchingMajors', 2] },
+                '$matchingSpecializations'
+              ]
+            }
+>>>>>>> 1045950e5f6c874623e56edf3d8d1ebfa3692c29
           }
         },
         {
@@ -342,6 +377,7 @@ class ProjectController {
 
     } catch (err) {
       res.status(500).json({ message: 'Lỗi server', error: err.message })
+<<<<<<< HEAD
     }
   }
 
@@ -399,5 +435,63 @@ class ProjectController {
   }
 }
 
+=======
+    }
+  }
+
+
+  //recommend projects by studentId
+  async RcmProjectByStudent(req, res, next) {
+    try {
+      const studentId = req.params.id
+      const student = await Student.findById(studentId) // Sửa lại: tìm Student chứ không phải Project
+
+      if (!student) {
+        return res.status(404).json({ message: 'Sinh viên không tồn tại' })
+      }
+
+      // Lấy danh sách ngành và chuyên ngành của sinh viên
+      const majorId = student.major._id
+      const specializationId = student._id
+
+      const projects = await Project.aggregate([
+        {
+          $match: {
+            major: majorId // chỉ lấy project có ngành giống
+          }
+        },
+        {
+          $addFields: {
+            specializationMatch: {
+              $cond: [
+                { $in: [specializationId, '$specialization'] }, // nếu specializationId nằm trong project.specialization
+                1, // khớp
+                0 // không khớp
+              ]
+            }
+          }
+        },
+        {
+          $sort: { specializationMatch: -1 } // Ưu tiên project có chuyên ngành trùng
+        }
+      ])
+
+      // Populate sau aggregate
+      await Project.populate(projects, [
+        { path: 'major', select: '-__v' },
+        { path: 'specialization', select: '-__v' }
+      ])
+
+      if (!projects || projects.length === 0) {
+        return res.status(404).json({ message: 'Không tìm thấy project phù hợp' })
+      }
+
+      res.status(200).json({ projects })
+    } catch (err) {
+      res.status(500).json({ message: 'Lỗi server', error: err.message })
+    }
+  }
+}
+>>>>>>> 1045950e5f6c874623e56edf3d8d1ebfa3692c29
 
 module.exports = new ProjectController()

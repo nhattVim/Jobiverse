@@ -5,6 +5,7 @@ export const ROUTES = {
   JOB_POST: '/job-post',
   JOB_DETAIL: '/job-detail/:id',
   SAVED_JOB: '/saved-job',
+  JOB_MANAGER: '/job-manager',
   // CV PATHS
   CREATE_CV: '/cv',
   UPDATE_CV: '/cv/:id',

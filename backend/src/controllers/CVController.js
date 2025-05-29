@@ -86,7 +86,7 @@ class CVController {
     }
   }
 
-  // [POST] /cv/upload
+  // [POST] /cv/uploads
   async uploadCV(req, res) {
     try {
       const accountId = req.account._id

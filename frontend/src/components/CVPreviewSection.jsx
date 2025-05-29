@@ -1,9 +1,9 @@
 import React from 'react'
 
 export default function CVPreviewSection({ section, data }) {
-  if (!data || data.length === 0) {
-    return null
-  }
+  // if (!data || data.length === 0) {
+  //   return null
+  // }
 
   const hasStartEnd = section.fields.some(f => f.name === 'start') && section.fields.some(f => f.name === 'end')
   const firstField = section.fields[0]?.name || 'Tên'

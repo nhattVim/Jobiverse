@@ -15,10 +15,17 @@ const JobPost = () => {
   const [error, setError] = useState('')
   const [majors, setMajors] = useState([])
   const [specs, setSpecs] = useState([])
+  const [provinces, setProvinces] = useState([])
+  const [districts, setDistricts] = useState([])
+  const [wards, setWards] = useState([])
   const [form, setForm] = useState({
     title: '',
     description: '',
-    location: '',
+    location: {
+      province: '',
+      district: '',
+      ward: ''
+    },
     major: [],
     specialization: [],
     content: '',
@@ -33,13 +40,52 @@ const JobPost = () => {
   })
 
   const handleChange = (e) => {
-    const { name, value } = e.target
-    setForm({ ...form, [name]: value })
+    const { name, value, type } = e.target
+    setForm(prev => ({
+      ...prev,
+      [name]: type === 'number' ? Number(value) : value
+    }))
+  }
+
+  const handleProvinceChange = (provinceName) => {
+    const selectedProvince = provinces.find(p => p.name === provinceName)
+    setForm(prev => ({
+      ...prev,
+      location: {
+        province: provinceName,
+        district: '',
+        ward: ''
+      }
+    }))
+    setDistricts(selectedProvince?.districts || [])
+    setWards([])
+  }
+
+  const handleDistrictChange = (districtName) => {
+    const selectedDistrict = districts.find(d => d.name === districtName)
+    setForm(prev => ({
+      ...prev,
+      location: {
+        ...prev.location,
+        district: districtName,
+        ward: ''
+      }
+    }))
+    setWards(selectedDistrict?.wards || [])
+  }
+
+  const handleWardChange = (wardName) => {
+    setForm(prev => ({
+      ...prev,
+      location: {
+        ...prev.location,
+        ward: wardName
+      }
+    }))
   }
 
   const handleSubmit = async (e) => {
     e.preventDefault()
-
     const requiredFields = ['title', 'location', 'salary', 'description']
     for (const field of requiredFields) {
       if (!form[field]) {
@@ -66,8 +112,10 @@ const JobPost = () => {
     const fetchData = async () => {
       const majorData = await apiFetch('/majors', 'GET')
       const specData = await apiFetch('/specs', 'GET')
+      const locationData = await apiFetch('/openapi/locations')
       setMajors(majorData)
       setSpecs(specData)
+      setProvinces(locationData)
     }
     fetchData()
   }, [])
@@ -100,16 +148,29 @@ const JobPost = () => {
               </div>
 
               {/* Địa điểm */}
-              <div>
-                <label className="block mb-1 text-sm font-bold text-gray-700">Địa điểm làm việc</label>
-                <input
-                  type="text"
-                  name="location"
-                  value={form.location}
-                  onChange={handleChange}
-                  className="w-full px-4 py-2 bg-white rounded-full focus:outline-none focus:ring-2 focus:ring-blue"
-                  placeholder="Địa điểm"
-                />
+              <label className="block mb-1 text-sm font-bold text-gray-700">Địa điểm làm việc</label>
+              <div className='grid grid-cols-1 gap-4 md:grid-cols-2'>
+                <select value={form.location.province} onChange={e => handleProvinceChange(e.target.value)}>
+                  <option value="">Chọn tỉnh</option>
+                  {provinces.map(p => (
+                    <option key={p.code} value={p.name}>{p.name}</option>
+                  ))}
+                </select>
+
+                <select value={form.location.district} onChange={e => handleDistrictChange(e.target.value)} disabled={!districts.length}>
+                  <option value="">Chọn quận/huyện</option>
+                  {districts.map(d => (
+                    <option key={d.code} value={d.name}>{d.name}</option>
+                  ))}
+                </select>
+
+                <select value={form.location.ward} onChange={e => handleWardChange(e.target.value)} disabled={!wards.length}>
+                  <option value="">Chọn phường/xã</option>
+                  {wards.map(w => (
+                    <option key={w.code} value={w.name}>{w.name}</option>
+                  ))}
+                </select>
+
               </div>
 
               {/* Số lượng */}

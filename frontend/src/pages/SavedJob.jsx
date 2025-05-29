@@ -38,26 +38,21 @@ const SavedJob = () => {
   }
 
   return (
-    <div className="min-h-screen relative">
-      <BannerText
-        title="Việc làm đã lưu"
-        caption="Xem lại danh sách những việc làm mà bạn đã lưu trước đó. Ứng tuyển ngay để không bỏ lỡ cơ hội nghề nghiệp dành cho bạn."
-      />
+    <div className="relative min-h-screen">
+      <BannerText title="Việc làm đã lưu" caption="Xem lại danh sách những việc làm mà bạn đã lưu trước đó. Ứng tuyển ngay để không bỏ lỡ cơ hội nghề nghiệp dành cho bạn." />
 
-      <div className="max-w-7xl mx-auto flex px-6 py-20 gap-16 items-start">
-        <div className="w-1/4 flex-shrink-0">
+      <div className="flex items-start gap-16 px-6 py-20 mx-auto max-w-7xl">
+        <div className="flex-shrink-0 w-1/4">
           <Sidebar />
         </div>
         <div className="flex-1 space-y-6">
           {favoriteJobs.length === 0 ? (
-            <div className="text-center text-gray-500 text-sm">
-              Bạn chưa lưu việc làm nào.
-            </div>
+            <div className="text-sm text-center text-gray-500">Bạn chưa lưu việc làm nào.</div>
           ) : (
             favoriteJobs.map((job, index) => (
               <div
                 key={index}
-                className="bg-white-mid p-6 rounded-medium shadow flex items-center justify-between hover:shadow-md transition"
+                className="flex items-center justify-between p-6 transition shadow bg-white-mid rounded-medium hover:shadow-md"
               >
                 <div className="flex items-center space-x-5">
                   <div className="w-[70px] h-[70px] bg-white border border-white-low rounded-small flex justify-center items-center">

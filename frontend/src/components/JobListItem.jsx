@@ -41,6 +41,8 @@ const JobListItem = ({ job, a, b }) => {
       ))
   }
 
+  console.log('JobListItem rendered', job)
+
   return (
     <div className="flex flex-col items-start gap-[30px] p-10 bg-white-mid rounded-medium w-full">
       <div className="flex flex-col items-start gap-5 w-full pb-[15px] border-b border-b-gray-light">
@@ -64,7 +66,10 @@ const JobListItem = ({ job, a, b }) => {
                 {job.title}
               </Link>
               <p className="text-[16px] font-normal leading-[21px] text-black-low line-clamp-2 w-4/5">
-                {job.profile?.companyName}
+                {job.account?.role === 'employer'
+                  ? job.profile?.companyName
+                  : job.profile?.name
+                }
               </p>
             </div>
           </div>
@@ -81,7 +86,11 @@ const JobListItem = ({ job, a, b }) => {
           </div>
           <div className="flex items-center">
             <MapPinIcon className="w-6 h-6 text-blue mr-[6px]" />
-            <p className="text-black-low">{job.location}</p>
+            <p className="text-black-low">
+              {[job.location?.ward, job.location?.district, job.location?.province]
+                .filter(Boolean)
+                .join(', ')}
+            </p>
           </div>
         </div>
       </div>

@@ -74,7 +74,11 @@ const JobCard = ({ job, currentIndex, isFavoritedInitially }) => {
                 <div>
                   <MapPinIcon className="w-6 h-6 text-blue mr-[6px]" />
                 </div>
-                <p className="text-black-low line-clamp-1">{job.location}</p>
+                <p className="text-black-low line-clamp-1">
+                  {[job.location?.ward, job.location?.district, job.location?.province]
+                    .filter(Boolean)
+                    .join(', ')}
+                </p>
               </div>
             </div>
           </div>

@@ -44,9 +44,9 @@ const Login = () => {
       setUser(user)
       updateTimestamp()
 
-      if (user.profile === false && user.role === 'employer') {
+      if (!user.profile && user.role === 'employer') {
         navigate(ROUTES.EMPLOYER_PROFILE)
-      } else if (user.profile === false && user.role === 'student') {
+      } else if (!user.profile && user.role === 'student') {
         navigate(ROUTES.STUDENT_PROFILE)
       } else {
         navigate(ROUTES.HOME)
@@ -68,15 +68,14 @@ const Login = () => {
       setUser(user)
       updateTimestamp()
 
-      if (user.profile === false && user.role === 'employer') {
-        navigate(ROUTES.EMPLOYER_PROFILE)
-      } else if (user.profile === false && user.role === 'student') {
-        navigate(ROUTES.STUDENT_PROFILE)
+      const { role, profile } = user
+      if (!profile) {
+        navigate(role === 'employer' ? ROUTES.EMPLOYER_PROFILE : ROUTES.STUDENT_PROFILE)
       } else {
         navigate(ROUTES.HOME)
       }
     } catch (err) {
-      setError('Đăng nhập bằng Google thất bại. ' + err.message)
+      setError('Đăng nhập thất bại. ' + err.message)
       console.error('Google login error:', err)
     }
   }
@@ -103,9 +102,9 @@ const Login = () => {
       setUser(user)
       updateTimestamp()
 
-      if (user.profile === false && user.role === 'employer') {
+      if (!user.profile && user.role === 'employer') {
         navigate(ROUTES.EMPLOYER_PROFILE)
-      } else if (user.profile === false && user.role === 'student') {
+      } else if (!user.profile && user.role === 'student') {
         navigate(ROUTES.STUDENT_PROFILE)
       } else {
         navigate(ROUTES.HOME)

@@ -8,7 +8,11 @@ const ProjectSchema = new mongoose.Schema({
   },
   title: String,
   description: String,
-  location: String,
+  location: {
+    province: String,
+    district: String,
+    ward: String
+  },
   major: [{
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Major'

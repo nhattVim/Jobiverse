@@ -16,6 +16,7 @@ import ProtectedRoute from './ProtectedRoute'
 import EmployerProfile from '../pages/EmployerProfile'
 import StudentProfile from '../pages/StudentProfile'
 import EmployerDetail from '../pages/EmployerDetail'
+import JobManager from '../pages/JobManager'
 
 export const router = createBrowserRouter([
   {
@@ -42,6 +43,10 @@ export const router = createBrowserRouter([
       {
         path: ROUTES.SAVED_JOB,
         element: <ProtectedRoute><SavedJob /></ProtectedRoute>
+      },
+      {
+        path: ROUTES.JOB_MANAGER,
+        element: <ProtectedRoute><JobManager /></ProtectedRoute>
       },
       // CV ROUTES
       {

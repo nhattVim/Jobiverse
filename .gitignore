@@ -1,38 +1,68 @@
-# Node.js
+# ============================
+# FRONTEND / BACKEND (Node.js + Vite)
+# ============================
+
+# Node modules
 node_modules/
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
-pnpm-lock.yaml
-package-lock.json
-yarn.lock
-backend.NET
 
-# Vite cache (frontend)
-frontend/dist/
-frontend/.vite/
-
-# Build output (nếu có)
+# Vite cache & build output
 dist/
-build/
-
-# Environment variables
-# .env
-# .env.* # ví dụ: .env.development, .env.production
+.vite/
+.cache/
 
 # Logs
-logs
+logs/
 *.log
 *.log.*
 
-# OS files
+# Package manager lock files
+package-lock.json
+yarn.lock
+pnpm-lock.yaml
+
+# Environment files
+.env
+.env.*
+
+# Uploads (Optional)
+uploads/
+
+# ============================
+# BACKEND.NET (ASP.NET Core)
+# ============================
+
+# Build output
+bin/
+obj/
+
+# User-specific files
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+# Publish & local development artifacts
+*.db
+*.sqlite
+*.db-journal
+*.pdb
+*.cache
+*.pid
+*.pid.lock
+
+# appsettings (Optional)
+# appsettings.Development.json
+# appsettings.*.json
+
+# ============================
+# SHARED / ROOT LEVEL
+# ============================
+
+# OS-specific
 .DS_Store
 Thumbs.db
 
-# IDEs
+# IDEs & editors
 .vscode/
 .idea/
 *.swp
-
-# Optional
-uploads/

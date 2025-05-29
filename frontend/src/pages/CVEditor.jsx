@@ -14,7 +14,7 @@ export default function CVEditor() {
     title: '',
     avatar: '',
     name: '',
-    birthday: '',
+    birthday: null,
     gender: '',
     phone: '',
     email: '',
@@ -110,6 +110,8 @@ export default function CVEditor() {
       <p>Đang tải CV...</p>
     </div>
   )
+
+  console.log(cvData)
 
   return (
     <>

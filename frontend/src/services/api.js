@@ -14,8 +14,32 @@ export default async function apiFetch(path, method = 'GET', body = null) {
     const contentType = res.headers.get('Content-Type') || ''
 
     if (!res.ok) {
-      const error = contentType.includes('json') ? await res.json() : await res.text()
-      throw new Error(error?.message || error || 'Lỗi mạng')
+      // if (res.status === 401) {
+      //   console.warn('Token expired, calling logout API...')
+      //   await fetch(`${API_BASE}/logout`, {
+      //     method: 'POST',
+      //     credentials: 'include',
+      //     headers: { 'Content-Type': 'application/json' }
+      //   })
+      //   localStorage.removeItem('user')
+      //   // window.location.href = '/login'
+      //   return
+      // }
+
+      let errorText
+      try {
+        errorText = contentType.includes('json') ? await res.json() : await res.text()
+      } catch {
+        errorText = 'Unknown error'
+      }
+
+      throw new Error(
+        typeof errorText === 'string'
+          ? errorText
+          : typeof errorText?.message === 'string'
+            ? errorText.message
+            : JSON.stringify(errorText)
+      )
     }
 
     if (contentType.includes('json')) return res.json()

@@ -176,7 +176,7 @@ const JobDetail = () => {
                       </h3>
                     </div>
                   </div>
-                  <ul className="text-gray-700 text-sm space-y-2 mb-4">
+                  <ul className="mb-4 space-y-2 text-sm text-gray-700">
                     <li className="flex items-center space-x-2">
                       <UsersIcon className="h-4 w-4 text-gray-500" />
                       <span>Quy mô: {}</span>
@@ -190,7 +190,7 @@ const JobDetail = () => {
                       <span>Địa điểm: {}</span>
                     </li>
                   </ul>
-                  <button className="w-full bg-blue-100 text-blue-700 px-4 py-2 rounded-lg hover:bg-blue-200 transition duration-300">
+                  <button className="w-full px-4 py-2 text-blue-700 transition duration-300 bg-blue-100 rounded-lg hover:bg-blue-200">
                     Xem chi tiết
                   </button>
                 </div>
@@ -199,10 +199,10 @@ const JobDetail = () => {
                   <h3 className="text-xl font-semibold text-gray-800 mb-4">
                     Thông tin chung
                   </h3>
-                  <ul className="text-gray-700 text-sm space-y-2">
+                  <ul className="space-y-2 text-sm text-gray-700">
                     <li className="flex items-center justify-between">
                       <span className="flex items-center space-x-2">
-                        <BookOpenIcon className="h-4 w-4 text-blue-500" />
+                        <BookOpenIcon className="w-4 h-4 text-blue-500" />
                         <span>Học vấn</span>
                       </span>
                       <span className="font-medium">
@@ -211,7 +211,7 @@ const JobDetail = () => {
                     </li>
                     <li className="flex items-center justify-between">
                       <span className="flex items-center space-x-2">
-                        <Bars3CenterLeftIcon className="h-4 w-4 text-blue-500" />{' '}
+                        <Bars3CenterLeftIcon className="w-4 h-4 text-blue-500" />{' '}
                         {/* Icon placeholder cho GPA */}
                         <span>GPA</span>
                       </span>
@@ -221,7 +221,7 @@ const JobDetail = () => {
                     </li>
                     <li className="flex items-center justify-between">
                       <span className="flex items-center space-x-2">
-                        <UserGroupIcon className="h-4 w-4 text-blue-500" />
+                        <UserGroupIcon className="w-4 h-4 text-blue-500" />
                         <span>Số lượng tuyển</span>
                       </span>
                       <span className="font-medium">
@@ -230,7 +230,7 @@ const JobDetail = () => {
                     </li>
                     <li className="flex items-center justify-between">
                       <span className="flex items-center space-x-2">
-                        <ClockIcon className="h-4 w-4 text-blue-500" />
+                        <ClockIcon className="w-4 h-4 text-blue-500" />
                         <span>Hình thức làm việc</span>
                       </span>
                       <span className="font-medium">

@@ -33,8 +33,8 @@ const sectionFields = {
   activities: {
     title: 'Hoạt động',
     fields: [
-      { name: 'name', placeholder: 'Tên tổ chức' },
-      { name: 'degree', placeholder: 'Ngành học / Môn học' },
+      { name: 'title', placeholder: 'Tên hoạt động' },
+      { name: 'organization', placeholder: 'Tổ chức' },
       { name: 'description', placeholder: 'Mô tả hoạt động' },
       { name: 'start', placeholder: 'Bắt đầu' },
       { name: 'end', placeholder: 'Kết thúc' }
@@ -44,7 +44,7 @@ const sectionFields = {
     title: 'Thành tích',
     fields: [
       { name: 'title', placeholder: 'Tên thành tích' },
-      { name: 'description', placeholder: 'Tên thành tích' }
+      { name: 'description', placeholder: 'Mô tả thành tích' }
     ]
   },
   languages: {
