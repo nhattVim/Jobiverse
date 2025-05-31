@@ -133,7 +133,9 @@ const Security = () => {
 
           <hr className="my-10" />
 
-          <h2 className="mb-6 text-lg font-semibold">Số điện thoại</h2>
+          <h2 className="mb-6 text-lg font-semibold">
+            {user.phoneNumber ? 'Cập nhật số điện thoại' : 'Thêm số điện thoại'}
+          </h2>
 
           <form onSubmit={handlePhoneSubmit} className="space-y-4">
             <div className="flex items-center gap-6">
