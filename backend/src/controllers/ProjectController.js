@@ -105,10 +105,14 @@ class ProjectController {
       const projectId = req.params.id
       const accountId = req.account._id
       if (!accountId) return res.status(401).json({ message: 'Unauthorized' })
-      const project = await Project.findOne({ _id: projectId, account: accountId }).select('-__v')
+      const project = await Project.findOne({ _id: projectId, account: accountId })
+        .populate({
+          path: 'account',
+          select: 'role avatar deleted'
+        })
+        .select('-__v')
       if (!project) return res.status(404).json({ message: 'No project found' })
-      console.log(project)
-      res.status(200).json(project)
+      res.status(200).json(project.toObject())
     } catch (err) {
       res.status(500).json({ message: 'Error retrieving project', error: err.message })
     }
