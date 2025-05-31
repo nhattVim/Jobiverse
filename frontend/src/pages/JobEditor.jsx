@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useParams, useNavigate } from 'react-router-dom'
 import apiFetch from '../services/api'
 import BannerText from '../components/BannerText'
 import Select from 'react-select'
@@ -10,7 +10,9 @@ import { Editor } from '@tinymce/tinymce-react'
 
 const animatedComponents = makeAnimated()
 
-const JobPost = () => {
+const JobEditor = () => {
+  const { id } = useParams()
+  const [loading, setLoading] = useState(!!id)
   const navigate = useNavigate()
   const [error, setError] = useState('')
   const [majors, setMajors] = useState([])
@@ -38,6 +40,25 @@ const JobPost = () => {
     hiringCount: 0,
     workType: ''
   })
+
+  useEffect(() => {
+    const fetchData = async () => {
+      if (id) {
+        try {
+          const data = await apiFetch(`/projects/my/${id}`, 'GET')
+          console.log('Fetched job data:', data)
+          setForm(data)
+        } catch (err) {
+          setError('Không tải được bài đăng: ' + err.message)
+          navigate('/job-list')
+        } finally {
+          setLoading(false)
+        }
+      }
+    }
+
+    fetchData()
+  }, [id, navigate])
 
   const handleChange = (e) => {
     const { name, value, type } = e.target
@@ -95,11 +116,15 @@ const JobPost = () => {
     }
 
     try {
-      await apiFetch('/projects/my', 'POST', form)
-      navigate('/job-list')
+      if (id) {
+        await apiFetch(`/projects/my/${id}`, 'PUT', form)
+        navigate('/job-list')
+      } else {
+        await apiFetch('/projects/my', 'POST', form)
+        navigate('/job-list')
+      }
     } catch (err) {
-      console.error(err)
-      setError('Tạo bài đăng thất bại, vui lòng thử lại.')
+      setError('Tạo bài đăng thất bại, vui lòng thử lại.' + err.message)
     }
   }
 
@@ -121,6 +146,12 @@ const JobPost = () => {
   }, [])
 
   console.log('Form data:', form)
+
+  if (loading) return (
+    <div className="flex items-center justify-center w-full h-screen pb-[104px]">
+      <p>Đang tải Job...</p>
+    </div>
+  )
 
   return (
     <div className="min-h-screen bg-white">
@@ -146,7 +177,7 @@ const JobPost = () => {
                   name="title"
                   value={form.title}
                   onChange={handleChange}
-                  className="w-full px-4 py-2 bg-white-bright rounded-full focus:outline-none focus:ring-2 focus:ring-blue"
+                  className="w-full px-4 py-2 rounded-full bg-white-bright focus:outline-none focus:ring-2 focus:ring-blue"
                   placeholder="Tên công việc"
                 />
               </div>
@@ -159,7 +190,7 @@ const JobPost = () => {
                 <select
                   value={form.location.province}
                   onChange={(e) => handleProvinceChange(e.target.value)}
-                  className="w-full px-4 py-2 bg-white-bright rounded-full focus:outline-none focus:ring-2 focus:ring-blue"
+                  className="w-full px-4 py-2 rounded-full bg-white-bright focus:outline-none focus:ring-2 focus:ring-blue"
                 >
                   <option value="">Chọn tỉnh</option>
                   {provinces.map((p) => (
@@ -173,7 +204,7 @@ const JobPost = () => {
                   value={form.location.district}
                   onChange={(e) => handleDistrictChange(e.target.value)}
                   disabled={!districts.length}
-                  className="w-full px-4 py-2 bg-white-bright rounded-full focus:outline-none focus:ring-2 focus:ring-blue"
+                  className="w-full px-4 py-2 rounded-full bg-white-bright focus:outline-none focus:ring-2 focus:ring-blue"
                 >
                   <option value="">Chọn quận/huyện</option>
                   {districts.map((d) => (
@@ -187,7 +218,7 @@ const JobPost = () => {
                   value={form.location.ward}
                   onChange={(e) => handleWardChange(e.target.value)}
                   disabled={!wards.length}
-                  className="w-full px-4 py-2 bg-white-bright rounded-full focus:outline-none focus:ring-2 focus:ring-blue"
+                  className="w-full px-4 py-2 rounded-full bg-white-bright focus:outline-none focus:ring-2 focus:ring-blue"
                 >
                   <option value="">Chọn phường/xã</option>
                   {wards.map((w) => (
@@ -208,7 +239,7 @@ const JobPost = () => {
                   name="hiringCount"
                   value={form.hiringCount}
                   onChange={handleChange}
-                  className="w-full px-4 py-2 bg-white-bright rounded-full focus:outline-none focus:ring-2 focus:ring-blue"
+                  className="w-full px-4 py-2 rounded-full bg-white-bright focus:outline-none focus:ring-2 focus:ring-blue"
                   placeholder="Số lượng"
                 />
               </div>
@@ -223,7 +254,7 @@ const JobPost = () => {
                     name="workType"
                     value={form.workType}
                     onChange={handleChange}
-                    className="w-full px-4 py-2 bg-white-bright rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="w-full px-4 py-2 rounded-full bg-white-bright focus:outline-none focus:ring-2 focus:ring-blue-500"
                   >
                     <option value="">-- Chọn -- </option>
                     <option value="online">Online</option>
@@ -240,7 +271,7 @@ const JobPost = () => {
                     name="salary"
                     value={form.salary}
                     onChange={handleChange}
-                    className="w-full px-4 py-2 bg-white-bright rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="w-full px-4 py-2 rounded-full bg-white-bright focus:outline-none focus:ring-2 focus:ring-blue-500"
                     placeholder="Lương"
                   />
                 </div>
@@ -256,7 +287,7 @@ const JobPost = () => {
                   name="expRequired"
                   value={form.expRequired}
                   onChange={handleChange}
-                  className="w-full px-4 py-2 bg-white-bright rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="w-full px-4 py-2 rounded-full bg-white-bright focus:outline-none focus:ring-2 focus:ring-blue-500"
                   placeholder="VD: 1 năm"
                 />
               </div>
@@ -271,7 +302,7 @@ const JobPost = () => {
                   name="workingTime"
                   value={form.workingTime}
                   onChange={handleChange}
-                  className="w-full px-4 py-2 bg-white-bright rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="w-full px-4 py-2 rounded-full bg-white-bright focus:outline-none focus:ring-2 focus:ring-blue-500"
                   placeholder="Part-time, 20h/tuần"
                 />
               </div>
@@ -336,7 +367,7 @@ const JobPost = () => {
                   name="deadline"
                   value={form.deadline}
                   onChange={handleChange}
-                  className="w-full px-4 py-2 bg-white-bright rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="w-full px-4 py-2 rounded-full bg-white-bright focus:outline-none focus:ring-2 focus:ring-blue-500"
                 />
               </div>
 
@@ -396,7 +427,7 @@ const JobPost = () => {
                 type="submit"
                 className="px-6 py-2 text-white transition rounded-full bg-blue hover:bg-blue-700"
               >
-                Tạo bài đăng
+                {id ? 'Cập nhật bài đăng' : 'Tạo bài đăng'}
               </button>
             </div>
           </section>
@@ -406,4 +437,4 @@ const JobPost = () => {
   )
 }
 
-export default JobPost
+export default JobEditor

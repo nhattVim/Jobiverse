@@ -32,15 +32,21 @@ export default function CVEditor() {
   })
 
   useEffect(() => {
-    if (id) {
-      apiFetch(`/cv/${id}`, 'GET')
-        .then(res => setCvData(res))
-        .catch(err => {
+    const fetchData = async () => {
+      if (id) {
+        try {
+          const data = await apiFetch(`/cv/${id}`, 'GET')
+          setCvData(data)
+        } catch (err) {
           alert('Không tải được CV: ' + err.message)
           navigate('/cv')
-        })
-        .finally(() => setLoading(false))
+        } finally {
+          setLoading(false)
+        }
+      }
     }
+
+    fetchData()
   }, [id, navigate])
 
   const handleSubmit = async () => {
@@ -86,8 +92,6 @@ export default function CVEditor() {
       </html>
     `
 
-    console.log(JSON.stringify({ html: fullHtml, fileName: 'cv.pdf' }))
-
     try {
       const response = await apiFetch('/cv/generate-pdf', 'POST', { html: fullHtml, fileName: 'cv.pdf' })
       if (response instanceof Blob) {
@@ -110,8 +114,6 @@ export default function CVEditor() {
       <p>Đang tải CV...</p>
     </div>
   )
-
-  console.log(cvData)
 
   return (
     <>

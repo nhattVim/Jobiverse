@@ -100,18 +100,15 @@ class ProjectController {
   }
 
   // [GET] /projects/my/:id
-  async getProjectDetail(req, res, next) {
+  async getProjectById(req, res, next) {
     try {
       const projectId = req.params.id
-      const project = await Project.findOne({ _id: projectId }).select('-__v')
-        .populate({
-          path: 'account',
-          select: 'role avatar'
-        })
-      if (!project) {
-        return res.status(404).json({ message: 'No project found' })
-      }
-      res.status(200).json(project.toObject())
+      const accountId = req.account._id
+      if (!accountId) return res.status(401).json({ message: 'Unauthorized' })
+      const project = await Project.findOne({ _id: projectId, account: accountId }).select('-__v')
+      if (!project) return res.status(404).json({ message: 'No project found' })
+      console.log(project)
+      res.status(200).json(project)
     } catch (err) {
       res.status(500).json({ message: 'Error retrieving project', error: err.message })
     }

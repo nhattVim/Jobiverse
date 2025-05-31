@@ -2,7 +2,8 @@ export const ROUTES = {
   HOME: '/',
   // JOB PATHS
   JOB_LIST: '/job-list',
-  JOB_POST: '/job-post',
+  CREATE_JOB: '/job',
+  UPDATE_JOB: '/job/:id',
   JOB_DETAIL: '/job-detail/:id',
   SAVED_JOB: '/saved-job',
   JOB_MANAGER: '/job-manager',

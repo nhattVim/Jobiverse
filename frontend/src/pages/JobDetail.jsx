@@ -1,31 +1,25 @@
 import {
-  MapPinIcon,
-  CurrencyDollarIcon,
-  AcademicCapIcon, // Sử dụng cho Kinh nghiệm (placeholder, hoặc tùy chỉnh)
-  BriefcaseIcon, // Sử dụng cho Kinh nghiệm (thay thế AcademicCapIcon nếu hợp lý hơn)
-  CalendarDaysIcon, // Hạn nộp hồ sơ
-  HeartIcon, // Nút yêu thích
-  ArrowRightIcon, // Mũi tên cho nút ứng tuyển
-  UsersIcon, // Quy mô
-  TagIcon, // Lĩnh vực
-  BuildingOfficeIcon, // Địa điểm công ty
-  BookOpenIcon, // Học vấn
-  Bars3CenterLeftIcon, // GPA (placeholder)
-  UserGroupIcon, // Số lượng tuyển
-  ClockIcon // Hình thức làm việc
+  MapPinIcon, CurrencyDollarIcon, BriefcaseIcon,
+  CalendarDaysIcon, HeartIcon, UsersIcon, TagIcon,
+  BuildingOfficeIcon, BookOpenIcon, Bars3CenterLeftIcon,
+  UserGroupIcon, ClockIcon, PencilSquareIcon
 } from '@heroicons/react/24/solid'
 import ButtonArrowOne from '../shared/ButtonArrowOne'
 import Banner from '../components/Banner'
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useContext } from 'react'
 import apiFetch from '../services/api'
 import { useParams, useSearchParams } from 'react-router-dom'
 import ApplyPopup from '../components/ApplyPopup'
+import UserContext from '../contexts/UserContext'
 
 const JobDetail = () => {
   const [searchParams] = useSearchParams()
   const [isOpen, setIsOpen] = useState(searchParams.get('openApply') || false)
   const [projectData, setProjectData] = useState({})
   const { id } = useParams()
+  const { user } = useContext(UserContext)
+  const isOwner = projectData.account?._id === user._id
+
   useEffect(() => {
     const fetchProjectDetail = async () => {
       try {
@@ -60,9 +54,17 @@ const JobDetail = () => {
             <div className="w-full overflow-visible ">
               <div className="sticky top-[80px]">
                 <div className="flex flex-col gap-[30px] p-10 rounded-medium bg-white-bright">
-                  <h2 className="mb-2 text-2xl font-bold text-gray-800">
-                    {projectData.title}
-                  </h2>
+
+                  <div className='flex items-center justify-between mb-4'>
+                    <h2 className="mb-2 text-2xl font-bold text-gray-800">
+                      {projectData.title}
+                    </h2>
+
+                    {isOwner && (
+                      <PencilSquareIcon className="w-6 h-6 text-gray-500 " />
+                    )}
+                  </div>
+
                   <div className="inline-flex items-center justify-start text-sm">
                     <div className="flex flex-1 items-center gap-2.5">
                       <div className="flex items-center justify-center w-10 h-10 rounded-full bg-blue">

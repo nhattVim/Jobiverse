@@ -1,6 +1,6 @@
 export default function CVFormSection({
   sectionKey, fields, items, onAdd, onRemove, onChange,
-  focusedField, setFocusedField // thêm vào đây
+  focusedField, setFocusedField
 }) {
   return (
     <div>

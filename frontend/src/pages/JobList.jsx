@@ -70,7 +70,6 @@ const JobList = () => {
 
     const fetchJobs = async () => {
       const query = buildQuery()
-      console.log('Query:', query)
       const data = await apiFetch(`/projects?${query}`)
       setJobs(data)
     }
