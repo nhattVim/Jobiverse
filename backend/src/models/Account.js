@@ -21,7 +21,7 @@ const AccountSchema = new mongoose.Schema({
     contentType: String
   },
   phoneNumber: {
-    type: Number,
+    type: String,
     trim: true
   },
   password: String,
