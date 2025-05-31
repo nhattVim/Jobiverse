@@ -62,13 +62,13 @@ const ApplyPopup = ({ setIsOpen, applyTitle }) => {
     <div className="fixed z-[999] inset-0 flex justify-center items-center">
       <div className="absolute inset-0 bg-black opacity-50"></div>
       <div className="relative z-10 bg-white-bright min-h-[90%] mx-auto shadow-lg w-full max-w-2xl rounded-small animate-slideUp">
-        <div className="fixed z-50 max-w-2xl w-full flex items-center px-8 py-5 justify-between shadow">
+        <div className="fixed z-50 flex items-center justify-between w-full max-w-2xl px-8 py-5 shadow">
           <h6 className="text-xl font-semibold">
             Ứng tuyển <span className="text-blue">{applyTitle}</span>
           </h6>
           <div
             onClick={() => setIsOpen(false)}
-            className="font-bold text-gray-dark bg-white-mid p-1 rounded-full hover:bg-blue-100 hover:text-blue cursor-pointer"
+            className="p-1 font-bold rounded-full cursor-pointer text-gray-dark bg-white-mid hover:bg-blue-100 hover:text-blue"
           >
             <XMarkIcon className="w-6 h-6" />
           </div>
@@ -80,18 +80,16 @@ const ApplyPopup = ({ setIsOpen, applyTitle }) => {
           </div>
 
           <div
-            className={`${
-              active === 'a' ? 'border-blue' : 'border-gray-light'
-            } border w-full p-4 rounded-small text-sm transition-all duration-300`}
+            className={`${active === 'a' ? 'border-blue' : 'border-gray-light'
+              } border w-full p-4 rounded-small text-sm transition-all duration-300`}
           >
             <div className="flex items-center gap-2 cursor-pointer">
               <div
                 onClick={() => handleToggle('a')}
-                className={`flex items-center justify-center w-5 h-5 rounded-full border-2 ${
-                  active === 'a'
-                    ? 'after:block after:w-2.5 after:h-2.5 after:rounded-full after:bg-blue border-blue'
-                    : 'border-gray'
-                }`}
+                className={`flex items-center justify-center w-5 h-5 rounded-full border-2 ${active === 'a'
+                  ? 'after:block after:w-2.5 after:h-2.5 after:rounded-full after:bg-blue border-blue'
+                  : 'border-gray'
+                  }`}
               ></div>
               <p className="font-semibold">Chọn CV trong thư viện CV của tôi</p>
             </div>
@@ -105,11 +103,11 @@ const ApplyPopup = ({ setIsOpen, applyTitle }) => {
                   transition={{ duration: 0.3 }}
                   className="flex flex-col gap-2 overflow-hidden"
                 >
-                  <p className="font-semibold mt-4">CV Online</p>
+                  <p className="mt-4 font-semibold">CV Online</p>
                   {cvList.map((data) => (
                     <div
                       key={data._id}
-                      className="px-4 py-3 border border-gray-light hover:border-blue rounded-small cursor-pointer"
+                      className="px-4 py-3 border cursor-pointer border-gray-light hover:border-blue rounded-small"
                     >
                       {data.title || 'Chưa đặt tên'}
                     </div>
@@ -119,7 +117,7 @@ const ApplyPopup = ({ setIsOpen, applyTitle }) => {
                   {cvUploads.map((data) => (
                     <div
                       key={data._id}
-                      className="px-4 py-3 border border-gray-light hover:border-blue rounded-small cursor-pointer"
+                      className="px-4 py-3 border cursor-pointer border-gray-light hover:border-blue rounded-small"
                     >
                       {data.title || 'Chưa đặt tên'}
                     </div>
@@ -130,9 +128,8 @@ const ApplyPopup = ({ setIsOpen, applyTitle }) => {
           </div>
 
           <div
-            className={`relative w-full border border-dashed rounded-small p-4 flex flex-col items-center text-center space-y-4 transition-all duration-300 cursor-pointer ${
-              dragOver || active === 'b' ? 'border-blue' : 'border-gray-light'
-            } ${dragOver ? 'bg-blue-50' : ''}`}
+            className={`relative w-full border border-dashed rounded-small p-4 flex flex-col items-center text-center space-y-4 transition-all duration-300 cursor-pointer ${dragOver || active === 'b' ? 'border-blue' : 'border-gray-light'
+              } ${dragOver ? 'bg-blue-50' : ''}`}
             onDragOver={(e) => {
               e.preventDefault()
               setDragOver(true)
@@ -147,14 +144,13 @@ const ApplyPopup = ({ setIsOpen, applyTitle }) => {
             onClick={() => handleToggle('b')}
           >
             <div
-              className={`absolute top-4 left-4 flex items-center justify-center w-5 h-5 rounded-full border-2 ${
-                active === 'b'
-                  ? 'after:block after:w-2.5 after:h-2.5 after:rounded-full after:bg-blue border-blue'
-                  : 'border-gray'
-              }`}
+              className={`absolute top-4 left-4 flex items-center justify-center w-5 h-5 rounded-full border-2 ${active === 'b'
+                ? 'after:block after:w-2.5 after:h-2.5 after:rounded-full after:bg-blue border-blue'
+                : 'border-gray'
+                }`}
             ></div>
-            <p className="font-bold flex items-center">
-              <CloudArrowUpIcon className="w-10 h-10 text-gray mr-2" /> Tải lên
+            <p className="flex items-center font-bold">
+              <CloudArrowUpIcon className="w-10 h-10 mr-2 text-gray" /> Tải lên
               CV từ máy tính, chọn hoặc kéo thả
             </p>
             <p className="text-xs text-gray-400">
@@ -185,9 +181,9 @@ const ApplyPopup = ({ setIsOpen, applyTitle }) => {
                   animate={{ height: 'auto', opacity: 1 }}
                   exit={{ height: 0, opacity: 0 }}
                   transition={{ duration: 0.3 }}
-                  className="w-full flex flex-col gap-2 p-2 border-t border-white-mid overflow-hidden"
+                  className="flex flex-col w-full gap-2 p-2 overflow-hidden border-t border-white-mid"
                 >
-                  <p className='text-blue text-sm text-left'>Vui lòng nhập đầy đủ thông tin chi tiết:</p>
+                  <p className='text-sm text-left text-blue'>Vui lòng nhập đầy đủ thông tin chi tiết:</p>
                   <div>
                     <label className="block mb-1 text-sm text-left">Họ và tên</label>
                     <input
@@ -195,7 +191,7 @@ const ApplyPopup = ({ setIsOpen, applyTitle }) => {
                       name=""
                       value={''}
                       onChange={''}
-                      className="w-full px-4 py-2 bg-white rounded-full focus:outline-none focus:ring-1 focus:ring-blue text-sm"
+                      className="w-full px-4 py-2 text-sm bg-white rounded-full focus:outline-none focus:ring-1 focus:ring-blue"
                       placeholder="Họ và tên"
                     />
                   </div>
@@ -207,7 +203,7 @@ const ApplyPopup = ({ setIsOpen, applyTitle }) => {
                         name=""
                         value={''}
                         onChange={''}
-                        className="w-full px-4 py-2 bg-white rounded-full focus:outline-none focus:ring-1 focus:ring-blue text-sm"
+                        className="w-full px-4 py-2 text-sm bg-white rounded-full focus:outline-none focus:ring-1 focus:ring-blue"
                         placeholder="Email"
                       />
                     </div>
@@ -219,7 +215,7 @@ const ApplyPopup = ({ setIsOpen, applyTitle }) => {
                         name=""
                         value={''}
                         onChange={''}
-                        className="w-full px-4 py-2 bg-white rounded-full focus:outline-none focus:ring-1 focus:ring-blue text-sm"
+                        className="w-full px-4 py-2 text-sm bg-white rounded-full focus:outline-none focus:ring-1 focus:ring-blue"
                         placeholder="Số điện thoại"
                       />
                     </div>
@@ -234,7 +230,7 @@ const ApplyPopup = ({ setIsOpen, applyTitle }) => {
               <ExclamationTriangleIcon className="w-5 h-5 text-red" />
               <span className="text-red">Lưu ý:</span>
             </div>
-            <p className="text-sm mt-2">
+            <p className="mt-2 text-sm">
               Jobiverse khuyên tất cả các bạn hãy luôn cẩn trọng trong quá trình
               tìm việc và chủ động nghiên cứu về thông tin công ty, vị trí việc
               làm trước khi ứng tuyển. Ứng viên cần có trách nhiệm với hành vi
@@ -245,8 +241,8 @@ const ApplyPopup = ({ setIsOpen, applyTitle }) => {
           </div>
         </div>
 
-        <div className="absolute bg-white-bright rounded-br-small rounded-bl-small z-20 bottom-0 right-0 left-0 max-w-2xl w-full flex items-center px-8 py-5 justify-between border-t border-white-low">
-          <button className="text-white bg-blue p-3 w-full rounded-full cursor-pointer">
+        <div className="absolute bottom-0 left-0 right-0 z-20 flex items-center justify-between w-full max-w-2xl px-8 py-5 border-t bg-white-bright rounded-br-small rounded-bl-small border-white-low">
+          <button className="w-full p-3 text-white rounded-full cursor-pointer bg-blue">
             Nộp hồ sơ ứng tuyển
           </button>
         </div>

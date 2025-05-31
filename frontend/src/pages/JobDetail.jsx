@@ -36,7 +36,7 @@ const JobDetail = () => {
       }
     }
     fetchProjectDetail()
-  }, [])
+  }, [id])
 
   useEffect(() => {
     if (isOpen) {
@@ -52,21 +52,21 @@ const JobDetail = () => {
 
   return (
     <>
-      {isOpen && <ApplyPopup setIsOpen={setIsOpen} applyTitle={projectData.title} /> }
+      {isOpen && <ApplyPopup setIsOpen={setIsOpen} applyTitle={projectData.title} />}
       <Banner />
       <div className="w-full py-20">
         <main className="container-responsive">
           <div className="grid grid-cols-[1fr_0.5fr] gap-10 min-h-full ">
-            <div className="overflow-visible w-full ">
+            <div className="w-full overflow-visible ">
               <div className="sticky top-[80px]">
                 <div className="flex flex-col gap-[30px] p-10 rounded-medium bg-white-bright">
-                  <h2 className="text-2xl font-bold text-gray-800 mb-2">
+                  <h2 className="mb-2 text-2xl font-bold text-gray-800">
                     {projectData.title}
                   </h2>
-                  <div className="inline-flex justify-start items-center text-sm">
+                  <div className="inline-flex items-center justify-start text-sm">
                     <div className="flex flex-1 items-center gap-2.5">
                       <div className="flex items-center justify-center w-10 h-10 rounded-full bg-blue">
-                        <CurrencyDollarIcon className="h-6 w-6 text-white" />
+                        <CurrencyDollarIcon className="w-6 h-6 text-white" />
                       </div>
                       <div className="flex flex-col gap-1">
                         <span className='text-black-low'>Mức lương</span>
@@ -77,7 +77,7 @@ const JobDetail = () => {
                     </div>
                     <div className="flex flex-1 items-center gap-2.5">
                       <div className="flex items-center justify-center w-10 h-10 rounded-full bg-blue">
-                        <MapPinIcon className="h-6 w-6 text-white" />
+                        <MapPinIcon className="w-6 h-6 text-white" />
                       </div>
                       <div className="flex flex-col gap-1">
                         <span className='text-black-low'>Địa điểm</span>
@@ -88,7 +88,7 @@ const JobDetail = () => {
                     </div>
                     <div className="flex flex-1 items-center gap-2.5">
                       <div className="flex items-center justify-center w-10 h-10 rounded-full bg-blue">
-                        <BriefcaseIcon className="h-6 w-6 text-white" />
+                        <BriefcaseIcon className="w-6 h-6 text-white" />
                       </div>
                       <div className="flex flex-col gap-1">
                         <span className='text-black-low'>Kinh nghiệm</span>
@@ -99,19 +99,19 @@ const JobDetail = () => {
                     </div>
                   </div>
                   <div className="flex flex-wrap items-center gap-4">
-                    <div className="flex items-center bg-blue-100 text-blue-mid px-3 py-1 rounded-full text-sm font-medium">
-                      <CalendarDaysIcon className="h-4 w-4 mr-1" />
+                    <div className="flex items-center px-3 py-1 text-sm font-medium bg-blue-100 rounded-full text-blue-mid">
+                      <CalendarDaysIcon className="w-4 h-4 mr-1" />
                       Hạn nộp hồ sơ: {new Date(projectData.deadline).toLocaleString()}
                     </div>
-                    <div className="flex ml-auto gap-4">
+                    <div className="flex gap-4 ml-auto">
                       <ButtonArrowOne onClick={() => setIsOpen(true)}>Ứng tuyển</ButtonArrowOne>
-                      <button className="p-2 rounded-full border border-blue-500 text-blue-500 hover:bg-yellow-500 transition duration-300 flex items-center justify-center w-10 h-10">
-                        <HeartIcon className="h-5 w-5" />
+                      <button className="flex items-center justify-center w-10 h-10 p-2 text-blue-500 transition duration-300 border border-blue-500 rounded-full hover:bg-yellow-500">
+                        <HeartIcon className="w-5 h-5" />
                       </button>
                     </div>
                   </div>
                 </div>
-                <div className="flex flex-col gap-6 p-10 rounded-medium bg-white-bright mt-10">
+                <div className="flex flex-col gap-6 p-10 mt-10 rounded-medium bg-white-bright">
                   <div className="flex items-center gap-2.5">
                     <div className="w-1.5 self-stretch bg-blue rounded-[5px]"></div>
                     <h3 className="text-xl font-bold">
@@ -120,25 +120,25 @@ const JobDetail = () => {
                   </div>
                   {projectData.description && (
                     <div className="">
-                      <h4 className="font-semibold mb-2">
+                      <h4 className="mb-2 font-semibold">
                         Mô tả công việc
                       </h4>
-                      <div className="tinymce-content pl-5 text-sm text-black-low" dangerouslySetInnerHTML={{ __html: projectData.description }}></div>
+                      <div className="pl-5 text-sm tinymce-content text-black-low" dangerouslySetInnerHTML={{ __html: projectData.description }}></div>
                     </div>
                   )}
                   {projectData.content && (
                     <div className="">
-                      <h4 className="font-semibold mb-2">
+                      <h4 className="mb-2 font-semibold">
                         Nội dung yêu cầu
                       </h4>
-                      <div className="tinymce-content pl-5 text-sm text-black-low" dangerouslySetInnerHTML={{ __html: projectData.content }}></div>
+                      <div className="pl-5 text-sm tinymce-content text-black-low" dangerouslySetInnerHTML={{ __html: projectData.content }}></div>
                     </div>
                   )}
                   <div className="">
-                    <h4 className="font-semibold mb-2">
-                        Địa điểm làm việc
+                    <h4 className="mb-2 font-semibold">
+                      Địa điểm làm việc
                     </h4>
-                    <ul className="list-disc list-inside pl-5 text-sm space-y-1">
+                    <ul className="pl-5 space-y-1 text-sm list-disc list-inside">
                       <li>
                         {[projectData.location?.ward, projectData.location?.district, projectData.location?.province]
                           .filter(Boolean)
@@ -148,10 +148,10 @@ const JobDetail = () => {
                   </div>
                   {projectData.workingTime && (
                     <div className="mb-4">
-                      <h4 className="font-semibold mb-2">
+                      <h4 className="mb-2 font-semibold">
                         Thời gian làm việc
                       </h4>
-                      <ul className="list-disc list-inside pl-5 text-sm space-y-1">
+                      <ul className="pl-5 space-y-1 text-sm list-disc list-inside">
                         <li>{projectData.workingTime}</li>
                       </ul>
                     </div>
@@ -161,35 +161,35 @@ const JobDetail = () => {
             </div>
 
             {/* Cột phải: Thông tin công ty */}
-            <div className="overflow-visible w-full">
+            <div className="w-full overflow-visible">
               <div className="sticky top-[100px]">
                 <div className="flex flex-col gap-5 p-10 rounded-medium bg-white-bright">
                   <div className="flex items-center gap-4">
-                    <div className="p-3 bg-white-bright border border-white-low rounded-small flex justify-center items-center">
+                    <div className="flex items-center justify-center p-3 border bg-white-bright border-white-low rounded-small">
                       <img
                         src={`data:image/png;base64,${projectData.account?.avatar?.data}`}
                         alt="imgcompany"
-                        className="object-cover w-15 h-15 rounded-full"
+                        className="object-cover rounded-full w-15 h-15"
                       />
                     </div>
                     <div>
                       <h3 className="text-xl font-bold text-gray-800">
-                        {}
+                        { }
                       </h3>
                     </div>
                   </div>
                   <ul className="mb-4 space-y-2 text-sm text-gray-700">
                     <li className="flex items-center space-x-2">
-                      <UsersIcon className="h-4 w-4 text-gray-500" />
-                      <span>Quy mô: {}</span>
+                      <UsersIcon className="w-4 h-4 text-gray-500" />
+                      <span>Quy mô: { }</span>
                     </li>
                     <li className="flex items-center space-x-2">
-                      <TagIcon className="h-4 w-4 text-gray-500" />
-                      <span>Lĩnh vực: {}</span>
+                      <TagIcon className="w-4 h-4 text-gray-500" />
+                      <span>Lĩnh vực: { }</span>
                     </li>
                     <li className="flex items-center space-x-2">
-                      <BuildingOfficeIcon className="h-4 w-4 text-gray-500" />
-                      <span>Địa điểm: {}</span>
+                      <BuildingOfficeIcon className="w-4 h-4 text-gray-500" />
+                      <span>Địa điểm: { }</span>
                     </li>
                   </ul>
                   <button className="w-full px-4 py-2 text-blue-700 transition duration-300 bg-blue-100 rounded-lg hover:bg-blue-200">
@@ -197,8 +197,8 @@ const JobDetail = () => {
                   </button>
                 </div>
 
-                <div className="flex flex-col gap-5 p-10 rounded-medium bg-white-bright mt-5">
-                  <h3 className="text-xl font-semibold text-gray-800 mb-4">
+                <div className="flex flex-col gap-5 p-10 mt-5 rounded-medium bg-white-bright">
+                  <h3 className="mb-4 text-xl font-semibold text-gray-800">
                     Thông tin chung
                   </h3>
                   <ul className="space-y-2 text-sm text-gray-700">
@@ -208,7 +208,7 @@ const JobDetail = () => {
                         <span>Học vấn</span>
                       </span>
                       <span className="font-medium">
-                        {}
+                        { }
                       </span>
                     </li>
                     <li className="flex items-center justify-between">
@@ -218,7 +218,7 @@ const JobDetail = () => {
                         <span>GPA</span>
                       </span>
                       <span className="font-medium">
-                        {}
+                        { }
                       </span>
                     </li>
                     <li className="flex items-center justify-between">
@@ -227,7 +227,7 @@ const JobDetail = () => {
                         <span>Số lượng tuyển</span>
                       </span>
                       <span className="font-medium">
-                        {}
+                        { }
                       </span>
                     </li>
                     <li className="flex items-center justify-between">
@@ -236,7 +236,7 @@ const JobDetail = () => {
                         <span>Hình thức làm việc</span>
                       </span>
                       <span className="font-medium">
-                        {}
+                        { }
                       </span>
                     </li>
                   </ul>

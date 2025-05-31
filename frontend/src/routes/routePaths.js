@@ -18,5 +18,7 @@ export const ROUTES = {
   EMPLOYER_DETAIL: '/employer-detail',
   EMPLOYER_PROFILE: '/employer-profile',
   STUDENT_PROFILE: '/student-profile',
-  SET_INFORMATION: '/set-infomation'
+  SET_INFORMATION: '/set-infomation',
+  // SECURITY PATHS
+  SECURITY: '/security'
 }

@@ -37,7 +37,7 @@ const AccountSchema = new mongoose.Schema({
 
 // Middleware to check before validating
 AccountSchema.pre('validate', function (next) {
-  if (this.type === 'local' && !this.password) {
+  if (this.authProvider === 'local' && !this.password) {
     this.invalidate('password', 'Password is required for local accounts')
   }
   next()

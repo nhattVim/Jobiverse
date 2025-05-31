@@ -88,7 +88,7 @@ const JobManager = () => {
 
                         <div>
                           <Link
-                            to={`/job/${job._id}`}
+                            to={`/job-detail/${job._id}`}
                             className="block mb-1 text-lg font-semibold text-blue-mid hover:underline"
                           >
                             {job.title || 'Không có tiêu đề'}
@@ -100,7 +100,7 @@ const JobManager = () => {
 
                         <div className="flex items-center space-x-2">
                           <button
-                            onClick={() => navigate(`/job/${job._id}`)}
+                            onClick={() => navigate(`/job-detail/${job._id}`)}
                             className="px-4 py-1.5 text-sm text-white bg-green-600 rounded-full hover:bg-green-700 transition cursor-pointer"
                           >
                             <PencilSquareIcon className='w-5 h-5' />
