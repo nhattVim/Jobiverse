@@ -5,6 +5,7 @@ import { ToastContainer, toast } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
 import UserContext from '../contexts/UserContext'
 import apiFetch from '../services/api'
+import Note from '../components/Note'
 
 const Security = () => {
   const { user, setUser } = useContext(UserContext)
@@ -118,11 +119,19 @@ const Security = () => {
                   onChange={handleChange}
                   readOnly={readOnly}
                   required={!readOnly}
+                  placeholder="Nhập mật khẩu"
                   className={`w-full border border-gray-200 px-4 py-2 rounded-md
                     ${readOnly ? 'bg-gray-300 text-gray-800 cursor-not-allowed' : 'bg-white'}`}
                 />
               </div>
             ))}
+
+            {!hasPassword && (
+              <div className="flex justify-start pl-[calc(25%-1.5rem)] mt-6">
+                <Note content="Chưa có mật khẩu? Bạn có thể thiết lập mật khẩu mới để bảo vệ tài khoản của mình." />
+              </div>
+            )}
+
             <div className="flex justify-start pl-[calc(25%-1.5rem)] mt-6">
               <button type="submit" disabled={loading}
                 className="px-5 py-2 text-white bg-green-600 rounded hover:bg-green-700 disabled:opacity-50">
@@ -149,6 +158,13 @@ const Security = () => {
                 className="w-full px-4 py-2 bg-white border border-gray-200 rounded-md"
               />
             </div>
+
+            {!user.phoneNumber && (
+              <div className="flex justify-start pl-[calc(25%-1.5rem)] mt-6">
+                <Note content="Chưa có số điện thoại? Bạn có thể thiết lập số điện thoại để bảo vệ tài khoản của mình." />
+              </div>
+            )}
+
             <div className="flex justify-start pl-[calc(25%-1.5rem)] mt-6">
               <button type="submit" disabled={phoneLoading}
                 className="px-5 py-2 text-white bg-blue-600 rounded hover:bg-blue-700 disabled:opacity-50">

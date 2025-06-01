@@ -32,8 +32,6 @@ const JobEditor = () => {
     specialization: [],
     content: '',
     workingTime: '',
-    applicants: [null],
-    assignedStudents: [null],
     salary: 0,
     expRequired: 0,
     deadline: '',

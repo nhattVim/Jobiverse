@@ -99,13 +99,11 @@ class ProjectController {
     }
   }
 
-  // [GET] /projects/my/:id
+  // [GET] /projects/:id
   async getProjectById(req, res, next) {
     try {
       const projectId = req.params.id
-      const accountId = req.account._id
-      if (!accountId) return res.status(401).json({ message: 'Unauthorized' })
-      const project = await Project.findOne({ _id: projectId, account: accountId })
+      const project = await Project.findOne({ _id: projectId })
         .populate({
           path: 'account',
           select: 'role avatar deleted'
