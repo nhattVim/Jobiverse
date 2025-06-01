@@ -15,6 +15,11 @@ namespace api.Controllers
     public class EmployerController : ControllerBase
     {
         private readonly JobiverseContext _context;
+
+        public EmployerController(JobiverseContext context)
+        {
+            _context = context;
+        }
         public record ProfileDto
         {
             public string? BusinessScale { get; init; }
@@ -85,9 +90,6 @@ namespace api.Controllers
             {
                 var accountId = User.FindFirst("AccountId")?.Value;
                 if (accountId == null) return Unauthorized("AccountId not found in token");
-
-                if (await _context.Employers.AnyAsync(s => s.AccountId == accountId))
-                    return BadRequest("Profile already exists");
 
                 var profile = new Employer
                 {
