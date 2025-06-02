@@ -10,7 +10,8 @@ import {
   DocumentTextIcon,
   HeartIcon,
   UserIcon,
-  ShieldCheckIcon
+  ShieldCheckIcon,
+  BellIcon
 } from '@heroicons/react/24/outline'
 import { HandRaisedIcon } from '@heroicons/react/24/solid'
 
@@ -42,6 +43,7 @@ const Sidebar = () => {
 
   const menuItems = [
     { path: ROUTES.SET_INFORMATION, icon: <UserIcon className='w-6 h-6' />, label: 'Thông tin cá nhân' },
+    { path: ROUTES.NOTIFY, icon: <BellIcon className='w-6 h-6' />, label: 'Thông báo' },
     ...(user.role === 'student' ? [
       { path: ROUTES.CV_MANAGER, icon: <DocumentTextIcon className='w-6 h-6' />, label: 'CV của tôi' }
     ] : []),

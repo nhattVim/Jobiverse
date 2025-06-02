@@ -1,24 +1,12 @@
 /* eslint-disable indent */
 import {
-  MapPinIcon,
-  CurrencyDollarIcon,
-  BriefcaseIcon,
-  CalendarDaysIcon,
-  UsersIcon,
-  TagIcon,
-  BuildingOfficeIcon,
-  BookOpenIcon,
-  Bars3CenterLeftIcon,
-  UserGroupIcon,
-  ClockIcon,
-  HeartIcon as HeartSolidIcon
+  MapPinIcon, CurrencyDollarIcon, BriefcaseIcon, CalendarDaysIcon,
+  UsersIcon, TagIcon, BuildingOfficeIcon, BookOpenIcon, Bars3CenterLeftIcon,
+  UserGroupIcon, ClockIcon, HeartIcon as HeartSolidIcon
 } from '@heroicons/react/24/solid'
 
 import {
-  CheckCircleIcon,
-  ClockIcon as ClockIconOutline,
-  HeartIcon,
-  XCircleIcon
+  CheckCircleIcon, ClockIcon as ClockIconOutline, HeartIcon, XCircleIcon
 } from '@heroicons/react/24/outline'
 
 import { useEffect, useCallback, useState, useContext } from 'react'
@@ -41,7 +29,6 @@ const JobDetail = () => {
   const [profile, setProfile] = useState({})
   const location = useLocation()
   const navigate = useNavigate()
-
 
   const [project, setProject] = useState(null)
   const [applicantDetails, setApplicantDetails] = useState([])
@@ -180,15 +167,18 @@ const JobDetail = () => {
                       Hạn nộp hồ sơ: {new Date(project.deadline).toLocaleDateString()}
                     </div>
                     <div className="flex gap-3 ml-auto">
-                      {project.applicants &&
-                        project.applicants.some(
-                          (data) => data && data.student === profile._id
-                        ) ? (
+                      {isOwner ? (
+                        <ButtonArrowOne onClick={() => navigate(`/job/${project._id}`)}>
+                          Chỉnh sửa
+                        </ButtonArrowOne>
+                      ) : project.applicants &&
+                        project.applicants.some((data) => data && data.student === profile._id) ? (
                         (() => {
-                          const applicant = project.applicants?.find(
+                          const applicant = project.applicants.find(
                             (data) => data && data.student === profile._id
                           )
-                          let status = applicant?.status
+                          const status = applicant?.status
+
                           switch (status) {
                             case 'pending':
                               return (
@@ -221,6 +211,7 @@ const JobDetail = () => {
                       ) : (
                         <ButtonArrowOne onClick={() => setIsOpen(true)}>Ứng tuyển</ButtonArrowOne>
                       )}
+
 
                       <div
                         onClick={handleFavorite}
@@ -399,9 +390,9 @@ const ListItem = ({ icon, label, value }) => (
   </li>
 )
 
-const StatusTag = ({ icon, content, ...props }) => {
+const StatusTag = ({ icon, content, className }) => {
   return (
-    <span className="flex items-center px-3 py-2 font-medium" {...props}>
+    <span className={`flex items-center px-3 py-2 font-medium ${className}`}>
       {icon}
       {content}
     </span>

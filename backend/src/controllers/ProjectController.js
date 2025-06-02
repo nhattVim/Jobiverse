@@ -237,7 +237,7 @@ class ProjectController {
       if (project.assignedStudents.includes(student._id))
         return res
           .status(400)
-          .json({ message: 'You have already been assigned to this project' })
+          .json({ message: 'Bạn đã ở trong dự án này' })
 
       project.applicants.push({
         student: student._id,
@@ -247,8 +247,8 @@ class ProjectController {
       await project.save()
 
       await Notification.create({
-        account: project.account,
-        content: `Student ${student.account.name} has applied to your project ${project.title}`
+        account: student.account,
+        content: `Student "${student.name}" has applied to your project "${project.title}"`
       })
 
       res.status(200).json({ message: 'Application submitted successfully' })
@@ -346,12 +346,8 @@ class ProjectController {
 
       await project.save()
 
-      const student = await Student.findById(studentId)
-      if (!student)
-        return res.status(404).json({ message: 'Student not found' })
-
       await Notification.create({
-        account: student.account._id,
+        account: project.account,
         content: `Your application for project "${project.title}" has been ${action}ed.`
       })
 

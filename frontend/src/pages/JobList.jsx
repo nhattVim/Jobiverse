@@ -4,7 +4,6 @@ import { CheckIcon, FunnelIcon } from '@heroicons/react/24/solid'
 import JobListItem from '../components/JobListItem'
 import apiFetch from '../services/api'
 
-
 const expItem = [
   { id: 0, name: 'Không yêu cầu' },
   { id: 1, name: '1 năm' },

@@ -19,6 +19,7 @@ import EmployerDetail from '../pages/EmployerDetail'
 import JobManager from '../pages/JobManager'
 import AppliedJob from '../pages/AppliedJob'
 import Security from '../pages/Security'
+import Notify from '../pages/Notify'
 
 export const router = createBrowserRouter([
   {
@@ -88,6 +89,11 @@ export const router = createBrowserRouter([
       {
         path: ROUTES.SECURITY,
         element: <ProtectedRoute><Security /></ProtectedRoute>
+      },
+      // NOTIFICATION ROUTES
+      {
+        path: ROUTES.NOTIFY,
+        element: <ProtectedRoute><Notify /></ProtectedRoute>
       }
     ]
   },

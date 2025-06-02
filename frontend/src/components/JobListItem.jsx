@@ -41,8 +41,6 @@ const JobListItem = ({ job, a, b }) => {
       ))
   }
 
-  console.log('JobListItem rendered', job)
-
   return (
     <div className="flex flex-col items-start gap-[30px] p-10 bg-white-mid rounded-medium w-full">
       <div className="flex flex-col items-start gap-5 w-full pb-[15px] border-b border-b-gray-light">

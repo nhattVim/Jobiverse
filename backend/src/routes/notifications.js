@@ -7,6 +7,7 @@ router.use(verifyToken(['student', 'employer']))
 router.get('/', notificationController.getNotifications)
 router.get('/unread-count', notificationController.getUnreadCount)
 router.delete('/:id', notificationController.deleteNotification)
-router.put('/:id/read', notificationController.markAsRead)
+router.delete('/', notificationController.deleteAllNotifications)
+router.put('/mark-as-read', notificationController.markAsRead)
 
 module.exports = router

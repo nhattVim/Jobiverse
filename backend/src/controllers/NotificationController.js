@@ -35,13 +35,22 @@ class NotificationController {
     }
   }
 
-  // [PUT] /notifications/:id/read
-  async markAsRead(req, res, next) {
-    const notificationId = req.params.id
+  // [DELETE] /notifications
+  async deleteAllNotifications(req, res, next) {
+    const accountId = req.account._id
     try {
-      const notification = await Notification.findByIdAndUpdate(notificationId, { isRead: true }, { new: true })
-      if (!notification) return res.status(404).json({ message: 'Notification not found' })
-      res.status(200).json(notification)
+      await Notification.deleteMany({ account: accountId })
+      res.status(200).json({ message: 'All notifications deleted successfully' })
+    } catch (err) {
+      res.status(500).json({ message: 'Internal server error', error: err.message })
+    }
+  }
+
+  // [PUT] /notifications/mark-as-read
+  async markAsRead(req, res, next) {
+    try {
+      await Notification.updateMany({ account: req.account._id, isRead: false }, { isRead: true })
+      res.status(200).json({ message: 'Marked as read' })
     } catch (err) {
       res.status(500).json({ message: 'Internal server error', error: err.message })
     }

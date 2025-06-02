@@ -16,6 +16,7 @@ const NavBar = () => {
   const [isTopOfPage, setIsTopOfPage] = useState(true)
   const [hoveredMenu, setHoveredMenu] = useState(null)
   const [isLoggedIn, setIsLoggedIn] = useState(false)
+  const [notiCount, setNotiCount] = useState(0)
   const { user } = useContext(UserContext)
 
   useEffect(() => {
@@ -32,6 +33,38 @@ const NavBar = () => {
   useEffect(() => {
     if (user) setIsLoggedIn(true)
   }, [user])
+
+  useEffect(() => {
+    let intervalId
+
+    const fetchNotifications = async () => {
+      try {
+        const res = await apiFetch('/notify/unread-count', 'GET')
+        setNotiCount(res.unreadCount)
+      } catch (err) {
+        console.error('Fetch error:', err)
+      }
+    }
+
+    const startPolling = () => {
+      fetchNotifications()
+      intervalId = setInterval(fetchNotifications, 10000)
+    }
+
+    const stopPolling = () => clearInterval(intervalId)
+
+    document.addEventListener('visibilitychange', () => {
+      if (document.visibilityState === 'visible') startPolling()
+      else stopPolling()
+    })
+
+    startPolling()
+
+    return () => {
+      stopPolling()
+      document.removeEventListener('visibilitychange', () => { })
+    }
+  }, [])
 
   const handleLogout = async () => {
     try {
@@ -142,16 +175,22 @@ const NavBar = () => {
 
           <div className="flex items-center gap-4">
             {isLoggedIn ? (
-              // Hiển thị thông tin tài khoản khi đã đăng nhập
               <div className="flex items-center gap-4">
                 <div className="hidden md:block">
                   <ButtonArrowOne selectedPage={ROUTES.JOB_POST}>
                     Đăng một công việc
                   </ButtonArrowOne>
                 </div>
-                <div className="flex justify-center items-center w-[46px] h-[46px] rounded-full bg-white-low">
-                  <BellIcon className="w-6 h-6" />
-                </div>
+                <Link to={ROUTES.NOTIFY}>
+                  <div className="flex justify-center items-center w-[46px] h-[46px] rounded-full bg-white-low relative cursor-pointer">
+                    <BellIcon className="w-6 h-6" />
+                    {notiCount > 0 && (
+                      <span className="absolute flex items-center justify-center w-5 h-5 text-xs text-white bg-red-500 rounded-full -top-1 -right-1">
+                        {notiCount}
+                      </span>
+                    )}
+                  </div>
+                </Link>
                 <div
                   className="relative flex items-center gap-2 p-2 h-[46px] rounded-full bg-white-low cursor-pointer"
                   onMouseEnter={() => setHoveredMenu('account')}

@@ -125,8 +125,9 @@ const ApplyPopup = ({ closePopup, applyTitle, projectId, toast }) => {
 
       toast.success('Nộp hồ sơ ứng tuyển thành công')
       closePopup()
-    } catch {
-      setError('Nộp hồ sơ thất bại, vui lòng thử lại.')
+    } catch (err) {
+      setError('Nộp hồ sơ thất bại. ' + err.message)
+      toast.error('Nộp hồ sơ thất bại. ' + err.message)
     }
   }
 
