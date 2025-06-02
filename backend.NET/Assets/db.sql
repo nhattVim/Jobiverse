@@ -68,7 +68,6 @@ CREATE TABLE Projects (
   AccountID VARCHAR(255) NOT NULL,
   Title VARCHAR(255) CHARACTER SET utf8mb4,
   Description LONGTEXT,
-  Location LONGTEXT,
   Content LONGTEXT,
   WorkingTime VARCHAR(100) CHARACTER SET utf8mb4,
   Status ENUM('open', 'closed', 'in-progress') DEFAULT 'open',
@@ -82,6 +81,14 @@ CREATE TABLE Projects (
   Deleted TINYINT(1) DEFAULT 0,
   FOREIGN KEY (AccountID) REFERENCES Accounts(AccountID)
     ON UPDATE CASCADE ON DELETE CASCADE
+);
+
+CREATE TABLE ProjectLocations (
+  ProjectID VARCHAR(255),
+  Province VARCHAR(255),
+  District VARCHAR(255),
+  Ward VARCHAR(255),
+  FOREIGN KEY (ProjectID) REFERENCES Projects(ProjectID),
 );
 
 CREATE TABLE ProjectMajors (

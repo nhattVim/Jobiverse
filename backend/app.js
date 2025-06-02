@@ -14,8 +14,8 @@ db.connect()
 // Middlewares
 app.use(cors({ origin: 'https://localhost:5173', credentials: true }))
 app.use(logger('dev'))
-app.use(express.json())
-app.use(express.urlencoded({ extended: false }))
+app.use(express.json({ limit: '10mb' }))
+app.use(express.urlencoded({ extended: true, limit: '10mb' }))
 app.use(cookieParser())
 app.use(express.static(path.join(__dirname, 'public')))
 

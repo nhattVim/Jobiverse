@@ -129,8 +129,8 @@ const ApplyPopup = ({ setIsOpen, applyTitle, projectId }) => {
 
       toast.success('Nộp hồ sơ ứng tuyển thành công')
       setTimeout(() => {
-        setIsOpen(false)
         window.location.reload()
+        setIsOpen(false)
       }, 3000)
     } catch {
       setError('Nộp hồ sơ thất bại, vui lòng thử lại.')
@@ -142,13 +142,13 @@ const ApplyPopup = ({ setIsOpen, applyTitle, projectId }) => {
       <ToastContainer position="top-right" autoClose={2000} />
       <div className="absolute inset-0 bg-black opacity-50"></div>
       <div className="relative z-10 bg-white-bright min-h-[90%] mx-auto shadow-lg w-full max-w-2xl rounded-small animate-slideUp">
-        <div className="fixed z-50 max-w-2xl w-full flex items-center px-8 py-5 justify-between shadow">
+        <div className="fixed z-50 flex items-center justify-between w-full max-w-2xl px-8 py-5 shadow">
           <h6 className="text-xl font-semibold">
             Ứng tuyển <span className="text-blue">{applyTitle}</span>
           </h6>
           <div
             onClick={() => setIsOpen(false)}
-            className="font-bold text-gray-dark bg-white-mid p-1 rounded-full hover:bg-blue-100 hover:text-blue cursor-pointer"
+            className="p-1 font-bold rounded-full cursor-pointer text-gray-dark bg-white-mid hover:bg-blue-100 hover:text-blue"
           >
             <XMarkIcon className="w-6 h-6" />
           </div>
@@ -293,14 +293,13 @@ const ApplyPopup = ({ setIsOpen, applyTitle, projectId }) => {
             onClick={() => handleToggle('b')}
           >
             <div
-              className={`absolute top-4 left-4 flex items-center justify-center w-5 h-5 rounded-full border-2 ${
-                active === 'b'
-                  ? 'after:block after:w-2.5 after:h-2.5 after:rounded-full after:bg-blue border-blue'
-                  : 'border-gray'
+              className={`absolute top-4 left-4 flex items-center justify-center w-5 h-5 rounded-full border-2 ${active === 'b'
+                ? 'after:block after:w-2.5 after:h-2.5 after:rounded-full after:bg-blue border-blue'
+                : 'border-gray'
               }`}
             ></div>
-            <p className="font-bold flex items-center">
-              <CloudArrowUpIcon className="w-10 h-10 text-gray mr-2" /> Tải lên
+            <p className="flex items-center font-bold">
+              <CloudArrowUpIcon className="w-10 h-10 mr-2 text-gray" /> Tải lên
               CV từ máy tính, chọn hoặc kéo thả
             </p>
             <p className="text-xs text-gray-400">
@@ -340,7 +339,7 @@ const ApplyPopup = ({ setIsOpen, applyTitle, projectId }) => {
               <ExclamationTriangleIcon className="w-5 h-5 text-red" />
               <span className="text-red">Lưu ý:</span>
             </div>
-            <p className="text-sm mt-2">
+            <p className="mt-2 text-sm">
               Jobiverse khuyên tất cả các bạn hãy luôn cẩn trọng trong quá trình
               tìm việc và chủ động nghiên cứu về thông tin công ty, vị trí việc
               làm trước khi ứng tuyển. Ứng viên cần có trách nhiệm với hành vi

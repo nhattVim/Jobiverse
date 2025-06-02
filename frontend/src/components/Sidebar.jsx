@@ -9,7 +9,8 @@ import {
   BriefcaseIcon,
   DocumentTextIcon,
   HeartIcon,
-  UserIcon
+  UserIcon,
+  ShieldCheckIcon
 } from '@heroicons/react/24/outline'
 import { HandRaisedIcon } from '@heroicons/react/24/solid'
 
@@ -47,7 +48,8 @@ const Sidebar = () => {
     { path: ROUTES.JOB_MANAGER, icon: <ArrowUpCircleIcon className="w-6 h-6" />, label: 'Dự án đã đăng' },
     { path: ROUTES.SAVED_JOB, icon: <HeartIcon className='w-6 h-6' />, label: 'Việc làm đã lưu' },
     { path: ROUTES.APPLIED_JOB, icon: <BriefcaseIcon className='w-6 h-6' />, label: 'Việc làm đã ứng tuyển' },
-    { path: '/job-invites', icon: <ArchiveBoxIcon className='w-6 h-6' />, label: 'Lời mời công việc' }
+    { path: '/job-invites', icon: <ArchiveBoxIcon className='w-6 h-6' />, label: 'Lời mời công việc' },
+    { path: ROUTES.SECURITY, icon: <ShieldCheckIcon className='w-6 h-6' />, label: 'Cài đặt Bảo mật' }
   ]
 
   return (

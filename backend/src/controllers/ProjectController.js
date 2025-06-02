@@ -107,19 +107,17 @@ class ProjectController {
     }
   }
 
-  // [GET] /projects/my/:id
-  async getProjectDetail(req, res, next) {
+  // [GET] /projects/:id
+  async getProjectById(req, res, next) {
     try {
       const projectId = req.params.id
       const project = await Project.findOne({ _id: projectId })
-        .select('-__v')
         .populate({
           path: 'account',
-          select: 'role avatar'
+          select: 'role avatar deleted'
         })
-      if (!project) {
-        return res.status(404).json({ message: 'No project found' })
-      }
+        .select('-__v')
+      if (!project) return res.status(404).json({ message: 'No project found' })
       res.status(200).json(project.toObject())
     } catch (err) {
       res
@@ -328,7 +326,7 @@ class ProjectController {
         })
       }
 
-      if (!project.applicants.includes(studentId)) {
+      if (!project.applicants.student === studentId) {
         return res
           .status(400)
           .json({ message: 'Student did not apply for this project' })
@@ -360,7 +358,7 @@ class ProjectController {
         .status(200)
         .json({ message: `Student has been ${action}ed successfully` })
     } catch (err) {
-      res.status(500).json({ message: 'Server error', error: err.message })
+      res.status(500).json({ message: 'Server error' + err.message, error: err.message })
     }
   }
 

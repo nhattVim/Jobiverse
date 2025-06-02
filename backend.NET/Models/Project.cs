@@ -41,6 +41,8 @@ public partial class Project
 
     public virtual ICollection<Favorite> Favorites { get; set; } = new List<Favorite>();
 
+    public virtual ProjectLocation? ProjectLocation { get; set; }
+
     public virtual ICollection<Student> ApplicantStudents { get; set; } = new List<Student>();
 
     public virtual ICollection<Student> AssignedStudents { get; set; } = new List<Student>();

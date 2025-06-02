@@ -2,7 +2,8 @@ export const ROUTES = {
   HOME: '/',
   // JOB PATHS
   JOB_LIST: '/job-list',
-  JOB_POST: '/job-post',
+  CREATE_JOB: '/job',
+  UPDATE_JOB: '/job/:id',
   JOB_DETAIL: '/job-detail/:id',
   SAVED_JOB: '/saved-jobs',
   APPLIED_JOB: '/applied-jobs',
@@ -19,5 +20,7 @@ export const ROUTES = {
   EMPLOYER_DETAIL: '/employer-detail',
   EMPLOYER_PROFILE: '/employer-profile',
   STUDENT_PROFILE: '/student-profile',
-  SET_INFORMATION: '/set-infomation'
+  SET_INFORMATION: '/set-infomation',
+  // SECURITY PATHS
+  SECURITY: '/security'
 }

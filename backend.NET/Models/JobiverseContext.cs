@@ -45,6 +45,8 @@ public partial class JobiverseContext : DbContext
 
     public virtual DbSet<Project> Projects { get; set; }
 
+    public virtual DbSet<ProjectLocation> ProjectLocations { get; set; }
+
     public virtual DbSet<Specialization> Specializations { get; set; }
 
     public virtual DbSet<Student> Students { get; set; }
@@ -477,6 +479,21 @@ public partial class JobiverseContext : DbContext
                         j.IndexerProperty<string>("ProjectId").HasColumnName("ProjectID");
                         j.IndexerProperty<string>("SpecializationId").HasColumnName("SpecializationID");
                     });
+        });
+
+        modelBuilder.Entity<ProjectLocation>(entity =>
+        {
+            entity.HasKey(e => e.ProjectId).HasName("PRIMARY");
+
+            entity.Property(e => e.ProjectId).HasColumnName("ProjectID");
+            entity.Property(e => e.District).HasMaxLength(255);
+            entity.Property(e => e.Province).HasMaxLength(255);
+            entity.Property(e => e.Ward).HasMaxLength(255);
+
+            entity.HasOne(d => d.Project).WithOne(p => p.ProjectLocation)
+                .HasForeignKey<ProjectLocation>(d => d.ProjectId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("ProjectLocations_ibfk_1");
         });
 
         modelBuilder.Entity<Specialization>(entity =>

@@ -63,6 +63,17 @@ class AdminController {
     }
   }
 
+  // [GET] /account/has-password
+  async hasPassword(req, res, next) {
+    try {
+      const account = await Account.findById(req.account._id).select('password')
+      if (!account) return res.status(404).json({ message: 'Tài khoản không tồn tại' })
+      res.json({ hasPassword: !!account.password })
+    } catch (err) {
+      res.status(500).json({ message: 'Lỗi máy chủ khi kiểm tra mật khẩu', error: err.message })
+    }
+  }
+
   // [DELETE] /account/:id
   async deleteAccount(req, res, next) {
     try {
@@ -96,25 +107,57 @@ class AdminController {
     }
   }
 
-  // [PUT] /account/:id
-  async changePassword(req, res, next) {
+  // [PUT] /account/update-password
+  async updatePassword(req, res) {
     try {
       const account = await Account.findById(req.account._id)
       if (!account) return res.status(404).json({ message: 'Tài khoản không tồn tại' })
 
-      const { oldPassword, newPassword } = req.body
-      if (!oldPassword || !newPassword)
-        return res.status(400).json({ message: 'Vui lòng nhập mật khẩu cũ và mật khẩu mới' })
+      const { currentPassword, newPassword } = req.body
+      if (!newPassword) return res.status(400).json({ message: 'Vui lòng nhập mật khẩu mới' })
 
-      const isMatch = await bcrypt.compare(oldPassword, account.password)
-      if (!isMatch) return res.status(400).json({ message: 'Mật khẩu cũ không đúng.' })
+      const hasPassword = Boolean(account.password)
+
+      if (hasPassword) {
+        if (!currentPassword) return res.status(400).json({ message: 'Vui lòng nhập mật khẩu hiện tại' })
+        const isMatch = await bcrypt.compare(currentPassword, account.password)
+        if (!isMatch) return res.status(400).json({ message: 'Mật khẩu hiện tại không đúng.' })
+      }
 
       account.password = newPassword
       await account.save()
 
-      res.json({ message: 'Đổi mật khẩu thành công.' })
+      res.json({
+        message: hasPassword ? 'Đổi mật khẩu thành công.' : 'Thiết lập mật khẩu thành công.'
+      })
     } catch (err) {
-      res.status(500).json({ message: 'Lỗi máy chủ khi thay đổi mật khẩu', error: err.message })
+      res.status(500).json({
+        message: 'Lỗi máy chủ khi thay đổi mật khẩu',
+        error: err.message
+      })
+    }
+  }
+
+  // [PUT] /account/update-phone
+  async updatePhone(req, res) {
+    try {
+      const accountId = req.account.id
+      if (!accountId) return res.status(401).json({ message: 'Chưa đăng nhập' })
+
+      const { phone } = req.body
+      if (!phone) return res.status(400).json({ message: 'Vui lòng nhập số điện thoại mới' })
+
+      const phoneExists = await Account.findOne({
+        phoneNumber: phone,
+        _id: { $ne: accountId }
+      })
+
+      if (phoneExists) return res.status(409).json({ message: 'Số điện thoại đã được sử dụng bởi tài khoản khác' })
+      const updated = await Account.findByIdAndUpdate(accountId, { phoneNumber: phone }, { new: true })
+      if (!updated) return res.status(404).json({ message: 'Không tìm thấy tài khoản' })
+      res.json({ message: 'Cập nhật số điện thoại thành công' })
+    } catch (err) {
+      res.status(500).json({ message: 'Lỗi máy chủ khi cập nhật số điện thoại', error: err.message })
     }
   }
 

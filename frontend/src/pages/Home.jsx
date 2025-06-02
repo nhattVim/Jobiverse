@@ -73,7 +73,6 @@ const Home = () => {
             <div className="absolute inset-0 h-full -left-[70px]">
               <img
                 src={HeroImg}
-                alt="heroimg"
                 className="object-cover w-full h-full"
               />
             </div>
