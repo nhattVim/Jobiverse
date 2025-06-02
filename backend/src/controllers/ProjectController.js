@@ -326,7 +326,7 @@ class ProjectController {
         })
       }
 
-      if (!project.applicants.student === studentId) {
+      if (!project.applicants.some(app => app.student.toString() === studentId)) {
         return res
           .status(400)
           .json({ message: 'Student did not apply for this project' })
@@ -341,8 +341,9 @@ class ProjectController {
       }
 
       project.applicants = project.applicants.filter(
-        (id) => id.toString() !== studentId
+        (applicant) => applicant.student.toString() !== studentId
       )
+
       await project.save()
 
       const student = await Student.findById(studentId)

@@ -22,13 +22,14 @@ import {
 } from '@heroicons/react/24/outline'
 
 import { useEffect, useCallback, useState, useContext } from 'react'
-import { useParams, useSearchParams } from 'react-router-dom'
+import { useParams, useNavigate, useLocation, useSearchParams } from 'react-router-dom'
 
 import Banner from '../components/Banner'
 import ButtonArrowOne from '../shared/ButtonArrowOne'
 import ApplyPopup from '../components/ApplyPopup'
 import UserContext from '../contexts/UserContext'
 import apiFetch from '../services/api'
+import { ToastContainer, toast } from 'react-toastify'
 
 const JobDetail = () => {
   const { id } = useParams()
@@ -38,6 +39,9 @@ const JobDetail = () => {
   const isFavoritedInitial = searchParams.get('isFavorited') === 'true'
   const [isFavorited, setIsFavorited] = useState(isFavoritedInitial)
   const [profile, setProfile] = useState({})
+  const location = useLocation()
+  const navigate = useNavigate()
+
 
   const [project, setProject] = useState(null)
   const [applicantDetails, setApplicantDetails] = useState([])
@@ -48,7 +52,6 @@ const JobDetail = () => {
   const fetchFullProjectData = useCallback(async () => {
     try {
       const res = await apiFetch(`/projects/${id}`, 'GET')
-      console.log(res)
       setProject(res)
 
       if (res?.applicants?.length) {
@@ -62,7 +65,7 @@ const JobDetail = () => {
 
       if (res?.assignedStudents?.length) {
         const acceptedData = await Promise.all(
-          res.assignedStudents.map(s => apiFetch(`/students/${s.student}`, 'GET'))
+          res.assignedStudents.map(id => apiFetch(`/students/${id}`, 'GET'))
         )
         setAcceptedDetails(acceptedData)
       } else {
@@ -110,7 +113,7 @@ const JobDetail = () => {
 
   useEffect(() => {
     fetchFullProjectData()
-  }, [fetchFullProjectData])
+  }, [isOpen, fetchFullProjectData])
 
   useEffect(() => {
     document.body.classList.toggle('overflow-hidden', isOpen)
@@ -120,7 +123,7 @@ const JobDetail = () => {
   const handleApplyClick = async (studentId, action) => {
     try {
       await apiFetch(`/projects/${id}/respond/${studentId}`, 'POST', { action })
-      await fetchFullProjectData() // Refresh all data
+      await fetchFullProjectData()
     } catch (error) {
       console.error('Failed to handle apply click:', error)
     }
@@ -135,6 +138,13 @@ const JobDetail = () => {
     )
   }
 
+  const closePopup = () => {
+    setIsOpen(false)
+    const params = new URLSearchParams(location.search)
+    params.delete('openApply')
+    navigate(`${location.pathname}?${params.toString()}`, { replace: true })
+  }
+
   const locationText = [project.location?.ward, project.location?.district, project.location?.province]
     .filter(Boolean).join(', ')
 
@@ -143,10 +153,10 @@ const JobDetail = () => {
     ? `data:image/png;base64,${avatarBase64}`
     : '/default-avatar.png'
 
-  console.log(applicantDetails)
   return (
     <>
-      {isOpen && <ApplyPopup setIsOpen={setIsOpen} applyTitle={project.title} projectId={project._id} />}
+      {isOpen && <ApplyPopup closePopup={closePopup} applyTitle={project.title} projectId={project._id} toast={toast} />}
+      <ToastContainer position="top-right" autoClose={2000} />
       <Banner />
       <div className="w-full py-20">
         <main className="container-responsive">

@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import {
   CloudArrowUpIcon,
   ExclamationTriangleIcon,
@@ -10,10 +11,9 @@ import { motion, AnimatePresence } from 'framer-motion'
 import { Link, useNavigate } from 'react-router-dom'
 import { ROUTES } from '../routes/routePaths'
 import { TrashIcon } from '@heroicons/react/24/outline'
-import { ToastContainer, toast } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
 
-const ApplyPopup = ({ setIsOpen, applyTitle, projectId }) => {
+const ApplyPopup = ({ closePopup, applyTitle, projectId, toast }) => {
   const navigate = useNavigate()
   const [cvList, setCvList] = useState([])
   const [cvUploads, setCvUploads] = useState([])
@@ -35,7 +35,7 @@ const ApplyPopup = ({ setIsOpen, applyTitle, projectId }) => {
 
   const handleSelectCV = (cv) => {
     setSelectedCV(cv)
-    setForm({ ...form, cv: null }) // Nếu chọn CV thư viện thì bỏ file upload
+    setForm({ ...form, cv: null })
     setError('')
   }
 
@@ -115,23 +115,16 @@ const ApplyPopup = ({ setIsOpen, applyTitle, projectId }) => {
     }
     try {
       if (selectedCV) {
-        await apiFetch(`/projects/${projectId}/apply`, 'POST', {
-          cvId: selectedCV._id
-        })
+        await apiFetch(`/projects/${projectId}/apply`, 'POST', { cvId: selectedCV._id })
       } else if (form.cv && uploadedCVId) {
-        await apiFetch(`/projects/${projectId}/apply`, 'POST', {
-          cvId: uploadedCVId
-        })
+        await apiFetch(`/projects/${projectId}/apply`, 'POST', { cvId: uploadedCVId })
       } else {
         setError('Vui lòng chờ file CV tải lên xong!')
         return
       }
 
       toast.success('Nộp hồ sơ ứng tuyển thành công')
-      setTimeout(() => {
-        window.location.reload()
-        setIsOpen(false)
-      }, 3000)
+      closePopup()
     } catch {
       setError('Nộp hồ sơ thất bại, vui lòng thử lại.')
     }
@@ -139,7 +132,6 @@ const ApplyPopup = ({ setIsOpen, applyTitle, projectId }) => {
 
   return (
     <div className="fixed z-[999] inset-0 flex justify-center items-center">
-      <ToastContainer position="top-right" autoClose={2000} />
       <div className="absolute inset-0 bg-black opacity-50"></div>
       <div className="relative z-10 bg-white-bright min-h-[90%] mx-auto shadow-lg w-full max-w-2xl rounded-small animate-slideUp">
         <div className="fixed z-50 flex items-center justify-between w-full max-w-2xl px-8 py-5 shadow">
@@ -147,7 +139,7 @@ const ApplyPopup = ({ setIsOpen, applyTitle, projectId }) => {
             Ứng tuyển <span className="text-blue">{applyTitle}</span>
           </h6>
           <div
-            onClick={() => setIsOpen(false)}
+            onClick={() => closePopup()}
             className="p-1 font-bold rounded-full cursor-pointer text-gray-dark bg-white-mid hover:bg-blue-100 hover:text-blue"
           >
             <XMarkIcon className="w-6 h-6" />
@@ -160,25 +152,20 @@ const ApplyPopup = ({ setIsOpen, applyTitle, projectId }) => {
           </div>
 
           <div
-            className={`${
-              active === 'a' ? 'border-blue' : 'border-gray-light'
-            } border group hover:border-blue w-full p-4 rounded-small text-sm transition-all duration-300`}
+            className={`${active === 'a' ? 'border-blue' : 'border-gray-light'}
+            border group hover:border-blue w-full p-4 rounded-small text-sm transition-all duration-300`}
           >
             <div
               onClick={() => handleToggle('a')}
               className="flex items-center gap-2 cursor-pointer"
             >
               <div
-                className={`flex items-center justify-center w-5 h-5 rounded-full border-2 ${
-                  active === 'a'
-                    ? 'after:block after:w-2.5 after:h-2.5 after:rounded-full after:bg-blue border-blue'
-                    : 'border-gray'
-                }`}
+                className={`flex items-center justify-center w-5 h-5 rounded-full border-2 ${active === 'a'
+                  ? 'after:block after:w-2.5 after:h-2.5 after:rounded-full after:bg-blue border-blue'
+                  : 'border-gray'}`}
               ></div>
               <p
-                className={`${
-                  active === 'a' ? 'text-blue' : ''
-                } font-semibold group-hover:text-blue`}
+                className={`${active === 'a' ? 'text-blue' : ''} font-semibold group-hover:text-blue`}
               >
                 Chọn CV trong thư viện CV của tôi
               </p>
@@ -198,7 +185,7 @@ const ApplyPopup = ({ setIsOpen, applyTitle, projectId }) => {
                       Bạn chưa có CV nào trong thư viện
                       <Link
                         to={ROUTES.CREATE_CV}
-                        className="px-4 py-2 text-white-bright transition-colors bg-blue rounded-full cursor-pointer hover:bg-blue-mid"
+                        className="px-4 py-2 transition-colors rounded-full cursor-pointer text-white-bright bg-blue hover:bg-blue-mid"
                       >
                         Tạo CV mới
                       </Link>
@@ -209,25 +196,21 @@ const ApplyPopup = ({ setIsOpen, applyTitle, projectId }) => {
                         ''
                       ) : (
                         <div className="space-y-2">
-                          <p className="font-semibold mt-4">CV Online</p>{' '}
+                          <p className="mt-4 font-semibold">CV Online</p>{' '}
                           {cvList.map((data) => (
                             <div
                               key={data._id}
-                              className={`group/a flex justify-between items-center transition-all duration-300 px-4 py-3 border rounded-small cursor-pointer ${
-                                selectedCV && selectedCV._id === data._id
-                                  ? 'border-blue bg-blue-50'
-                                  : 'border-gray-light hover:border-blue'
-                              }`}
+                              className={`group/a flex justify-between items-center transition-all duration-300 px-4 py-3 border rounded-small cursor-pointer ${selectedCV && selectedCV._id === data._id
+                                ? 'border-blue bg-blue-50'
+                                : 'border-gray-light hover:border-blue'}`}
                               onClick={() => handleSelectCV(data)}
                             >
                               {data.title || 'Chưa đặt tên'}
                               <Link
                                 to={`/cv/${data._id}`}
-                                className={`${
-                                  selectedCV && selectedCV._id === data._id
-                                    ? 'visible'
-                                    : ''
-                                } invisible text-blue group-hover/a:visible`}
+                                className={`${selectedCV && selectedCV._id === data._id
+                                  ? 'visible'
+                                  : ''} invisible text-blue group-hover/a:visible`}
                               >
                                 Xem
                               </Link>
@@ -240,15 +223,13 @@ const ApplyPopup = ({ setIsOpen, applyTitle, projectId }) => {
                         ''
                       ) : (
                         <div className="space-y-2">
-                          <p className="font-semibold mt-4">CV đã tải lên</p>
+                          <p className="mt-4 font-semibold">CV đã tải lên</p>
                           {cvUploads.map((data) => (
                             <div
                               key={data._id}
-                              className={`group/a flex justify-between items-center transition-all duration-300 px-4 py-3 border rounded-small cursor-pointer ${
-                                selectedCV && selectedCV._id === data._id
-                                  ? 'border-blue bg-blue-50'
-                                  : 'border-gray-light hover:border-blue'
-                              }`}
+                              className={`group/a flex justify-between items-center transition-all duration-300 px-4 py-3 border rounded-small cursor-pointer ${selectedCV && selectedCV._id === data._id
+                                ? 'border-blue bg-blue-50'
+                                : 'border-gray-light hover:border-blue'}`}
                               onClick={() => handleSelectCV(data)}
                             >
                               {data.title || 'Chưa đặt tên'}
@@ -256,11 +237,9 @@ const ApplyPopup = ({ setIsOpen, applyTitle, projectId }) => {
                                 href={`http://localhost:3000/cv/uploads/${data._id}`}
                                 target="_blank"
                                 rel="noreferrer"
-                                className={`${
-                                  selectedCV && selectedCV._id === data._id
-                                    ? 'visible'
-                                    : ''
-                                } invisible text-blue group-hover/a:visible`}
+                                className={`${selectedCV && selectedCV._id === data._id
+                                  ? 'visible'
+                                  : ''} invisible text-blue group-hover/a:visible`}
                               >
                                 Xem
                               </a>
@@ -276,9 +255,8 @@ const ApplyPopup = ({ setIsOpen, applyTitle, projectId }) => {
           </div>
 
           <div
-            className={`relative w-full border border-dashed rounded-small p-4 flex flex-col items-center text-center space-y-4 hover:border-blue transition-all duration-300 cursor-pointer ${
-              dragOver || active === 'b' ? 'border-blue' : 'border-gray-light'
-            } ${dragOver ? 'bg-blue-50' : ''}`}
+            className={`relative w-full border border-dashed rounded-small p-4 flex flex-col items-center text-center space-y-4 hover:border-blue transition-all duration-300 cursor-pointer
+              ${dragOver || active === 'b' ? 'border-blue' : 'border-gray-light'} ${dragOver ? 'bg-blue-50' : ''}`}
             onDragOver={(e) => {
               e.preventDefault()
               setDragOver(true)
@@ -288,15 +266,14 @@ const ApplyPopup = ({ setIsOpen, applyTitle, projectId }) => {
               e.preventDefault()
               setDragOver(false)
               const file = e.dataTransfer.files[0]
-              handleFileChange({ target: { files: [file] } }) // xử lý giống input
+              handleFileChange({ target: { files: [file] } })
             }}
             onClick={() => handleToggle('b')}
           >
             <div
               className={`absolute top-4 left-4 flex items-center justify-center w-5 h-5 rounded-full border-2 ${active === 'b'
                 ? 'after:block after:w-2.5 after:h-2.5 after:rounded-full after:bg-blue border-blue'
-                : 'border-gray'
-              }`}
+                : 'border-gray'}`}
             ></div>
             <p className="flex items-center font-bold">
               <CloudArrowUpIcon className="w-10 h-10 mr-2 text-gray" /> Tải lên
@@ -350,14 +327,14 @@ const ApplyPopup = ({ setIsOpen, applyTitle, projectId }) => {
           </div>
         </div>
 
-        <div className="absolute bg-white-bright rounded-br-small rounded-bl-small z-20 bottom-0 right-0 left-0 max-w-2xl w-full flex flex-col items-center px-8 py-5 justify-between border-t border-white-low">
+        <div className="absolute bottom-0 left-0 right-0 z-20 flex flex-col items-center justify-between w-full max-w-2xl px-8 py-5 border-t bg-white-bright rounded-br-small rounded-bl-small border-white-low">
           {error && (
             <div className="px-4 py-2 mb-4 text-sm text-red-700 bg-red-100 rounded-small">
               {error}
             </div>
           )}
           <button
-            className="text-white bg-blue p-3 w-full rounded-full cursor-pointer"
+            className="w-full p-3 text-white rounded-full cursor-pointer bg-blue"
             onClick={handleSubmit}
           >
             Nộp hồ sơ ứng tuyển

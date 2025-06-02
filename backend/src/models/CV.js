@@ -72,7 +72,7 @@ CVSchema.set('toJSON', {
       const day = String(d.getUTCDate()).padStart(2, '0')
       const month = String(d.getUTCMonth() + 1).padStart(2, '0')
       const year = d.getUTCFullYear()
-      return `${day}/${month}/${year}`
+      return `${year}-${month}-${day}`
     }
 
     ret.birthday = formatDate(ret.birthday)
