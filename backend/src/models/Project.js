@@ -29,8 +29,26 @@ const ProjectSchema = new mongoose.Schema({
     default: 'open'
   },
   applicants: [{
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'Student'
+    student: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Student',
+      required: true
+    },
+    cv: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'CV',
+      required: true
+    },
+    cvType: String,
+    status: {
+      type: String,
+      enum: ['pending', 'accepted', 'rejected'],
+      default: 'pending'
+    },
+    appliedAt: {
+      type: Date,
+      default: Date.now
+    }
   }],
   assignedStudents: [{
     type: mongoose.Schema.Types.ObjectId,

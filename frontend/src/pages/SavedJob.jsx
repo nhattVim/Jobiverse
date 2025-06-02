@@ -5,7 +5,6 @@ import ButtonArrowOne from '../shared/ButtonArrowOne'
 import apiFetch from '../services/api'
 import {
   CurrencyDollarIcon,
-  InboxStackIcon,
   MapPinIcon
 } from '@heroicons/react/24/outline'
 
@@ -77,7 +76,7 @@ const SavedJob = () => {
                       <span>|</span>
                       <span className="flex gap-2 items-cente">
                         <MapPinIcon className="text-blue w-6 h-6" />
-                        {job.project?.location}
+                        {job.project?.location?.province}
                       </span>
                     </div>
                   </div>

@@ -6,7 +6,7 @@ const News = () => {
     <div className="w-full pb-30">
       <div className="container-responsive">
         <div className="relative h-[400px]">
-          <div className="absolute left-0 right-[-60px] h-full">
+          <div className="absolute left-0 right-[-62px] h-full">
             <img
               src={BgNews}
               alt="bgnews"

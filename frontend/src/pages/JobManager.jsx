@@ -88,7 +88,7 @@ const JobManager = () => {
 
                         <div>
                           <Link
-                            to={`/job/${job._id}`}
+                            to={`/job-detail/${job._id}`}
                             className="block mb-1 text-lg font-semibold text-blue-mid hover:underline"
                           >
                             {job.title || 'Không có tiêu đề'}

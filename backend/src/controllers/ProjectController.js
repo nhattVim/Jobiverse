@@ -5,19 +5,14 @@ const Account = require('../models/Account')
 const Notification = require('../models/Notification')
 const Major = require('../models/Major')
 const Specialization = require('../models/Specialization')
+const CV = require('../models/CV')
+const CVUpload = require('../models/CVUpload')
 
 class ProjectController {
   // [GET] /projects
   async getAllProjects(req, res, next) {
     try {
-      const {
-        major,
-        spec,
-        expRequired,
-        workTypes,
-        sortBy,
-        search
-      } = req.query
+      const { major, spec, expRequired, workTypes, sortBy, search } = req.query
 
       const filter = {}
       if (major) filter.major = { $in: major.split(',') }
@@ -41,7 +36,9 @@ class ProjectController {
       else if (sortBy === 'salaryDesc') sort = { salary: -1 }
       else if (sortBy === 'salaryAsc') sort = { salary: 1 }
 
-      const projects = await Project.find(filter).sort(sort).select('-__v')
+      const projects = await Project.find(filter)
+        .sort(sort)
+        .select('-__v')
         .populate({
           path: 'account',
           select: 'role avatar deleted'
@@ -49,16 +46,20 @@ class ProjectController {
 
       const populatedProjects = await Promise.all(
         projects
-          .filter(project => project.account && !project.account.deleted)
+          .filter((project) => project.account && !project.account.deleted)
           .map(async (project) => {
             if (!project.account) return project
 
             let profile = null
 
             if (project.account.role === 'student') {
-              profile = await Student.findOne({ account: project.account._id }).select('name').lean()
+              profile = await Student.findOne({ account: project.account._id })
+                .select('name')
+                .lean()
             } else if (project.account.role === 'employer') {
-              profile = await Employer.findOne({ account: project.account._id }).select('companyName').lean()
+              profile = await Employer.findOne({ account: project.account._id })
+                .select('companyName')
+                .lean()
             }
 
             return {
@@ -70,7 +71,9 @@ class ProjectController {
 
       res.status(200).json(populatedProjects)
     } catch (err) {
-      res.status(500).json({ message: 'Error retrieving projects', error: err.message })
+      res
+        .status(500)
+        .json({ message: 'Error retrieving projects', error: err.message })
     }
   }
 
@@ -78,10 +81,14 @@ class ProjectController {
   async getProjects(req, res, next) {
     try {
       const accountId = req.account._id
-      const projects = await Project.find({ account: accountId }).select('-__v').sort({ createdAt: -1 })
+      const projects = await Project.find({ account: accountId })
+        .select('-__v')
+        .sort({ createdAt: -1 })
       res.status(200).json(projects)
     } catch (err) {
-      res.status(500).json({ message: 'Error retrieving project', error: err.message })
+      res
+        .status(500)
+        .json({ message: 'Error retrieving project', error: err.message })
     }
   }
 
@@ -91,7 +98,8 @@ class ProjectController {
       const accountId = req.account._id
 
       const project = await Project.create({ account: accountId, ...req.body })
-      if (!project) return res.status(400).json({ message: 'Tạo dự án thất bại' })
+      if (!project)
+        return res.status(400).json({ message: 'Tạo dự án thất bại' })
 
       res.status(201).json(project)
     } catch (err) {
@@ -103,7 +111,8 @@ class ProjectController {
   async getProjectDetail(req, res, next) {
     try {
       const projectId = req.params.id
-      const project = await Project.findOne({ _id: projectId }).select('-__v')
+      const project = await Project.findOne({ _id: projectId })
+        .select('-__v')
         .populate({
           path: 'account',
           select: 'role avatar'
@@ -113,7 +122,9 @@ class ProjectController {
       }
       res.status(200).json(project.toObject())
     } catch (err) {
-      res.status(500).json({ message: 'Error retrieving project', error: err.message })
+      res
+        .status(500)
+        .json({ message: 'Error retrieving project', error: err.message })
     }
   }
 
@@ -129,10 +140,13 @@ class ProjectController {
         { new: true }
       )
 
-      if (!updatedProject) return res.status(404).json({ message: 'Dự án không tồn tại' })
+      if (!updatedProject)
+        return res.status(404).json({ message: 'Dự án không tồn tại' })
       res.status(200).json(updatedProject)
     } catch (err) {
-      res.status(500).json({ message: 'Lỗi cập nhật dự án', error: err.message })
+      res
+        .status(500)
+        .json({ message: 'Lỗi cập nhật dự án', error: err.message })
     }
   }
 
@@ -143,17 +157,28 @@ class ProjectController {
       const projectId = req.params.id
       const { status } = req.body
 
-      const project = await Project.findOne({ _id: projectId, account: accountId })
-      if (!project) return res.status(404).json({ message: 'Project not found or not owned by you' })
+      const project = await Project.findOne({
+        _id: projectId,
+        account: accountId
+      })
+      if (!project)
+        return res
+          .status(404)
+          .json({ message: 'Project not found or not owned by you' })
 
       if (!['open', 'closed', 'in-progress'].includes(status)) {
-        return res.status(400).json({ message: 'Invalid status value. Must be "status": "open|closed|in-progress"' })
+        return res.status(400).json({
+          message:
+            'Invalid status value. Must be "status": "open|closed|in-progress"'
+        })
       }
 
       project.status = status
       await project.save()
 
-      res.status(200).json({ message: 'Project status updated successfully', project })
+      res
+        .status(200)
+        .json({ message: 'Project status updated successfully', project })
     } catch (error) {
       res.status(500).json({ message: 'Server error', error: error.message })
     }
@@ -165,8 +190,12 @@ class ProjectController {
       const accountId = req.account._id
       const projectId = req.params.id
 
-      const deletedProject = await Project.findOneAndDelete({ _id: projectId, account: accountId })
-      if (!deletedProject) return res.status(404).json({ message: 'Dự án không tồn tại' })
+      const deletedProject = await Project.findOneAndDelete({
+        _id: projectId,
+        account: accountId
+      })
+      if (!deletedProject)
+        return res.status(404).json({ message: 'Dự án không tồn tại' })
 
       res.status(200).json({ message: 'Dự án đã được xóa thành công' })
     } catch (err) {
@@ -179,23 +208,44 @@ class ProjectController {
     try {
       const { projectId } = req.params
       const accountId = req.account._id
+      const { cvId } = req.body
 
       const project = await Project.findById(projectId)
-      if (!project) return res.status(404).json({ message: 'Project not found' })
+      if (!project)
+        return res.status(404).json({ message: 'Project not found' })
 
       const student = await Student.findOne({ account: accountId })
-      if (!student) return res.status(404).json({ message: 'Student not found' })
+      if (!student)
+        return res.status(404).json({ message: 'Student not found' })
+
+      const cv = await CV.findOne({ _id: cvId, student: student._id })
+      let cvType = 'CV'
+      let foundCV = cv
+      if (!cv) {
+        const cvUpload = await CVUpload.findOne({
+          _id: cvId,
+          student: student._id
+        })
+        if (!cvUpload) return res.status(404).json({ message: 'CV not found' })
+        foundCV = cvUpload
+        cvType = 'CVUpload'
+      }
 
       if (project.status !== 'open')
-        return res.status(400).json({ message: 'Project is not open for applications' })
-
-      if (project.applicants.includes(student._id))
-        return res.status(400).json({ message: 'You have already applied to this project' })
+        return res
+          .status(400)
+          .json({ message: 'Project is not open for applications' })
 
       if (project.assignedStudents.includes(student._id))
-        return res.status(400).json({ message: 'You have already been assigned to this project' })
+        return res
+          .status(400)
+          .json({ message: 'You have already been assigned to this project' })
 
-      project.applicants.push(student._id)
+      project.applicants.push({
+        student: student._id,
+        cv: foundCV._id,
+        cvType
+      })
       await project.save()
 
       await Notification.create({
@@ -209,6 +259,54 @@ class ProjectController {
     }
   }
 
+  // [GET] /projects/applied
+  async getProjectsApplied(req, res, next) {
+    try {
+      const accountId = req.account._id
+      const student = await Student.findOne({ account: accountId })
+      if (!student)
+        return res.status(404).json({ message: 'Student not found' })
+
+      const projectsApplied = await Project.find({
+        'applicants.student': student._id
+      })
+        .populate({
+          path: 'account',
+          select: 'role avatar'
+        })
+        .sort({ createdAt: -1 })
+
+      const projectWithProfile = await Promise.all(
+        projectsApplied.map(async (project) => {
+          let profile = null
+          if (project.account.role === 'student') {
+            const student = await Student.findOne({
+              account: project.account._id
+            })
+              .select('name')
+              .lean()
+            profile = student ? { name: student.name } : null
+          } else if (project.account.role === 'employer') {
+            const employer = await Employer.findOne({
+              account: project.account._id
+            })
+              .select('companyName')
+              .lean()
+            profile = employer ? { companyName: employer.companyName } : null
+          }
+
+          return {
+            ...project.toObject(),
+            profile
+          }
+        })
+      )
+      res.status(200).json(projectWithProfile)
+    } catch (err) {
+      res.status(500).json({ message: 'Server error', error: err.message })
+    }
+  }
+
   // [POST] /projects/:projectId/respond/:studentId
   async respondToApplication(req, res, next) {
     try {
@@ -217,37 +315,50 @@ class ProjectController {
       const accountId = req.account._id
 
       const project = await Project.findById(projectId)
-      if (!project) return res.status(404).json({ message: 'Project not found' })
+      if (!project)
+        return res.status(404).json({ message: 'Project not found' })
 
       const account = await Account.findById(accountId)
-      if (!account) return res.status(404).json({ message: 'Account không tồn tại' })
+      if (!account)
+        return res.status(404).json({ message: 'Account không tồn tại' })
 
       if (project.account.toString() !== account._id.toString()) {
-        return res.status(403).json({ message: 'You are not authorized to respond to this project' })
+        return res.status(403).json({
+          message: 'You are not authorized to respond to this project'
+        })
       }
 
       if (!project.applicants.includes(studentId)) {
-        return res.status(400).json({ message: 'Student did not apply for this project' })
+        return res
+          .status(400)
+          .json({ message: 'Student did not apply for this project' })
       }
 
       if (action === 'accept') {
         project.assignedStudents.push(studentId)
       } else if (action !== 'reject') {
-        return res.status(400).json({ message: 'Invalid action. Must be "accept" or "reject"' })
+        return res
+          .status(400)
+          .json({ message: 'Invalid action. Must be "accept" or "reject"' })
       }
 
-      project.applicants = project.applicants.filter(id => id.toString() !== studentId)
+      project.applicants = project.applicants.filter(
+        (id) => id.toString() !== studentId
+      )
       await project.save()
 
       const student = await Student.findById(studentId)
-      if (!student) return res.status(404).json({ message: 'Student not found' })
+      if (!student)
+        return res.status(404).json({ message: 'Student not found' })
 
       await Notification.create({
         account: student.account._id,
         content: `Your application for project "${project.title}" has been ${action}ed.`
       })
 
-      res.status(200).json({ message: `Student has been ${action}ed successfully` })
+      res
+        .status(200)
+        .json({ message: `Student has been ${action}ed successfully` })
     } catch (err) {
       res.status(500).json({ message: 'Server error', error: err.message })
     }
@@ -263,7 +374,9 @@ class ProjectController {
         return res.status(400).json({ message: 'Thiếu tên ngành (major)' })
       }
 
-      const majorDoc = await Major.findOne({ name: new RegExp(majorName, 'i') })
+      const majorDoc = await Major.findOne({
+        name: new RegExp(majorName, 'i')
+      })
       if (!majorDoc) {
         return res.status(404).json({ message: 'Không tìm thấy ngành' })
       }
@@ -272,10 +385,14 @@ class ProjectController {
       var populateFields = ['major']
 
       if (specializationName) {
-        const specializationDoc = await Specialization.findOne({ name: new RegExp(specializationName, 'i') })
+        const specializationDoc = await Specialization.findOne({
+          name: new RegExp(specializationName, 'i')
+        })
 
         if (!specializationDoc) {
-          return res.status(404).json({ message: 'Không tìm thấy chuyên ngành' })
+          return res
+            .status(404)
+            .json({ message: 'Không tìm thấy chuyên ngành' })
         }
         //thêm specialization vào filter hình dung : filter = { specialization: specializationDoc._id }
         filter.specialization = specializationDoc._id
@@ -285,16 +402,16 @@ class ProjectController {
       const projects = await Project.find(filter).populate(populateFields)
 
       if (!projects.length) {
-        return res.status(404).json({ message: 'Không có project nào phù hợp' })
+        return res
+          .status(404)
+          .json({ message: 'Không có project nào phù hợp' })
       }
 
       res.status(200).json({ projects })
-
     } catch (err) {
       res.status(500).json({ message: 'Lỗi server', error: err.message })
     }
   }
-
 
   //recommend projects by projectId
   async RcmProjectByProject(req, res, next) {
@@ -307,8 +424,8 @@ class ProjectController {
       }
 
       // Lấy danh sách ID ngành và chuyên ngành
-      const majorIds = project.major.map(m => m._id || m)
-      const specializationIds = project.specialization.map(s => s._id || s)
+      const majorIds = project.major.map((m) => m._id || m)
+      const specializationIds = project.specialization.map((s) => s._id || s)
 
       // Aggregation pipeline
       const projects = await Project.aggregate([
@@ -347,7 +464,8 @@ class ProjectController {
         {
           $addFields: {
             score: {
-              $add: [{ $multiply: ['$matchingMajors', 2] },
+              $add: [
+                { $multiply: ['$matchingMajors', 2] },
                 '$matchingSpecializations'
               ]
             }
@@ -359,7 +477,9 @@ class ProjectController {
       ])
 
       if (!projects || projects.length === 0) {
-        return res.status(404).json({ message: 'Không tìm thấy project tương tự' })
+        return res
+          .status(404)
+          .json({ message: 'Không tìm thấy project tương tự' })
       }
 
       await Project.populate(projects, [
@@ -368,12 +488,10 @@ class ProjectController {
       ])
 
       res.status(200).json({ projects })
-
     } catch (err) {
       res.status(500).json({ message: 'Lỗi server', error: err.message })
     }
   }
-
 
   //recommend projects by studentId
   async RcmProjectByStudent(req, res, next) {
@@ -418,7 +536,9 @@ class ProjectController {
       ])
 
       if (!projects || projects.length === 0) {
-        return res.status(404).json({ message: 'Không tìm thấy project phù hợp' })
+        return res
+          .status(404)
+          .json({ message: 'Không tìm thấy project phù hợp' })
       }
 
       res.status(200).json({ projects })

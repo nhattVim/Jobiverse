@@ -1,31 +1,75 @@
 import {
   MapPinIcon,
   CurrencyDollarIcon,
-  AcademicCapIcon, // Sử dụng cho Kinh nghiệm (placeholder, hoặc tùy chỉnh)
   BriefcaseIcon, // Sử dụng cho Kinh nghiệm (thay thế AcademicCapIcon nếu hợp lý hơn)
   CalendarDaysIcon, // Hạn nộp hồ sơ
-  HeartIcon, // Nút yêu thích
-  ArrowRightIcon, // Mũi tên cho nút ứng tuyển
   UsersIcon, // Quy mô
   TagIcon, // Lĩnh vực
   BuildingOfficeIcon, // Địa điểm công ty
   BookOpenIcon, // Học vấn
   Bars3CenterLeftIcon, // GPA (placeholder)
   UserGroupIcon, // Số lượng tuyển
-  ClockIcon // Hình thức làm việc
+  ClockIcon, // Hình thức làm việc
+  HeartIcon as HeartSolidIcon
 } from '@heroicons/react/24/solid'
 import ButtonArrowOne from '../shared/ButtonArrowOne'
 import Banner from '../components/Banner'
-import { useEffect, useState } from 'react'
+import { useContext, useEffect, useState } from 'react'
 import apiFetch from '../services/api'
 import { useParams, useSearchParams } from 'react-router-dom'
 import ApplyPopup from '../components/ApplyPopup'
+import UserContext from '../contexts/UserContext'
+import {
+  CheckCircleIcon,
+  ClockIcon as ClockIconOutline,
+  HeartIcon,
+  XCircleIcon
+} from '@heroicons/react/24/outline'
 
 const JobDetail = () => {
+  const { id } = useParams()
+  const { user } = useContext(UserContext)
   const [searchParams] = useSearchParams()
   const [isOpen, setIsOpen] = useState(searchParams.get('openApply') || false)
   const [projectData, setProjectData] = useState({})
-  const { id } = useParams()
+  const [profile, setProfile] = useState({})
+  const isFavoritedInitial = searchParams.get('isFavorited') === 'true'
+  const [isFavorited, setIsFavorited] = useState(isFavoritedInitial)
+
+  const handleFavorite = async () => {
+    if (!user) {
+      alert('Vui lòng đăng nhập để sử dụng chức năng này!')
+      return
+    }
+    const newFavoriteState = !isFavorited
+    setIsFavorited(newFavoriteState)
+
+    try {
+      if (newFavoriteState) {
+        await apiFetch('/favorites', 'POST', { projectId: projectData._id })
+      } else {
+        await apiFetch(`/favorites/${projectData._id}`, 'DELETE')
+      }
+    } catch (err) {
+      console.error('Failed to save favorite state', err)
+      setIsFavorited(!newFavoriteState)
+    }
+  }
+
+  useEffect(() => {
+    const fetchStudent = async () => {
+      try {
+        if (user.role === 'student') {
+          const student = await apiFetch('/students/me', 'GET')
+          setProfile(student)
+        }
+      } catch (err) {
+        console.log('Fetch data failed:', err)
+      }
+    }
+    fetchStudent()
+  }, [user])
+
   useEffect(() => {
     const fetchProjectDetail = async () => {
       try {
@@ -36,7 +80,7 @@ const JobDetail = () => {
       }
     }
     fetchProjectDetail()
-  }, [])
+  }, [id])
 
   useEffect(() => {
     if (isOpen) {
@@ -52,7 +96,13 @@ const JobDetail = () => {
 
   return (
     <>
-      {isOpen && <ApplyPopup setIsOpen={setIsOpen} applyTitle={projectData.title} /> }
+      {isOpen && (
+        <ApplyPopup
+          setIsOpen={setIsOpen}
+          applyTitle={projectData.title}
+          projectId={projectData._id}
+        />
+      )}
       <Banner />
       <div className="w-full py-20">
         <main className="container-responsive">
@@ -69,7 +119,7 @@ const JobDetail = () => {
                         <CurrencyDollarIcon className="h-6 w-6 text-white" />
                       </div>
                       <div className="flex flex-col gap-1">
-                        <span className='text-black-low'>Mức lương</span>
+                        <span className="text-black-low">Mức lương</span>
                         <span className="font-semibold">
                           {projectData.salary}
                         </span>
@@ -80,7 +130,7 @@ const JobDetail = () => {
                         <MapPinIcon className="h-6 w-6 text-white" />
                       </div>
                       <div className="flex flex-col gap-1">
-                        <span className='text-black-low'>Địa điểm</span>
+                        <span className="text-black-low">Địa điểm</span>
                         <span className="font-semibold">
                           {projectData.location?.province}
                         </span>
@@ -91,7 +141,7 @@ const JobDetail = () => {
                         <BriefcaseIcon className="h-6 w-6 text-white" />
                       </div>
                       <div className="flex flex-col gap-1">
-                        <span className='text-black-low'>Kinh nghiệm</span>
+                        <span className="text-black-low">Kinh nghiệm</span>
                         <span className="font-semibold">
                           {projectData.expRequired} năm
                         </span>
@@ -101,13 +151,61 @@ const JobDetail = () => {
                   <div className="flex flex-wrap items-center gap-4">
                     <div className="flex items-center bg-blue-100 text-blue-mid px-3 py-1 rounded-full text-sm font-medium">
                       <CalendarDaysIcon className="h-4 w-4 mr-1" />
-                      Hạn nộp hồ sơ: {new Date(projectData.deadline).toLocaleString()}
+                      Hạn nộp hồ sơ:{' '}
+                      {new Date(projectData.deadline).toLocaleDateString()}
                     </div>
+
                     <div className="flex ml-auto gap-4">
-                      <ButtonArrowOne onClick={() => setIsOpen(true)}>Ứng tuyển</ButtonArrowOne>
-                      <button className="p-2 rounded-full border border-blue-500 text-blue-500 hover:bg-yellow-500 transition duration-300 flex items-center justify-center w-10 h-10">
-                        <HeartIcon className="h-5 w-5" />
-                      </button>
+                      {projectData.applicants &&
+                      projectData.applicants.some(
+                        (data) => data && data.student === profile._id
+                      ) ? (
+                          (() => {
+                            const applicant = projectData.applicants?.find(
+                              (data) => data && data.student === profile._id
+                            )
+                            let status = applicant?.status
+                            switch (status) {
+                            case 'pending':
+                              return (
+                                <span className="flex items-center px-3 py-2 rounded-full bg-yellow-50 text-yellow-500 border border-yellow-500 font-medium">
+                                  <ClockIconOutline className="h-5 w-5 mr-1" />
+                                  Đang chờ duyệt
+                                </span>
+                              )
+                            case 'accepted':
+                              return (
+                                <span className="flex items-center px-3 py-2 rounded-full bg-green-50 text-green-500 border border-green-500 font-medium">
+                                  <CheckCircleIcon className="h-5 w-5 mr-1" />
+                                  Đã duyệt
+                                </span>
+                              )
+                            case 'rejected':
+                              return (
+                                <span className="flex items-center px-3 py-2 rounded-full bg-red-50 text-red-500 border border-red-500 font-medium">
+                                  <XCircleIcon className="h-5 w-5 mr-1" />
+                                  Bị từ chối
+                                </span>
+                              )
+                            default:
+                              return null
+                            }
+                          })()
+                        ) : (
+                          <ButtonArrowOne onClick={() => setIsOpen(true)}>
+                          Ứng tuyển
+                          </ButtonArrowOne>
+                        )}
+                      <div
+                        onClick={handleFavorite}
+                        className="h-[46px] w-[46px] flex justify-center items-center rounded-full border-2 border-blue cursor-pointer"
+                      >
+                        {isFavorited ? (
+                          <HeartSolidIcon className="w-6 h-6 text-blue animate-pop" />
+                        ) : (
+                          <HeartIcon className="w-6 h-6 text-blue" />
+                        )}
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -120,27 +218,35 @@ const JobDetail = () => {
                   </div>
                   {projectData.description && (
                     <div className="">
-                      <h4 className="font-semibold mb-2">
-                        Mô tả công việc
-                      </h4>
-                      <div className="tinymce-content pl-5 text-sm text-black-low" dangerouslySetInnerHTML={{ __html: projectData.description }}></div>
+                      <h4 className="font-semibold mb-2">Mô tả công việc</h4>
+                      <div
+                        className="tinymce-content pl-5 text-sm text-black-low"
+                        dangerouslySetInnerHTML={{
+                          __html: projectData.description
+                        }}
+                      ></div>
                     </div>
                   )}
                   {projectData.content && (
                     <div className="">
-                      <h4 className="font-semibold mb-2">
-                        Nội dung yêu cầu
-                      </h4>
-                      <div className="tinymce-content pl-5 text-sm text-black-low" dangerouslySetInnerHTML={{ __html: projectData.content }}></div>
+                      <h4 className="font-semibold mb-2">Nội dung yêu cầu</h4>
+                      <div
+                        className="tinymce-content pl-5 text-sm text-black-low"
+                        dangerouslySetInnerHTML={{
+                          __html: projectData.content
+                        }}
+                      ></div>
                     </div>
                   )}
                   <div className="">
-                    <h4 className="font-semibold mb-2">
-                        Địa điểm làm việc
-                    </h4>
+                    <h4 className="font-semibold mb-2">Địa điểm làm việc</h4>
                     <ul className="list-disc list-inside pl-5 text-sm space-y-1">
                       <li>
-                        {[projectData.location?.ward, projectData.location?.district, projectData.location?.province]
+                        {[
+                          projectData.location?.ward,
+                          projectData.location?.district,
+                          projectData.location?.province
+                        ]
                           .filter(Boolean)
                           .join(', ')}
                       </li>
@@ -148,9 +254,7 @@ const JobDetail = () => {
                   </div>
                   {projectData.workingTime && (
                     <div className="mb-4">
-                      <h4 className="font-semibold mb-2">
-                        Thời gian làm việc
-                      </h4>
+                      <h4 className="font-semibold mb-2">Thời gian làm việc</h4>
                       <ul className="list-disc list-inside pl-5 text-sm space-y-1">
                         <li>{projectData.workingTime}</li>
                       </ul>
@@ -173,9 +277,7 @@ const JobDetail = () => {
                       />
                     </div>
                     <div>
-                      <h3 className="text-xl font-bold text-gray-800">
-                        {}
-                      </h3>
+                      <h3 className="text-xl font-bold text-gray-800">{}</h3>
                     </div>
                   </div>
                   <ul className="mb-4 space-y-2 text-sm text-gray-700">
@@ -207,9 +309,7 @@ const JobDetail = () => {
                         <BookOpenIcon className="w-4 h-4 text-blue-500" />
                         <span>Học vấn</span>
                       </span>
-                      <span className="font-medium">
-                        {}
-                      </span>
+                      <span className="font-medium">{}</span>
                     </li>
                     <li className="flex items-center justify-between">
                       <span className="flex items-center space-x-2">
@@ -217,27 +317,21 @@ const JobDetail = () => {
                         {/* Icon placeholder cho GPA */}
                         <span>GPA</span>
                       </span>
-                      <span className="font-medium">
-                        {}
-                      </span>
+                      <span className="font-medium">{}</span>
                     </li>
                     <li className="flex items-center justify-between">
                       <span className="flex items-center space-x-2">
                         <UserGroupIcon className="w-4 h-4 text-blue-500" />
                         <span>Số lượng tuyển</span>
                       </span>
-                      <span className="font-medium">
-                        {}
-                      </span>
+                      <span className="font-medium">{}</span>
                     </li>
                     <li className="flex items-center justify-between">
                       <span className="flex items-center space-x-2">
                         <ClockIcon className="w-4 h-4 text-blue-500" />
                         <span>Hình thức làm việc</span>
                       </span>
-                      <span className="font-medium">
-                        {}
-                      </span>
+                      <span className="font-medium">{}</span>
                     </li>
                   </ul>
                 </div>

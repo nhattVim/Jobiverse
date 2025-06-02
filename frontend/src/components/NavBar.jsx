@@ -90,7 +90,7 @@ const NavBar = () => {
                         <Link to={ROUTES.SAVED_JOB}>Việc làm đã lưu</Link>
                       </li>
                       <li className="px-4 py-2 transition-colors duration-300 hover:text-blue">
-                        <Link to={ROUTES.JOB_LIST}>Việc làm đã ứng tuyển</Link>
+                        <Link to={ROUTES.APPLIED_JOB}>Việc làm đã ứng tuyển</Link>
                       </li>
                       <li className="px-4 py-2 transition-colors duration-300 hover:text-blue">
                         <Link to={ROUTES.JOB_POST}>Đăng việc làm</Link>
@@ -187,7 +187,7 @@ const NavBar = () => {
                           </Link>
                         </li>
                         <li className="px-4 py-2 transition-colors duration-300 hover:text-blue">
-                          <Link to={ROUTES.SAVED_JOB}>
+                          <Link to={ROUTES.APPLIED_JOB}>
                             Việc làm đã ứng tuyển
                           </Link>
                         </li>

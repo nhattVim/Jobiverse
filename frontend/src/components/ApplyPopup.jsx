@@ -7,19 +7,36 @@ import {
 import { useEffect, useState } from 'react'
 import apiFetch from '../services/api'
 import { motion, AnimatePresence } from 'framer-motion'
+import { Link, useNavigate } from 'react-router-dom'
+import { ROUTES } from '../routes/routePaths'
+import { TrashIcon } from '@heroicons/react/24/outline'
+import { ToastContainer, toast } from 'react-toastify'
+import 'react-toastify/dist/ReactToastify.css'
 
-const ApplyPopup = ({ setIsOpen, applyTitle }) => {
+const ApplyPopup = ({ setIsOpen, applyTitle, projectId }) => {
+  const navigate = useNavigate()
   const [cvList, setCvList] = useState([])
   const [cvUploads, setCvUploads] = useState([])
   const [form, setForm] = useState({ cv: null })
   const [error, setError] = useState('')
   const [dragOver, setDragOver] = useState(false)
   const [active, setActive] = useState('a')
+  const [selectedCV, setSelectedCV] = useState(null)
+  const [uploadedCVId, setUploadedCVId] = useState(null)
 
   const handleToggle = (key) => {
     if (key !== active) {
       setActive(key)
     }
+    if (key === 'b') {
+      setSelectedCV(null)
+    }
+  }
+
+  const handleSelectCV = (cv) => {
+    setSelectedCV(cv)
+    setForm({ ...form, cv: null }) // Nếu chọn CV thư viện thì bỏ file upload
+    setError('')
   }
 
   const handleFileChange = (e) => {
@@ -33,11 +50,43 @@ const ApplyPopup = ({ setIsOpen, applyTitle }) => {
       if (validTypes.includes(file.type) && file.size <= 5 * 1024 * 1024) {
         setForm({ ...form, cv: file })
         setError('')
+        uploadCV(file)
       } else {
         setError(
           'Vui lòng chọn file .pdf, .doc, .docx với kích thước dưới 5MB.'
         )
         setForm({ ...form, cv: null })
+        setUploadedCVId(null)
+      }
+    }
+  }
+
+  const uploadCV = async (file) => {
+    if (!file) return
+    const formData = new FormData()
+    formData.append('files', file)
+    try {
+      const res = await apiFetch('/cv/uploads', 'POST', formData)
+      if (
+        res &&
+        res.uploadedFiles &&
+        res.uploadedFiles[0] &&
+        res.uploadedFiles[0]._id
+      ) {
+        setUploadedCVId(res.uploadedFiles[0]._id)
+      } else {
+        setUploadedCVId(null)
+      }
+    } catch (err) {
+      setUploadedCVId(null)
+      if (
+        err.message.includes('Unauthorized') ||
+        err.message.includes('Token')
+      ) {
+        setError('Bạn cần đăng nhập để tải CV lên.')
+        setTimeout(() => navigate('/login'), 2000)
+      } else {
+        setError('Tải CV thất bại, vui lòng thử lại.')
       }
     }
   }
@@ -58,8 +107,39 @@ const ApplyPopup = ({ setIsOpen, applyTitle }) => {
 
     loadCV()
   }, [])
+
+  const handleSubmit = async () => {
+    if (!selectedCV && !form.cv) {
+      setError('Vui lòng chọn CV để nộp hồ sơ.')
+      return
+    }
+    try {
+      if (selectedCV) {
+        await apiFetch(`/projects/${projectId}/apply`, 'POST', {
+          cvId: selectedCV._id
+        })
+      } else if (form.cv && uploadedCVId) {
+        await apiFetch(`/projects/${projectId}/apply`, 'POST', {
+          cvId: uploadedCVId
+        })
+      } else {
+        setError('Vui lòng chờ file CV tải lên xong!')
+        return
+      }
+
+      toast.success('Nộp hồ sơ ứng tuyển thành công')
+      setTimeout(() => {
+        setIsOpen(false)
+        window.location.reload()
+      }, 3000)
+    } catch {
+      setError('Nộp hồ sơ thất bại, vui lòng thử lại.')
+    }
+  }
+
   return (
     <div className="fixed z-[999] inset-0 flex justify-center items-center">
+      <ToastContainer position="top-right" autoClose={2000} />
       <div className="absolute inset-0 bg-black opacity-50"></div>
       <div className="relative z-10 bg-white-bright min-h-[90%] mx-auto shadow-lg w-full max-w-2xl rounded-small animate-slideUp">
         <div className="fixed z-50 max-w-2xl w-full flex items-center px-8 py-5 justify-between shadow">
@@ -82,18 +162,26 @@ const ApplyPopup = ({ setIsOpen, applyTitle }) => {
           <div
             className={`${
               active === 'a' ? 'border-blue' : 'border-gray-light'
-            } border w-full p-4 rounded-small text-sm transition-all duration-300`}
+            } border group hover:border-blue w-full p-4 rounded-small text-sm transition-all duration-300`}
           >
-            <div className="flex items-center gap-2 cursor-pointer">
+            <div
+              onClick={() => handleToggle('a')}
+              className="flex items-center gap-2 cursor-pointer"
+            >
               <div
-                onClick={() => handleToggle('a')}
                 className={`flex items-center justify-center w-5 h-5 rounded-full border-2 ${
                   active === 'a'
                     ? 'after:block after:w-2.5 after:h-2.5 after:rounded-full after:bg-blue border-blue'
                     : 'border-gray'
                 }`}
               ></div>
-              <p className="font-semibold">Chọn CV trong thư viện CV của tôi</p>
+              <p
+                className={`${
+                  active === 'a' ? 'text-blue' : ''
+                } font-semibold group-hover:text-blue`}
+              >
+                Chọn CV trong thư viện CV của tôi
+              </p>
             </div>
             <AnimatePresence initial={false}>
               {active === 'a' && (
@@ -103,34 +191,92 @@ const ApplyPopup = ({ setIsOpen, applyTitle }) => {
                   animate={{ height: 'auto', opacity: 1 }}
                   exit={{ height: 0, opacity: 0 }}
                   transition={{ duration: 0.3 }}
-                  className="flex flex-col gap-2 overflow-hidden"
+                  className="overflow-hidden"
                 >
-                  <p className="font-semibold mt-4">CV Online</p>
-                  {cvList.map((data) => (
-                    <div
-                      key={data._id}
-                      className="px-4 py-3 border border-gray-light hover:border-blue rounded-small cursor-pointer"
-                    >
-                      {data.title || 'Chưa đặt tên'}
+                  {cvList.length === 0 && cvUploads.length === 0 ? (
+                    <div className="flex flex-col items-center justify-center gap-2 pt-5">
+                      Bạn chưa có CV nào trong thư viện
+                      <Link
+                        to={ROUTES.CREATE_CV}
+                        className="px-4 py-2 text-white-bright transition-colors bg-blue rounded-full cursor-pointer hover:bg-blue-mid"
+                      >
+                        Tạo CV mới
+                      </Link>
                     </div>
-                  ))}
+                  ) : (
+                    <>
+                      {cvList.length === 0 ? (
+                        ''
+                      ) : (
+                        <div className="space-y-2">
+                          <p className="font-semibold mt-4">CV Online</p>{' '}
+                          {cvList.map((data) => (
+                            <div
+                              key={data._id}
+                              className={`group/a flex justify-between items-center transition-all duration-300 px-4 py-3 border rounded-small cursor-pointer ${
+                                selectedCV && selectedCV._id === data._id
+                                  ? 'border-blue bg-blue-50'
+                                  : 'border-gray-light hover:border-blue'
+                              }`}
+                              onClick={() => handleSelectCV(data)}
+                            >
+                              {data.title || 'Chưa đặt tên'}
+                              <Link
+                                to={`/cv/${data._id}`}
+                                className={`${
+                                  selectedCV && selectedCV._id === data._id
+                                    ? 'visible'
+                                    : ''
+                                } invisible text-blue group-hover/a:visible`}
+                              >
+                                Xem
+                              </Link>
+                            </div>
+                          ))}
+                        </div>
+                      )}
 
-                  <p className="font-semibold">CV đã tải lên</p>
-                  {cvUploads.map((data) => (
-                    <div
-                      key={data._id}
-                      className="px-4 py-3 border border-gray-light hover:border-blue rounded-small cursor-pointer"
-                    >
-                      {data.title || 'Chưa đặt tên'}
-                    </div>
-                  ))}
+                      {cvUploads.length === 0 ? (
+                        ''
+                      ) : (
+                        <div className="space-y-2">
+                          <p className="font-semibold mt-4">CV đã tải lên</p>
+                          {cvUploads.map((data) => (
+                            <div
+                              key={data._id}
+                              className={`group/a flex justify-between items-center transition-all duration-300 px-4 py-3 border rounded-small cursor-pointer ${
+                                selectedCV && selectedCV._id === data._id
+                                  ? 'border-blue bg-blue-50'
+                                  : 'border-gray-light hover:border-blue'
+                              }`}
+                              onClick={() => handleSelectCV(data)}
+                            >
+                              {data.title || 'Chưa đặt tên'}
+                              <a
+                                href={`http://localhost:3000/cv/uploads/${data._id}`}
+                                target="_blank"
+                                rel="noreferrer"
+                                className={`${
+                                  selectedCV && selectedCV._id === data._id
+                                    ? 'visible'
+                                    : ''
+                                } invisible text-blue group-hover/a:visible`}
+                              >
+                                Xem
+                              </a>
+                            </div>
+                          ))}
+                        </div>
+                      )}
+                    </>
+                  )}
                 </motion.div>
               )}
             </AnimatePresence>
           </div>
 
           <div
-            className={`relative w-full border border-dashed rounded-small p-4 flex flex-col items-center text-center space-y-4 transition-all duration-300 cursor-pointer ${
+            className={`relative w-full border border-dashed rounded-small p-4 flex flex-col items-center text-center space-y-4 hover:border-blue transition-all duration-300 cursor-pointer ${
               dragOver || active === 'b' ? 'border-blue' : 'border-gray-light'
             } ${dragOver ? 'bg-blue-50' : ''}`}
             onDragOver={(e) => {
@@ -174,59 +320,19 @@ const ApplyPopup = ({ setIsOpen, applyTitle }) => {
               Chọn CV
             </label>
             {form.cv && (
-              <p className="text-sm text-gray-600">Đã chọn: {form.cv.name}</p>
-            )}
-
-            <AnimatePresence initial={false}>
-              {active === 'b' && (
-                <motion.div
-                  key={'b'}
-                  initial={{ height: 0, opacity: 0 }}
-                  animate={{ height: 'auto', opacity: 1 }}
-                  exit={{ height: 0, opacity: 0 }}
-                  transition={{ duration: 0.3 }}
-                  className="w-full flex flex-col gap-2 p-2 border-t border-white-mid overflow-hidden"
+              <div className="flex items-center gap-2">
+                <p className="text-sm text-gray-600">Đã chọn: {form.cv.name}</p>
+                <button
+                  onClick={async () => {
+                    setForm({ ...form, cv: null })
+                    await apiFetch(`/cv/uploads/${uploadedCVId}`, 'DELETE')
+                  }}
+                  className="px-2 py-1.5 text-red bg-red-100 rounded-full transition-colors cursor-pointer"
                 >
-                  <p className='text-blue text-sm text-left'>Vui lòng nhập đầy đủ thông tin chi tiết:</p>
-                  <div>
-                    <label className="block mb-1 text-sm text-left">Họ và tên</label>
-                    <input
-                      type="text"
-                      name=""
-                      value={''}
-                      onChange={''}
-                      className="w-full px-4 py-2 bg-white rounded-full focus:outline-none focus:ring-1 focus:ring-blue text-sm"
-                      placeholder="Họ và tên"
-                    />
-                  </div>
-                  <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-                    <div>
-                      <label className="block mb-1 text-sm text-left">Email</label>
-                      <input
-                        type="email"
-                        name=""
-                        value={''}
-                        onChange={''}
-                        className="w-full px-4 py-2 bg-white rounded-full focus:outline-none focus:ring-1 focus:ring-blue text-sm"
-                        placeholder="Email"
-                      />
-                    </div>
-
-                    <div>
-                      <label className="block mb-1 text-sm text-left">Số điện thoại</label>
-                      <input
-                        type="text"
-                        name=""
-                        value={''}
-                        onChange={''}
-                        className="w-full px-4 py-2 bg-white rounded-full focus:outline-none focus:ring-1 focus:ring-blue text-sm"
-                        placeholder="Số điện thoại"
-                      />
-                    </div>
-                  </div>
-                </motion.div>
-              )}
-            </AnimatePresence>
+                  <TrashIcon className='w-4 h-4' />
+                </button>
+              </div>
+            )}
           </div>
 
           <div className="p-4 border border-gray-light rounded-small">
@@ -245,8 +351,16 @@ const ApplyPopup = ({ setIsOpen, applyTitle }) => {
           </div>
         </div>
 
-        <div className="absolute bg-white-bright rounded-br-small rounded-bl-small z-20 bottom-0 right-0 left-0 max-w-2xl w-full flex items-center px-8 py-5 justify-between border-t border-white-low">
-          <button className="text-white bg-blue p-3 w-full rounded-full cursor-pointer">
+        <div className="absolute bg-white-bright rounded-br-small rounded-bl-small z-20 bottom-0 right-0 left-0 max-w-2xl w-full flex flex-col items-center px-8 py-5 justify-between border-t border-white-low">
+          {error && (
+            <div className="px-4 py-2 mb-4 text-sm text-red-700 bg-red-100 rounded-small">
+              {error}
+            </div>
+          )}
+          <button
+            className="text-white bg-blue p-3 w-full rounded-full cursor-pointer"
+            onClick={handleSubmit}
+          >
             Nộp hồ sơ ứng tuyển
           </button>
         </div>

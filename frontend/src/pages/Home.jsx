@@ -70,7 +70,7 @@ const Home = () => {
       <div className="container-responsive">
         <div className="grid grid-cols-[1fr_0.75fr] h-[571px] grid-rows-auto">
           <div className="relative">
-            <div className="absolute inset-0 h-full -left-[60px]">
+            <div className="absolute inset-0 h-full -left-[70px]">
               <img
                 src={HeroImg}
                 alt="heroimg"

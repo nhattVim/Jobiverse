@@ -12,8 +12,8 @@ import UserContext from '../contexts/UserContext'
 import { Link } from 'react-router-dom'
 
 const JobCard = ({ job, currentIndex, isFavoritedInitially }) => {
-  const [isFavorited, setIsFavorited] = useState(isFavoritedInitially)
   const { user } = useContext(UserContext)
+  const [isFavorited, setIsFavorited] = useState(isFavoritedInitially)
 
   const handleFavorite = async () => {
     if (!user) {
@@ -58,7 +58,7 @@ const JobCard = ({ job, currentIndex, isFavoritedInitially }) => {
               </div>
             </div>
             <Link
-              to={`/job-detail/${job._id}`}
+              to={`/job-detail/${job._id}?isFavorited=${isFavorited}`}
               target="_blank"
               rel="noopener noreferrer"
               className="text-[22px] font-semibold leading-[28.6px] line-clamp-1 hover:text-blue transition-colors duration-300"
@@ -84,7 +84,7 @@ const JobCard = ({ job, currentIndex, isFavoritedInitially }) => {
           </div>
           <div className="flex items-center justify-between w-full">
             <ButtonArrowOne
-              selectedPage={`/job-detail/${job._id}?openApply=true`}
+              selectedPage={`/job-detail/${job._id}?openApply=true&isFavorited=${isFavorited}`}
               target='_blank'
               rel='noopener noreferrer'
             >

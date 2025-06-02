@@ -129,7 +129,7 @@ const JobList = () => {
   return (
     <>
       <Banner searchQuery={searchQuery} setSearchQuery={setSearchQuery} />
-      <div className="w-full py-30">
+      <div className="w-full py-20">
         <div className="container-responsive">
           <div className="grid grid-cols-[0.5fr_1fr] gap-[70px] min-h-full">
 
