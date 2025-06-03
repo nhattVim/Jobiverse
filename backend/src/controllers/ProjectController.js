@@ -206,7 +206,7 @@ class ProjectController {
     try {
       const { projectId } = req.params
       const accountId = req.account._id
-      const { cvId } = req.body
+      const { cvId, coverLetter } = req.body
 
       const project = await Project.findById(projectId)
       if (!project)
@@ -242,6 +242,7 @@ class ProjectController {
       project.applicants.push({
         student: student._id,
         cv: foundCV._id,
+        coverLetter: coverLetter,
         cvType
       })
       await project.save()
@@ -334,15 +335,22 @@ class ProjectController {
 
       if (action === 'accept') {
         project.assignedStudents.push(studentId)
-      } else if (action !== 'reject') {
+        project.applicants = project.applicants.map(applicant =>
+          applicant.student.toString() === studentId
+            ? { ...applicant.toObject(), status: 'accepted' }
+            : applicant
+        )
+      } else if (action === 'reject') {
+        project.applicants = project.applicants.map(applicant =>
+          applicant.student.toString() === studentId
+            ? { ...applicant.toObject(), status: 'rejected' }
+            : applicant
+        )
+      } else {
         return res
           .status(400)
           .json({ message: 'Invalid action. Must be "accept" or "reject"' })
       }
-
-      project.applicants = project.applicants.filter(
-        (applicant) => applicant.student.toString() !== studentId
-      )
 
       await project.save()
 

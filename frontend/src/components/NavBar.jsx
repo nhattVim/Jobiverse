@@ -177,7 +177,7 @@ const NavBar = () => {
             {isLoggedIn ? (
               <div className="flex items-center gap-4">
                 <div className="hidden md:block">
-                  <ButtonArrowOne selectedPage={ROUTES.JOB_POST}>
+                  <ButtonArrowOne selectedPage={ROUTES.CREATE_JOB}>
                     Đăng một công việc
                   </ButtonArrowOne>
                 </div>

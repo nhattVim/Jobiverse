@@ -21,6 +21,7 @@ export const ROUTES = {
   EMPLOYER_PROFILE: '/employer-profile',
   STUDENT_PROFILE: '/student-profile',
   SET_INFORMATION: '/set-infomation',
+  CONTACT: '/contact',
   // SECURITY PATHS
   SECURITY: '/security',
   // NOTIFICATION PATHS

@@ -167,7 +167,7 @@ const JobEditor = () => {
             <div className="space-y-4">
               {/* Tên công việc */}
               <div>
-                <label className="block mb-1 text-sm font-bold text-gray-700">
+                <label className="block mb-1 text-sm font-bold">
                   Tên công việc
                 </label>
                 <input
@@ -181,7 +181,7 @@ const JobEditor = () => {
               </div>
 
               {/* Địa điểm */}
-              <label className="block mb-1 text-sm font-bold text-gray-700">
+              <label className="block mb-1 text-sm font-bold">
                 Địa điểm làm việc
               </label>
               <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
@@ -229,7 +229,7 @@ const JobEditor = () => {
 
               {/* Số lượng */}
               <div>
-                <label className="block mb-1 text-sm font-bold text-gray-700">
+                <label className="block mb-1 text-sm font-bold">
                   Số lượng tuyển
                 </label>
                 <input
@@ -245,14 +245,14 @@ const JobEditor = () => {
               {/* Hình thức & Lương */}
               <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
                 <div>
-                  <label className="block mb-1 text-sm font-bold text-gray-700">
+                  <label className="block mb-1 text-sm font-bold">
                     Hình thức làm việc
                   </label>
                   <select
                     name="workType"
                     value={form.workType}
                     onChange={handleChange}
-                    className="w-full px-4 py-2 rounded-full bg-white-bright focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="w-full px-4 py-2 rounded-full bg-white-bright focus:outline-none focus:ring-2 focus:ring-blue"
                   >
                     <option value="">-- Chọn -- </option>
                     <option value="online">Online</option>
@@ -269,7 +269,7 @@ const JobEditor = () => {
                     name="salary"
                     value={form.salary}
                     onChange={handleChange}
-                    className="w-full px-4 py-2 rounded-full bg-white-bright focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="w-full px-4 py-2 rounded-full bg-white-bright focus:outline-none focus:ring-2 focus:ring-blue"
                     placeholder="Lương"
                   />
                 </div>
@@ -277,7 +277,7 @@ const JobEditor = () => {
 
               {/* Kinh nghiệm */}
               <div>
-                <label className="block mb-1 text-sm font-bold text-gray-700">
+                <label className="block mb-1 text-sm font-bold">
                   Kinh nghiệm yêu cầu
                 </label>
                 <input
@@ -285,14 +285,14 @@ const JobEditor = () => {
                   name="expRequired"
                   value={form.expRequired}
                   onChange={handleChange}
-                  className="w-full px-4 py-2 rounded-full bg-white-bright focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="w-full px-4 py-2 rounded-full bg-white-bright focus:outline-none focus:ring-2 focus:ring-blue"
                   placeholder="VD: 1 năm"
                 />
               </div>
 
               {/* Thời gian làm việc */}
               <div>
-                <label className="block mb-1 text-sm font-bold text-gray-700">
+                <label className="block mb-1 text-sm font-bold">
                   Thời gian làm việc
                 </label>
                 <input
@@ -300,14 +300,14 @@ const JobEditor = () => {
                   name="workingTime"
                   value={form.workingTime}
                   onChange={handleChange}
-                  className="w-full px-4 py-2 rounded-full bg-white-bright focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="w-full px-4 py-2 rounded-full bg-white-bright focus:outline-none focus:ring-2 focus:ring-blue"
                   placeholder="Part-time, 20h/tuần"
                 />
               </div>
 
               {/* Mô tả công việc */}
               <div>
-                <label className="block mb-1 text-sm font-bold text-gray-700">
+                <label className="block mb-1 text-sm font-bold">
                   Mô tả công việc
                 </label>
                 <Editor
@@ -332,7 +332,7 @@ const JobEditor = () => {
 
               {/* Nội dung công việc */}
               <div>
-                <label className="block mb-1 text-sm font-bold text-gray-700">
+                <label className="block mb-1 text-sm font-bold">
                   Nội dung công việc
                 </label>
                 <Editor
@@ -357,7 +357,7 @@ const JobEditor = () => {
 
               {/* Hạn nộp hồ sơ */}
               <div>
-                <label className="block mb-1 text-sm font-bold text-gray-700">
+                <label className="block mb-1 text-sm font-bold">
                   Hạn nộp hồ sơ
                 </label>
                 <input
@@ -365,12 +365,12 @@ const JobEditor = () => {
                   name="deadline"
                   value={form.deadline}
                   onChange={handleChange}
-                  className="w-full px-4 py-2 rounded-full bg-white-bright focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="w-full px-4 py-2 rounded-full bg-white-bright focus:outline-none focus:ring-2 focus:ring-blue"
                 />
               </div>
 
               <div>
-                <label className="block mb-1 text-sm font-bold text-gray-700">
+                <label className="block mb-1 text-sm font-bold">
                   Ngành
                 </label>
                 <Select
@@ -392,7 +392,7 @@ const JobEditor = () => {
               </div>
 
               <div>
-                <label className="block mb-1 text-sm font-bold text-gray-700">
+                <label className="block mb-1 text-sm font-bold">
                   Chuyên ngành
                 </label>
                 <Select
@@ -423,7 +423,7 @@ const JobEditor = () => {
               {/* Nút submit */}
               <button
                 type="submit"
-                className="px-6 py-2 text-white transition rounded-full bg-blue hover:bg-blue-700"
+                className="px-6 py-2 text-white transition rounded-full bg-blue hover:bg-blue-700 cursor-pointer"
               >
                 {id ? 'Cập nhật bài đăng' : 'Tạo bài đăng'}
               </button>

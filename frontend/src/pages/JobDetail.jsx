@@ -276,7 +276,7 @@ const JobDetail = () => {
                 {isOwner && (
                   <div className="flex flex-col gap-5 p-10 mt-5 rounded-medium bg-white-bright">
                     <h3 className="text-xl font-semibold">Danh sách ứng viên ứng tuyển</h3>
-                    {applicantDetails.length === 0 ? (
+                    {applicantDetails.student === acceptedDetails._id ? (
                       <p className="text-gray-500">Chưa có ai ứng tuyển.</p>
                     ) : (
                       applicantDetails.map((student, index) => (

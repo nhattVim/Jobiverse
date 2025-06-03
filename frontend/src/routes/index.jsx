@@ -20,6 +20,7 @@ import JobManager from '../pages/JobManager'
 import AppliedJob from '../pages/AppliedJob'
 import Security from '../pages/Security'
 import Notify from '../pages/Notify'
+import Contact from '../pages/Contact'
 
 export const router = createBrowserRouter([
   {
@@ -84,6 +85,10 @@ export const router = createBrowserRouter([
       {
         path: ROUTES.EMPLOYER_DETAIL,
         element: <EmployerDetail />
+      },
+      {
+        path: ROUTES.CONTACT,
+        element: <Contact />
       },
       // SECURITY ROUTES
       {

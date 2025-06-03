@@ -32,6 +32,10 @@ class FavoriteController {
     try {
       const accountId = req.account._id
 
+      // Lấy danh sách project còn tồn tại
+      const existingProjects = await Project.find({}).select('_id')
+      const existingProjectIds = new Set(existingProjects.map(p => p._id.toString()))
+
       const favorites = await Favorite.find({ account: accountId })
         .populate({
           path: 'project',
@@ -40,9 +44,13 @@ class FavoriteController {
         })
         .sort({ createdAt: -1 })
 
-      // Lấy profile name hoặc companyName tương tự ProjectController
+      // Lọc ra các favorite có project tồn tại trong project data
+      const validFavorites = favorites.filter(
+        fav => fav.project && existingProjectIds.has(fav.project._id.toString())
+      )
+
       const favoritesWithProfile = await Promise.all(
-        favorites.map(async (fav) => {
+        validFavorites.map(async (fav) => {
           const project = fav.project
           let profile = null
           if (project && project.account) {

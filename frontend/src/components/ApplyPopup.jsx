@@ -3,6 +3,7 @@ import {
   CloudArrowUpIcon,
   ExclamationTriangleIcon,
   FolderPlusIcon,
+  PaperAirplaneIcon,
   XMarkIcon
 } from '@heroicons/react/24/solid'
 import { useEffect, useState } from 'react'
@@ -23,6 +24,7 @@ const ApplyPopup = ({ closePopup, applyTitle, projectId, toast }) => {
   const [active, setActive] = useState('a')
   const [selectedCV, setSelectedCV] = useState(null)
   const [uploadedCVId, setUploadedCVId] = useState(null)
+  const [coverLetter, setCoverLetter] = useState('')
 
   const handleToggle = (key) => {
     if (key !== active) {
@@ -115,9 +117,9 @@ const ApplyPopup = ({ closePopup, applyTitle, projectId, toast }) => {
     }
     try {
       if (selectedCV) {
-        await apiFetch(`/projects/${projectId}/apply`, 'POST', { cvId: selectedCV._id })
+        await apiFetch(`/projects/${projectId}/apply`, 'POST', { cvId: selectedCV._id, coverLetter })
       } else if (form.cv && uploadedCVId) {
-        await apiFetch(`/projects/${projectId}/apply`, 'POST', { cvId: uploadedCVId })
+        await apiFetch(`/projects/${projectId}/apply`, 'POST', { cvId: uploadedCVId, coverLetter })
       } else {
         setError('Vui lòng chờ file CV tải lên xong!')
         return
@@ -310,6 +312,21 @@ const ApplyPopup = ({ closePopup, applyTitle, projectId, toast }) => {
                 </button>
               </div>
             )}
+          </div>
+
+          <div className="w-full space-y-2">
+            <div className="flex items-center gap-2.5">
+              <PaperAirplaneIcon className="w-6 h-6 text-blue" />
+              <p className="font-semibold">Thư giới thiệu</p>
+            </div>
+            <textarea
+              name="coverLetter"
+              value={coverLetter}
+              onChange={(e) => { setCoverLetter(e.target.value) }}
+              className="w-full text-sm px-4 py-4 rounded-xl border border-gray-light focus:outline-none focus:border-blue transition-colors duration-300"
+              rows={4}
+              placeholder="Viết giới thiệu ngắn gọn về bản thân (điểm mạnh, điểm yếu) và nêu rõ mong muốn, lý do bạn muốn ứng tuyển cho vị trí này."
+            />
           </div>
 
           <div className="p-4 border border-gray-light rounded-small">

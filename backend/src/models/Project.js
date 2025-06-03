@@ -40,6 +40,7 @@ const ProjectSchema = new mongoose.Schema({
       required: true
     },
     cvType: String,
+    coverLetter: String,
     status: {
       type: String,
       enum: ['pending', 'accepted', 'rejected'],

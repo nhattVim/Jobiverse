@@ -102,7 +102,7 @@ const AppliedJob = () => {
                     </div>
                   </div>
                 </div>
-                <div className="flex flex-col justify-between h-full text-right gap-5">
+                <div className="flex flex-col justify-between gap-8 h-full text-right">
                   <p className="text-sm text-black-low">
                     Đã ứng tuyển:{' '}
                     {job.applicants.map((data) => (
@@ -121,10 +121,18 @@ const AppliedJob = () => {
                       switch (status) {
                       case 'pending':
                         return (
-                          <span className="flex items-center px-3 py-2 rounded-full bg-yellow-50 text-yellow-500 border border-yellow-500 font-medium">
-                            <ClockIcon className="h-5 w-5 mr-1" />
-                              Đang chờ duyệt
-                          </span>
+                          <div className='flex items-center space-x-3 justify-end'>
+                            <span className="flex items-center px-3 py-2 rounded-full bg-yellow-50 text-yellow-500 border border-yellow-500 font-medium">
+                              <ClockIcon className="h-5 w-5 mr-1" />
+                                Đang chờ duyệt
+                            </span>
+                            <button
+                              title="Huỷ ứng tuyển"
+                              className="flex items-center justify-center px-3 py-2 rounded-full bg-red hover:bg-red-700 text-white transition duration-300 shadow-md cursor-pointer"
+                            >
+                              <span>Huỷ</span>
+                            </button>
+                          </div>
                         )
                       case 'accepted':
                         return (
@@ -144,12 +152,6 @@ const AppliedJob = () => {
                         return null
                       }
                     })()}
-                    <button
-                      title="Huỷ ứng tuyển"
-                      className="flex items-center justify-center px-3 py-2 rounded-full bg-red hover:bg-red-700 text-white transition duration-300 shadow-md cursor-pointer"
-                    >
-                      <span>Huỷ</span>
-                    </button>
                   </div>
                 </div>
               </div>

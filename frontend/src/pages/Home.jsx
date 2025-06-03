@@ -49,11 +49,17 @@ const Home = () => {
           favoritesPromise
         ])
 
-        console.log(projectsData)
         setProjects(projectsData)
         setFavorites(
           Array.isArray(favoritesData)
-            ? favoritesData.map((fav) => fav.project._id)
+            ? favoritesData
+              .filter(
+                (fav) =>
+                  fav.project &&
+                    fav.project._id &&
+                    projectsData.some((proj) => proj._id === fav.project._id)
+              )
+              .map((fav) => fav.project._id)
             : []
         )
       } catch (error) {
@@ -71,10 +77,7 @@ const Home = () => {
         <div className="grid grid-cols-[1fr_0.75fr] h-[571px] grid-rows-auto">
           <div className="relative">
             <div className="absolute inset-0 h-full -left-[70px]">
-              <img
-                src={HeroImg}
-                className="object-cover w-full h-full"
-              />
+              <img src={HeroImg} className="object-cover w-full h-full" />
             </div>
           </div>
 
