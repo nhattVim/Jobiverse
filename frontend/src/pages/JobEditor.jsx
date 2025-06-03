@@ -143,8 +143,6 @@ const JobEditor = () => {
     fetchData()
   }, [])
 
-  console.log('Form data:', form)
-
   if (loading) return (
     <div className="flex items-center justify-center w-full h-screen pb-[104px]">
       <p>Đang tải Job...</p>
@@ -323,6 +321,7 @@ const JobEditor = () => {
                     height: 300,
                     statusbar: false,
                     menubar: false,
+                    license_key: 'gpl',
                     plugins: ['link', 'table', 'lists', 'code'],
                     toolbar:
                       'undo redo | bold italic | alignleft aligncenter alignright | bullist numlist'
@@ -348,6 +347,7 @@ const JobEditor = () => {
                     height: 300,
                     statusbar: false,
                     menubar: false,
+                    license_key: 'gpl',
                     plugins: ['link', 'table', 'lists', 'code'],
                     toolbar:
                       'undo redo | bold italic | alignleft aligncenter alignright | bullist numlist'
@@ -363,7 +363,7 @@ const JobEditor = () => {
                 <input
                   type="date"
                   name="deadline"
-                  value={form.deadline}
+                  value={form.deadline ? new Date(form.deadline).toISOString().slice(0, 10) : ''}
                   onChange={handleChange}
                   className="w-full px-4 py-2 rounded-full bg-white-bright focus:outline-none focus:ring-2 focus:ring-blue"
                 />

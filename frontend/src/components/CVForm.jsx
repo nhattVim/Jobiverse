@@ -110,10 +110,18 @@ export default function CVForm({ cvData, setCvData, onSubmit }) {
               type={field.type === 'date' && focusedField !== key ? 'text' : field.type}
               name={key}
               placeholder={field.placeholder}
-              value={cvData[key] ?? ''}
+              value={
+                field.type === 'date'
+                  ? (cvData[key]
+                    ? (focusedField === key
+                      ? new Date(cvData[key]).toISOString().slice(0, 10)
+                      : new Date(cvData[key]).toLocaleDateString())
+                    : ''
+                  ) : (cvData[key] || '')
+              }
               onChange={handleChange}
               onFocus={() => field.type === 'date' && setFocusedField(key)}
-              onBlur={() => field.type === 'date' && !cvData[key] && setFocusedField(null)}
+              onBlur={() => setFocusedField(null)}
               className="w-full p-2 mt-1 border rounded"
             />
           )}
