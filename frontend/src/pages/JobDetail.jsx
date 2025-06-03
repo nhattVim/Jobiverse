@@ -168,7 +168,7 @@ const JobDetail = () => {
                     </div>
                     <div className="flex gap-3 ml-auto">
                       {isOwner ? (
-                        <ButtonArrowOne onClick={() => navigate(`/job/${project._id}`)}>
+                        <ButtonArrowOne selectedPage={`/job/${project._id}`}>
                           Chỉnh sửa
                         </ButtonArrowOne>
                       ) : project.applicants &&

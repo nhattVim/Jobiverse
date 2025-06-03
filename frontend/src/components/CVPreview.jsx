@@ -84,7 +84,9 @@ export default function CVPreview({ cvData, id }) {
             <div key={key}>
               <p className="py-2 font-medium">{label}</p>
               {cvData[key] ? (
-                <p className="pb-4 text-sm italic break-words">{cvData[key]}</p>
+                <p className="pb-4 text-sm italic break-words">
+                  {key === 'birthday' ? new Date(cvData[key]).toLocaleDateString() : cvData[key]}
+                </p>
               ) : (
                 <p className="pb-4 text-sm italic text-[#cccc]">{placeholder}</p>
               )}
