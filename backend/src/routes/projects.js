@@ -19,5 +19,6 @@ router.get('/student/:id', projectController.RcmProjectByStudent)
 
 router.post('/:projectId/apply', verifyToken(['student']), projectController.applyToProject)
 router.post('/:projectId/respond/:studentId', verifyToken([]), projectController.respondToApplication)
+router.delete('/applied/:id', verifyToken(['student']), projectController.deleteAppliedProject)
 
 module.exports = router

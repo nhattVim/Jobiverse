@@ -306,6 +306,41 @@ class ProjectController {
     }
   }
 
+  // [DELETE] /projects/applied/:id
+  async deleteAppliedProject(req, res, next) {
+    try {
+      const accountId = req.account._id
+      const student = await Student.findOne({ account: accountId })
+      if (!student)
+        return res.status(404).json({ message: 'Student not found' })
+
+      const projectId = req.params.id
+      const project = await Project.findById(projectId)
+      if (!project)
+        return res.status(404).json({ message: 'Project not found' })
+
+      // Remove the applicant from the applicants array
+      const initialLength = project.applicants.length
+      project.applicants = project.applicants.filter(
+        (app) => app.student.toString() !== student._id.toString()
+      )
+
+      if (project.applicants.length === initialLength) {
+        return res.status(404).json({ message: 'Application not found' })
+      }
+
+      await project.save()
+
+      await Notification.create({
+        account: project.account,
+        content: `Ứng viên ${student.name} đã rút đơn ứng tuyển khỏi dự án "${project.title}".`
+      })
+      res.status(200).json({ message: 'Application deleted successfully' })
+    } catch (err) {
+      res.status(500).json({ message: 'Server error', error: err.message })
+    }
+  }
+
   // [POST] /projects/:projectId/respond/:studentId
   async respondToApplication(req, res, next) {
     try {

@@ -298,7 +298,7 @@ const Home = () => {
                   quy trình tuyển dụng trở nên hiệu quả và hiệu suất.
                 </p>
 
-                <ButtonArrowOne>Liên hệ ngay</ButtonArrowOne>
+                <ButtonArrowOne selectedPage={ROUTES.CONTACT}>Liên hệ ngay</ButtonArrowOne>
               </div>
 
               <div className="self-stretch relative inline-flex justify-start items-center gap-[50px]">
