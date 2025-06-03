@@ -121,7 +121,7 @@ export default function CVForm({ cvData, setCvData, onSubmit }) {
               }
               onChange={handleChange}
               onFocus={() => field.type === 'date' && setFocusedField(key)}
-              onBlur={() => field.type === 'date' && !cvData[key] && setFocusedField(null)}
+              onBlur={() => setFocusedField(null)}
               className="w-full p-2 mt-1 border rounded"
             />
           )}

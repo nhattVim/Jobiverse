@@ -17,7 +17,6 @@ export default function CVFormSection({
       : value || ''
 
     const commonProps = {
-      key: f.name,
       name: f.name,
       placeholder: f.placeholder,
       className: 'w-full p-1 mb-1 border rounded',
@@ -26,13 +25,14 @@ export default function CVFormSection({
     }
 
     return f.textarea ? (
-      <textarea {...commonProps} />
+      <textarea key={f.name} {...commonProps} />
     ) : (
       <input
+        key={f.name}
         {...commonProps}
         type={inputType}
-        onFocus={() => isDate && setFocusedField(fieldKey)}
-        onBlur={() => isDate && !value && setFocusedField(null)}
+        onFocus={() => isDate ? setFocusedField(fieldKey) : setFocusedField(null)}
+        onBlur={() => setFocusedField(null)}
       />
     )
   }
