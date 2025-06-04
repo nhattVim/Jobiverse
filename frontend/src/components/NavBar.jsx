@@ -48,7 +48,7 @@ const NavBar = () => {
 
     const startPolling = () => {
       fetchNotifications()
-      intervalId = setInterval(fetchNotifications, 10000)
+      intervalId = setInterval(fetchNotifications, 5000)
     }
 
     const stopPolling = () => clearInterval(intervalId)

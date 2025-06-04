@@ -1,4 +1,5 @@
 import React from 'react'
+import { formatDate } from '../utils/dateUtils'
 
 export default function CVPreviewSection({ section, data }) {
   // if (!data || data.length === 0) {
@@ -22,9 +23,9 @@ export default function CVPreviewSection({ section, data }) {
               <div className="flex justify-between py-2 text-sm italic text-gray-600">
                 <span className="w-1/2 overflow-hidden truncate">{item[firstField] || section.fields[0]?.placeholder}</span>
                 <span className="flex gap-3">
-                  <span>{item.start ? new Date(item.start).toLocaleDateString() : 'Bắt đầu'}</span>
+                  <span>{item.start ? formatDate(item.start) : 'Bắt đầu'}</span>
                   <span>-</span>
-                  <span>{item.end ? new Date(item.end).toLocaleDateString() : 'Kết thúc'}</span>
+                  <span>{item.end ? formatDate(item.end) : 'Kết thúc'}</span>
                 </span>
               </div>
 

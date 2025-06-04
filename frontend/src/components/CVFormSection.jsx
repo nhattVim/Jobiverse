@@ -1,3 +1,5 @@
+import { formatDate } from '../utils/dateUtils'
+
 export default function CVFormSection({
   sectionKey, fields, items, onAdd, onRemove, onChange,
   focusedField, setFocusedField
@@ -13,7 +15,7 @@ export default function CVFormSection({
     const displayValue = isDate && value
       ? (isFocused
         ? new Date(value).toISOString().slice(0, 10)
-        : new Date(value).toLocaleDateString())
+        : formatDate(value))
       : value || ''
 
     const commonProps = {

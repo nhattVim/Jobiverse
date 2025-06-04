@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import { useParams } from 'react-router-dom'
 import CVFormSection from './CVFormSection'
+import { formatDate } from '../utils/dateUtils'
 
 const personalFields = {
   avatar: { label: 'Ảnh đại diện', placeholder: 'Dán link ảnh đại diện...', type: 'url' },
@@ -115,7 +116,7 @@ export default function CVForm({ cvData, setCvData, onSubmit }) {
                   ? (cvData[key]
                     ? (focusedField === key
                       ? new Date(cvData[key]).toISOString().slice(0, 10)
-                      : new Date(cvData[key]).toLocaleDateString())
+                      : formatDate(cvData[key]))
                     : ''
                   ) : (cvData[key] || '')
               }

@@ -1,4 +1,5 @@
 import CVPreviewSection from './CVPreviewSection'
+import { formatDate } from '../utils/dateUtils'
 
 const personalFields = {
   birthday: { label: 'Ngày sinh', placeholder: 'DD/MM/YYYY' },
@@ -85,7 +86,7 @@ export default function CVPreview({ cvData, id }) {
               <p className="py-2 font-medium">{label}</p>
               {cvData[key] ? (
                 <p className="pb-4 text-sm italic break-words">
-                  {key === 'birthday' ? new Date(cvData[key]).toLocaleDateString() : cvData[key]}
+                  {key === 'birthday' ? formatDate(cvData[key]) : cvData[key]}
                 </p>
               ) : (
                 <p className="pb-4 text-sm italic text-[#cccc]">{placeholder}</p>

@@ -55,7 +55,16 @@ const Notify = () => {
                       <p className="text-sm text-gray-600">{noti.content}</p>
                       <span className="text-xs text-gray-400">{new Date(noti.createdAt).toLocaleDateString()}</span>
                     </div>
-                    <button className='mr-10'>Xoá</button>
+                    <button
+                      className='mr-10'
+                      onClick={() => {
+                        apiFetch(`/notify/${noti._id}`, 'DELETE')
+                          .then(() => setNotiList(notiList.filter(item => item._id !== noti._id)))
+                          .catch(err => console.error('Delete error:', err))
+                      }}
+                    >
+                      Xoá
+                    </button>
                   </li>
                 ))}
               </ul>
