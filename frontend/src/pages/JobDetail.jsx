@@ -140,6 +140,8 @@ const JobDetail = () => {
     ? `data:image/png;base64,${avatarBase64}`
     : '/default-avatar.png'
 
+  console.log('Applicant Details:', applicantDetails)
+
   return (
     <>
       {isOpen && <ApplyPopup closePopup={closePopup} applyTitle={project.title} projectId={project._id} toast={toast} />}
@@ -276,7 +278,7 @@ const JobDetail = () => {
                 {isOwner && (
                   <div className="flex flex-col gap-5 p-10 mt-5 rounded-medium bg-white-bright">
                     <h3 className="text-xl font-semibold">Danh sách ứng viên ứng tuyển</h3>
-                    {applicantDetails.student === acceptedDetails._id ? (
+                    {applicantDetails.length === 0 ? (
                       <p className="text-gray-500">Chưa có ai ứng tuyển.</p>
                     ) : (
                       applicantDetails.map((student, index) => (
@@ -289,7 +291,7 @@ const JobDetail = () => {
                             />
                             <div>
                               <h4 className="text-lg font-semibold">{student.name}</h4>
-                              <p className="text-sm text-gray-500">{student.account?.email}</p>
+                              <p className="w-4/5 overflow-hidden text-sm text-gray-500 truncate">{student.account?.email}</p>
                             </div>
                           </div>
                           <div className='flex items-center gap-2'>
