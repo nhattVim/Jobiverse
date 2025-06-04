@@ -41,18 +41,20 @@ const JobDetail = () => {
       const res = await apiFetch(`/projects/${id}`, 'GET')
       setProject(res)
 
-      if (res?.applicants?.length) {
+      const pendingApplicants = res?.applicants?.filter(app => app.status === 'pending') || []
+      if (pendingApplicants.length > 0) {
         const applicantData = await Promise.all(
-          res.applicants.map(s => apiFetch(`/students/${s.student}`, 'GET'))
+          pendingApplicants.map(app => apiFetch(`/students/${app.student}`, 'GET'))
         )
         setApplicantDetails(applicantData)
       } else {
         setApplicantDetails([])
       }
 
-      if (res?.assignedStudents?.length) {
+      const acceptedApplicants = res?.applicants?.filter(app => app.status === 'accepted') || []
+      if (acceptedApplicants.length > 0) {
         const acceptedData = await Promise.all(
-          res.assignedStudents.map(id => apiFetch(`/students/${id}`, 'GET'))
+          acceptedApplicants.map(app => apiFetch(`/students/${app.student}`, 'GET'))
         )
         setAcceptedDetails(acceptedData)
       } else {
@@ -139,8 +141,6 @@ const JobDetail = () => {
   const avatarSrc = avatarBase64
     ? `data:image/png;base64,${avatarBase64}`
     : '/default-avatar.png'
-
-  console.log('Applicant Details:', applicantDetails)
 
   return (
     <>

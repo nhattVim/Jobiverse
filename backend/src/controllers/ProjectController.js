@@ -209,42 +209,39 @@ class ProjectController {
       const { cvId, coverLetter } = req.body
 
       const project = await Project.findById(projectId)
-      if (!project)
-        return res.status(404).json({ message: 'Project not found' })
+      if (!project) return res.status(404).json({ message: 'Project not found' })
 
       const student = await Student.findOne({ account: accountId })
-      if (!student)
-        return res.status(404).json({ message: 'Student not found' })
+      if (!student) return res.status(404).json({ message: 'Student not found' })
 
-      const cv = await CV.findOne({ _id: cvId, student: student._id })
+      let cv = await CV.findOne({ _id: cvId, student: student._id })
       let cvType = 'CV'
-      let foundCV = cv
       if (!cv) {
-        const cvUpload = await CVUpload.findOne({
-          _id: cvId,
-          student: student._id
-        })
-        if (!cvUpload) return res.status(404).json({ message: 'CV not found' })
-        foundCV = cvUpload
+        cv = await CVUpload.findOne({ _id: cvId, student: student._id })
+        if (!cv) return res.status(404).json({ message: 'CV not found' })
         cvType = 'CVUpload'
       }
 
       if (project.status !== 'open')
         return res
           .status(400)
-          .json({ message: 'Project is not open for applications' })
+          .json({ message: 'Project is not open for applicants' })
 
       if (project.assignedStudents.includes(student._id))
         return res
           .status(400)
           .json({ message: 'Bạn đã ở trong dự án này' })
 
+      const alreadyApplied = project.applicants.some(app => app.student.equals(student._id))
+      if (alreadyApplied) return res.status(400).json({ message: 'Bạn đã ứng tuyển dự án này rồi' })
+
       project.applicants.push({
         student: student._id,
-        cv: foundCV._id,
+        cv: cv._id,
         coverLetter: coverLetter,
         cvType
       })
+
       await project.save()
 
       await Notification.create({
@@ -311,13 +308,11 @@ class ProjectController {
     try {
       const accountId = req.account._id
       const student = await Student.findOne({ account: accountId })
-      if (!student)
-        return res.status(404).json({ message: 'Student not found' })
+      if (!student) return res.status(404).json({ message: 'Student not found' })
 
       const projectId = req.params.id
       const project = await Project.findById(projectId)
-      if (!project)
-        return res.status(404).json({ message: 'Project not found' })
+      if (!project) return res.status(404).json({ message: 'Project not found' })
 
       // Remove the applicant from the applicants array
       const initialLength = project.applicants.length
@@ -335,6 +330,7 @@ class ProjectController {
         account: project.account,
         content: `Ứng viên ${student.name} đã rút đơn ứng tuyển khỏi dự án "${project.title}".`
       })
+
       res.status(200).json({ message: 'Application deleted successfully' })
     } catch (err) {
       res.status(500).json({ message: 'Server error', error: err.message })
@@ -349,42 +345,26 @@ class ProjectController {
       const accountId = req.account._id
 
       const project = await Project.findById(projectId)
-      if (!project)
-        return res.status(404).json({ message: 'Project not found' })
+      if (!project) return res.status(404).json({ message: 'Project not found' })
 
       const account = await Account.findById(accountId)
-      if (!account)
-        return res.status(404).json({ message: 'Account không tồn tại' })
+      if (!account) return res.status(404).json({ message: 'Account không tồn tại' })
 
       if (project.account.toString() !== account._id.toString()) {
-        return res.status(403).json({
-          message: 'You are not authorized to respond to this project'
-        })
+        return res.status(403).json({ message: 'You are not authorized to respond to this project' })
       }
 
-      if (!project.applicants.some(app => app.student.toString() === studentId)) {
-        return res
-          .status(400)
-          .json({ message: 'Student did not apply for this project' })
-      }
+      const applicant = project.applicants.find(app => app.student.toString() === studentId)
+      if (!applicant) return res.status(400).json({ message: 'Student did not apply for this project' })
 
       if (action === 'accept') {
-        project.assignedStudents.push(studentId)
-        project.applicants = project.applicants.map(applicant =>
-          applicant.student.toString() === studentId
-            ? { ...applicant.toObject(), status: 'accepted' }
-            : applicant
-        )
+        applicant.status = 'accepted'
       } else if (action === 'reject') {
-        project.applicants = project.applicants.map(applicant =>
-          applicant.student.toString() === studentId
-            ? { ...applicant.toObject(), status: 'rejected' }
-            : applicant
-        )
+        applicant.status = 'rejected'
       } else {
-        return res
-          .status(400)
-          .json({ message: 'Invalid action. Must be "accept" or "reject"' })
+        return res.status(400).json({
+          message: 'Invalid action. Must be "accept", "reject", or "assign"'
+        })
       }
 
       await project.save()
@@ -394,9 +374,7 @@ class ProjectController {
         content: `Your application for project "${project.title}" has been ${action}ed.`
       })
 
-      res
-        .status(200)
-        .json({ message: `Student has been ${action}ed successfully` })
+      res.status(200).json({ message: `Student has been ${action}ed successfully` })
     } catch (err) {
       res.status(500).json({ message: 'Server error' + err.message, error: err.message })
     }
