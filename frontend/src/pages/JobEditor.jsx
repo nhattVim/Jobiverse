@@ -149,6 +149,8 @@ const JobEditor = () => {
     </div>
   )
 
+  console.log('Form state:', form)
+
   return (
     <div className="min-h-screen bg-white">
       <ToastContainer position="top-right" autoClose={3000} />
@@ -423,7 +425,7 @@ const JobEditor = () => {
               {/* Nút submit */}
               <button
                 type="submit"
-                className="px-6 py-2 text-white transition rounded-full bg-blue hover:bg-blue-700 cursor-pointer"
+                className="px-6 py-2 text-white transition rounded-full cursor-pointer bg-blue hover:bg-blue-700"
               >
                 {id ? 'Cập nhật bài đăng' : 'Tạo bài đăng'}
               </button>

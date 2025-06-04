@@ -18,6 +18,7 @@ import ApplyPopup from '../components/ApplyPopup'
 import UserContext from '../contexts/UserContext'
 import apiFetch from '../services/api'
 import { ToastContainer, toast } from 'react-toastify'
+import { formatDate } from '../utils/dateUtils'
 
 const JobDetail = () => {
   const { id } = useParams()
@@ -166,7 +167,12 @@ const JobDetail = () => {
                   <div className="flex flex-wrap items-center justify-between gap-4">
                     <div className="flex items-center px-3 py-1 text-sm font-medium bg-blue-100 rounded-full text-blue-mid">
                       <CalendarDaysIcon className="w-4 h-4 mr-1" />
-                      Hạn nộp hồ sơ: {new Date(project.deadline).toLocaleDateString()}
+                      {/* Hạn nộp hồ sơ: {new Date(project.deadline).toLocaleDateString()} */}
+                      {project.deadline ? (
+                        <>
+                          Hạn nộp hồ sơ : {formatDate(project.deadline)}
+                        </>
+                      ) : ('Chưa có thông tin')}
                     </div>
                     <div className="flex gap-3 ml-auto">
                       {isOwner ? (
