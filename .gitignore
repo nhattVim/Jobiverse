@@ -22,7 +22,6 @@ pnpm-lock.yaml
 
 # Environment files
 .env
-.env.*
 
 # Uploads (Optional)
 uploads/
