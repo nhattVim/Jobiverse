@@ -5,6 +5,7 @@ import apiFetch from '../services/api'
 import { GoogleLogin } from '@react-oauth/google'
 import FacebookLogin from 'react-facebook-login/dist/facebook-login-render-props'
 import { ROUTES } from '../routes/routePaths'
+import { sendEmail } from '../utils/sendEmail'
 
 const RegisterForm = ({ role, onBack }) => {
   const navigate = useNavigate()
@@ -31,6 +32,12 @@ const RegisterForm = ({ role, onBack }) => {
         password,
         role
       })
+
+      await sendEmail({
+        toEmail: email,
+        content: 'Chào mừng bạn đến với Jobiverse! Hãy khám phá cơ hội việc làm ngay hôm nay.'
+      })
+
       navigate(ROUTES.LOGIN)
     } catch (err) {
       setError(err.message || 'Đăng ký thất bại, vui lòng thử lại.')
