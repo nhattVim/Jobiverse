@@ -12,7 +12,7 @@ router.get('/recomment/:id', studentController.recommendProfile)
 router.get('/', studentController.getAllProfiles)
 router.get('/:id', studentController.getProfileById)
 
-router.post('/', studentController.createProfile)
-router.put('/', studentController.updateMyProfile)
+router.post('/', verifyToken(['student']), studentController.createProfile)
+router.put('/', verifyToken(['student']), studentController.updateMyProfile)
 
 module.exports = router

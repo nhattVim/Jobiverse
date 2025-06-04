@@ -164,7 +164,7 @@ class AdminController {
   // [PUT] /account/avatar
   async changeAvatar(req, res) {
     try {
-      const accountId = req.account.id
+      const accountId = req.account._id
       if (!accountId) return res.status(401).json({ message: 'Chưa đăng nhập' })
       if (!req.file) return res.status(400).json({ message: 'Vui lòng chọn ảnh đại diện mới' })
 
@@ -189,7 +189,7 @@ class AdminController {
   // [PUT] /account/profile
   async hasProfile(req, res, next) {
     try {
-      const accountId = req.account.id
+      const accountId = req.account._id
       if (!accountId) return res.status(401).json({ message: 'Chưa đăng nhập' })
 
       const updated = await Account.findByIdAndUpdate(accountId, { profile: true })
