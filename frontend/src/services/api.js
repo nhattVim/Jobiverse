@@ -1,4 +1,3 @@
-// const API_BASE = 'http://localhost:3000'
 const API_BASE = import.meta.env.VITE_API_URL
 
 export default async function apiFetch(path, method = 'GET', body = null) {
