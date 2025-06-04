@@ -1,8 +1,8 @@
 import emailjs from 'emailjs-com'
 
-const SERVICE_ID = 'Jobiverse'
-const TEMPLATE_ID = 'template_lw71jjo'
-const USER_ID = 'Lm9BLo2zmwPEnuRij'
+const SERVICE_ID = import.meta.env.VITE_EMAILJS_SERVICE_ID
+const TEMPLATE_ID = import.meta.env.VITE_EMAILJS_TEMPLATE_ID
+const USER_ID = import.meta.env.VITE_EMAILJS_USER_ID
 
 export const sendEmail = async ({ toEmail, content }) => {
   try {

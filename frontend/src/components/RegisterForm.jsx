@@ -15,6 +15,13 @@ const RegisterForm = ({ role, onBack }) => {
   const [acceptPolicy, setAcceptPolicy] = useState(false)
   const [error, setError] = useState('')
 
+  const sendEmailAfterRegister = async () => {
+    await sendEmail({
+      toEmail: email,
+      content: 'Chào mừng bạn đến với Jobiverse! Hãy khám phá cơ hội việc làm ngay hôm nay.'
+    })
+  }
+
   const handleRegister = async (e) => {
     e.preventDefault()
     setError('')
@@ -33,11 +40,7 @@ const RegisterForm = ({ role, onBack }) => {
         role
       })
 
-      await sendEmail({
-        toEmail: email,
-        content: 'Chào mừng bạn đến với Jobiverse! Hãy khám phá cơ hội việc làm ngay hôm nay.'
-      })
-
+      sendEmailAfterRegister()
       navigate(ROUTES.LOGIN)
     } catch (err) {
       setError(err.message || 'Đăng ký thất bại, vui lòng thử lại.')
@@ -51,6 +54,8 @@ const RegisterForm = ({ role, onBack }) => {
         role,
         ggToken: credentialResponse.credential
       })
+
+      sendEmailAfterRegister()
       navigate(ROUTES.LOGIN)
     } catch (err) {
       setError('Đăng ký bằng Google thất bại.')
@@ -85,6 +90,8 @@ const RegisterForm = ({ role, onBack }) => {
         role,
         fbToken: accessToken
       })
+
+      sendEmailAfterRegister()
       navigate(ROUTES.LOGIN)
     } catch (err) {
       setError('Đăng ký bằng Facebook thất bại.')
