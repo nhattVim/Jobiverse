@@ -223,35 +223,46 @@ class ProjectController {
       }
 
       if (project.status !== 'open')
-        return res
-          .status(400)
-          .json({ message: 'Project is not open for applicants' })
+        return res.status(400).json({ message: 'Project is not open for applicants' })
 
-      if (project.assignedStudents.includes(student._id))
-        return res
-          .status(400)
-          .json({ message: 'Bạn đã ở trong dự án này' })
+      const existingApplicationIndex = project.applicants.findIndex(app =>
+        app.student.toString() === student._id.toString()
+      )
 
-      const alreadyApplied = project.applicants.some(app => app.student.equals(student._id))
-      if (alreadyApplied) return res.status(400).json({ message: 'Bạn đã ứng tuyển dự án này rồi' })
+      if (existingApplicationIndex !== -1) {
+        const existingApplication = project.applicants[existingApplicationIndex]
 
-      project.applicants.push({
-        student: student._id,
-        cv: cv._id,
-        coverLetter: coverLetter,
-        cvType
-      })
+        if (existingApplication.status === 'rejected') {
+          project.applicants[existingApplicationIndex] = {
+            ...existingApplication.toObject(),
+            status: 'pending',
+            cv: cv._id,
+            cvType,
+            coverLetter
+          }
+        } else {
+          return res.status(400).json({ message: 'Bạn đã ứng tuyển dự án này rồi' })
+        }
+      } else {
+        project.applicants.push({
+          student: student._id,
+          cv: cv._id,
+          coverLetter,
+          cvType,
+          status: 'pending'
+        })
+      }
 
       await project.save()
 
       await Notification.create({
-        account: student.account,
+        account: project.account,
         content: `Student "${student.name}" has applied to your project "${project.title}"`
       })
 
       res.status(200).json({ message: 'Application submitted successfully' })
     } catch (err) {
-      res.status(500).json({ message: 'Server error', err: err.message })
+      res.status(500).json({ message: 'Server error: ' + err.message })
     }
   }
 

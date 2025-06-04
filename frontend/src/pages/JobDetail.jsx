@@ -209,7 +209,9 @@ const JobDetail = () => {
                                 <StatusTag
                                   icon={<XCircleIcon className="w-5 h-5 mr-1" />}
                                   content="Bị từ chối"
-                                  className="text-red-500 border border-red-500 rounded-full bg-red-50"
+                                  hoverContent="Ứng tuyển lại"
+                                  className="text-red-500 border border-red-500 rounded-full cursor-pointer bg-red-50 hover:bg-red-100"
+                                  onClick={() => setIsOpen(true)}
                                 />
                               )
                             default:
@@ -398,11 +400,18 @@ const ListItem = ({ icon, label, value }) => (
   </li>
 )
 
-const StatusTag = ({ icon, content, className }) => {
+const StatusTag = ({ icon, content, hoverContent, className, ...props }) => {
+  const [isHovered, setIsHovered] = useState(false)
+
   return (
-    <span className={`flex items-center px-3 py-2 font-medium ${className}`}>
+    <span
+      className={`flex items-center px-3 py-2 font-medium transition-colors ${className}`}
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
+      {...props}
+    >
       {icon}
-      {content}
+      {isHovered && hoverContent ? hoverContent : content}
     </span>
   )
 }
