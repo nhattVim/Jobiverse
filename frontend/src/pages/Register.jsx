@@ -17,7 +17,7 @@ const options = [
   }
 ]
 
-const Chooserole = () => {
+const Register = () => {
   const [selectedType, setSelectedType] = useState('')
   const [showForm, setShowForm] = useState(false)
 
@@ -88,4 +88,4 @@ const Chooserole = () => {
   )
 }
 
-export default Chooserole
+export default Register

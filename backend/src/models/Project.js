@@ -43,17 +43,13 @@ const ProjectSchema = new mongoose.Schema({
     coverLetter: String,
     status: {
       type: String,
-      enum: ['pending', 'accepted', 'rejected'],
+      enum: ['pending', 'rejected', 'accepted'],
       default: 'pending'
     },
     appliedAt: {
       type: Date,
       default: Date.now
     }
-  }],
-  assignedStudents: [{
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'Student'
   }],
   salary: Number,
   expRequired: Number,

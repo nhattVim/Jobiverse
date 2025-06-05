@@ -5,6 +5,7 @@ import apiFetch from '../services/api'
 import { GoogleLogin } from '@react-oauth/google'
 import FacebookLogin from 'react-facebook-login/dist/facebook-login-render-props'
 import { ROUTES } from '../routes/routePaths'
+import { sendEmail } from '../utils/sendEmail'
 
 const RegisterForm = ({ role, onBack }) => {
   const navigate = useNavigate()
@@ -13,6 +14,13 @@ const RegisterForm = ({ role, onBack }) => {
   const [password, setPassword] = useState('')
   const [acceptPolicy, setAcceptPolicy] = useState(false)
   const [error, setError] = useState('')
+
+  const sendEmailAfterRegister = async () => {
+    await sendEmail({
+      toEmail: email,
+      content: 'Chào mừng bạn đến với Jobiverse! Hãy khám phá cơ hội việc làm ngay hôm nay.'
+    })
+  }
 
   const handleRegister = async (e) => {
     e.preventDefault()
@@ -31,6 +39,8 @@ const RegisterForm = ({ role, onBack }) => {
         password,
         role
       })
+
+      sendEmailAfterRegister()
       navigate(ROUTES.LOGIN)
     } catch (err) {
       setError(err.message || 'Đăng ký thất bại, vui lòng thử lại.')
@@ -44,6 +54,8 @@ const RegisterForm = ({ role, onBack }) => {
         role,
         ggToken: credentialResponse.credential
       })
+
+      sendEmailAfterRegister()
       navigate(ROUTES.LOGIN)
     } catch (err) {
       setError('Đăng ký bằng Google thất bại.')
@@ -78,6 +90,8 @@ const RegisterForm = ({ role, onBack }) => {
         role,
         fbToken: accessToken
       })
+
+      sendEmailAfterRegister()
       navigate(ROUTES.LOGIN)
     } catch (err) {
       setError('Đăng ký bằng Facebook thất bại.')

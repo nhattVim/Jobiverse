@@ -22,7 +22,6 @@ pnpm-lock.yaml
 
 # Environment files
 .env
-.env.*
 
 # Uploads (Optional)
 uploads/
@@ -32,7 +31,9 @@ uploads/
 # ============================
 
 # Build output
-bin/
+backend.NET/bin/
+backend/bin/*
+!backend/bin/www
 obj/
 
 # User-specific files

@@ -171,7 +171,7 @@ const CVManagement = () => {
                   cvUploads.map(cv => (
                     <div key={cv._id} className='flex items-center justify-between p-6 my-5 transition border bg-white-mid border-gray-light rounded-medium hover:shadow-md hover:bg-gray-50'>
                       <a
-                        href={`http://localhost:3000/cv/uploads/${cv._id}`}
+                        href={`${import.meta.env.VITE_API_URL}/cv/uploads/${cv._id}`}
                         target="_blank"
                         rel="noreferrer"
                         className='block mb-1 text-lg font-semibold text-blue-mid hover:underline'
@@ -180,7 +180,7 @@ const CVManagement = () => {
                       </a>
                       <div className="flex items-center space-x-2">
                         <a
-                          href={`http://localhost:3000/cv/uploads/${cv._id}`}
+                          href={`${import.meta.env.VITE_API_URL}/cv/uploads/${cv._id}`}
                           target="_blank"
                           rel="noreferrer"
                           className="flex items-center justify-center px-4 py-1.5 text-white bg-blue-600 rounded-full hover:bg-blue-700"

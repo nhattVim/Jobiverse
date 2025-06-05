@@ -241,7 +241,7 @@ const ApplyPopup = ({ closePopup, applyTitle, projectId, toast }) => {
                             >
                               {data.title || 'Chưa đặt tên'}
                               <a
-                                href={`http://localhost:3000/cv/uploads/${data._id}`}
+                                href={`${import.meta.env.VITE_API_URL}/cv/uploads/${data._id}`}
                                 target="_blank"
                                 rel="noreferrer"
                                 className={`${selectedCV && selectedCV._id === data._id
@@ -327,7 +327,7 @@ const ApplyPopup = ({ closePopup, applyTitle, projectId, toast }) => {
               name="coverLetter"
               value={coverLetter}
               onChange={(e) => { setCoverLetter(e.target.value) }}
-              className="w-full text-sm px-4 py-4 rounded-xl border border-gray-light focus:outline-none focus:border-blue transition-colors duration-300"
+              className="w-full px-4 py-4 text-sm transition-colors duration-300 border rounded-xl border-gray-light focus:outline-none focus:border-blue"
               rows={4}
               placeholder="Viết giới thiệu ngắn gọn về bản thân (điểm mạnh, điểm yếu) và nêu rõ mong muốn, lý do bạn muốn ứng tuyển cho vị trí này."
             />

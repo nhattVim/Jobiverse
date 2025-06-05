@@ -59,7 +59,7 @@ const Sidebar = () => {
       <div className="flex items-center space-x-3">
         <div className="relative w-12 h-12">
           <img
-            src={`http://localhost:3000/account/avatar?timestamp=${user?.avatarTimestamp || ''}`}
+            src={`${import.meta.env.VITE_API_URL}/account/avatar?timestamp=${user?.avatarTimestamp || ''}`}
             alt="Avatar"
             className="object-cover w-full h-full rounded-full"
           />

@@ -19,6 +19,7 @@ import UserContext from '../contexts/UserContext'
 import apiFetch from '../services/api'
 import { ToastContainer, toast } from 'react-toastify'
 import { ApplicationStatusContext } from '../contexts/ApplicationStatusContext'
+import { formatDate } from '../utils/dateUtils'
 
 const JobDetail = () => {
   const { id } = useParams()
@@ -42,18 +43,20 @@ const JobDetail = () => {
       const res = await apiFetch(`/projects/${id}`, 'GET')
       setProject(res)
 
-      if (res?.applicants?.length) {
+      const pendingApplicants = res?.applicants?.filter(app => app.status === 'pending') || []
+      if (pendingApplicants.length > 0) {
         const applicantData = await Promise.all(
-          res.applicants.map(s => apiFetch(`/students/${s.student}`, 'GET'))
+          pendingApplicants.map(app => apiFetch(`/students/${app.student}`, 'GET'))
         )
         setApplicantDetails(applicantData)
       } else {
         setApplicantDetails([])
       }
 
-      if (res?.assignedStudents?.length) {
+      const acceptedApplicants = res?.applicants?.filter(app => app.status === 'accepted') || []
+      if (acceptedApplicants.length > 0) {
         const acceptedData = await Promise.all(
-          res.assignedStudents.map(id => apiFetch(`/students/${id}`, 'GET'))
+          acceptedApplicants.map(app => apiFetch(`/students/${app.student}`, 'GET'))
         )
         setAcceptedDetails(acceptedData)
       } else {
@@ -153,7 +156,12 @@ const JobDetail = () => {
                   <div className="flex flex-wrap items-center justify-between gap-4">
                     <div className="flex items-center px-3 py-1 text-sm font-medium bg-blue-100 rounded-full text-blue-mid">
                       <CalendarDaysIcon className="w-4 h-4 mr-1" />
-                      Hạn nộp hồ sơ: {new Date(project.deadline).toLocaleDateString()}
+                      {/* Hạn nộp hồ sơ: {new Date(project.deadline).toLocaleDateString()} */}
+                      {project.deadline ? (
+                        <>
+                          Hạn nộp hồ sơ : {formatDate(project.deadline)}
+                        </>
+                      ) : ('Chưa có thông tin')}
                     </div>
                     <div className="flex gap-3 ml-auto">
                       {isOwner ? (
@@ -184,7 +192,9 @@ const JobDetail = () => {
                                 <StatusTag
                                   icon={<XCircleIcon className="w-5 h-5 mr-1" />}
                                   content="Bị từ chối"
-                                  className="text-red-500 border border-red-500 rounded-full bg-red-50"
+                                  hoverContent="Ứng tuyển lại"
+                                  className="text-red-500 border border-red-500 rounded-full cursor-pointer bg-red-50 hover:bg-red-100"
+                                  onClick={() => setIsOpen(true)}
                                 />
                               )
                             default:
@@ -259,7 +269,7 @@ const JobDetail = () => {
                 {isOwner && (
                   <div className="flex flex-col gap-5 p-10 mt-5 rounded-medium bg-white-bright">
                     <h3 className="text-xl font-semibold">Danh sách ứng viên ứng tuyển</h3>
-                    {applicantDetails.student === acceptedDetails._id ? (
+                    {applicantDetails.length === 0 ? (
                       <p className="text-gray-500">Chưa có ai ứng tuyển.</p>
                     ) : (
                       applicantDetails.map((student, index) => (
@@ -272,7 +282,7 @@ const JobDetail = () => {
                             />
                             <div>
                               <h4 className="text-lg font-semibold">{student.name}</h4>
-                              <p className="text-sm text-gray-500">{student.account?.email}</p>
+                              <p className="w-4/5 overflow-hidden text-sm text-gray-500 truncate">{student.account?.email}</p>
                             </div>
                           </div>
                           <div className='flex items-center gap-2'>
@@ -373,11 +383,18 @@ const ListItem = ({ icon, label, value }) => (
   </li>
 )
 
-const StatusTag = ({ icon, content, className }) => {
+const StatusTag = ({ icon, content, hoverContent, className, ...props }) => {
+  const [isHovered, setIsHovered] = useState(false)
+
   return (
-    <span className={`flex items-center px-3 py-2 font-medium ${className}`}>
+    <span
+      className={`flex items-center px-3 py-2 font-medium transition-colors ${className}`}
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
+      {...props}
+    >
       {icon}
-      {content}
+      {isHovered && hoverContent ? hoverContent : content}
     </span>
   )
 }

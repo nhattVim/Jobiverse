@@ -66,6 +66,8 @@ const StudentProfile = () => {
     }
   }
 
+  console.log('Form data:', form)
+
   return (
     <Profile
       title="Tạo profile cho người tìm việc"

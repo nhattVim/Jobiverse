@@ -48,7 +48,7 @@ const NavBar = () => {
 
     const startPolling = () => {
       fetchNotifications()
-      intervalId = setInterval(fetchNotifications, 10000)
+      intervalId = setInterval(fetchNotifications, 5000)
     }
 
     const stopPolling = () => clearInterval(intervalId)
@@ -203,7 +203,7 @@ const NavBar = () => {
                       <ul className="grid grid-cols-1 p-5 mt-6 transition-all duration-500 shadow-md animate-slideUp bg-white-bright rounded-small">
                         <li className="flex items-center gap-5 px-4 pt-2 pb-4 mb-2 border-b border-gray-light">
                           <img
-                            src={`http://localhost:3000/account/avatar?timestamp=${user?.avatarTimestamp || ''}`}
+                            src={`${import.meta.env.VITE_API_URL}/account/avatar?timestamp=${user?.avatarTimestamp || ''}`}
                             alt="avatar"
                             className="flex-shrink-0 w-10 h-10 rounded-full"
                           />
