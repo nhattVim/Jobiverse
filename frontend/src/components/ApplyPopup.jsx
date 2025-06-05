@@ -6,13 +6,14 @@ import {
   PaperAirplaneIcon,
   XMarkIcon
 } from '@heroicons/react/24/solid'
-import { useEffect, useState } from 'react'
+import { useContext, useEffect, useState } from 'react'
 import apiFetch from '../services/api'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Link, useNavigate } from 'react-router-dom'
 import { ROUTES } from '../routes/routePaths'
 import { TrashIcon } from '@heroicons/react/24/outline'
 import 'react-toastify/dist/ReactToastify.css'
+import { ApplicationStatusContext } from '../contexts/ApplicationStatusContext'
 
 const ApplyPopup = ({ closePopup, applyTitle, projectId, toast }) => {
   const navigate = useNavigate()
@@ -25,6 +26,7 @@ const ApplyPopup = ({ closePopup, applyTitle, projectId, toast }) => {
   const [selectedCV, setSelectedCV] = useState(null)
   const [uploadedCVId, setUploadedCVId] = useState(null)
   const [coverLetter, setCoverLetter] = useState('')
+  const { updateStatus, fetchAppliedStatus } = useContext(ApplicationStatusContext)
 
   const handleToggle = (key) => {
     if (key !== active) {
@@ -125,6 +127,8 @@ const ApplyPopup = ({ closePopup, applyTitle, projectId, toast }) => {
         return
       }
 
+      updateStatus(projectId, 'pending')
+      fetchAppliedStatus()
       toast.success('Nộp hồ sơ ứng tuyển thành công')
       closePopup()
     } catch (err) {

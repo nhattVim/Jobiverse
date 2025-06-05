@@ -9,15 +9,16 @@ import {
   MapPinIcon,
   XCircleIcon
 } from '@heroicons/react/24/outline'
-import ButtonArrowOne from '../shared/ButtonArrowOne'
 import UserContext from '../contexts/UserContext'
 import { useContext } from 'react'
 import { Link } from 'react-router-dom'
+import { ApplicationStatusContext } from '../contexts/ApplicationStatusContext'
 
 const AppliedJob = () => {
   const { user } = useContext(UserContext)
   const [profile, setProfile] = useState({})
   const [appliedJobs, setAppliedJobs] = useState([])
+  const { fetchAppliedStatus } = useContext(ApplicationStatusContext)
 
   useEffect(() => {
     const fetchStudent = async () => {
@@ -55,6 +56,8 @@ const AppliedJob = () => {
       setAppliedJobs((prevJobs) =>
         prevJobs.filter((job) => job._id !== id)
       )
+
+      fetchAppliedStatus()
     } catch (err) {
       console.log('Cannot delete applied job', err.message)
     }
@@ -136,10 +139,11 @@ const AppliedJob = () => {
                         case 'pending':
                           return (
                             <div className='flex items-center space-x-3 justify-end'>
-                              <span className="flex items-center px-3 py-2 rounded-full bg-yellow-50 text-yellow-500 border border-yellow-500 font-medium">
-                                <ClockIcon className="h-5 w-5 mr-1" />
-                                  Đang chờ duyệt
-                              </span>
+                              <StatusTag
+                                icon={<ClockIcon className="w-5 h-5 mr-1" />}
+                                content="Đang chờ duyệt"
+                                className="text-yellow-500 border border-yellow-500 rounded-full bg-yellow-50"
+                              />
                               <button
                                 title="Huỷ ứng tuyển"
                                 className="flex items-center justify-center px-3 py-2 rounded-full bg-red hover:bg-red-700 text-white transition duration-300 shadow-md cursor-pointer"
@@ -151,17 +155,19 @@ const AppliedJob = () => {
                           )
                         case 'accepted':
                           return (
-                            <span className="flex items-center px-3 py-2 rounded-full bg-green-50 text-green-500 border border-green-500 font-medium">
-                              <CheckCircleIcon className="h-5 w-5 mr-1" />
-                                Đã duyệt
-                            </span>
+                            <StatusTag
+                              icon={<CheckCircleIcon className="w-5 h-5 mr-1" />}
+                              content="Đã duyệt"
+                              className="text-green-500 border border-green-500 rounded-full bg-green-50"
+                            />
                           )
                         case 'rejected':
                           return (
-                            <span className="flex items-center px-3 py-2 rounded-full bg-red-50 text-red-500 border border-red-500 font-medium">
-                              <XCircleIcon className="h-5 w-5 mr-1" />
-                                Bị từ chối
-                            </span>
+                            <StatusTag
+                              icon={<XCircleIcon className="w-5 h-5 mr-1" />}
+                              content="Bị từ chối"
+                              className="text-red-500 border border-red-500 rounded-full bg-red-50"
+                            />
                           )
                         default:
                           return null
@@ -179,4 +185,12 @@ const AppliedJob = () => {
   )
 }
 
+const StatusTag = ({ icon, content, className }) => {
+  return (
+    <span className={`flex items-center px-3 py-2 font-medium ${className}`}>
+      {icon}
+      {content}
+    </span>
+  )
+}
 export default AppliedJob

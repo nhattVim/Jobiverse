@@ -4,13 +4,16 @@ import { router } from './routes'
 import { createRoot } from 'react-dom/client'
 import { GoogleOAuthProvider } from '@react-oauth/google'
 import UserProvider from './contexts/UserProvider'
+import { ApplicationStatusProvider } from './contexts/ApplicationStatusContext'
 import './index.css'
 
 createRoot(document.getElementById('root')).render(
   <React.StrictMode>
     <UserProvider>
       <GoogleOAuthProvider clientId="635002964281-ot6df7tfd9c9uut42a2s39oaq31u5q5j.apps.googleusercontent.com">
-        <RouterProvider router={router} />
+        <ApplicationStatusProvider>
+          <RouterProvider router={router} />
+        </ApplicationStatusProvider>
       </GoogleOAuthProvider>
     </UserProvider>
   </React.StrictMode >

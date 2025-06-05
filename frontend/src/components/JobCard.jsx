@@ -1,7 +1,10 @@
 import {
   MapPinIcon,
   CurrencyDollarIcon,
-  HeartIcon
+  HeartIcon,
+  CheckCircleIcon,
+  ClockIcon,
+  XCircleIcon
 } from '@heroicons/react/24/outline'
 import { HeartIcon as HeartSolidIcon } from '@heroicons/react/24/solid'
 import React, { useContext, useState } from 'react'
@@ -10,10 +13,14 @@ import apiFetch from '../services/api'
 import { ROUTES } from '../routes/routePaths'
 import UserContext from '../contexts/UserContext'
 import { Link } from 'react-router-dom'
+import { ApplicationStatusContext } from '../contexts/ApplicationStatusContext'
 
 const JobCard = ({ job, currentIndex, isFavoritedInitially }) => {
   const { user } = useContext(UserContext)
   const [isFavorited, setIsFavorited] = useState(isFavoritedInitially)
+  const { statusMap } = useContext(ApplicationStatusContext)
+  const applicantStatus = statusMap[job._id]?.status
+
 
   const handleFavorite = async () => {
     if (!user) {
@@ -53,6 +60,7 @@ const JobCard = ({ job, currentIndex, isFavoritedInitially }) => {
                   className="object-cover w-10 h-10 rounded-full"
                 />
               </div>
+
               <div className="px-2 py-1 bg-yellow rounded-[5px]">
                 {job.workType}
               </div>
@@ -83,13 +91,46 @@ const JobCard = ({ job, currentIndex, isFavoritedInitially }) => {
             </div>
           </div>
           <div className="flex items-center justify-between w-full">
-            <ButtonArrowOne
-              selectedPage={`/job-detail/${job._id}?openApply=true&isFavorited=${isFavorited}`}
-              target='_blank'
-              rel='noopener noreferrer'
-            >
+            {applicantStatus ? (
+              (() => {
+                switch (applicantStatus) {
+                case 'pending':
+                  return (
+                    <StatusTag
+                      icon={<ClockIcon className="w-5 h-5 mr-1" />}
+                      content="Đang chờ duyệt"
+                      className="text-yellow-500 border border-yellow-500 rounded-full bg-yellow-50"
+                    />
+                  )
+                case 'accepted':
+                  return (
+                    <StatusTag
+                      icon={<CheckCircleIcon className="w-5 h-5 mr-1" />}
+                      content="Đã duyệt"
+                      className="text-green-500 border border-green-500 rounded-full bg-green-50"
+                    />
+                  )
+                case 'rejected':
+                  return (
+                    <StatusTag
+                      icon={<XCircleIcon className="w-5 h-5 mr-1" />}
+                      content="Bị từ chối"
+                      className="text-red-500 border border-red-500 rounded-full bg-red-50"
+                    />
+                  )
+                default:
+                  return null
+                }
+              })()
+            ): (
+              <ButtonArrowOne
+                selectedPage={`/job-detail/${job._id}?openApply=true&isFavorited=${isFavorited}`}
+                target='_blank'
+                rel='noopener noreferrer'
+              >
               Ứng tuyển
-            </ButtonArrowOne>
+              </ButtonArrowOne>
+            )}
             <div
               onClick={handleFavorite}
               className="h-[46px] w-[46px] flex justify-center items-center rounded-full border-2 border-blue invisible group-hover:visible"
@@ -104,6 +145,15 @@ const JobCard = ({ job, currentIndex, isFavoritedInitially }) => {
         </div>
       </div>
     </div>
+  )
+}
+
+const StatusTag = ({ icon, content, className }) => {
+  return (
+    <span className={`flex items-center px-3 py-2 font-medium ${className}`}>
+      {icon}
+      {content}
+    </span>
   )
 }
 

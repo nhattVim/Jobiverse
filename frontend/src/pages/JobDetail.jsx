@@ -18,15 +18,16 @@ import ApplyPopup from '../components/ApplyPopup'
 import UserContext from '../contexts/UserContext'
 import apiFetch from '../services/api'
 import { ToastContainer, toast } from 'react-toastify'
+import { ApplicationStatusContext } from '../contexts/ApplicationStatusContext'
 
 const JobDetail = () => {
   const { id } = useParams()
   const { user } = useContext(UserContext)
+  const { statusMap, loading } = useContext(ApplicationStatusContext)
   const [searchParams] = useSearchParams()
   const [isOpen, setIsOpen] = useState(searchParams.get('openApply') === 'true')
   const isFavoritedInitial = searchParams.get('isFavorited') === 'true'
   const [isFavorited, setIsFavorited] = useState(isFavoritedInitial)
-  const [profile, setProfile] = useState({})
   const location = useLocation()
   const navigate = useNavigate()
 
@@ -63,20 +64,6 @@ const JobDetail = () => {
       console.error('Error fetching project data:', error)
     }
   }, [id])
-
-  useEffect(() => {
-    const fetchStudent = async () => {
-      try {
-        if (user.role === 'student') {
-          const student = await apiFetch('/students/me', 'GET')
-          setProfile(student)
-        }
-      } catch (err) {
-        console.log('Fetch data failed:', err)
-      }
-    }
-    fetchStudent()
-  }, [user])
 
   const handleFavorite = async () => {
     if (!user) {
@@ -116,7 +103,7 @@ const JobDetail = () => {
     }
   }
 
-  if (!project) {
+  if (!project || loading) {
     return (
       <>
         <Banner />
@@ -139,6 +126,8 @@ const JobDetail = () => {
   const avatarSrc = avatarBase64
     ? `data:image/png;base64,${avatarBase64}`
     : '/default-avatar.png'
+
+  const applicantStatus = statusMap[project._id]?.status
 
   return (
     <>
@@ -171,15 +160,9 @@ const JobDetail = () => {
                         <ButtonArrowOne selectedPage={`/job/${project._id}`}>
                           Chỉnh sửa
                         </ButtonArrowOne>
-                      ) : project.applicants &&
-                        project.applicants.some((data) => data && data.student === profile._id) ? (
+                      ) : applicantStatus ? (
                         (() => {
-                          const applicant = project.applicants.find(
-                            (data) => data && data.student === profile._id
-                          )
-                          const status = applicant?.status
-
-                          switch (status) {
+                          switch (applicantStatus) {
                             case 'pending':
                               return (
                                 <StatusTag
@@ -332,8 +315,8 @@ const JobDetail = () => {
                           </div>
                         </div>
                       </div>
-                    ))
-                  )}
+                    )))
+                  }
                 </div>
 
               </div>

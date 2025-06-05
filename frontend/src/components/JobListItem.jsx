@@ -1,11 +1,14 @@
-import { useState, useMemo, useEffect } from 'react'
-import { MapPinIcon, CurrencyDollarIcon } from '@heroicons/react/24/outline'
+import { useState, useMemo, useEffect, useContext } from 'react'
+import { MapPinIcon, CurrencyDollarIcon, ClockIcon, CheckCircleIcon, XCircleIcon } from '@heroicons/react/24/outline'
 import ButtonArrowOne from '../shared/ButtonArrowOne'
 import { Link } from 'react-router-dom'
+import { ApplicationStatusContext } from '../contexts/ApplicationStatusContext'
 
 const JobListItem = ({ job, a, b }) => {
   const [majors, setMajors] = useState([])
   const [specs, setSpecs] = useState([])
+  const { statusMap } = useContext(ApplicationStatusContext)
+  const applicantStatus = statusMap[job._id]?.status
 
   useEffect(() => {
     setMajors(a)
@@ -94,7 +97,7 @@ const JobListItem = ({ job, a, b }) => {
       </div>
 
       <div className="flex items-center justify-between w-full">
-        <div className="flex flex-wrap w-4/5 gap-2">
+        <div className="flex flex-wrap w-3/4 gap-2">
           <TagList
             ids={job.major}
             map={majorMap}
@@ -107,15 +110,57 @@ const JobListItem = ({ job, a, b }) => {
           />
         </div>
 
-        <ButtonArrowOne
-          selectedPage={`/job-detail/${job._id}?openApply=true`}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
+        {applicantStatus ? (
+          (() => {
+            switch (applicantStatus) {
+            case 'pending':
+              return (
+                <StatusTag
+                  icon={<ClockIcon className="w-5 h-5 mr-1" />}
+                  content="Đang chờ duyệt"
+                  className="text-yellow-500 border border-yellow-500 rounded-full bg-yellow-50"
+                />
+              )
+            case 'accepted':
+              return (
+                <StatusTag
+                  icon={<CheckCircleIcon className="w-5 h-5 mr-1" />}
+                  content="Đã duyệt"
+                  className="text-green-500 border border-green-500 rounded-full bg-green-50"
+                />
+              )
+            case 'rejected':
+              return (
+                <StatusTag
+                  icon={<XCircleIcon className="w-5 h-5 mr-1" />}
+                  content="Bị từ chối"
+                  className="text-red-500 border border-red-500 rounded-full bg-red-50"
+                />
+              )
+            default:
+              return null
+            }
+          })()
+        ): (
+          <ButtonArrowOne
+            selectedPage={`/job-detail/${job._id}?openApply=true`}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
           Ứng tuyển
-        </ButtonArrowOne>
+          </ButtonArrowOne>
+        )}
       </div>
     </div>
+  )
+}
+
+const StatusTag = ({ icon, content, className }) => {
+  return (
+    <span className={`flex items-center px-3 py-2 font-medium ${className}`}>
+      {icon}
+      {content}
+    </span>
   )
 }
 

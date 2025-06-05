@@ -16,12 +16,14 @@ import ButtonArrowOne from '../shared/ButtonArrowOne'
 import { ROUTES } from '../routes/routePaths'
 import apiFetch from '../services/api'
 import UserContext from '../contexts/UserContext'
+import { ApplicationStatusContext } from '../contexts/ApplicationStatusContext'
 
 const Home = () => {
   const [currentIndex, setCurrentIndex] = useState(0)
   const [projects, setProjects] = useState([])
   const [favorites, setFavorites] = useState([])
   const { user } = useContext(UserContext)
+  const { fetchAppliedStatus } = useContext(ApplicationStatusContext)
   const navigate = useNavigate()
 
   const goToPrevious = () => {
@@ -67,8 +69,9 @@ const Home = () => {
       }
     }
 
+    fetchAppliedStatus()
     loadProjectsAndFavorites()
-  }, [user])
+  }, [user, fetchAppliedStatus])
 
   return (
     <>

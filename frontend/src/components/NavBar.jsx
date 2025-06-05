@@ -164,7 +164,7 @@ const NavBar = () => {
               </li>
               <li className="px-5 py-2.5">
                 <Link
-                  to={ROUTES.HOME}
+                  to={ROUTES.ABOUT}
                   className="transition-colors duration-300 hover:text-blue"
                 >
                   Giới thiệu

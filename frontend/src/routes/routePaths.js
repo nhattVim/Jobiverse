@@ -22,6 +22,7 @@ export const ROUTES = {
   STUDENT_PROFILE: '/student-profile',
   SET_INFORMATION: '/set-infomation',
   CONTACT: '/contact',
+  ABOUT: '/about',
   // SECURITY PATHS
   SECURITY: '/security',
   // NOTIFICATION PATHS

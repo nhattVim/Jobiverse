@@ -1,8 +1,9 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useContext } from 'react'
 import Banner from '../components/Banner'
 import { CheckIcon, FunnelIcon } from '@heroicons/react/24/solid'
 import JobListItem from '../components/JobListItem'
 import apiFetch from '../services/api'
+import { ApplicationStatusContext } from '../contexts/ApplicationStatusContext'
 
 const expItem = [
   { id: 0, name: 'Không yêu cầu' },
@@ -39,6 +40,8 @@ const JobList = () => {
   const [showAllExps, setShowAllExps] = useState(false)
   const [showAllTypes, setShowAllTypes] = useState(false)
 
+  const { fetchAppliedStatus } = useContext(ApplicationStatusContext)
+
   const fetchInitialData = async () => {
     const [majors, specs] = await Promise.all([
       apiFetch('/majors'),
@@ -50,7 +53,8 @@ const JobList = () => {
 
   useEffect(() => {
     fetchInitialData()
-  }, [])
+    fetchAppliedStatus()
+  }, [fetchAppliedStatus])
 
   useEffect(() => {
     const buildQuery = () => {

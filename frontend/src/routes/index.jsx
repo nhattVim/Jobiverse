@@ -21,6 +21,7 @@ import AppliedJob from '../pages/AppliedJob'
 import Security from '../pages/Security'
 import Notify from '../pages/Notify'
 import Contact from '../pages/Contact'
+import AboutPage from '../pages/AboutPage'
 
 export const router = createBrowserRouter([
   {
@@ -89,6 +90,10 @@ export const router = createBrowserRouter([
       {
         path: ROUTES.CONTACT,
         element: <Contact />
+      },
+      {
+        path: ROUTES.ABOUT,
+        element: <AboutPage />
       },
       // SECURITY ROUTES
       {
