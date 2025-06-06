@@ -25,6 +25,7 @@ const ApplyPopup = ({ closePopup, applyTitle, projectId, toast }) => {
   const [active, setActive] = useState('a')
   const [selectedCV, setSelectedCV] = useState(null)
   const [uploadedCVId, setUploadedCVId] = useState(null)
+  const [loading, setLoading] = useState(false)
   const [coverLetter, setCoverLetter] = useState('')
   const { updateStatus, fetchAppliedStatus } = useContext(ApplicationStatusContext)
 
@@ -117,23 +118,29 @@ const ApplyPopup = ({ closePopup, applyTitle, projectId, toast }) => {
       setError('Vui lòng chọn CV để nộp hồ sơ.')
       return
     }
+
+    setLoading(true)
+
     try {
       if (selectedCV) {
         await apiFetch(`/projects/${projectId}/apply`, 'POST', { cvId: selectedCV._id, coverLetter })
+        updateStatus(projectId, { status: 'pending' })
       } else if (form.cv && uploadedCVId) {
         await apiFetch(`/projects/${projectId}/apply`, 'POST', { cvId: uploadedCVId, coverLetter })
+        updateStatus(projectId, { status: 'pending' })
       } else {
         setError('Vui lòng chờ file CV tải lên xong!')
         return
       }
 
-      updateStatus(projectId, 'pending')
       fetchAppliedStatus()
       toast.success('Nộp hồ sơ ứng tuyển thành công')
       closePopup()
     } catch (err) {
       setError('Nộp hồ sơ thất bại. ' + err.message)
       toast.error('Nộp hồ sơ thất bại. ' + err.message)
+    } finally {
+      setLoading(false)
     }
   }
 
@@ -356,15 +363,20 @@ const ApplyPopup = ({ closePopup, applyTitle, projectId, toast }) => {
             </div>
           )}
           <button
-            className="w-full p-3 text-white rounded-full cursor-pointer bg-blue"
+            className="flex items-center justify-center w-full p-3 text-white rounded-full cursor-pointer bg-blue"
             onClick={handleSubmit}
+            disabled={loading}
           >
-            Nộp hồ sơ ứng tuyển
+            {loading ? <Spinner /> : 'Nộp hồ sơ ứng tuyển'}
           </button>
         </div>
       </div>
     </div>
   )
 }
+
+const Spinner = () => (
+  <div className="w-6 h-6 border-4 border-white border-t-transparent rounded-full animate-spin"></div>
+)
 
 export default ApplyPopup

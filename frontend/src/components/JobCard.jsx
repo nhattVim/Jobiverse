@@ -16,11 +16,10 @@ import { Link } from 'react-router-dom'
 import { ApplicationStatusContext } from '../contexts/ApplicationStatusContext'
 
 const JobCard = ({ job, currentIndex, isFavoritedInitially }) => {
-  const { user } = useContext(UserContext)
   const [isFavorited, setIsFavorited] = useState(isFavoritedInitially)
+  const { user } = useContext(UserContext)
   const { statusMap } = useContext(ApplicationStatusContext)
   const applicantStatus = statusMap[job._id]?.status
-
 
   const handleFavorite = async () => {
     if (!user) {
@@ -136,9 +135,9 @@ const JobCard = ({ job, currentIndex, isFavoritedInitially }) => {
               className="h-[46px] w-[46px] flex justify-center items-center rounded-full border-2 border-blue invisible group-hover:visible"
             >
               {isFavorited ? (
-                <HeartSolidIcon className="w-6 h-6 text-blue animate-pop" />
+                <HeartSolidIcon title='Bỏ lưu' className="w-6 h-6 text-blue animate-pop" />
               ) : (
-                <HeartIcon className="w-6 h-6 text-blue" />
+                <HeartIcon title='Lưu' className="w-6 h-6 text-blue" />
               )}
             </div>
           </div>

@@ -1,4 +1,4 @@
-import React, { createContext, useState, useEffect, useContext } from 'react'
+import React, { createContext, useState, useEffect, useContext, useCallback } from 'react'
 import apiFetch from '../services/api'
 import UserContext from './UserContext'
 
@@ -57,7 +57,7 @@ export const ApplicationStatusProvider = ({ children }) => {
   }
 
   // Cho phép gọi lại từ component khác nếu muốn refetch
-  const fetchAppliedStatus = async () => {
+  const fetchAppliedStatus = useCallback(async () => {
     if (!user || user.role !== 'student') return
 
     try {
@@ -82,7 +82,7 @@ export const ApplicationStatusProvider = ({ children }) => {
       console.error('Failed to refetch application status:', err)
       setStatusMap({})
     }
-  }
+  }, [user])
 
   return (
     <ApplicationStatusContext.Provider
