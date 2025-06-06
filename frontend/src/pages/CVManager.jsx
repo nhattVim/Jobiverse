@@ -65,7 +65,7 @@ const CVManagement = () => {
                     alt="cv"
                     className="w-16 h-16"
                   />
-                  <h2 className="text-lg font-semibold">CV đã tạo trên Jobiverse</h2>
+                  <h2 className="text-xl font-semibold">CV đã tạo trên Jobiverse</h2>
                 </div>
                 <button
                   onClick={() => navigate('/cv')}
@@ -79,7 +79,13 @@ const CVManagement = () => {
                 <p>Đang tải...</p>
               ) : (
                 cvList.length === 0 ? (
-                  <p className="text-sm text-gray-500">Bạn chưa tạo CV nào</p>
+                  <div className="flex flex-col items-center justify-center gap-5 py-5">
+                    <img src="https://cdn-icons-png.freepik.com/256/10488/10488619.png?uid=R110270408&ga=GA1.1.1066839565.1745722550"
+                      alt="job"
+                      className="w-20"
+                    />
+                    <p className="text-gray-500 text-center">Bạn chưa tạo cv nào</p>
+                  </div>
                 ) : (
                   cvList.map(cv => (
                     <div
@@ -166,7 +172,13 @@ const CVManagement = () => {
                 <p>Đang tải...</p>
               ) : (
                 cvUploads.length === 0 ? (
-                  <p className="text-sm text-gray-500">Bạn chưa tải lên CV nào</p>
+                  <div className="flex flex-col items-center justify-center gap-5 py-5">
+                    <img src="https://cdn-icons-png.freepik.com/256/10488/10488619.png?uid=R110270408&ga=GA1.1.1066839565.1745722550"
+                      alt="job"
+                      className="w-20"
+                    />
+                    <p className="text-gray-500 text-center">Bạn chưa tải lên cv nào</p>
+                  </div>
                 ) : (
                   cvUploads.map(cv => (
                     <div key={cv._id} className='flex items-center justify-between p-6 my-5 transition border bg-white-mid border-gray-light rounded-medium hover:shadow-md hover:bg-gray-50'>

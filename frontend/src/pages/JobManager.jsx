@@ -52,19 +52,19 @@ const JobManager = () => {
           <Sidebar />
         </div>
         <div className="w-3/4 space-y-10">
-          {/* CV đã tạo */}
+          {/* Job đã tạo */}
           <div className="flex items-center justify-between p-6 shadow bg-white-low rounded-medium">
             <div className='w-full space-y-1.5'>
               <div className='flex items-center justify-between'>
                 <div className='flex items-center space-x-4'>
-                  <img src="https://cdn-icons-png.freepik.com/256/11959/11959483.png?semt=ais_hybrid"
-                    alt="cv"
+                  <img src="https://cdn-icons-png.freepik.com/256/11959/11959478.png?uid=R110270408&ga=GA1.1.1066839565.1745722550"
+                    alt="job"
                     className="w-16 h-16"
                   />
-                  <h2 className="text-lg font-semibold">Dự án đã tạo trên Jobiverse</h2>
+                  <h2 className="text-xl font-semibold">Dự án đã tạo trên Jobiverse</h2>
                 </div>
                 <button
-                  onClick={() => navigate('/job-post')}
+                  onClick={() => navigate('/job')}
                   className="px-5 py-2 text-sm text-white rounded-full cursor-pointer bg-blue hover:bg-blue-700"
                 >
                   + Tạo mới
@@ -78,7 +78,13 @@ const JobManager = () => {
                   </div>
                 ) : (
                   jobList.length === 0 ? (
-                    <p className="text-sm text-gray-500">Bạn chưa tạo dự án nào</p>
+                    <div className="flex flex-col items-center justify-center gap-5 py-5">
+                      <img src="https://cdn-icons-png.freepik.com/256/10488/10488851.png?uid=P110270408&ga=GA1.1.1066839565.1745722550&semt=ais_incoming"
+                        alt="job"
+                        className="w-20"
+                      />
+                      <p className="text-gray-500 text-center">Bạn chưa tạo dự án nào</p>
+                    </div>
                   ) : (
                     jobList.map(job => (
                       <div
