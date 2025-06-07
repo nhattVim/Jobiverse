@@ -93,14 +93,12 @@ export default function CVEditor() {
     `
 
     try {
-      const response = await apiFetch('/cv/generate-pdf', 'POST', { html: fullHtml, fileName: 'cv.pdf' })
+      const response = await apiFetch('/cv/generate-pdf', 'POST', { html: fullHtml })
       if (response instanceof Blob) {
-        const url = URL.createObjectURL(response)
         const a = document.createElement('a')
-        a.href = url
-        a.download = 'cv.pdf'
+        a.href = response
+        a.download = cvData.title || 'cv.pdf'
         a.click()
-        URL.revokeObjectURL(url)
       } else {
         throw new Error('Dữ liệu trả về không phải Blob')
       }

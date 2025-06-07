@@ -11,6 +11,22 @@ import { ROUTES } from '../routes/routePaths'
 import apiFetch from '../services/api'
 import UserContext from '../contexts/UserContext'
 
+const MenuItem = ({ to, children, hidden }) => (
+  <li className="px-4 py-2.5 transition-colors duration-300 hover:text-blue items-center flex justify-start" hidden={hidden}>
+    <Link to={to}>{children}</Link>
+  </li>
+)
+
+const DropdownMenu = ({ items, className }) => (
+  <div className={`absolute z-40 top-full ${className}`}>
+    <ul className="grid grid-cols-2 p-5 mt-6 transition-all duration-500 shadow-md animate-slideUp bg-white-bright rounded-small">
+      {items.map(({ label, to, hidden }, idx) => (
+        <MenuItem key={idx} to={to} hidden={hidden}>{label}</MenuItem>
+      ))}
+    </ul>
+  </div>
+)
+
 const NavBar = () => {
   const navigate = useNavigate()
   const [isTopOfPage, setIsTopOfPage] = useState(true)
@@ -20,12 +36,7 @@ const NavBar = () => {
   const { user } = useContext(UserContext)
 
   useEffect(() => {
-    const handleScroll = () => {
-      if (window.scrollY === 0) {
-        setIsTopOfPage(true)
-      }
-      if (window.scrollY > 100) setIsTopOfPage(false)
-    }
+    const handleScroll = () => setIsTopOfPage(window.scrollY === 0)
     window.addEventListener('scroll', handleScroll)
     return () => window.removeEventListener('scroll', handleScroll)
   }, [])
@@ -46,23 +57,22 @@ const NavBar = () => {
       }
     }
 
-    const startPolling = () => {
-      fetchNotifications()
-      intervalId = setInterval(fetchNotifications, 5000)
+    const handleVisibilityChange = () => {
+      if (document.visibilityState === 'visible') {
+        fetchNotifications()
+        intervalId = setInterval(fetchNotifications, 5000)
+      } else {
+        clearInterval(intervalId)
+      }
     }
 
-    const stopPolling = () => clearInterval(intervalId)
-
-    document.addEventListener('visibilitychange', () => {
-      if (document.visibilityState === 'visible') startPolling()
-      else stopPolling()
-    })
-
-    startPolling()
+    fetchNotifications()
+    intervalId = setInterval(fetchNotifications, 5000)
+    document.addEventListener('visibilitychange', handleVisibilityChange)
 
     return () => {
-      stopPolling()
-      document.removeEventListener('visibilitychange', () => { })
+      clearInterval(intervalId)
+      document.removeEventListener('visibilitychange', handleVisibilityChange)
     }
   }, [])
 
@@ -79,97 +89,65 @@ const NavBar = () => {
 
   const navbarStyle = isTopOfPage
     ? 'py-5'
-    : 'fixed top-0 left-0 z-[999] py-2 drop-shadow animate-slideDown'
+    : 'fixed top-0 left-0 z-40 py-2 drop-shadow animate-slideDown'
+
+  const jobMenuItems = [
+    { label: 'Danh sách việc làm', to: ROUTES.JOB_LIST },
+    { label: 'Việc làm đã lưu', to: ROUTES.SAVED_JOB },
+    { label: 'Việc làm đã ứng tuyển', to: ROUTES.APPLIED_JOB },
+    { label: 'Đăng việc làm', to: ROUTES.CREATE_JOB }
+  ]
+
+  const cvMenuItems = [
+    { label: 'Quản lý CV', to: ROUTES.CV_MANAGER },
+    { label: 'Tạo CV mới', to: ROUTES.CREATE_CV },
+    { label: 'Upload CV', to: ROUTES.UPLOAD_CV }
+  ]
+
+  const accountMenuItems = [
+    { label: 'Thông tin cá nhân', to: ROUTES.SET_INFORMATION },
+    { label: 'CV của tôi', to: ROUTES.CV_MANAGER, hidden: user?.role !== 'student' },
+    { label: 'Việc làm đã lưu', to: ROUTES.SAVED_JOB },
+    { label: 'Việc làm đã ứng tuyển', to: ROUTES.APPLIED_JOB, hidden: user?.role !== 'student' },
+    { label: 'Cài đặt bảo mật', to: ROUTES.SECURITY }
+  ]
 
   return (
-    <div
-      className={`${navbarStyle} w-full bg-white transition-all duration-300`}
-    >
+    <div className={`${navbarStyle} w-full bg-white transition-all duration-300`}>
       <div className="container-responsive">
         <div className="flex justify-between items-center h-[64px]">
-          <div>
-            <Link to={ROUTES.HOME} >
-              <img src={Logo2} alt="logo2" className="h-10" />
-            </Link>
-          </div>
+          <Link to={ROUTES.HOME}>
+            <img src={Logo2} alt="logo2" className="h-10" />
+          </Link>
 
           <div className='hidden lg:block'>
             <ul className="relative flex font-medium">
-              <li className="px-5 py-2.5">
-                <Link
-                  to={ROUTES.HOME}
-                  className="transition-colors duration-300 hover:text-blue"
-                >
-                  Trang chủ
-                </Link>
-              </li>
+              <MenuItem to={ROUTES.HOME}>Trang chủ</MenuItem>
+
               <li
-                className="px-5 py-2.5 relative group"
+                className="relative px-5 py-2.5 group"
                 onMouseEnter={() => setHoveredMenu('jobList')}
                 onMouseLeave={() => setHoveredMenu(null)}
               >
-                <Link
-                  to={ROUTES.JOB_LIST}
-                  className="flex items-center transition-colors duration-300 group-hover:text-blue"
-                >
-                  Việc làm
-                  <ChevronDownIcon className="w-4 ml-1 transition-transform duration-300 group-hover:rotate-180" />
+                <Link to={ROUTES.JOB_LIST} className="flex items-center transition-colors duration-300 group-hover:text-blue">
+                  Việc làm <ChevronDownIcon className="w-4 ml-1 transition-transform duration-300 group-hover:rotate-180" />
                 </Link>
-                {hoveredMenu === 'jobList' && (
-                  <div className="absolute z-50 w-md top-full -left-1/2">
-                    <ul className="grid grid-cols-2 p-5 mt-6 transition-all duration-500 shadow-md animate-slideUp bg-white-bright rounded-small">
-                      <li className="px-4 py-2 transition-colors duration-300 hover:text-blue">
-                        <Link to={ROUTES.JOB_LIST}>Danh sách việc làm</Link>
-                      </li>
-                      <li className="px-4 py-2 transition-colors duration-300 hover:text-blue">
-                        <Link to={ROUTES.SAVED_JOB}>Việc làm đã lưu</Link>
-                      </li>
-                      <li className="px-4 py-2 transition-colors duration-300 hover:text-blue">
-                        <Link to={ROUTES.APPLIED_JOB}>Việc làm đã ứng tuyển</Link>
-                      </li>
-                      <li className="px-4 py-2 transition-colors duration-300 hover:text-blue">
-                        <Link to={ROUTES.CREATE_JOB}>Đăng việc làm</Link>
-                      </li>
-                    </ul>
-                  </div>
-                )}
+                {hoveredMenu === 'jobList' && <DropdownMenu items={jobMenuItems} className="w-md -left-1/2" />}
               </li>
+
               <li
-                className="px-5 py-2.5 relative group"
+                className="relative px-5 py-2.5 group"
                 onMouseEnter={() => setHoveredMenu('createCV')}
                 onMouseLeave={() => setHoveredMenu(null)}
+                hidden={user?.role == 'employer'}
               >
-                <Link
-                  to={ROUTES.CREATE_CV}
-                  className="flex items-center transition-colors duration-300 cursor-pointer group-hover:text-blue"
-                >
-                  Tạo CV
-                  <ChevronDownIcon className="w-4 ml-1 transition-transform duration-300 group-hover:rotate-180" />
+                <Link to={ROUTES.CREATE_CV} className="flex items-center transition-colors duration-300 group-hover:text-blue">
+                  Tạo CV <ChevronDownIcon className="w-4 ml-1 transition-transform duration-300 group-hover:rotate-180" />
                 </Link>
-                {hoveredMenu === 'createCV' && (
-                  <div className="absolute z-50 w-2xs top-full -left-1/2">
-                    <ul className="grid grid-cols-2 p-5 mt-6 transition-all duration-500 shadow-md animate-slideUp bg-white-bright rounded-small">
-                      <li className="px-4 py-2 transition-colors duration-300 hover:text-blue">
-                        <Link to={ROUTES.CV_MANAGER}>Quản lý CV</Link>
-                      </li>
-                      <li className="px-4 py-2 transition-colors duration-300 hover:text-blue">
-                        <Link to={ROUTES.CREATE_CV}>Tạo CV mới</Link>
-                      </li>
-                      <li className="px-4 py-2 transition-colors duration-300 hover:text-blue">
-                        <Link to={ROUTES.UPLOAD_CV}>Upload CV</Link>
-                      </li>
-                    </ul>
-                  </div>
-                )}
+                {hoveredMenu === 'createCV' && <DropdownMenu items={cvMenuItems} className="w-2xs -left-1/2" />}
               </li>
-              <li className="px-5 py-2.5">
-                <Link
-                  to={ROUTES.ABOUT}
-                  className="transition-colors duration-300 hover:text-blue"
-                >
-                  Giới thiệu
-                </Link>
-              </li>
+
+              <MenuItem to={ROUTES.ABOUT}>Giới thiệu</MenuItem>
             </ul>
           </div>
 
@@ -199,7 +177,7 @@ const NavBar = () => {
                   <UserCircleIcon className="w-6 h-6" />
                   <ChevronDownIcon className="w-4 h-4" />
                   {hoveredMenu === 'account' && (
-                    <div className="w-[300px] absolute top-full right-0 z-50">
+                    <div className="w-[300px] absolute top-full right-0 z-40">
                       <ul className="grid grid-cols-1 p-5 mt-6 transition-all duration-500 shadow-md animate-slideUp bg-white-bright rounded-small">
                         <li className="flex items-center gap-5 px-4 pt-2 pb-4 mb-2 border-b border-gray-light">
                           <img
@@ -212,26 +190,9 @@ const NavBar = () => {
                             <p className="text-sm truncate">{user?.email}</p>
                           </div>
                         </li>
-                        <li className="px-4 py-2 transition-colors duration-300 hover:text-blue">
-                          <Link to={ROUTES.SET_INFORMATION}>
-                            Thông tin cá nhân
-                          </Link>
-                        </li>
-                        <li className="px-4 py-2 transition-colors duration-300 hover:text-blue">
-                          <Link to={ROUTES.CV_MANAGER}>
-                            CV của tôi
-                          </Link>
-                        </li>
-                        <li className="px-4 py-2 transition-colors duration-300 hover:text-blue">
-                          <Link to={ROUTES.SAVED_JOB}>
-                            Việc làm đã lưu
-                          </Link>
-                        </li>
-                        <li className="px-4 py-2 transition-colors duration-300 hover:text-blue">
-                          <Link to={ROUTES.APPLIED_JOB}>
-                            Việc làm đã ứng tuyển
-                          </Link>
-                        </li>
+                        {accountMenuItems.slice(1).map(({ label, to, hidden }, idx) => (
+                          <MenuItem key={idx} to={to} hidden={hidden}>{label}</MenuItem>
+                        ))}
                         <li className="px-4 py-2">
                           <button
                             onClick={handleLogout}
@@ -246,7 +207,6 @@ const NavBar = () => {
                 </div>
               </div>
             ) : (
-              // Hiển thị nút "Đăng nhập" và "Đăng ký" khi chưa đăng nhập
               <>
                 <Link
                   to={ROUTES.LOGIN}

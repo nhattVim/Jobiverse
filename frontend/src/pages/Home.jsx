@@ -58,8 +58,8 @@ const Home = () => {
               .filter(
                 (fav) =>
                   fav.project &&
-                    fav.project._id &&
-                    projectsData.some((proj) => proj._id === fav.project._id)
+                  fav.project._id &&
+                  projectsData.some((proj) => proj._id === fav.project._id)
               )
               .map((fav) => fav.project._id)
             : []
@@ -146,7 +146,7 @@ const Home = () => {
           </div>
           <div className="flex justify-end items-center gap-[50px] w-full">
             <div className="group relative p-[50px] w-[400px] h-[300px] shadow-lg flex items-end rounded-medium cursor-pointer">
-              <div className="absolute inset-0 bg-[#000] opacity-60 z-30 group-hover:opacity-20 transition-opacity ease-out duration-500 rounded-medium"></div>
+              <div className="absolute inset-0 bg-[#000] opacity-60 z-10 group-hover:opacity-20 transition-opacity ease-out duration-500 rounded-medium"></div>
               <div className="absolute inset-0 w-full h-full">
                 <img
                   src={Type1}
@@ -154,7 +154,7 @@ const Home = () => {
                   className="object-cover w-full h-full rounded-medium"
                 />
               </div>
-              <div className="flex justify-between items-center w-[75%] absolute z-40">
+              <div className="flex justify-between items-center w-[75%] absolute z-20">
                 <h3 className="text-[28px] font-semibold text-white">Online</h3>
                 <div className="bg-yellow rounded-full flex items-center justify-center w-[40px] h-[40px]">
                   <ArrowUpRightIcon className="w-6 h-6 font-semibold text-black" />
@@ -162,7 +162,7 @@ const Home = () => {
               </div>
             </div>
             <div className="group relative p-[50px] w-[400px] h-[300px] shadow-lg flex items-end rounded-medium cursor-pointer">
-              <div className="absolute inset-0 bg-[#000] opacity-60 z-30 group-hover:opacity-20 transition-opacity ease-out duration-500 rounded-medium"></div>
+              <div className="absolute inset-0 bg-[#000] opacity-60 z-20 group-hover:opacity-20 transition-opacity ease-out duration-500 rounded-medium"></div>
               <div className="absolute inset-0 w-full h-full">
                 <img
                   src={Type2}
@@ -170,7 +170,7 @@ const Home = () => {
                   className="object-cover w-full h-full rounded-medium"
                 />
               </div>
-              <div className="flex justify-between items-center w-[75%] absolute z-40">
+              <div className="flex justify-between items-center w-[75%] absolute z-20">
                 <h3 className="text-[28px] font-semibold text-white">
                   Offline
                 </h3>

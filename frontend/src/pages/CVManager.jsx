@@ -4,6 +4,8 @@ import { useNavigate, Link } from 'react-router-dom'
 import apiFetch from '../services/api'
 import BannerText from '../components/BannerText'
 import { ToastContainer, toast } from 'react-toastify'
+import PdfModal from '../components/PdfModal'
+import CVPreviewModal from '../components/CVPreviewModal'
 import {
   PencilSquareIcon,
   TrashIcon,
@@ -15,14 +17,17 @@ const CVManagement = () => {
   const [cvUploads, setCvUploads] = useState([])
   const [cvUploadLoading, setCvUploadLoading] = useState(true)
   const [loading, setLoading] = useState(true)
+  const [isModalOpen, setModalOpen] = useState(false)
+  const [currentPdfUrl, setCurrentPdfUrl] = useState('')
+  const [previewId, setPreviewId] = useState(null)
   const navigate = useNavigate()
 
   useEffect(() => {
     const loadData = async () => {
       setLoading(true)
       const [created, uploads] = await Promise.all([
-        apiFetch('/cv', 'GET'),
-        apiFetch('/cv/uploads', 'GET')
+        apiFetch('/cv/my', 'GET'),
+        apiFetch('/cv/my/uploads', 'GET')
       ])
       setCvList(created)
       setCvUploads(uploads)
@@ -47,6 +52,20 @@ const CVManagement = () => {
 
   return (
     <div className="min-h-screen">
+      {isModalOpen && (
+        <PdfModal
+          onClose={() => setModalOpen(false)}
+          pdfUrl={currentPdfUrl}
+        />
+      )}
+
+      {previewId && (
+        <CVPreviewModal
+          cvId={previewId}
+          onClose={() => setPreviewId(null)}
+        />
+      )}
+
       <ToastContainer position="top-right" autoClose={3000} />
       <BannerText title="CV của tôi" caption="Tải CV của bạn bên dưới để có thể sử dụng xuyên suốt quá trình tìm việc." />
 
@@ -84,7 +103,7 @@ const CVManagement = () => {
                       alt="job"
                       className="w-20"
                     />
-                    <p className="text-gray-500 text-center">Bạn chưa tạo cv nào</p>
+                    <p className="text-center text-gray-500">Bạn chưa tạo cv nào</p>
                   </div>
                 ) : (
                   cvList.map(cv => (
@@ -93,12 +112,12 @@ const CVManagement = () => {
                       className="flex items-center justify-between p-6 my-5 transition border shadow bg-white-mid border-gray-light rounded-medium hover:shadow-md hover:bg-gray-50"
                     >
                       <div>
-                        <Link
-                          to={`/cv/${cv._id}`}
-                          className="block mb-1 text-lg font-semibold text-blue-mid hover:underline"
+                        <button
+                          onClick={() => setPreviewId(cv._id)}
+                          className='block mb-1 text-lg font-semibold text-left cursor-pointer text-blue-mid hover:underline'
                         >
                           {cv.title || 'Chưa đặt tên'}
-                        </Link>
+                        </button>
                         <p className="text-sm italic text-gray-500">
                           {cv.desiredPosition || 'Chưa có vị trí ứng tuyển'}
                         </p>
@@ -177,19 +196,23 @@ const CVManagement = () => {
                       alt="job"
                       className="w-20"
                     />
-                    <p className="text-gray-500 text-center">Bạn chưa tải lên cv nào</p>
+                    <p className="text-center text-gray-500">Bạn chưa tải lên cv nào</p>
                   </div>
                 ) : (
                   cvUploads.map(cv => (
                     <div key={cv._id} className='flex items-center justify-between p-6 my-5 transition border bg-white-mid border-gray-light rounded-medium hover:shadow-md hover:bg-gray-50'>
-                      <a
-                        href={`${import.meta.env.VITE_API_URL}/cv/uploads/${cv._id}`}
-                        target="_blank"
-                        rel="noreferrer"
-                        className='block mb-1 text-lg font-semibold text-blue-mid hover:underline'
+
+                      <button
+                        onClick={() => {
+                          const url = `${import.meta.env.VITE_API_URL}/cv/uploads/${cv._id}`
+                          setCurrentPdfUrl(url)
+                          setModalOpen(true)
+                        }}
+                        className='block mb-1 text-lg font-semibold text-left cursor-pointer text-blue-mid hover:underline'
                       >
                         {cv.title}
-                      </a>
+                      </button>
+
                       <div className="flex items-center space-x-2">
                         <a
                           href={`${import.meta.env.VITE_API_URL}/cv/uploads/${cv._id}`}

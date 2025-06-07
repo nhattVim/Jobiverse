@@ -4,16 +4,17 @@ const CVController = require('../controllers/CVController')
 const verifyToken = require('../middlewares/verifyToken')
 const { uploadMultiple } = require('../middlewares/upload')
 
-router.use(verifyToken(['student']))
-router.get('/', CVController.getAllMyCV)
-router.get('/uploads', CVController.getAllUpCv)
-router.get('/:id', CVController.getCVById)
+router.get('/my', verifyToken(['student']), CVController.getAllMyCV)
+router.get('/my/uploads', verifyToken(['student']), CVController.getAllMyUpCv)
+
 router.get('/uploads/:id', CVController.getUpCVById)
-router.post('/', CVController.createCV)
-router.post('/uploads', uploadMultiple('files', 5), CVController.uploadCV)
-router.delete('/:id', CVController.deleteCV)
-router.delete('/uploads/:id', CVController.deleteUpCV)
-router.put('/:id', CVController.updateCV)
-router.post('/generate-pdf', CVController.generatePDF)
+router.get('/:id', CVController.getCVById)
+
+router.post('/', verifyToken(['student']), CVController.createCV)
+router.post('/uploads', verifyToken(['student']), uploadMultiple('files', 5), CVController.uploadCV)
+router.delete('/:id', verifyToken(['student']), CVController.deleteCV)
+router.delete('/uploads/:id', verifyToken(['student']), CVController.deleteUpCV)
+router.put('/:id', verifyToken(['student']), CVController.updateCV)
+router.post('/generate-pdf', verifyToken(['student']), CVController.generatePDF)
 
 module.exports = router

@@ -17,6 +17,7 @@ import ButtonArrowOne from '../shared/ButtonArrowOne'
 import ApplyPopup from '../components/ApplyPopup'
 import UserContext from '../contexts/UserContext'
 import apiFetch from '../services/api'
+import CVPreviewModal from '../components/CVPreviewModal'
 import { ToastContainer, toast } from 'react-toastify'
 import { ApplicationStatusContext } from '../contexts/ApplicationStatusContext'
 import { formatDate } from '../utils/dateUtils'
@@ -35,34 +36,38 @@ const JobDetail = () => {
   const [project, setProject] = useState(null)
   const [applicantDetails, setApplicantDetails] = useState([])
   const [acceptedDetails, setAcceptedDetails] = useState([])
+  const [previewId, setPreviewId] = useState(null)
 
   const isOwner = project?.account?._id === user?._id
+
+  const extractApplicants = async (applicants, status) => {
+    const filtered = applicants?.filter(app => app.status === status) || []
+    if (filtered.length === 0) return []
+    return await Promise.all(
+      filtered.map(async app => {
+        const profile = await apiFetch(`/students/${app.student}`, 'GET')
+        return {
+          cv: app.cv,
+          cvType: app.cvType,
+          coverLetter: app.coverLetter,
+          ...profile
+        }
+      })
+    )
+  }
 
   const fetchFullProjectData = useCallback(async () => {
     try {
       const res = await apiFetch(`/projects/${id}`, 'GET')
       setProject(res)
 
-      const pendingApplicants = res?.applicants?.filter(app => app.status === 'pending') || []
-      if (pendingApplicants.length > 0) {
-        const applicantData = await Promise.all(
-          pendingApplicants.map(app => apiFetch(`/students/${app.student}`, 'GET'))
-        )
-        setApplicantDetails(applicantData)
-      } else {
-        setApplicantDetails([])
-      }
+      const [pending, accepted] = await Promise.all([
+        extractApplicants(res.applicants, 'pending'),
+        extractApplicants(res.applicants, 'accepted')
+      ])
 
-      const acceptedApplicants = res?.applicants?.filter(app => app.status === 'accepted') || []
-      if (acceptedApplicants.length > 0) {
-        const acceptedData = await Promise.all(
-          acceptedApplicants.map(app => apiFetch(`/students/${app.student}`, 'GET'))
-        )
-        setAcceptedDetails(acceptedData)
-      } else {
-        setAcceptedDetails([])
-      }
-
+      setApplicantDetails(pending)
+      setAcceptedDetails(accepted)
     } catch (error) {
       console.error('Error fetching project data:', error)
     }
@@ -135,6 +140,14 @@ const JobDetail = () => {
   return (
     <>
       {isOpen && <ApplyPopup closePopup={closePopup} applyTitle={project.title} projectId={project._id} toast={toast} />}
+
+      {previewId && (
+        <CVPreviewModal
+          cvId={previewId}
+          onClose={() => setPreviewId(null)}
+        />
+      )}
+
       <ToastContainer position="top-right" autoClose={2000} />
       <Banner />
       <div className="w-full py-20">
@@ -156,12 +169,7 @@ const JobDetail = () => {
                   <div className="flex flex-wrap items-center justify-between gap-4">
                     <div className="flex items-center px-3 py-1 text-sm font-medium bg-blue-100 rounded-full text-blue-mid">
                       <CalendarDaysIcon className="w-4 h-4 mr-1" />
-                      {/* Hạn nộp hồ sơ: {new Date(project.deadline).toLocaleDateString()} */}
-                      {project.deadline ? (
-                        <>
-                          Hạn nộp hồ sơ : {formatDate(project.deadline)}
-                        </>
-                      ) : ('Chưa có thông tin')}
+                      {project.deadline ? `Hạn nộp hồ sơ : ${formatDate(project.deadline)}` : 'Chưa có thông tin'}
                     </div>
                     <div className="flex gap-3 ml-auto">
                       {isOwner ? (
@@ -204,7 +212,6 @@ const JobDetail = () => {
                       ) : (
                         <ButtonArrowOne onClick={() => setIsOpen(true)}>Ứng tuyển</ButtonArrowOne>
                       )}
-
 
                       <div
                         onClick={handleFavorite}
@@ -281,7 +288,10 @@ const JobDetail = () => {
                               className="object-cover w-10 h-10 rounded-full"
                             />
                             <div>
-                              <h4 className="text-lg font-semibold">{student.name}</h4>
+                              <h4
+                                className="text-lg font-semibold cursor-pointer hover:underline hover:text-blue-600"
+                                onClick={() => setPreviewId(student.cv)}
+                              >{student.name}</h4>
                               <p className="w-4/5 overflow-hidden text-sm text-gray-500 truncate">{student.account?.email}</p>
                             </div>
                           </div>
@@ -320,7 +330,10 @@ const JobDetail = () => {
                             className="object-cover w-10 h-10 rounded-full"
                           />
                           <div>
-                            <h4 className="text-lg font-semibold">{student.name}</h4>
+                            <h4
+                              className="text-lg font-semibold cursor-pointer hover:underline hover:text-blue-600"
+                              onClick={() => setPreviewId(student.cv)}
+                            >{student.name}</h4>
                             <p className="text-sm text-gray-500">{student.account?.email}</p>
                           </div>
                         </div>
