@@ -2,7 +2,8 @@
 import {
   MapPinIcon, CurrencyDollarIcon, BriefcaseIcon, CalendarDaysIcon,
   UsersIcon, TagIcon, BuildingOfficeIcon, BookOpenIcon, Bars3CenterLeftIcon,
-  UserGroupIcon, ClockIcon, HeartIcon as HeartSolidIcon
+  UserGroupIcon, ClockIcon, HeartIcon as HeartSolidIcon,
+  AcademicCapIcon
 } from '@heroicons/react/24/solid'
 
 import {
@@ -10,7 +11,7 @@ import {
 } from '@heroicons/react/24/outline'
 
 import { useEffect, useCallback, useState, useContext } from 'react'
-import { useParams, useNavigate, useLocation, useSearchParams } from 'react-router-dom'
+import { useParams, useNavigate, useLocation, useSearchParams, Link } from 'react-router-dom'
 
 import Banner from '../components/Banner'
 import ButtonArrowOne from '../shared/ButtonArrowOne'
@@ -62,6 +63,7 @@ const JobDetail = () => {
       } else {
         setAcceptedDetails([])
       }
+      console.log(res)
 
     } catch (error) {
       console.error('Error fetching project data:', error)
@@ -242,26 +244,26 @@ const JobDetail = () => {
                     <div className="p-3 border rounded-small border-white-low bg-white-bright">
                       <img src={avatarSrc} alt="Company" className="object-cover rounded-full w-15 h-15" />
                     </div>
-                    <h3 className="text-xl font-bold">{project.account?.name}</h3>
+                    <h3 className="text-xl font-bold">{project.profile?.name || project.profile?.companyName}</h3>
                   </div>
                   <ul className="space-y-2 text-sm text-gray-700">
-                    <ListItem icon={<UsersIcon />} label="Quy mô" value={project.account?.scale || 'Chưa có'} />
-                    <ListItem icon={<TagIcon />} label="Lĩnh vực" value={project.account?.industry || 'Chưa có'} />
-                    <ListItem icon={<BuildingOfficeIcon />} label="Địa điểm" value={project.account?.location || 'Chưa có'} />
+                    <ListItem icon={<UsersIcon />} label="Quy mô" value={(project.profile?.businessScale === 'Companies' ? 'Công ty' : 'Cá nhân')} />
+                    <ListItem icon={<TagIcon />} label="Lĩnh vực" value={project.profile?.industry || 'Chưa có'} />
+                    <ListItem icon={<MapPinIcon />} label="Địa điểm" value={project.profile?.address || 'Chưa có'} />
                   </ul>
-                  <button className="w-full px-4 py-2 text-blue-700 bg-blue-100 rounded-lg hover:bg-blue-200">
+                  <Link to={'/employer-detail'} className="w-full text-center px-4 py-2.5 text-white bg-blue hover:bg-blue-600 rounded-full cursor-pointer">
                     Xem chi tiết
-                  </button>
+                  </Link>
                 </div>
 
                 {/* General Info */}
                 <div className="flex flex-col gap-5 p-10 mt-5 rounded-medium bg-white-bright">
                   <h3 className="mb-4 text-xl font-semibold text-gray-800">Thông tin chung</h3>
                   <ul className="space-y-2 text-sm text-gray-700">
-                    <ListItem icon={<BookOpenIcon />} label="Học vấn" value={project.education || 'Không yêu cầu'} />
+                    <ListItem icon={<AcademicCapIcon />} label="Học vấn" value={project.education || 'Không yêu cầu'} />
                     <ListItem icon={<Bars3CenterLeftIcon />} label="GPA" value={project.gpa || 'Không yêu cầu'} />
-                    <ListItem icon={<UserGroupIcon />} label="Số lượng tuyển" value={project.quantity || '1'} />
-                    <ListItem icon={<ClockIcon />} label="Hình thức làm việc" value={project.workForm || 'Không rõ'} />
+                    <ListItem icon={<UserGroupIcon />} label="Số lượng tuyển" value={project.hiringCount || '1'} />
+                    <ListItem icon={<ClockIcon />} label="Hình thức làm việc" value={project.workType || 'Không rõ'} />
                   </ul>
                 </div>
 
@@ -376,7 +378,7 @@ const SimpleList = ({ title, items }) => (
 const ListItem = ({ icon, label, value }) => (
   <li className="flex items-center justify-between">
     <span className="flex items-center space-x-2">
-      <span className="w-4 h-4 text-blue-500">{icon}</span>
+      <span className="w-5 h-5 text-blue">{icon}</span>
       <span>{label}</span>
     </span>
     <span className="font-medium">{value}</span>

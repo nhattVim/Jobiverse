@@ -117,8 +117,46 @@ class ProjectController {
           select: 'role avatar deleted'
         })
         .select('-__v')
-      if (!project) return res.status(404).json({ message: 'No project found' })
-      res.status(200).json(project.toObject())
+      if (!project)
+        return res.status(404).json({ message: 'No project found' })
+
+      let profile = null
+      if (project.account.role === 'student') {
+        const student = await Student.findOne({
+          account: project.account._id
+        })
+          .select('name major specialization university')
+          .lean()
+        profile = student
+          ? {
+            name: student.name,
+            major: student.major,
+            specialization: student.specialization,
+            university: student.university
+          }
+          : null
+      } else if (project.account.role === 'employer') {
+        const employer = await Employer.findOne({
+          account: project.account._id
+        })
+          .select('companyName businessScale industry address')
+          .lean()
+        profile = employer
+          ? {
+            companyName: employer.companyName,
+            businessScale: employer.businessScale,
+            industry: employer.industry,
+            address: employer.address
+          }
+          : null
+      }
+
+      const projectWithProfile = {
+        ...project.toObject(),
+        profile
+      }
+
+      res.status(200).json(projectWithProfile)
     } catch (err) {
       res
         .status(500)
@@ -209,10 +247,12 @@ class ProjectController {
       const { cvId, coverLetter } = req.body
 
       const project = await Project.findById(projectId)
-      if (!project) return res.status(404).json({ message: 'Project not found' })
+      if (!project)
+        return res.status(404).json({ message: 'Project not found' })
 
       const student = await Student.findOne({ account: accountId })
-      if (!student) return res.status(404).json({ message: 'Student not found' })
+      if (!student)
+        return res.status(404).json({ message: 'Student not found' })
 
       let cv = await CV.findOne({ _id: cvId, student: student._id })
       let cvType = 'CV'
@@ -223,14 +263,17 @@ class ProjectController {
       }
 
       if (project.status !== 'open')
-        return res.status(400).json({ message: 'Project is not open for applicants' })
+        return res
+          .status(400)
+          .json({ message: 'Project is not open for applicants' })
 
-      const existingApplicationIndex = project.applicants.findIndex(app =>
-        app.student.toString() === student._id.toString()
+      const existingApplicationIndex = project.applicants.findIndex(
+        (app) => app.student.toString() === student._id.toString()
       )
 
       if (existingApplicationIndex !== -1) {
-        const existingApplication = project.applicants[existingApplicationIndex]
+        const existingApplication =
+          project.applicants[existingApplicationIndex]
 
         if (existingApplication.status === 'rejected') {
           project.applicants[existingApplicationIndex] = {
@@ -241,7 +284,9 @@ class ProjectController {
             coverLetter
           }
         } else {
-          return res.status(400).json({ message: 'Bạn đã ứng tuyển dự án này rồi' })
+          return res
+            .status(400)
+            .json({ message: 'Bạn đã ứng tuyển dự án này rồi' })
         }
       } else {
         project.applicants.push({
@@ -319,11 +364,13 @@ class ProjectController {
     try {
       const accountId = req.account._id
       const student = await Student.findOne({ account: accountId })
-      if (!student) return res.status(404).json({ message: 'Student not found' })
+      if (!student)
+        return res.status(404).json({ message: 'Student not found' })
 
       const projectId = req.params.id
       const project = await Project.findById(projectId)
-      if (!project) return res.status(404).json({ message: 'Project not found' })
+      if (!project)
+        return res.status(404).json({ message: 'Project not found' })
 
       // Remove the applicant from the applicants array
       const initialLength = project.applicants.length
@@ -356,17 +403,26 @@ class ProjectController {
       const accountId = req.account._id
 
       const project = await Project.findById(projectId)
-      if (!project) return res.status(404).json({ message: 'Project not found' })
+      if (!project)
+        return res.status(404).json({ message: 'Project not found' })
 
       const account = await Account.findById(accountId)
-      if (!account) return res.status(404).json({ message: 'Account không tồn tại' })
+      if (!account)
+        return res.status(404).json({ message: 'Account không tồn tại' })
 
       if (project.account.toString() !== account._id.toString()) {
-        return res.status(403).json({ message: 'You are not authorized to respond to this project' })
+        return res.status(403).json({
+          message: 'You are not authorized to respond to this project'
+        })
       }
 
-      const applicant = project.applicants.find(app => app.student.toString() === studentId)
-      if (!applicant) return res.status(400).json({ message: 'Student did not apply for this project' })
+      const applicant = project.applicants.find(
+        (app) => app.student.toString() === studentId
+      )
+      if (!applicant)
+        return res
+          .status(400)
+          .json({ message: 'Student did not apply for this project' })
 
       if (action === 'accept') {
         applicant.status = 'accepted'
@@ -385,9 +441,13 @@ class ProjectController {
         content: `Your application for project "${project.title}" has been ${action}ed.`
       })
 
-      res.status(200).json({ message: `Student has been ${action}ed successfully` })
+      res
+        .status(200)
+        .json({ message: `Student has been ${action}ed successfully` })
     } catch (err) {
-      res.status(500).json({ message: 'Server error' + err.message, error: err.message })
+      res
+        .status(500)
+        .json({ message: 'Server error' + err.message, error: err.message })
     }
   }
 
