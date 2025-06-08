@@ -40,6 +40,13 @@ const JobDetail = () => {
   const [previewId, setPreviewId] = useState(null)
 
   const isOwner = project?.account?._id === user?._id
+  const [activeTab, setActiveTab] = useState('job')
+
+  const tabs = [
+    { key: 'job', label: 'Tin tuyển dụng' },
+    { key: 'applicants', label: 'Ứng viên đã ứng tuyển' },
+    { key: 'accepted', label: 'Ứng viên đã vào dự án' }
+  ]
 
   const extractApplicants = async (applicants, status) => {
     const filtered = applicants?.filter(app => app.status === status) || []
@@ -151,8 +158,29 @@ const JobDetail = () => {
 
       <ToastContainer position="top-right" autoClose={2000} />
       <Banner />
+
+
       <div className="w-full py-20">
         <main className="container-responsive">
+      {/* Tabs */}
+      <div className="flex items-center justify-center gap-5 mb-10">
+        {tabs.map((tab) => (
+          <button
+            key={tab.key}
+            onClick={() => setActiveTab(tab.key)}
+            className={`relative text-[18px] font-semibold pb-2 outline-none cursor-pointer transition-colors duration-300 ${
+              activeTab === tab.key
+                ? 'text-blue'
+                : 'text-gray-dark hover:text-blue'
+            }`}
+          >
+            {tab.label}
+            {activeTab === tab.key && (
+              <span className="absolute left-0 bottom-0 h-[3px] rounded-full w-full bg-blue"></span>
+            )}
+          </button>
+        ))}
+      </div>
           <div className="grid grid-cols-[1fr_0.5fr] gap-10 min-h-full">
 
             {/* Left Content */}
