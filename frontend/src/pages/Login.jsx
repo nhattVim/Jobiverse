@@ -27,6 +27,20 @@ const Login = () => {
     setError('')
   }
 
+  const handleAfterLogin = async () => {
+    const user = await apiFetch('/account/detail', 'GET')
+    setUser(user)
+    updateTimestamp()
+
+    if (!user.profile && user.role === 'employer') {
+      navigate(ROUTES.EMPLOYER_PROFILE)
+    } else if (!user.profile && user.role === 'student') {
+      navigate(ROUTES.STUDENT_PROFILE)
+    } else {
+      navigate(ROUTES.HOME)
+    }
+  }
+
   const handleLogin = async (e) => {
     e.preventDefault()
 
@@ -39,18 +53,7 @@ const Login = () => {
         emailOrPhone,
         password
       })
-
-      const user = await apiFetch('/account/detail', 'GET')
-      setUser(user)
-      updateTimestamp()
-
-      if (!user.profile && user.role === 'employer') {
-        navigate(ROUTES.EMPLOYER_PROFILE)
-      } else if (!user.profile && user.role === 'student') {
-        navigate(ROUTES.STUDENT_PROFILE)
-      } else {
-        navigate(ROUTES.HOME)
-      }
+      handleAfterLogin()
     } catch (error) {
       setError(error.message || 'Đăng nhập thất bại, vui lòng thử lại.')
       console.error('Đăng nhập thất bại', error)
@@ -63,17 +66,7 @@ const Login = () => {
         authProvider: 'google',
         ggToken: credentialResponse.credential
       })
-
-      const user = await apiFetch('/account/detail', 'GET')
-      setUser(user)
-      updateTimestamp()
-
-      const { role, profile } = user
-      if (!profile) {
-        navigate(role === 'employer' ? ROUTES.EMPLOYER_PROFILE : ROUTES.STUDENT_PROFILE)
-      } else {
-        navigate(ROUTES.HOME)
-      }
+      handleAfterLogin()
     } catch (err) {
       setError('Đăng nhập thất bại. ' + err.message)
       console.error('Google login error:', err)
@@ -97,18 +90,7 @@ const Login = () => {
         authProvider: 'facebook',
         fbToken: accessToken
       })
-
-      const user = await apiFetch('/account/detail', 'GET')
-      setUser(user)
-      updateTimestamp()
-
-      if (!user.profile && user.role === 'employer') {
-        navigate(ROUTES.EMPLOYER_PROFILE)
-      } else if (!user.profile && user.role === 'student') {
-        navigate(ROUTES.STUDENT_PROFILE)
-      } else {
-        navigate(ROUTES.HOME)
-      }
+      handleAfterLogin()
     } catch (err) {
       setError('Đăng nhập bằng Facebook thất bại.')
       console.error('Facebook login error:', err)

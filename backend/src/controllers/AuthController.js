@@ -73,7 +73,7 @@ class AccountController {
 
         const token = jwt.sign({ id: account._id, type: account.role }, JWT_SECRET, { expiresIn: '7d' })
         res.cookie('token', token, { httpOnly: true, secure: true, sameSite: 'none', maxAge: 7 * 24 * 60 * 60 * 1000 })
-        res.json({ message: 'Tăng nhập bằng Google thành công', token })
+        res.json({ message: 'Đăng kí bằng Google thành công', token })
 
       } else if (authProvider === 'facebook') {
 

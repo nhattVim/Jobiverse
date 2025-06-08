@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useContext } from 'react'
 import Logo1 from '../assets/Logo1.svg'
 import { useNavigate, Link } from 'react-router-dom'
 import apiFetch from '../services/api'
@@ -6,6 +6,7 @@ import { GoogleLogin } from '@react-oauth/google'
 import FacebookLogin from 'react-facebook-login/dist/facebook-login-render-props'
 import { ROUTES } from '../routes/routePaths'
 import { sendEmail } from '../utils/sendEmail'
+import UserContext from '../contexts/UserContext'
 
 const RegisterForm = ({ role, onBack }) => {
   const navigate = useNavigate()
@@ -14,12 +15,29 @@ const RegisterForm = ({ role, onBack }) => {
   const [password, setPassword] = useState('')
   const [acceptPolicy, setAcceptPolicy] = useState(false)
   const [error, setError] = useState('')
+  const { setUser, updateTimestamp } = useContext(UserContext)
 
-  const sendEmailAfterRegister = async () => {
+  const sendEmailAfterRegister = async (toEmail) => {
     await sendEmail({
-      toEmail: email,
+      toEmail,
       content: 'Chào mừng bạn đến với Jobiverse! Hãy khám phá cơ hội việc làm ngay hôm nay.'
     })
+  }
+
+  const handleAfterRegister = async () => {
+    const user = await apiFetch('/account/detail', 'GET')
+    setUser(user)
+    updateTimestamp()
+
+    sendEmailAfterRegister(user.email)
+
+    if (!user.profile && user.role === 'employer') {
+      navigate(ROUTES.EMPLOYER_PROFILE)
+    } else if (!user.profile && user.role === 'student') {
+      navigate(ROUTES.STUDENT_PROFILE)
+    } else {
+      navigate(ROUTES.HOME)
+    }
   }
 
   const handleRegister = async (e) => {
@@ -40,7 +58,7 @@ const RegisterForm = ({ role, onBack }) => {
         role
       })
 
-      sendEmailAfterRegister()
+      sendEmailAfterRegister(email)
       navigate(ROUTES.LOGIN)
     } catch (err) {
       setError(err.message || 'Đăng ký thất bại, vui lòng thử lại.')
@@ -55,8 +73,7 @@ const RegisterForm = ({ role, onBack }) => {
         ggToken: credentialResponse.credential
       })
 
-      sendEmailAfterRegister()
-      navigate(ROUTES.LOGIN)
+      handleAfterRegister()
     } catch (err) {
       setError('Đăng ký bằng Google thất bại.')
       console.error('Google login error:', err.message)
@@ -91,8 +108,7 @@ const RegisterForm = ({ role, onBack }) => {
         fbToken: accessToken
       })
 
-      sendEmailAfterRegister()
-      navigate(ROUTES.LOGIN)
+      handleAfterRegister()
     } catch (err) {
       setError('Đăng ký bằng Facebook thất bại.')
       console.error('Facebook login error:', err)
