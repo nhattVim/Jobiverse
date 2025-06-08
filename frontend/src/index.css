@@ -8,6 +8,7 @@
 
 html {
   @apply scrollbar-custom;
+  scroll-behavior: smooth;
 }
 
 body {
@@ -23,6 +24,10 @@ body {
 
 .tinymce-content ol {
   @apply space-y-1 text-sm list-decimal list-inside;
+}
+
+#current-job {
+  scroll-margin-top: 224px;
 }
 
 @theme {

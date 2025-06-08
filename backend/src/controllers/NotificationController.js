@@ -15,6 +15,7 @@ class NotificationController {
   // [GET] /notifications/unread-count
   async getUnreadCount(req, res, next) {
     const accountId = req.account._id
+    if (!accountId) return res.status(200).json({ unreadCount: 0 })
     try {
       const unreadCount = await Notification.countDocuments({ account: accountId, isRead: false })
       res.status(200).json({ unreadCount })
