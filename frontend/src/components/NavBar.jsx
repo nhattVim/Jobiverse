@@ -46,6 +46,8 @@ const NavBar = () => {
   }, [user])
 
   useEffect(() => {
+    if (!user) return
+
     let intervalId
 
     const fetchNotifications = async () => {
@@ -74,7 +76,7 @@ const NavBar = () => {
       clearInterval(intervalId)
       document.removeEventListener('visibilitychange', handleVisibilityChange)
     }
-  }, [])
+  }, [user])
 
   const handleLogout = async () => {
     try {
