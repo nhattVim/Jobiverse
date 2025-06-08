@@ -14,17 +14,16 @@ export default async function apiFetch(path, method = 'GET', body = null) {
     const contentType = res.headers.get('Content-Type') || ''
 
     if (!res.ok) {
-      // if (res.status === 401) {
-      //   console.warn('Token expired, calling logout API...')
-      //   await fetch(`${API_BASE}/logout`, {
-      //     method: 'POST',
-      //     credentials: 'include',
-      //     headers: { 'Content-Type': 'application/json' }
-      //   })
-      //   localStorage.removeItem('user')
-      //   // window.location.href = '/login'
-      //   return
-      // }
+      if (res.status === 401) {
+        console.warn('Token invalid, calling logout API...')
+        await fetch(`${API_BASE}/logout`, {
+          method: 'POST',
+          credentials: 'include',
+          headers: { 'Content-Type': 'application/json' }
+        })
+        localStorage.removeItem('user')
+        return
+      }
 
       let errorText
       try {

@@ -2,7 +2,7 @@ import emailjs from '@emailjs/browser'
 
 const SERVICE_ID = import.meta.env.VITE_EMAILJS_SERVICE_ID
 const TEMPLATE_ID = import.meta.env.VITE_EMAILJS_TEMPLATE_ID
-const USER_ID = import.meta.env.VITE_EMAILJS_USER_ID
+const PUBLIC_KEY = import.meta.env.VITE_EMAILJS_PUBLIC_KEY
 
 export const sendEmail = async ({ toEmail, content }) => {
   try {
@@ -15,7 +15,9 @@ export const sendEmail = async ({ toEmail, content }) => {
         time: new Date().toLocaleString(),
         content
       },
-      USER_ID
+      {
+        publicKey: PUBLIC_KEY
+      }
     )
     console.log('Email sent to', toEmail)
   } catch (err) {
