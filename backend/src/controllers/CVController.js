@@ -2,6 +2,7 @@ const CV = require('../models/CV')
 const CVUpload = require('../models/CVUpload')
 const Student = require('../models/Student')
 const puppeteer = require('puppeteer')
+const contentDisposition = require('content-disposition')
 
 class CVController {
   // [GET] /cv/my
@@ -56,7 +57,7 @@ class CVController {
 
       res.set({
         'Content-Type': cv.fileType,
-        'Content-Disposition': `inline; filename="${cv.fileName}"`
+        'Content-Disposition': contentDisposition(cv.fileName, { type: 'inline' })
       })
 
       res.status(200).end(cv.file)
@@ -92,12 +93,16 @@ class CVController {
       const student = await Student.findOne({ account: accountId })
       if (!student) return res.status(404).json({ message: 'Không tìm thấy sinh viên' })
 
+      const fixEncoding = (str) => {
+        return Buffer.from(str, 'latin1').toString('utf8')
+      }
+
       const uploadedFiles = await Promise.all(
         files.map(file =>
           CVUpload.create({
             student: student._id,
-            title: file.originalname,
-            fileName: file.originalname,
+            title: fixEncoding(file.originalname),
+            fileName: fixEncoding(file.originalname),
             file: file.buffer,
             fileType: file.mimetype
           })

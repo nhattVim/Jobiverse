@@ -140,6 +140,9 @@ class AccountController {
           : await Account.findOne({ phoneNumber: emailOrPhone, deleted: false })
 
         if (!account) return res.status(404).json({ message: 'Email hoặc số điện thoại không tồn tại' })
+        if (!account.password || typeof account.password !== 'string') {
+          return res.status(401).json({ message: 'Tài khoản này không thể đăng nhập bằng mật khẩu' })
+        }
 
         const isMatch = await bcrypt.compare(password, account.password)
         if (!isMatch) return res.status(401).json({ message: 'Sai mật khẩu' })

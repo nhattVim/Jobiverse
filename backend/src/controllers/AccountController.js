@@ -1,7 +1,7 @@
 const Account = require('../models/Account')
 const Student = require('../models/Student')
-const Employee = require('../models/Employer')
 const bcrypt = require('bcryptjs')
+const Employer = require('../models/Employer')
 
 class AdminController {
   // [GET] /account
@@ -40,7 +40,21 @@ class AdminController {
     try {
       const account = await Account.findById(req.account._id).select('-password -__v -deleted')
       if (!account) return res.status(404).json({ message: 'Tài khoản không tồn tại' })
-      res.json(account)
+
+      let name = null
+
+      if (account.role === 'student') {
+        const student = await Student.findOne({ account: account._id })
+        name = student?.name || null
+      } else if (account.role === 'employer') {
+        const employer = await Employer.findOne({ account: account._id })
+        name = employer?.companyName || null
+      }
+
+      const accountObj = account.toObject()
+      accountObj.name = name
+
+      res.json(accountObj)
     } catch (err) {
       return res.status(500).json({ message: 'Lỗi máy chủ khi lấy thông tin tài khoản', error: err.message })
     }

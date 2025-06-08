@@ -6,14 +6,14 @@ pdfjs.GlobalWorkerOptions.workerSrc = new URL(
   import.meta.url
 ).toString()
 
-export default function PdfModal({ onClose, pdfUrl }) {
+export default function PdfModal({ cvId, onClose }) {
   const [numPages, setNumPages] = useState(null)
   const [pageNumber, setPageNumber] = useState(1)
 
   const file = useMemo(() => ({
-    url: pdfUrl,
+    url: `${import.meta.env.VITE_API_URL}/cv/uploads/${cvId}`,
     withCredentials: true
-  }), [pdfUrl])
+  }), [cvId])
 
   useEffect(() => {
     document.body.style.overflow = 'hidden'
@@ -52,14 +52,16 @@ export default function PdfModal({ onClose, pdfUrl }) {
         <Document
           file={file}
           onLoadSuccess={onDocumentLoadSuccess}
-          loading={<p>Loading PDF...</p>}
+          loading={
+            <p className='py-4'>Loading PDF...</p>
+          }
           className="flex justify-center select-none"
         >
           <Page pageNumber={pageNumber} width={800} />
         </Document>
 
         {numPages > 1 && (
-          <div className="sticky bottom-0 flex justify-center mt-4 mb-4 ">
+          <div className="sticky bottom-0 z-20 flex justify-center mt-4 mb-4">
             <div className="flex items-center gap-2 px-4 py-1 text-sm text-white rounded-full shadow-lg select-none bg-black/80 w-fit">
               <button
                 onClick={() => setPageNumber(pageNumber - 1)}

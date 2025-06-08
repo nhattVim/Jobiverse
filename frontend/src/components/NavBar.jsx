@@ -188,11 +188,11 @@ const NavBar = () => {
                             className="flex-shrink-0 w-10 h-10 rounded-full"
                           />
                           <div className="flex flex-col justify-between w-full overflow-hidden">
-                            <p className="font-semibold truncate">{user?.role}</p>
+                            <p className="font-semibold truncate">{user?.name || 'Vô danh'}</p>
                             <p className="text-sm truncate">{user?.email}</p>
                           </div>
                         </li>
-                        {accountMenuItems.slice(1).map(({ label, to, hidden }, idx) => (
+                        {accountMenuItems.map(({ label, to, hidden }, idx) => (
                           <MenuItem key={idx} to={to} hidden={hidden}>{label}</MenuItem>
                         ))}
                         <li className="px-4 py-2">

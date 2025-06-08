@@ -20,7 +20,6 @@ const Sidebar = () => {
   const navigate = useNavigate()
   const fileInputRef = useRef(null)
   const { user, updateTimestamp } = useContext(UserContext)
-  const defName = (user.email).split('@')[0]
 
   const handleAvatarClick = () => {
     fileInputRef.current.click()
@@ -90,7 +89,7 @@ const Sidebar = () => {
             <HandRaisedIcon className='w-4 h-4 rotate-45 text-blue' />
             <p className="text-sm">Xin chào</p>
           </div>
-          <p className="text-base font-bold">{user?.name || defName}</p>
+          <p className="text-base font-bold">{user?.name || 'Vô danh'}</p>
         </div>
       </div>
 

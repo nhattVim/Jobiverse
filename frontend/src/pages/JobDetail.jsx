@@ -19,6 +19,7 @@ import ApplyPopup from '../components/ApplyPopup'
 import UserContext from '../contexts/UserContext'
 import apiFetch from '../services/api'
 import CVPreviewModal from '../components/CVPreviewModal'
+import PdfModal from '../components/PdfModal'
 import { ToastContainer, toast } from 'react-toastify'
 import { ApplicationStatusContext } from '../contexts/ApplicationStatusContext'
 import { formatDate } from '../utils/dateUtils'
@@ -38,6 +39,7 @@ const JobDetail = () => {
   const [applicantDetails, setApplicantDetails] = useState([])
   const [acceptedDetails, setAcceptedDetails] = useState([])
   const [previewId, setPreviewId] = useState(null)
+  const [cvType, setCvType] = useState('')
 
   const isOwner = project?.account?._id === user?._id
   const [activeTab, setActiveTab] = useState('job')
@@ -48,31 +50,21 @@ const JobDetail = () => {
     { key: 'accepted', label: 'Ứng viên đã vào dự án' }
   ]
 
-  const extractApplicants = async (applicants, status) => {
-    const filtered = applicants?.filter(app => app.status === status) || []
-    if (filtered.length === 0) return []
-    return await Promise.all(
-      filtered.map(async app => {
-        const profile = await apiFetch(`/students/${app.student}`, 'GET')
-        return {
-          cv: app.cv,
-          cvType: app.cvType,
-          coverLetter: app.coverLetter,
-          ...profile
-        }
-      })
-    )
-  }
-
   const fetchFullProjectData = useCallback(async () => {
     try {
       const res = await apiFetch(`/projects/${id}`, 'GET')
       setProject(res)
 
-      const [pending, accepted] = await Promise.all([
-        extractApplicants(res.applicants, 'pending'),
-        extractApplicants(res.applicants, 'accepted')
-      ])
+      let pending = []
+      let accepted = []
+
+      res.applicants?.forEach(applicant => {
+        if (applicant.status === 'pending') {
+          pending.push(applicant)
+        } else if (applicant.status === 'accepted') {
+          accepted.push(applicant)
+        }
+      })
 
       setApplicantDetails(pending)
       setAcceptedDetails(accepted)
@@ -145,15 +137,26 @@ const JobDetail = () => {
 
   const applicantStatus = statusMap[project._id]?.status
 
+  console.log('Applicant Details:', applicantDetails)
+  console.log('Accepted Details:', acceptedDetails)
+  console.log('Project:', project)
+
   return (
     <>
       {isOpen && <ApplyPopup closePopup={closePopup} applyTitle={project.title} projectId={project._id} toast={toast} />}
 
       {previewId && (
-        <CVPreviewModal
-          cvId={previewId}
-          onClose={() => setPreviewId(null)}
-        />
+        cvType === 'CVUpload' ? (
+          <PdfModal
+            cvId={previewId}
+            onClose={() => setPreviewId(null)}
+          />
+        ) : (
+          <CVPreviewModal
+            cvId={previewId}
+            onClose={() => setPreviewId(null)}
+          />
+        )
       )}
 
       <ToastContainer position="top-right" autoClose={2000} />
@@ -275,10 +278,25 @@ const JobDetail = () => {
                 {/* Company Info */}
                 <div className="flex flex-col gap-5 p-10 rounded-medium bg-white-bright">
                   <div className="flex items-center gap-4">
+
                     <div className="p-3 border rounded-small border-white-low bg-white-bright">
-                      <img src={avatarSrc} alt="Company" className="object-cover rounded-full w-15 h-15" />
+                      <img src={avatarSrc} alt="Company" className="object-cover w-12 h-12 rounded-full" />
                     </div>
-                    <h3 className="text-xl font-bold">{project.profile?.name || project.profile?.companyName}</h3>
+
+                    <div>
+                      <h3 className="text-xl font-bold">
+                        {project.account?.role === 'employer'
+                          ? project.profile?.companyName
+                          : project.profile?.name || 'Vô danh'
+                        }
+                      </h3>
+                      <p className="text-sm text-gray-500">
+                        {project.account?.role === 'employer'
+                          ? project.account?.email
+                          : project.account?.email || 'Chưa có thông tin email'}
+                      </p>
+                    </div>
+
                   </div>
                   <ul className="space-y-2 text-sm text-gray-700">
                     <ListItem icon={<UsersIcon />} label="Quy mô" value={(project.profile?.businessScale === 'Companies' ? 'Công ty' : 'Cá nhân')} />
@@ -308,25 +326,28 @@ const JobDetail = () => {
                     {applicantDetails.length === 0 ? (
                       <p className="text-gray-500">Chưa có ai ứng tuyển.</p>
                     ) : (
-                      applicantDetails.map((student, index) => (
+                      applicantDetails.map((s, index) => (
                         <div key={index} className="flex items-center justify-between">
                           <div className="flex items-center gap-4">
                             <img
-                              src={`data:image/png;base64,${student.account?.avatar?.data}`}
-                              alt={student.name}
+                              src={`data:image/png;base64,${s.student.account?.avatar?.data}`}
+                              alt={s.student.name}
                               className="object-cover w-10 h-10 rounded-full"
                             />
                             <div>
                               <h4
                                 className="text-lg font-semibold cursor-pointer hover:underline hover:text-blue-600"
-                                onClick={() => setPreviewId(student.cv)}
-                              >{student.name}</h4>
-                              <p className="w-4/5 overflow-hidden text-sm text-gray-500 truncate">{student.account?.email}</p>
+                                onClick={() => {
+                                  setPreviewId(s.cv)
+                                  setCvType(s.cvType)
+                                }}
+                              >{s.student.name}</h4>
+                              <p className="text-sm text-gray-500">{s.student.account?.email}</p>
                             </div>
                           </div>
                           <div className='flex items-center gap-2'>
                             <button
-                              onClick={() => handleApplyClick(student._id, 'accept')}
+                              onClick={() => handleApplyClick(s.student._id, 'accept')}
                               className="p-2 text-white bg-green-600 rounded-lg cursor-pointer hover:bg-green-700"
                             >
                               Accept
@@ -334,7 +355,7 @@ const JobDetail = () => {
 
                             <button
                               className="p-2 text-white bg-red-600 rounded-lg cursor-pointer hover:bg-red-700"
-                              onClick={() => handleApplyClick(student._id, 'reject')}
+                              onClick={() => handleApplyClick(s.student._id, 'reject')}
                             >
                               Reject
                             </button>
@@ -350,20 +371,23 @@ const JobDetail = () => {
                   {acceptedDetails.length === 0 ? (
                     <p className="text-gray-500">Chưa có sinh viên</p>
                   ) : (
-                    acceptedDetails.map((student, index) => (
+                    acceptedDetails.map((s, index) => (
                       <div key={index} className="flex items-center justify-between">
                         <div className="flex items-center gap-4">
                           <img
-                            src={`data:image/png;base64,${student.account?.avatar?.data}`}
-                            alt={student.name}
+                            src={`data:image/png;base64,${s.student.account?.avatar?.data}`}
+                            alt={s.student.name}
                             className="object-cover w-10 h-10 rounded-full"
                           />
                           <div>
                             <h4
                               className="text-lg font-semibold cursor-pointer hover:underline hover:text-blue-600"
-                              onClick={() => setPreviewId(student.cv)}
-                            >{student.name}</h4>
-                            <p className="text-sm text-gray-500">{student.account?.email}</p>
+                              onClick={() => {
+                                setPreviewId(s.cv)
+                                setCvType(s.cvType)
+                              }}
+                            >{s.student.name}</h4>
+                            <p className="text-sm text-gray-500">{s.student.account?.email}</p>
                           </div>
                         </div>
                       </div>
