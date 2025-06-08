@@ -22,6 +22,7 @@ import Security from '../pages/Security'
 import Notify from '../pages/Notify'
 import Contact from '../pages/Contact'
 import AboutPage from '../pages/AboutPage'
+import CVPreviewPage from '../components/CVPreviewModal'
 
 export const router = createBrowserRouter([
   {

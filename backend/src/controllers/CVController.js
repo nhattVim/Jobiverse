@@ -4,7 +4,7 @@ const Student = require('../models/Student')
 const puppeteer = require('puppeteer')
 
 class CVController {
-  // [GET] /cv
+  // [GET] /cv/my
   async getAllMyCV(req, res, next) {
     try {
       const accountId = req.account._id
@@ -22,25 +22,8 @@ class CVController {
     }
   }
 
-  // [GET] /cv/:id
-  async getCVById(req, res) {
-    try {
-      const accountId = req.account._id
-      const cvId = req.params.id
-
-      const student = await Student.findOne({ account: accountId })
-      if (!student) return res.status(404).json({ message: 'Không tìm thấy sinh viên' })
-
-      const cv = await CV.findOne({ student: student._id, _id: cvId })
-      if (!cv) return res.status(404).json({ message: 'CV không tồn tại' })
-      res.status(200).json(cv)
-    } catch (err) {
-      res.status(500).json({ message: 'Lỗi khi lấy CV', error: err.message })
-    }
-  }
-
-  // [GET] /cv/upload
-  async getAllUpCv(req, res) {
+  // [GET] /cv/my/upload
+  async getAllMyUpCv(req, res) {
     try {
       const student = await Student.findOne({ account: req.account._id })
       if (!student) return res.status(404).json({ message: 'Không tìm thấy sinh viên' })
@@ -53,7 +36,19 @@ class CVController {
     }
   }
 
-  // [POST] /cv/download/:id
+  // [GET] /cv/:id
+  async getCVById(req, res) {
+    try {
+      const cvId = req.params.id
+      const cv = await CV.findOne({ _id: cvId })
+      if (!cv) return res.status(404).json({ message: 'CV không tồn tại' })
+      res.status(200).json(cv)
+    } catch (err) {
+      res.status(500).json({ message: 'Lỗi khi lấy CV', error: err.message })
+    }
+  }
+
+  // [GET] /cv/uploads/:id
   async getUpCVById(req, res) {
     try {
       const cv = await CVUpload.findById(req.params.id)
@@ -155,7 +150,7 @@ class CVController {
 
   // [POST] /cv/generate-pdf
   async generatePDF(req, res) {
-    const { html, fileName } = req.body
+    const { html } = req.body
     if (!html) return res.status(400).send('HTML content is required')
 
     try {
@@ -174,7 +169,7 @@ class CVController {
 
       res.set({
         'Content-Type': 'application/pdf',
-        'Content-Disposition': `attachment; filename="${fileName}"`,
+        'Content-Disposition': 'attachment; filename="cv.pdf"',
         'Content-Length': pdfBuffer.length
       })
 

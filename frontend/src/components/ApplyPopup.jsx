@@ -100,8 +100,8 @@ const ApplyPopup = ({ closePopup, applyTitle, projectId, toast }) => {
     const loadCV = async () => {
       try {
         const [cvOnline, cvUpload] = await Promise.all([
-          apiFetch('/cv', 'GET'),
-          apiFetch('/cv/uploads', 'GET')
+          apiFetch('/cv/my', 'GET'),
+          apiFetch('/cv/my/uploads', 'GET')
         ])
         setCvList(cvOnline)
         setCvUploads(cvUpload)
@@ -376,7 +376,7 @@ const ApplyPopup = ({ closePopup, applyTitle, projectId, toast }) => {
 }
 
 const Spinner = () => (
-  <div className="w-6 h-6 border-4 border-white border-t-transparent rounded-full animate-spin"></div>
+  <div className="w-6 h-6 border-4 border-white rounded-full border-t-transparent animate-spin"></div>
 )
 
 export default ApplyPopup
