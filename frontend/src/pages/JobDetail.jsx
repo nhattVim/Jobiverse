@@ -130,7 +130,8 @@ const JobDetail = () => {
 
   const applicantStatus = statusMap[project._id]?.status
 
-  console.log('Applicant Status:', applicantDetails)
+  console.log('Applicant Details:', applicantDetails)
+  console.log('Accepted Details:', acceptedDetails)
 
   return (
     <>
