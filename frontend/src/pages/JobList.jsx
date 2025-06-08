@@ -4,6 +4,7 @@ import { CheckIcon, FunnelIcon } from '@heroicons/react/24/solid'
 import JobListItem from '../components/JobListItem'
 import apiFetch from '../services/api'
 import { ApplicationStatusContext } from '../contexts/ApplicationStatusContext'
+import { useSearchParams } from 'react-router-dom'
 
 const expItem = [
   { id: 0, name: 'Không yêu cầu' },
@@ -21,6 +22,9 @@ const jobTypeItem = [
 ]
 
 const JobList = () => {
+  const [searchParams] = useSearchParams()
+  const { fetchAppliedStatus } = useContext(ApplicationStatusContext)
+
   // Data states
   const [jobs, setJobs] = useState([])
   const [majors, setMajors] = useState([])
@@ -30,17 +34,19 @@ const JobList = () => {
   const [selectedMajors, setSelectedMajors] = useState([])
   const [selectedSpecs, setSelectedSpecs] = useState([])
   const [selectedExps, setSelectedExps] = useState([])
-  const [selectedTypes, setSelectedTypes] = useState([])
   const [sortOption, setSortOption] = useState('default')
-  const [searchQuery, setSearchQuery] = useState('')
+
+  const [searchQuery, setSearchQuery] = useState(!searchParams.get('q') ? '' : searchParams.get('q'))
+  const [selectedTypes, setSelectedTypes] = useState(
+    !searchParams.get('workTypes')
+      ? [] : searchParams.get('workTypes').split(',').map((id) => parseInt(id, 10))
+  )
 
   // UI states
   const [showAllMajors, setShowAllMajors] = useState(false)
   const [showAllSpecs, setShowAllSpecs] = useState(false)
   const [showAllExps, setShowAllExps] = useState(false)
   const [showAllTypes, setShowAllTypes] = useState(false)
-
-  const { fetchAppliedStatus } = useContext(ApplicationStatusContext)
 
   const fetchInitialData = async () => {
     const [majors, specs] = await Promise.all([

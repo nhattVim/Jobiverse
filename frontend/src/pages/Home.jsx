@@ -3,7 +3,7 @@ import HeroImg from '../assets/HeroImg.jpg'
 import Type1 from '../assets/Type1.jpg'
 import Type2 from '../assets/Type2.jpg'
 import { MapPinIcon, MagnifyingGlassIcon } from '@heroicons/react/24/outline'
-import { Link, useNavigate } from 'react-router-dom'
+import { Link, Route, useNavigate } from 'react-router-dom'
 import {
   ArrowUpRightIcon,
   ArrowLongLeftIcon,
@@ -22,6 +22,7 @@ const Home = () => {
   const [currentIndex, setCurrentIndex] = useState(0)
   const [projects, setProjects] = useState([])
   const [favorites, setFavorites] = useState([])
+  const [query, setQuery] = useState('')
   const { user } = useContext(UserContext)
   const { fetchAppliedStatus } = useContext(ApplicationStatusContext)
   const navigate = useNavigate()
@@ -117,8 +118,16 @@ const Home = () => {
                   <input
                     name="search"
                     id="search"
+                    value={query}
                     placeholder="Tìm kiếm việc làm"
                     className="flex-1 border-none outline-none"
+                    onChange={(e) => setQuery(e.target.value)}
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter') {
+                        e.preventDefault()
+                        navigate(`${ROUTES.JOB_LIST}?q=${query}`)
+                      }
+                    }}
                   />
                 </div>
               </div>
@@ -145,7 +154,10 @@ const Home = () => {
             </Link>
           </div>
           <div className="flex justify-end items-center gap-[50px] w-full">
-            <div className="group relative p-[50px] w-[400px] h-[300px] shadow-lg flex items-end rounded-medium cursor-pointer">
+            <div
+              className="group relative p-[50px] w-[400px] h-[300px] shadow-lg flex items-end rounded-medium cursor-pointer"
+              onClick={() => navigate(`${ROUTES.JOB_LIST}?workTypes=1`)}
+            >
               <div className="absolute inset-0 bg-[#000] opacity-60 z-10 group-hover:opacity-20 transition-opacity ease-out duration-500 rounded-medium"></div>
               <div className="absolute inset-0 w-full h-full">
                 <img
@@ -161,7 +173,10 @@ const Home = () => {
                 </div>
               </div>
             </div>
-            <div className="group relative p-[50px] w-[400px] h-[300px] shadow-lg flex items-end rounded-medium cursor-pointer">
+            <div
+              className="group relative p-[50px] w-[400px] h-[300px] shadow-lg flex items-end rounded-medium cursor-pointer"
+              onClick={() => navigate(`${ROUTES.JOB_LIST}?workTypes=2`)}
+            >
               <div className="absolute inset-0 bg-[#000] opacity-60 z-20 group-hover:opacity-20 transition-opacity ease-out duration-500 rounded-medium"></div>
               <div className="absolute inset-0 w-full h-full">
                 <img
