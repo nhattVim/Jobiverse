@@ -132,6 +132,7 @@ const JobDetail = () => {
 
   console.log('Applicant Details:', applicantDetails)
   console.log('Accepted Details:', acceptedDetails)
+  console.log('Project:', project)
 
   return (
     <>
@@ -258,7 +259,7 @@ const JobDetail = () => {
                       <h3 className="text-xl font-bold">
                         {project.account?.role === 'employer'
                           ? project.profile?.companyName
-                          : project.profile?.name
+                          : project.profile?.name || 'Vô danh'
                         }
                       </h3>
                       <p className="text-sm text-gray-500">
