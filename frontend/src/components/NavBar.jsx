@@ -96,7 +96,7 @@ const NavBar = () => {
   const jobMenuItems = [
     { label: 'Danh sách việc làm', to: ROUTES.JOB_LIST },
     { label: 'Việc làm đã lưu', to: ROUTES.SAVED_JOB },
-    { label: 'Việc làm đã ứng tuyển', to: ROUTES.APPLIED_JOB },
+    { label: 'Việc làm đã ứng tuyển', to: ROUTES.APPLIED_JOB, hidden: user?.role !== 'student' },
     { label: 'Đăng việc làm', to: ROUTES.CREATE_JOB }
   ]
 
@@ -192,7 +192,7 @@ const NavBar = () => {
                             <p className="text-sm truncate">{user?.email}</p>
                           </div>
                         </li>
-                        {accountMenuItems.slice(1).map(({ label, to, hidden }, idx) => (
+                        {accountMenuItems.map(({ label, to, hidden }, idx) => (
                           <MenuItem key={idx} to={to} hidden={hidden}>{label}</MenuItem>
                         ))}
                         <li className="px-4 py-2">

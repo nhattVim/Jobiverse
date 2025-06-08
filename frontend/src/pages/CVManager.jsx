@@ -17,22 +17,26 @@ const CVManagement = () => {
   const [cvUploads, setCvUploads] = useState([])
   const [cvUploadLoading, setCvUploadLoading] = useState(true)
   const [loading, setLoading] = useState(true)
-  const [isModalOpen, setModalOpen] = useState(false)
-  const [currentPdfUrl, setCurrentPdfUrl] = useState('')
   const [previewId, setPreviewId] = useState(null)
+  const [cvType, setCvType] = useState('')
   const navigate = useNavigate()
 
   useEffect(() => {
     const loadData = async () => {
       setLoading(true)
-      const [created, uploads] = await Promise.all([
-        apiFetch('/cv/my', 'GET'),
-        apiFetch('/cv/my/uploads', 'GET')
-      ])
-      setCvList(created)
-      setCvUploads(uploads)
-      setLoading(false)
-      setCvUploadLoading(false)
+      try {
+        const [created, uploads] = await Promise.all([
+          apiFetch('/cv/my', 'GET'),
+          apiFetch('/cv/my/uploads', 'GET')
+        ])
+        setCvList(created)
+        setCvUploads(uploads)
+      } catch (error) {
+        toast.error('Lỗi khi tải CV: ' + error.message)
+      } finally {
+        setLoading(false)
+        setCvUploadLoading(false)
+      }
     }
     loadData()
   }, [])
@@ -50,20 +54,34 @@ const CVManagement = () => {
     }
   }
 
+  const handleDeleteUpload = async (id) => {
+    if (!window.confirm('Bạn có chắc chắn muốn xoá CV này?')) return
+
+    try {
+      await apiFetch(`/cv/uploads/${id}`, 'DELETE')
+      setCvUploads(cvUploads.filter(cv => cv._id !== id))
+      toast.success('Xoá thành công')
+    } catch (err) {
+      alert('Xoá thất bại: ' + err.message)
+      toast.error('Xoá thất bại: ' + err.message)
+    }
+  }
+
   return (
     <div className="min-h-screen">
-      {isModalOpen && (
-        <PdfModal
-          onClose={() => setModalOpen(false)}
-          pdfUrl={currentPdfUrl}
-        />
-      )}
 
       {previewId && (
-        <CVPreviewModal
-          cvId={previewId}
-          onClose={() => setPreviewId(null)}
-        />
+        cvType === 'CVUpload' ? (
+          <PdfModal
+            cvId={previewId}
+            onClose={() => setPreviewId(null)}
+          />
+        ) : (
+          <CVPreviewModal
+            cvId={previewId}
+            onClose={() => setPreviewId(null)}
+          />
+        )
       )}
 
       <ToastContainer position="top-right" autoClose={3000} />
@@ -113,7 +131,10 @@ const CVManagement = () => {
                     >
                       <div>
                         <button
-                          onClick={() => setPreviewId(cv._id)}
+                          onClick={() => {
+                            setPreviewId(cv._id)
+                            setCvType('created')
+                          }}
                           className='block mb-1 text-lg font-semibold text-left cursor-pointer text-blue-mid hover:underline'
                         >
                           {cv.title || 'Chưa đặt tên'}
@@ -170,7 +191,7 @@ const CVManagement = () => {
                       try {
                         await apiFetch('/cv/uploads', 'POST', formData)
                         alert('Tải lên thành công!')
-                        const updatedUploads = await apiFetch('/cv/uploads', 'GET')
+                        const updatedUploads = await apiFetch('/cv/my/uploads', 'GET')
                         setCvUploads(updatedUploads)
                       } catch (err) {
                         alert('Tải lên thất bại: ' + err.message)
@@ -204,9 +225,8 @@ const CVManagement = () => {
 
                       <button
                         onClick={() => {
-                          const url = `${import.meta.env.VITE_API_URL}/cv/uploads/${cv._id}`
-                          setCurrentPdfUrl(url)
-                          setModalOpen(true)
+                          setPreviewId(cv._id)
+                          setCvType('CVUpload')
                         }}
                         className='block mb-1 text-lg font-semibold text-left cursor-pointer text-blue-mid hover:underline'
                       >
@@ -224,12 +244,7 @@ const CVManagement = () => {
                         </a>
 
                         <button
-                          onClick={async () => {
-                            const confirmDelete = window.confirm('Bạn có chắc chắn muốn xóa CV này không?')
-                            if (!confirmDelete) return
-                            await apiFetch(`/cv/uploads/${cv._id}`, 'DELETE')
-                            setCvUploads(prev => prev.filter(item => item._id !== cv._id))
-                          }}
+                          onClick={() => handleDeleteUpload(cv._id)}
                           className="px-4 py-1.5 text-sm text-white bg-red-600 rounded-full hover:bg-red-700 transition cursor-pointer"
                         >
                           <TrashIcon className='w-5 h-5' />

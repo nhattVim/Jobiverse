@@ -77,6 +77,55 @@ class ProjectController {
     }
   }
 
+  // [GET] /projects/:id
+  async getProjectById(req, res, next) {
+    try {
+      const projectId = req.params.id
+      const project = await Project.findOne({ _id: projectId })
+        .populate({
+          path: 'account',
+          select: 'role avatar deleted email'
+        })
+        .populate({
+          path: 'applicants.student',
+          select: '-__v',
+          populate: {
+            path: 'account',
+            select: 'role avatar email'
+          }
+        })
+        .select('-__v')
+        .lean()
+
+      if (!project) return res.status(404).json({ message: 'No project found' })
+
+      project.applicants = project.applicants.filter(applicant => {
+        return applicant.student && applicant.student.account !== null
+      })
+
+      if (!project.account || project.account.deleted) {
+        return res.status(404).json({ message: 'Project owner not found or deleted' })
+      }
+
+      let profile = null
+      if (project.account.role === 'student') {
+        profile = await Student.findOne({ account: project.account._id })
+          .select('name')
+          .lean()
+      } else if (project.account.role === 'employer') {
+        profile = await Employer.findOne({ account: project.account._id })
+          .select('companyName')
+          .lean()
+      }
+
+      project.profile = profile
+
+      res.status(200).json(project)
+    } catch (err) {
+      res.status(500).json({ message: 'Error retrieving project', error: err.message })
+    }
+  }
+
   // [GET] /projects/my
   async getProjects(req, res, next) {
     try {
@@ -104,25 +153,6 @@ class ProjectController {
       res.status(201).json(project)
     } catch (err) {
       res.status(500).json({ message: 'Lỗi tạo dự án', error: err.message })
-    }
-  }
-
-  // [GET] /projects/:id
-  async getProjectById(req, res, next) {
-    try {
-      const projectId = req.params.id
-      const project = await Project.findOne({ _id: projectId })
-        .populate({
-          path: 'account',
-          select: 'role avatar deleted'
-        })
-        .select('-__v')
-      if (!project) return res.status(404).json({ message: 'No project found' })
-      res.status(200).json(project.toObject())
-    } catch (err) {
-      res
-        .status(500)
-        .json({ message: 'Error retrieving project', error: err.message })
     }
   }
 

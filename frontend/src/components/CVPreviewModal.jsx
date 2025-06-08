@@ -14,13 +14,22 @@ export default function CVPreviewModal({ cvId, cvData: propData, onClose }) {
   }, [])
 
   useEffect(() => {
-    if (!propData && cvId) {
-      setLoading(true)
-      apiFetch(`/cv/${cvId}`, 'GET')
-        .then(data => setCvData(data))
-        .catch(err => alert('Không thể tải CV: ' + err.message))
-        .finally(() => setLoading(false))
+    const fetchCv = async () => {
+      if (!propData && cvId) {
+        setLoading(true)
+        try {
+          const data = await apiFetch(`/cv/${cvId}`, 'GET')
+          setCvData(data)
+        } catch (error) {
+          alert('Không thể tải CV: ' + error.message)
+          console.error('Lỗi khi tải CV:', error)
+        } finally {
+          setLoading(false)
+        }
+      }
     }
+
+    fetchCv()
   }, [cvId, propData])
 
   useEffect(() => {

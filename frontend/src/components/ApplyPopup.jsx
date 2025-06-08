@@ -100,8 +100,8 @@ const ApplyPopup = ({ closePopup, applyTitle, projectId, toast }) => {
     const loadCV = async () => {
       try {
         const [cvOnline, cvUpload] = await Promise.all([
-          apiFetch('/cv', 'GET'),
-          apiFetch('/cv/uploads', 'GET')
+          apiFetch('/cv/my', 'GET'),
+          apiFetch('/cv/my/uploads', 'GET')
         ])
         setCvList(cvOnline)
         setCvUploads(cvUpload)

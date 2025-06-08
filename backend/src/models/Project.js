@@ -29,6 +29,7 @@ const ProjectSchema = new mongoose.Schema({
     default: 'open'
   },
   applicants: [{
+    _id: false,
     student: {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'Student',
