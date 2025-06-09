@@ -115,6 +115,98 @@ class CVController {
     }
   }
 
+  // [GET] /cv/:id/setDefaultCV
+  async getDefaultCv(req, res) {
+    try {
+      const accountId = req.account._id
+
+      const student = await Student.findOne({ account: accountId })
+      if (!student || !student.defaultCV || !student.defaultCV.cv) {
+        return res.status(404).json({ message: 'Sinh viên chưa có CV mặc định' })
+      }
+
+      const { cv: cvId, type } = student.defaultCV
+
+      let defaultCVData
+      if (type === 'CV') {
+        defaultCVData = await CV.findById(cvId).lean()
+      } else if (type === 'CVUpload') {
+        defaultCVData = await CVUpload.findById(cvId).lean()
+      } else {
+        return res.status(400).json({ message: 'Loại CV không hợp lệ' })
+      }
+
+      if (!defaultCVData) {
+        return res.status(404).json({ message: 'Không tìm thấy CV mặc định' })
+      }
+
+      res.json({ type, cv: defaultCVData })
+    } catch (error) {
+      console.error(error)
+      res.status(500).json({ message: 'Lỗi server' })
+    }
+  }
+
+  // [GET] /cv/default/:id
+  async getDefaultCvById(req, res) {
+    try {
+      const { id } = req.params
+
+      const student = await Student.findById(id)
+      if (!student || !student.defaultCV || !student.defaultCV.cv) {
+        return res.status(404).json({ message: 'Sinh viên chưa có CV mặc định' })
+      }
+
+      const { cv: cvId, type } = student.defaultCV
+
+      let defaultCVData
+      if (type === 'CV') {
+        defaultCVData = await CV.findById(cvId).lean()
+      } else if (type === 'CVUpload') {
+        defaultCVData = await CVUpload.findById(cvId).lean()
+      } else {
+        return res.status(400).json({ message: 'Loại CV không hợp lệ' })
+      }
+
+      if (!defaultCVData) {
+        return res.status(404).json({ message: 'Không tìm thấy CV mặc định' })
+      }
+
+      res.json({ type, cv: defaultCVData })
+    } catch (error) {
+      console.error(error)
+      res.status(500).json({ message: 'Lỗi server' })
+    }
+  }
+
+  // [POST] /cv/:id/set-default
+  async setDefaultCV(req, res) {
+    try {
+      const { id } = req.params
+      const { type } = req.body
+
+      if (!['CV', 'CVUpload'].includes(type)) {
+        return res.status(400).json({ message: 'Loại CV không hợp lệ' })
+      }
+
+      const Model = type === 'CV' ? CV : CVUpload
+      const cv = await Model.findById(id)
+      if (!cv) return res.status(404).json({ message: 'CV không tồn tại' })
+
+      const studentId = cv.student
+      const student = await Student.findById(studentId)
+      if (!student) return res.status(404).json({ message: 'Không tìm thấy sinh viên' })
+
+      student.defaultCV = { cv: id, type }
+      await student.save()
+
+      res.json({ message: 'Cập nhật CV mặc định thành công' })
+    } catch (err) {
+      console.error(err)
+      res.status(500).json({ message: 'Lỗi server' })
+    }
+  }
+
   // [PUT] /cv
   async updateCV(req, res) {
     try {

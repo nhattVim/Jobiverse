@@ -28,6 +28,18 @@ const StudentSchema = new mongoose.Schema({
   university: {
     type: String,
     required: true
+  },
+  defaultCV: {
+    cv: {
+      type: mongoose.Schema.Types.ObjectId,
+      refPath: 'defaultCVModel',
+      default: null
+    },
+    type: {
+      type: String,
+      enum: ['CV', 'CVUpload'],
+      default: null
+    }
   }
 })
 

@@ -239,12 +239,11 @@ class ProjectController {
       const { cvId, coverLetter } = req.body
 
       const project = await Project.findById(projectId)
-      if (!project)
-        return res.status(404).json({ message: 'Project not found' })
+      if (!project) return res.status(404).json({ message: 'Project not found' })
+      if (project.status !== 'open') return res.status(400).json({ message: 'Project is not open for applicants' })
 
       const student = await Student.findOne({ account: accountId })
-      if (!student)
-        return res.status(404).json({ message: 'Student not found' })
+      if (!student) return res.status(404).json({ message: 'Student not found' })
 
       let cv = await CV.findOne({ _id: cvId, student: student._id })
       let cvType = 'CV'
@@ -254,21 +253,13 @@ class ProjectController {
         cvType = 'CVUpload'
       }
 
-      if (project.status !== 'open')
-        return res
-          .status(400)
-          .json({ message: 'Project is not open for applicants' })
+      const applicantIndex = project.applicants.findIndex((app) => app.student.toString() === student._id.toString())
 
-      const existingApplicationIndex = project.applicants.findIndex(
-        (app) => app.student.toString() === student._id.toString()
-      )
-
-      if (existingApplicationIndex !== -1) {
-        const existingApplication =
-          project.applicants[existingApplicationIndex]
+      if (applicantIndex !== -1) {
+        const existingApplication = project.applicants[applicantIndex]
 
         if (existingApplication.status === 'rejected') {
-          project.applicants[existingApplicationIndex] = {
+          project.applicants[applicantIndex] = {
             ...existingApplication.toObject(),
             status: 'pending',
             cv: cv._id,
@@ -276,9 +267,7 @@ class ProjectController {
             coverLetter
           }
         } else {
-          return res
-            .status(400)
-            .json({ message: 'Bạn đã ứng tuyển dự án này rồi' })
+          return res.status(400).json({ message: 'Bạn đã ứng tuyển dự án này rồi' })
         }
       } else {
         project.applicants.push({
@@ -308,8 +297,7 @@ class ProjectController {
     try {
       const accountId = req.account._id
       const student = await Student.findOne({ account: accountId })
-      if (!student)
-        return res.status(404).json({ message: 'Student not found' })
+      if (!student) return res.status(404).json({ message: 'Student not found' })
 
       const projectsApplied = await Project.find({
         'applicants.student': student._id
@@ -361,10 +349,8 @@ class ProjectController {
 
       const projectId = req.params.id
       const project = await Project.findById(projectId)
-      if (!project)
-        return res.status(404).json({ message: 'Project not found' })
+      if (!project) return res.status(404).json({ message: 'Project not found' })
 
-      // Remove the applicant from the applicants array
       const initialLength = project.applicants.length
       project.applicants = project.applicants.filter(
         (app) => app.student.toString() !== student._id.toString()
@@ -395,12 +381,10 @@ class ProjectController {
       const accountId = req.account._id
 
       const project = await Project.findById(projectId)
-      if (!project)
-        return res.status(404).json({ message: 'Project not found' })
+      if (!project) return res.status(404).json({ message: 'Project not found' })
 
       const account = await Account.findById(accountId)
-      if (!account)
-        return res.status(404).json({ message: 'Account không tồn tại' })
+      if (!account) return res.status(404).json({ message: 'Account không tồn tại' })
 
       if (project.account.toString() !== account._id.toString()) {
         return res.status(403).json({
@@ -408,13 +392,8 @@ class ProjectController {
         })
       }
 
-      const applicant = project.applicants.find(
-        (app) => app.student.toString() === studentId
-      )
-      if (!applicant)
-        return res
-          .status(400)
-          .json({ message: 'Student did not apply for this project' })
+      const applicant = project.applicants.find((app) => app.student.toString() === studentId)
+      if (!applicant) return res.status(400).json({ message: 'Student did not apply for this project' })
 
       if (action === 'accept') {
         applicant.status = 'accepted'
@@ -428,14 +407,22 @@ class ProjectController {
 
       await project.save()
 
-      await Notification.create({
-        account: project.account,
-        content: `Your application for project "${project.title}" has been ${action}ed.`
-      })
+      const studentAccount = await Student.findById(studentId)
+        .select('-__v')
+        .populate({
+          path: 'account',
+          match: { deleted: false },
+          select: '-password -__v'
+        })
 
-      res
-        .status(200)
-        .json({ message: `Student has been ${action}ed successfully` })
+      if (studentAccount?.account) {
+        await Notification.create({
+          account: studentAccount.account,
+          content: `Bạn đã ${action === 'accept' ? 'được chấp nhận' : 'bị từ chối'} vào dự án "${project.title}".`
+        })
+      }
+
+      res.status(200).json({ message: `Student has been ${action}ed successfully` })
     } catch (err) {
       res
         .status(500)
@@ -443,75 +430,74 @@ class ProjectController {
     }
   }
 
-  // [GET] /projects/search
-  async searchProjectsByMajorName(req, res, next) {
+  // [POST] /projects/:projectId/invite/:studentId
+  async InviteStudentToProject(req, res, next) {
+    const projectId = req.params.projectId
+    const studentId = req.params.studentId
+    const accountId = req.account._id
+
     try {
-      const majorName = req.query.major
-      const specializationName = req.query.specialization
+      const project = await Project.findById(projectId)
+      if (!project) return res.status(404).json({ message: 'Project not found' })
+      if (project.status !== 'open') return res.status(400).json({ message: 'Project is not open for applicants' })
 
-      if (!majorName) {
-        return res.status(400).json({ message: 'Thiếu tên ngành (major)' })
-      }
-
-      const majorDoc = await Major.findOne({
-        name: new RegExp(majorName, 'i')
-      })
-      if (!majorDoc) {
-        return res.status(404).json({ message: 'Không tìm thấy ngành' })
-      }
-
-      var filter = { major: majorDoc._id }
-      var populateFields = ['major']
-
-      if (specializationName) {
-        const specializationDoc = await Specialization.findOne({
-          name: new RegExp(specializationName, 'i')
+      if (project.account.toString() !== accountId.toString()) {
+        return res.status(403).json({
+          message: 'You are not authorized to respond to this project'
         })
+      }
 
-        if (!specializationDoc) {
-          return res
-            .status(404)
-            .json({ message: 'Không tìm thấy chuyên ngành' })
+      const student = await Student.findById(studentId).populate('defaultCV.cv')
+      if (!student || !student.defaultCV.cv || !student.defaultCV.cv)
+        return res.status(400).json({ message: 'Student or default CV not found' })
+
+      const applicantIndex = project.applicants.findIndex((app) => app.student.toString() === student._id.toString())
+
+      if (applicantIndex !== -1) {
+        const existingApplication = project.applicants[applicantIndex]
+
+        if (existingApplication.status === 'rejected') {
+          project.applicants[applicantIndex] = {
+            ...existingApplication.toObject(),
+            status: 'invited',
+            cv: student.defaultCV.cv._id,
+            cvType: student.defaultCV.type
+          }
+        } else {
+          return res.status(400).json({ message: 'Student has already applied or been invited to this project' })
         }
-        //thêm specialization vào filter hình dung : filter = { specialization: specializationDoc._id }
-        filter.specialization = specializationDoc._id
-        populateFields.push('specialization')
+      } else {
+        project.applicants.push({
+          student: student._id,
+          cv: student.defaultCV.cv._id,
+          cvType: student.defaultCV.type,
+          status: 'invited'
+        })
       }
 
-      const projects = await Project.find(filter).populate(populateFields)
+      await project.save()
 
-      if (!projects.length) {
-        return res
-          .status(404)
-          .json({ message: 'Không có project nào phù hợp' })
-      }
-
-      res.status(200).json({ projects })
-    } catch (err) {
-      res.status(500).json({ message: 'Lỗi server', error: err.message })
+      res.json({ message: 'Student invited successfully' })
+    } catch (error) {
+      res.status(500).json({ message: 'Server error', error: error.message })
     }
   }
 
-  //recommend projects by projectId
+  // [GET] /projects/rcm/:id
   async RcmProjectByProject(req, res, next) {
     try {
       const projectId = req.params.id
       const project = await Project.findById(projectId)
+      if (!project) return res.status(404).json({ message: 'Không tồn tại project' })
 
-      if (!project) {
-        return res.status(404).json({ message: 'Không tồn tại project' })
-      }
-
-      // Lấy danh sách ID ngành và chuyên ngành
       const majorIds = project.major.map((m) => m._id || m)
       const specializationIds = project.specialization.map((s) => s._id || s)
 
-      // Aggregation pipeline
-      const projects = await Project.aggregate([
+      const similarProjects = await Project.aggregate([
         {
           $match: {
             _id: { $ne: project._id },
-            // kiểm tra 1 trong 2 điều kiện
+            status: 'open',
             $or: [
               { major: { $in: majorIds } },
               { specialization: { $in: specializationIds } }
@@ -555,72 +541,87 @@ class ProjectController {
         }
       ])
 
-      if (!projects || projects.length === 0) {
-        return res
-          .status(404)
-          .json({ message: 'Không tìm thấy project tương tự' })
-      }
+      const projectIds = similarProjects.map(p => p._id)
+      const populatedProjects = await Project.find({ _id: { $in: projectIds } })
+        .populate({ path: 'major', select: '-__v' })
+        .populate({ path: 'specialization', select: '-__v' })
+        .populate({ path: 'account', select: 'role avatar deleted' })
+        .lean()
 
-      await Project.populate(projects, [
-        { path: 'major', select: '-__v' },
-        { path: 'specialization', select: '-__v' }
-      ])
+      const filteredProject = populatedProjects.filter(p => p.account !== null)
+      const result = projectIds.map(id => filteredProject.find(p => p._id.toString() === id.toString())).filter(Boolean)
 
-      res.status(200).json({ projects })
+      res.status(200).json(result)
     } catch (err) {
       res.status(500).json({ message: 'Lỗi server', error: err.message })
     }
   }
 
-  //recommend projects by studentId
-  async RcmProjectByStudent(req, res, next) {
+  // [GET] /projects/rcm/student/:id
+  async RcmStudentByProject(req, res, next) {
     try {
-      const studentId = req.params.id
-      const student = await Student.findById(studentId) // Sửa lại: tìm Student chứ không phải Project
+      const projectId = req.params.id
+      const project = await Project.findById(projectId)
 
-      if (!student) {
-        return res.status(404).json({ message: 'Sinh viên không tồn tại' })
-      }
+      if (!project) return res.status(404).json({ message: 'Không tồn tại project' })
 
-      // Lấy danh sách ngành và chuyên ngành của sinh viên
-      const majorId = student.major._id
-      const specializationId = student._id
+      const majorIds = project.major.map((m) => m._id || m)
+      const specializationIds = project.specialization.map((s) => s._id || s)
 
-      const projects = await Project.aggregate([
+      const similarStudents = await Student.aggregate([
         {
           $match: {
-            major: majorId // chỉ lấy project có ngành giống
+            $or: [
+              { major: { $in: majorIds } },
+              { specialization: { $in: specializationIds } }
+            ]
           }
         },
         {
           $addFields: {
-            specializationMatch: {
+            matchingMajors: {
               $cond: [
-                { $in: [specializationId, '$specialization'] }, // nếu specializationId nằm trong project.specialization
-                1, // khớp
-                0 // không khớp
+                { $in: ['$major', majorIds] },
+                1,
+                0
+              ]
+            },
+            matchingSpecializations: {
+              $cond: [
+                { $in: ['$specialization', specializationIds] },
+                1,
+                0
               ]
             }
           }
         },
         {
-          $sort: { specializationMatch: -1 } // Ưu tiên project có chuyên ngành trùng
+          $addFields: {
+            score: {
+              $add: [
+                { $multiply: ['$matchingMajors', 2] },
+                '$matchingSpecializations'
+              ]
+            }
+          }
+        },
+        {
+          $sort: { score: -1 }
         }
       ])
 
-      // Populate sau aggregate
-      await Project.populate(projects, [
-        { path: 'major', select: '-__v' },
-        { path: 'specialization', select: '-__v' }
-      ])
+      const studentIds = similarStudents.map((s) => s._id)
+      const populatedStudents = await Student.find({ _id: { $in: studentIds } })
+        .populate('major')
+        .populate('specialization')
+        .populate('account', '-password -__v')
+        .populate('defaultCV.cv')
+        .lean()
 
-      if (!projects || projects.length === 0) {
-        return res
-          .status(404)
-          .json({ message: 'Không tìm thấy project phù hợp' })
-      }
+      const filteredStudents = populatedStudents.filter(student => student.account !== null)
+      const result = studentIds.map(id => filteredStudents.find(s => s._id.toString() === id.toString())).filter(Boolean)
 
-      res.status(200).json({ projects })
+      return res.status(200).json(result)
     } catch (err) {
       res.status(500).json({ message: 'Lỗi server', error: err.message })
     }

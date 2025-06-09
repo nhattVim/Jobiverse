@@ -19,6 +19,7 @@ import { ApplicationStatusContext } from '../contexts/ApplicationStatusContext'
 import JobInfo from '../components/JobInfo'
 import Applicants from '../components/Applicants'
 import Accepted from '../components/Accepted'
+import Invited from '../components/Invited'
 
 const JobDetail = () => {
   const { id } = useParams()
@@ -36,6 +37,7 @@ const JobDetail = () => {
   const [project, setProject] = useState(null)
   const [applicantDetails, setApplicantDetails] = useState([])
   const [acceptedDetails, setAcceptedDetails] = useState([])
+  const [invitedDetails, setInvitedDetails] = useState([])
   const [previewId, setPreviewId] = useState(null)
   const [cvType, setCvType] = useState('')
   const [activeTab, setActiveTab] = useState('job')
@@ -45,7 +47,8 @@ const JobDetail = () => {
   const tabs = [
     { key: 'job', label: 'Tin tuyển dụng' },
     { key: 'applicants', label: 'Ứng viên đã ứng tuyển' },
-    { key: 'accepted', label: 'Ứng viên đã vào dự án' }
+    { key: 'accepted', label: 'Ứng viên đã vào dự án' },
+    { key: 'invited', label: 'Ứng viên được mời' }
   ]
 
   const fetchFullProjectData = useCallback(async () => {
@@ -55,17 +58,21 @@ const JobDetail = () => {
 
       let pending = []
       let accepted = []
+      let invited = []
 
       res.applicants?.forEach((applicant) => {
         if (applicant.status === 'pending') {
           pending.push(applicant)
         } else if (applicant.status === 'accepted') {
           accepted.push(applicant)
+        } else if (applicant.status === 'invited') {
+          invited.push(applicant)
         }
       })
 
       setApplicantDetails(pending)
       setAcceptedDetails(accepted)
+      setInvitedDetails(invited)
     } catch (error) {
       console.error('Error fetching project data:', error)
     }
@@ -128,6 +135,7 @@ const JobDetail = () => {
   }
 
   const applicantStatus = statusMap[project._id]?.status
+
   console.log('Applicant Details:', applicantDetails)
   console.log('Accepted Details:', acceptedDetails)
   console.log('Project:', project)
@@ -157,7 +165,7 @@ const JobDetail = () => {
         <main className="container-responsive">
           {/* Tabs */}
           {isOwner && (
-            <div className="flex items-center justify-center gap-5 mb-10">
+            <div className="flex items-center justify-center gap-10 mb-10">
               {tabs.map((tab) => (
                 <button
                   key={tab.key}
@@ -196,6 +204,9 @@ const JobDetail = () => {
                     setIsOpen={setIsOpen}
                     isFavorited={isFavorited}
                     handleFavorite={handleFavorite}
+                    id={id}
+                    toast={toast}
+                    fetchFullProjectData={fetchFullProjectData}
                   />
                 </motion.div>
               )}
@@ -229,6 +240,23 @@ const JobDetail = () => {
                     acceptedDetails={acceptedDetails}
                     setPreviewId={setPreviewId}
                     setCvType={setCvType}
+                  />
+                </motion.div>
+              )}
+              {activeTab === 'invited' && isOwner && (
+                <motion.div
+                  key="invited"
+                  initial={{ opacity: 0, x: 40 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  exit={{ opacity: 0, x: -40 }}
+                  transition={{ duration: 0.3 }}
+                  className="w-full"
+                >
+                  <Invited
+                    invitedDetails={invitedDetails}
+                    setPreviewId={setPreviewId}
+                    setCvType={setCvType}
+                    handleApplyClick={handleApplyClick}
                   />
                 </motion.div>
               )}

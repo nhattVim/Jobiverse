@@ -11,8 +11,10 @@ import { useState } from 'react'
 import { formatDate } from '../utils/dateUtils'
 import ButtonArrowOne from '../shared/ButtonArrowOne'
 import { Link } from 'react-router-dom'
+import RcmJob from '../components/RcmJob'
+import RcmStudent from '../components/RcmStudent'
 
-const JobInfo = ({ project, isOwner, applicantStatus, setIsOpen, isFavorited, handleFavorite }) => {
+const JobInfo = ({ project, isOwner, applicantStatus, setIsOpen, isFavorited, handleFavorite, id, toast, fetchFullProjectData }) => {
   const locationText = [project.location?.ward, project.location?.district, project.location?.province]
     .filter(Boolean).join(', ')
 
@@ -22,142 +24,147 @@ const JobInfo = ({ project, isOwner, applicantStatus, setIsOpen, isFavorited, ha
     : '/default-avatar.png'
 
   return (
-    <div className="grid grid-cols-[1fr_0.5fr] gap-10 min-h-full">
-      {/* Left Content */}
-      <div className="w-full overflow-visible">
-        <div className="sticky top-[80px]">
-          <div className="flex flex-col gap-8 p-10 rounded-medium bg-white-bright">
-            <h2 className="text-2xl font-bold">{project.title}</h2>
-
-            <div className="flex justify-between">
-              <InfoBox icon={<CurrencyDollarIcon className="w-6 h-6 text-white" />} label="Mức lương" value={project.salary} />
-              <InfoBox icon={<MapPinIcon className="w-6 h-6 text-white" />} label="Địa điểm" value={project.location?.province} />
-              <InfoBox icon={<BriefcaseIcon className="w-6 h-6 text-white" />} label="Kinh nghiệm" value={`${project.expRequired} năm`} />
-            </div>
-
-            <div className="flex flex-wrap items-center justify-between gap-4">
-              <div className="flex items-center px-3 py-1 text-sm font-medium bg-blue-100 rounded-full text-blue-mid">
-                <CalendarDaysIcon className="w-4 h-4 mr-1" />
-                {project.deadline ? `Hạn nộp hồ sơ : ${formatDate(project.deadline)}` : 'Chưa có thông tin'}
+    <div className="">
+      <div className="grid grid-cols-[1fr_0.5fr] gap-10 min-h-full">
+        {/* Left Content */}
+        <div className="w-full overflow-visible">
+          <div className="sticky top-[80px]">
+            <div className="flex flex-col gap-8 p-10 rounded-medium bg-white-bright">
+              <h2 className="text-2xl font-bold">{project.title}</h2>
+              <div className="flex justify-between">
+                <InfoBox icon={<CurrencyDollarIcon className="w-6 h-6 text-white" />} label="Mức lương" value={project.salary} />
+                <InfoBox icon={<MapPinIcon className="w-6 h-6 text-white" />} label="Địa điểm" value={project.location?.province} />
+                <InfoBox icon={<BriefcaseIcon className="w-6 h-6 text-white" />} label="Kinh nghiệm" value={`${project.expRequired} năm`} />
               </div>
-              <div className="flex gap-3 ml-auto">
-                {isOwner ? (
-                  <ButtonArrowOne selectedPage={`/job/${project._id}`}>
-                          Chỉnh sửa
-                  </ButtonArrowOne>
-                ) : applicantStatus ? (
-                  (() => {
-                    switch (applicantStatus) {
-                    case 'pending':
-                      return (
-                        <StatusTag
-                          icon={<ClockIconOutline className="w-5 h-5 mr-1" />}
-                          content="Đang chờ duyệt"
-                          className="text-yellow-500 border border-yellow-500 rounded-full bg-yellow-50"
-                        />
-                      )
-                    case 'accepted':
-                      return (
-                        <StatusTag
-                          icon={<CheckCircleIcon className="w-5 h-5 mr-1" />}
-                          content="Đã duyệt"
-                          className="text-green-500 border border-green-500 rounded-full bg-green-50"
-                        />
-                      )
-                    case 'rejected':
-                      return (
-                        <StatusTag
-                          icon={<XCircleIcon className="w-5 h-5 mr-1" />}
-                          content="Bị từ chối"
-                          hoverContent="Ứng tuyển lại"
-                          className="text-red-500 border border-red-500 rounded-full cursor-pointer bg-red-50 hover:bg-red-100"
-                          onClick={() => setIsOpen(true)}
-                        />
-                      )
-                    default:
-                      return null
-                    }
-                  })()
-                ) : (
-                  <ButtonArrowOne onClick={() => setIsOpen(true)}>Ứng tuyển</ButtonArrowOne>
-                )}
-
-                <div
-                  onClick={handleFavorite}
-                  className="h-[46px] w-[46px] flex justify-center items-center rounded-full border-2 border-blue cursor-pointer"
-                >
-                  {isFavorited ? (
-                    <HeartSolidIcon className="w-6 h-6 text-blue animate-pop" />
-                  ) : (
-                    <HeartIcon className="w-6 h-6 text-blue" />
-                  )}
+              <div className="flex flex-wrap items-center justify-between gap-4">
+                <div className="flex items-center px-3 py-1 text-sm font-medium bg-blue-100 rounded-full text-blue-mid">
+                  <CalendarDaysIcon className="w-4 h-4 mr-1" />
+                  {project.deadline ? `Hạn nộp hồ sơ : ${formatDate(project.deadline)}` : 'Chưa có thông tin'}
                 </div>
-
+                <div className="flex gap-3 ml-auto">
+                  {isOwner ? (
+                    <ButtonArrowOne selectedPage={`/job/${project._id}`}>
+                            Chỉnh sửa
+                    </ButtonArrowOne>
+                  ) : applicantStatus ? (
+                    (() => {
+                      switch (applicantStatus) {
+                      case 'pending':
+                        return (
+                          <StatusTag
+                            icon={<ClockIconOutline className="w-5 h-5 mr-1" />}
+                            content="Đang chờ duyệt"
+                            className="text-yellow-500 border border-yellow-500 rounded-full bg-yellow-50"
+                          />
+                        )
+                      case 'accepted':
+                        return (
+                          <StatusTag
+                            icon={<CheckCircleIcon className="w-5 h-5 mr-1" />}
+                            content="Đã duyệt"
+                            className="text-green-500 border border-green-500 rounded-full bg-green-50"
+                          />
+                        )
+                      case 'rejected':
+                        return (
+                          <StatusTag
+                            icon={<XCircleIcon className="w-5 h-5 mr-1" />}
+                            content="Bị từ chối"
+                            hoverContent="Ứng tuyển lại"
+                            className="text-red-500 border border-red-500 rounded-full cursor-pointer bg-red-50 hover:bg-red-100"
+                            onClick={() => setIsOpen(true)}
+                          />
+                        )
+                      default:
+                        return null
+                      }
+                    })()
+                  ) : (
+                    <ButtonArrowOne onClick={() => setIsOpen(true)}>Ứng tuyển</ButtonArrowOne>
+                  )}
+                  <div
+                    onClick={handleFavorite}
+                    className="h-[46px] w-[46px] flex justify-center items-center rounded-full border-2 border-blue cursor-pointer"
+                  >
+                    {isFavorited ? (
+                      <HeartSolidIcon className="w-6 h-6 text-blue animate-pop" />
+                    ) : (
+                      <HeartIcon className="w-6 h-6 text-blue" />
+                    )}
+                  </div>
+                </div>
               </div>
             </div>
+            {/* Job Description */}
+            <div className="flex flex-col gap-6 p-10 mt-10 rounded-medium bg-white-bright">
+              <Section title="Chi tiết tin tuyển dụng" />
+              {project.description && <ContentBlock title="Mô tả công việc" html={project.description} />}
+              {project.content && <ContentBlock title="Nội dung yêu cầu" html={project.content} />}
+              {locationText && <SimpleList title="Địa điểm làm việc" items={[locationText]} />}
+              {project.workingTime && <SimpleList title="Thời gian làm việc" items={[project.workingTime]} />}
+            </div>
           </div>
-
-          {/* Job Description */}
-          <div className="flex flex-col gap-6 p-10 mt-10 rounded-medium bg-white-bright">
-            <Section title="Chi tiết tin tuyển dụng" />
-            {project.description && <ContentBlock title="Mô tả công việc" html={project.description} />}
-            {project.content && <ContentBlock title="Nội dung yêu cầu" html={project.content} />}
-            {locationText && <SimpleList title="Địa điểm làm việc" items={[locationText]} />}
-            {project.workingTime && <SimpleList title="Thời gian làm việc" items={[project.workingTime]} />}
+        </div>
+        {/* Right Sidebar */}
+        <div className="w-full overflow-visible">
+          <div className="sticky top-[100px]">
+            {/* Company Info */}
+            <div className="flex flex-col gap-5 p-10 rounded-medium bg-white-bright">
+              <div className="flex items-center gap-4">
+                <div className="p-3 border rounded-small border-white-low bg-white-bright">
+                  <img src={avatarSrc} alt="Company" className="object-cover w-12 h-12 rounded-full" />
+                </div>
+                <div>
+                  <h3 className="text-xl font-bold">
+                    {project.account?.role === 'employer'
+                      ? project.profile?.companyName
+                      : project.profile?.name || 'Vô danh'
+                    }
+                  </h3>
+                  <p className="text-sm text-gray-500">
+                    {project.account?.role === 'employer'
+                      ? project.account?.email
+                      : project.account?.email || 'Chưa có thông tin email'}
+                  </p>
+                </div>
+              </div>
+              <ul className="space-y-2 text-sm text-gray-700">
+                <ListItem icon={<UsersIcon />} label="Quy mô" value={(project.profile?.businessScale === 'Companies' ? 'Công ty' : 'Cá nhân')} />
+                <ListItem icon={<TagIcon />} label="Lĩnh vực" value={project.profile?.industry || 'Chưa có'} />
+                <ListItem icon={<MapPinIcon />} label="Địa điểm" value={project.profile?.address || 'Chưa có'} />
+              </ul>
+              <Link to={'/employer-detail'} className="w-full text-center px-4 py-2.5 text-white bg-blue hover:bg-blue-600 rounded-full cursor-pointer">
+                      Xem chi tiết
+              </Link>
+            </div>
+            {/* General Info */}
+            <div className="flex flex-col gap-5 p-10 mt-5 rounded-medium bg-white-bright">
+              <h3 className="mb-4 text-xl font-semibold text-gray-800">Thông tin chung</h3>
+              <ul className="space-y-2 text-sm text-gray-700">
+                <ListItem icon={<AcademicCapIcon />} label="Học vấn" value={project.education || 'Không yêu cầu'} />
+                <ListItem icon={<Bars3CenterLeftIcon />} label="GPA" value={project.gpa || 'Không yêu cầu'} />
+                <ListItem icon={<UserGroupIcon />} label="Số lượng tuyển" value={project.hiringCount || '1'} />
+                <ListItem icon={<ClockIcon />} label="Hình thức làm việc" value={project.workType || 'Không rõ'} />
+              </ul>
+            </div>
           </div>
         </div>
       </div>
 
-      {/* Right Sidebar */}
-      <div className="w-full overflow-visible">
-        <div className="sticky top-[100px]">
-          {/* Company Info */}
-          <div className="flex flex-col gap-5 p-10 rounded-medium bg-white-bright">
-            <div className="flex items-center gap-4">
-
-              <div className="p-3 border rounded-small border-white-low bg-white-bright">
-                <img src={avatarSrc} alt="Company" className="object-cover w-12 h-12 rounded-full" />
-              </div>
-
-              <div>
-                <h3 className="text-xl font-bold">
-                  {project.account?.role === 'employer'
-                    ? project.profile?.companyName
-                    : project.profile?.name || 'Vô danh'
-                  }
-                </h3>
-                <p className="text-sm text-gray-500">
-                  {project.account?.role === 'employer'
-                    ? project.account?.email
-                    : project.account?.email || 'Chưa có thông tin email'}
-                </p>
-              </div>
-
-            </div>
-            <ul className="space-y-2 text-sm text-gray-700">
-              <ListItem icon={<UsersIcon />} label="Quy mô" value={(project.profile?.businessScale === 'Companies' ? 'Công ty' : 'Cá nhân')} />
-              <ListItem icon={<TagIcon />} label="Lĩnh vực" value={project.profile?.industry || 'Chưa có'} />
-              <ListItem icon={<MapPinIcon />} label="Địa điểm" value={project.profile?.address || 'Chưa có'} />
-            </ul>
-            <Link to={'/employer-detail'} className="w-full text-center px-4 py-2.5 text-white bg-blue hover:bg-blue-600 rounded-full cursor-pointer">
-                    Xem chi tiết
-            </Link>
-          </div>
-
-          {/* General Info */}
-          <div className="flex flex-col gap-5 p-10 mt-5 rounded-medium bg-white-bright">
-            <h3 className="mb-4 text-xl font-semibold text-gray-800">Thông tin chung</h3>
-            <ul className="space-y-2 text-sm text-gray-700">
-              <ListItem icon={<AcademicCapIcon />} label="Học vấn" value={project.education || 'Không yêu cầu'} />
-              <ListItem icon={<Bars3CenterLeftIcon />} label="GPA" value={project.gpa || 'Không yêu cầu'} />
-              <ListItem icon={<UserGroupIcon />} label="Số lượng tuyển" value={project.hiringCount || '1'} />
-              <ListItem icon={<ClockIcon />} label="Hình thức làm việc" value={project.workType || 'Không rõ'} />
-            </ul>
-          </div>
-
-        </div>
+      <div className='w-full p-10 mt-10 overflow-hidden bg-white-bright rounded-medium'>
+        <RcmJob id={project._id} title={<Section title="Tuyển dụng tương tự" />} />
       </div>
 
+      <div className='w-full p-10 mt-10 overflow-hidden bg-white-bright rounded-medium'>
+        <RcmStudent
+          id={project._id}
+          title={<Section title="Ứng viên phù hợp" />}
+          isOwner={isOwner}
+          projectId={id}
+          toast={toast}
+          reload={fetchFullProjectData}
+        />
+      </div>
     </div>
   )
 }
