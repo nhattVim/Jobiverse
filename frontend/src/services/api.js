@@ -22,7 +22,8 @@ export default async function apiFetch(path, method = 'GET', body = null) {
           headers: { 'Content-Type': 'application/json' }
         })
         localStorage.removeItem('user')
-        return
+        window.location.href = '/'
+        return undefined
       }
 
       let errorText

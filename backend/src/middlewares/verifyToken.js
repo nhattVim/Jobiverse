@@ -13,7 +13,7 @@ const verifyToken = ([...role]) => {
     try {
       const decoded = jwt.verify(token, JWT_SECRET)
       const account = await Account.findById(decoded.id)
-      if (!account) return res.status(404).json({ message: 'Token không đúng' })
+      if (!account) return res.status(401).json({ message: 'Token không đúng' })
 
       console.log()
       console.log('========================')

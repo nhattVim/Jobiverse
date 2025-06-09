@@ -1,3 +1,4 @@
+/* eslint-disable indent */
 import {
   MapPinIcon,
   CurrencyDollarIcon,
@@ -20,6 +21,7 @@ const JobCard = ({ job, currentIndex, isFavoritedInitially }) => {
   const { user } = useContext(UserContext)
   const { statusMap } = useContext(ApplicationStatusContext)
   const applicantStatus = statusMap[job._id]?.status
+  const isOwner = job?.account?._id === user?._id
 
   const handleFavorite = async () => {
     if (!user) {
@@ -49,7 +51,7 @@ const JobCard = ({ job, currentIndex, isFavoritedInitially }) => {
       style={{ transform: `translateX(-${currentIndex * 100}%)` }}
     >
       <div className="mr-[50px]">
-        <div className="group flex flex-col items-start gap-[30px] p-10 bg-white rounded-medium w-full cursor-pointer">
+        <div className="group flex flex-col items-start gap-[30px] p-10 bg-white rounded-medium w-full cursor-pointer" >
           <div className="flex flex-col items-start w-full gap-5">
             <div className="flex items-start justify-between w-full">
               <div className="w-[70px] h-[70px] bg-white border border-white-low rounded-small flex justify-center items-center">
@@ -90,44 +92,48 @@ const JobCard = ({ job, currentIndex, isFavoritedInitially }) => {
             </div>
           </div>
           <div className="flex items-center justify-between w-full">
-            {applicantStatus ? (
+            {isOwner ? (
+              <ButtonArrowOne selectedPage={`/job/${job._id}`}>
+                Chỉnh sửa
+              </ButtonArrowOne>
+            ) : applicantStatus ? (
               (() => {
                 switch (applicantStatus) {
-                case 'pending':
-                  return (
-                    <StatusTag
-                      icon={<ClockIcon className="w-5 h-5 mr-1" />}
-                      content="Đang chờ duyệt"
-                      className="text-yellow-500 border border-yellow-500 rounded-full bg-yellow-50"
-                    />
-                  )
-                case 'accepted':
-                  return (
-                    <StatusTag
-                      icon={<CheckCircleIcon className="w-5 h-5 mr-1" />}
-                      content="Đã duyệt"
-                      className="text-green-500 border border-green-500 rounded-full bg-green-50"
-                    />
-                  )
-                case 'rejected':
-                  return (
-                    <StatusTag
-                      icon={<XCircleIcon className="w-5 h-5 mr-1" />}
-                      content="Bị từ chối"
-                      className="text-red-500 border border-red-500 rounded-full bg-red-50"
-                    />
-                  )
-                default:
-                  return null
+                  case 'pending':
+                    return (
+                      <StatusTag
+                        icon={<ClockIcon className="w-5 h-5 mr-1" />}
+                        content="Đang chờ duyệt"
+                        className="text-yellow-500 border border-yellow-500 rounded-full bg-yellow-50"
+                      />
+                    )
+                  case 'accepted':
+                    return (
+                      <StatusTag
+                        icon={<CheckCircleIcon className="w-5 h-5 mr-1" />}
+                        content="Đã duyệt"
+                        className="text-green-500 border border-green-500 rounded-full bg-green-50"
+                      />
+                    )
+                  case 'rejected':
+                    return (
+                      <StatusTag
+                        icon={<XCircleIcon className="w-5 h-5 mr-1" />}
+                        content="Bị từ chối"
+                        className="text-red-500 border border-red-500 rounded-full bg-red-50"
+                      />
+                    )
+                  default:
+                    return null
                 }
               })()
-            ): (
+            ) : (
               <ButtonArrowOne
                 selectedPage={`/job-detail/${job._id}?openApply=true&isFavorited=${isFavorited}`}
                 target='_blank'
                 rel='noopener noreferrer'
               >
-              Ứng tuyển
+                Ứng tuyển
               </ButtonArrowOne>
             )}
             <div

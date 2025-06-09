@@ -13,7 +13,7 @@ class StudentController {
           path: 'account',
           match: { deleted: false },
           select: '-password -__v'
-        })).filter(student => student.account)
+        }).lean()).filter(student => student.account)
       res.json(students)
     } catch (err) {
       res.status(500).json({ message: 'Lỗi khi lấy danh sách sinh viên', error: err.message })
@@ -174,7 +174,6 @@ class StudentController {
       res.status(500).json({ message: 'Lỗi server', error: err.message })
     }
   }
-
 }
 
 module.exports = new StudentController()

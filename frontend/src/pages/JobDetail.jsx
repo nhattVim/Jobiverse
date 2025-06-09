@@ -20,6 +20,8 @@ import UserContext from '../contexts/UserContext'
 import apiFetch from '../services/api'
 import CVPreviewModal from '../components/CVPreviewModal'
 import PdfModal from '../components/PdfModal'
+import RcmJob from '../components/RcmJob'
+import RcmStudent from '../components/RcmStudent'
 import { ToastContainer, toast } from 'react-toastify'
 import { ApplicationStatusContext } from '../contexts/ApplicationStatusContext'
 import { formatDate } from '../utils/dateUtils'
@@ -130,10 +132,6 @@ const JobDetail = () => {
 
   const applicantStatus = statusMap[project._id]?.status
 
-  console.log('Applicant Details:', applicantDetails)
-  console.log('Accepted Details:', acceptedDetails)
-  console.log('Project:', project)
-
   return (
     <>
       {isOpen && <ApplyPopup closePopup={closePopup} applyTitle={project.title} projectId={project._id} toast={toast} />}
@@ -162,7 +160,7 @@ const JobDetail = () => {
             <div className="w-full overflow-visible">
               <div className="sticky top-[80px]">
                 <div className="flex flex-col gap-8 p-10 rounded-medium bg-white-bright">
-                  <h2 className="text-2xl font-bold">{project.title}</h2>
+                  <Section title={project.title} />
 
                   <div className="flex justify-between">
                     <InfoBox icon={<CurrencyDollarIcon className="w-6 h-6 text-white" />} label="Mức lương" value={project.salary} />
@@ -244,106 +242,60 @@ const JobDetail = () => {
             </div>
 
             {/* Right Sidebar */}
-            <div className="w-full overflow-visible">
-              <div className="sticky top-[100px]">
+            <div className="w-full overflow-visible sticky top-[100px]">
 
-                {/* Company Info */}
-                <div className="flex flex-col gap-5 p-10 rounded-medium bg-white-bright">
-                  <div className="flex items-center gap-4">
+              {/* Company Info */}
+              <div className="flex flex-col gap-5 p-10 rounded-medium bg-white-bright">
+                <div className="flex items-center gap-4">
 
-                    <div className="p-3 border rounded-small border-white-low bg-white-bright">
-                      <img src={avatarSrc} alt="Company" className="object-cover w-12 h-12 rounded-full" />
-                    </div>
-
-                    <div>
-                      <h3 className="text-xl font-bold">
-                        {project.account?.role === 'employer'
-                          ? project.profile?.companyName
-                          : project.profile?.name || 'Vô danh'
-                        }
-                      </h3>
-                      <p className="text-sm text-gray-500">
-                        {project.account?.role === 'employer'
-                          ? project.account?.email
-                          : project.account?.email || 'Chưa có thông tin email'}
-                      </p>
-                    </div>
-
+                  <div className="p-3 border rounded-small border-white-low bg-white-bright">
+                    <img src={avatarSrc} alt="Company" className="object-cover w-12 h-12 rounded-full" />
                   </div>
-                  <ul className="space-y-2 text-sm text-gray-700">
-                    <ListItem icon={<UsersIcon />} label="Quy mô" value={(project.profile?.businessScale === 'Companies' ? 'Công ty' : 'Cá nhân')} />
-                    <ListItem icon={<TagIcon />} label="Lĩnh vực" value={project.profile?.industry || 'Chưa có'} />
-                    <ListItem icon={<MapPinIcon />} label="Địa điểm" value={project.profile?.address || 'Chưa có'} />
-                  </ul>
-                  <Link to={'/employer-detail'} className="w-full text-center px-4 py-2.5 text-white bg-blue hover:bg-blue-600 rounded-full cursor-pointer">
-                    Xem chi tiết
-                  </Link>
-                </div>
 
-                {/* General Info */}
-                <div className="flex flex-col gap-5 p-10 mt-5 rounded-medium bg-white-bright">
-                  <h3 className="mb-4 text-xl font-semibold text-gray-800">Thông tin chung</h3>
-                  <ul className="space-y-2 text-sm text-gray-700">
-                    <ListItem icon={<AcademicCapIcon />} label="Học vấn" value={project.education || 'Không yêu cầu'} />
-                    <ListItem icon={<Bars3CenterLeftIcon />} label="GPA" value={project.gpa || 'Không yêu cầu'} />
-                    <ListItem icon={<UserGroupIcon />} label="Số lượng tuyển" value={project.hiringCount || '1'} />
-                    <ListItem icon={<ClockIcon />} label="Hình thức làm việc" value={project.workType || 'Không rõ'} />
-                  </ul>
-                </div>
-
-                {/* Applicants (Owner view) */}
-                {isOwner && (
-                  <div className="flex flex-col gap-5 p-10 mt-5 rounded-medium bg-white-bright">
-                    <h3 className="text-xl font-semibold">Danh sách ứng viên ứng tuyển</h3>
-                    {applicantDetails.length === 0 ? (
-                      <p className="text-gray-500">Chưa có ai ứng tuyển.</p>
-                    ) : (
-                      applicantDetails.map((s, index) => (
-                        <div key={index} className="flex items-center justify-between">
-                          <div className="flex items-center gap-4">
-                            <img
-                              src={`data:image/png;base64,${s.student.account?.avatar?.data}`}
-                              alt={s.student.name}
-                              className="object-cover w-10 h-10 rounded-full"
-                            />
-                            <div>
-                              <h4
-                                className="text-lg font-semibold cursor-pointer hover:underline hover:text-blue-600"
-                                onClick={() => {
-                                  setPreviewId(s.cv)
-                                  setCvType(s.cvType)
-                                }}
-                              >{s.student.name}</h4>
-                              <p className="text-sm text-gray-500">{s.student.account?.email}</p>
-                            </div>
-                          </div>
-                          <div className='flex items-center gap-2'>
-                            <button
-                              onClick={() => handleApplyClick(s.student._id, 'accept')}
-                              className="p-2 text-white bg-green-600 rounded-lg cursor-pointer hover:bg-green-700"
-                            >
-                              Accept
-                            </button>
-
-                            <button
-                              className="p-2 text-white bg-red-600 rounded-lg cursor-pointer hover:bg-red-700"
-                              onClick={() => handleApplyClick(s.student._id, 'reject')}
-                            >
-                              Reject
-                            </button>
-                          </div>
-                        </div>
-                      ))
-                    )}
+                  <div>
+                    <h3 className="text-xl font-bold">
+                      {project.account?.role === 'employer'
+                        ? project.profile?.companyName
+                        : project.profile?.name || 'Vô danh'
+                      }
+                    </h3>
+                    <p className="text-sm text-gray-500">
+                      {project.account?.role === 'employer'
+                        ? project.account?.email
+                        : project.account?.email || 'Chưa có thông tin email'}
+                    </p>
                   </div>
-                )}
 
+                </div>
+                <ul className="space-y-2 text-sm text-gray-700">
+                  <ListItem icon={<UsersIcon />} label="Quy mô" value={(project.profile?.businessScale === 'Companies' ? 'Công ty' : 'Cá nhân')} />
+                  <ListItem icon={<TagIcon />} label="Lĩnh vực" value={project.profile?.industry || 'Chưa có'} />
+                  <ListItem icon={<MapPinIcon />} label="Địa điểm" value={project.profile?.address || 'Chưa có'} />
+                </ul>
+                <Link to={'/employer-detail'} className="w-full text-center px-4 py-2.5 text-white bg-blue hover:bg-blue-600 rounded-full cursor-pointer">
+                  Xem chi tiết
+                </Link>
+              </div>
+
+              {/* General Info */}
+              <div className="flex flex-col gap-5 p-10 mt-5 rounded-medium bg-white-bright">
+                <h3 className="mb-4 text-xl font-semibold text-gray-800">Thông tin chung</h3>
+                <ul className="space-y-2 text-sm text-gray-700">
+                  <ListItem icon={<AcademicCapIcon />} label="Học vấn" value={project.education || 'Không yêu cầu'} />
+                  <ListItem icon={<Bars3CenterLeftIcon />} label="GPA" value={project.gpa || 'Không yêu cầu'} />
+                  <ListItem icon={<UserGroupIcon />} label="Số lượng tuyển" value={project.hiringCount || '1'} />
+                  <ListItem icon={<ClockIcon />} label="Hình thức làm việc" value={project.workType || 'Không rõ'} />
+                </ul>
+              </div>
+
+              {/* Applicants (Owner view) */}
+              {isOwner && (
                 <div className="flex flex-col gap-5 p-10 mt-5 rounded-medium bg-white-bright">
-                  <h3 className="text-xl font-semibold">Danh sách sinh viên đã vào dự án</h3>
-                  {acceptedDetails.length === 0 ? (
-                    <p className="text-gray-500">Chưa có sinh viên</p>
+                  <h3 className="text-xl font-semibold">Danh sách ứng viên ứng tuyển</h3>
+                  {applicantDetails.length === 0 ? (
+                    <p className="text-gray-500">Chưa có ai ứng tuyển.</p>
                   ) : (
-                    acceptedDetails.map((s, index) => (
+                    applicantDetails.map((s, index) => (
                       <div key={index} className="flex items-center justify-between">
                         <div className="flex items-center gap-4">
                           <img
@@ -362,14 +314,65 @@ const JobDetail = () => {
                             <p className="text-sm text-gray-500">{s.student.account?.email}</p>
                           </div>
                         </div>
+                        <div className='flex items-center gap-2'>
+                          <button
+                            onClick={() => handleApplyClick(s.student._id, 'accept')}
+                            className="p-2 text-white bg-green-600 rounded-lg cursor-pointer hover:bg-green-700"
+                          >
+                            Accept
+                          </button>
+
+                          <button
+                            className="p-2 text-white bg-red-600 rounded-lg cursor-pointer hover:bg-red-700"
+                            onClick={() => handleApplyClick(s.student._id, 'reject')}
+                          >
+                            Reject
+                          </button>
+                        </div>
                       </div>
-                    )))
-                  }
+                    ))
+                  )}
                 </div>
+              )}
 
+              <div className="flex flex-col gap-5 p-10 mt-5 rounded-medium bg-white-bright">
+                <h3 className="text-xl font-semibold">Danh sách sinh viên đã vào dự án</h3>
+                {acceptedDetails.length === 0 ? (
+                  <p className="text-gray-500">Chưa có sinh viên</p>
+                ) : (
+                  acceptedDetails.map((s, index) => (
+                    <div key={index} className="flex items-center justify-between">
+                      <div className="flex items-center gap-4">
+                        <img
+                          src={`data:image/png;base64,${s.student.account?.avatar?.data}`}
+                          alt={s.student.name}
+                          className="object-cover w-10 h-10 rounded-full"
+                        />
+                        <div>
+                          <h4
+                            className="text-lg font-semibold cursor-pointer hover:underline hover:text-blue-600"
+                            onClick={() => {
+                              setPreviewId(s.cv)
+                              setCvType(s.cvType)
+                            }}
+                          >{s.student.name}</h4>
+                          <p className="text-sm text-gray-500">{s.student.account?.email}</p>
+                        </div>
+                      </div>
+                    </div>
+                  )))
+                }
               </div>
-            </div>
 
+            </div>
+          </div>
+
+          <div className='w-full p-10 mt-10 overflow-hidden bg-white-bright rounded-medium'>
+            <RcmJob id={project._id} title={<Section title="Tuyển dụng tương tự" />} />
+          </div>
+
+          <div className='w-full p-10 mt-10 overflow-hidden bg-white-bright rounded-medium'>
+            <RcmStudent id={project._id} title={<Section title="Ứng viên phù hợp" />} />
           </div>
         </main>
       </div>
@@ -377,7 +380,6 @@ const JobDetail = () => {
   )
 }
 
-// Reusable Subcomponents
 const InfoBox = ({ icon, label, value }) => (
   <div className="flex flex-1 items-center gap-2.5">
     <div className="flex items-center justify-center w-10 h-10 rounded-full bg-blue">{icon}</div>

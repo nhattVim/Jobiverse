@@ -14,8 +14,8 @@ router.put('/my/:id/status', projectController.updateProjectStatus)
 router.delete('/my/:id', projectController.deleteProject)
 
 router.get('/search', verifyToken(['student']), projectController.searchProjectsByMajorName)
-router.get('/:id', projectController.RcmProjectByProject)
-router.get('/student/:id', projectController.RcmProjectByStudent)
+router.get('/rcm/:id', projectController.RcmProjectByProject)
+router.get('/rcm/student/:id', projectController.RcmStudentByProject)
 
 router.post('/:projectId/apply', verifyToken(['student']), projectController.applyToProject)
 router.post('/:projectId/respond/:studentId', verifyToken([]), projectController.respondToApplication)
