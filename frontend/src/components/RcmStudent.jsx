@@ -7,7 +7,7 @@ import {
   ArrowLongRightIcon
 } from '@heroicons/react/24/solid'
 
-const RcmStudent = ({ id, title }) => {
+const RcmStudent = ({ id, title, isOwner, projectId, toast, reload }) => {
   const [currentIndex, setCurrentIndex] = useState(0)
   const [students, setStudents] = useState([])
   const [previewId, setPreviewId] = useState(null)
@@ -40,7 +40,15 @@ const RcmStudent = ({ id, title }) => {
     loadData()
   }, [id, loadData])
 
-  console.log('students', students)
+  const handleInvite = async (studentId) => {
+    try {
+      await apiFetch(`/projects/${projectId}/invite/${studentId}`, 'POST')
+      reload()
+      toast.success('Gửi lời mời thành công')
+    } catch (error) {
+      toast.error('Gửi lời mời thất bại: ' + error.message)
+    }
+  }
 
   return (
     <div className="flex flex-col items-start">
@@ -101,6 +109,15 @@ const RcmStudent = ({ id, title }) => {
                 >
                   Xem CV
                 </button>
+
+                {isOwner && (
+                  <button
+                    className='p-4 text-white transition-colors duration-300 rounded-full cursor-pointer bg-blue hover:bg-blue-dark'
+                    onClick={() => handleInvite(s._id)}
+                  >
+                    Mời
+                  </button>
+                )}
               </div>
             ))}
           </div>

@@ -40,6 +40,7 @@ const JobDetail = () => {
   const [project, setProject] = useState(null)
   const [applicantDetails, setApplicantDetails] = useState([])
   const [acceptedDetails, setAcceptedDetails] = useState([])
+  const [invitedDetails, setInvitedDetails] = useState([])
   const [previewId, setPreviewId] = useState(null)
   const [cvType, setCvType] = useState('')
 
@@ -52,17 +53,21 @@ const JobDetail = () => {
 
       let pending = []
       let accepted = []
+      let invited = []
 
       res.applicants?.forEach(applicant => {
         if (applicant.status === 'pending') {
           pending.push(applicant)
         } else if (applicant.status === 'accepted') {
           accepted.push(applicant)
+        } else if (applicant.status === 'invited') {
+          invited.push(applicant)
         }
       })
 
       setApplicantDetails(pending)
       setAcceptedDetails(accepted)
+      setInvitedDetails(invited)
     } catch (error) {
       console.error('Error fetching project data:', error)
     }
@@ -336,6 +341,42 @@ const JobDetail = () => {
               )}
 
               <div className="flex flex-col gap-5 p-10 mt-5 rounded-medium bg-white-bright">
+                <h3 className="text-xl font-semibold">Danh sách sinh viên đã mời</h3>
+                {invitedDetails.length === 0 ? (
+                  <p className="text-gray-500">Chưa có sinh viên</p>
+                ) : (
+                  invitedDetails.map((s, index) => (
+                    <div key={index} className="flex items-center justify-between">
+                      <div className="flex items-center w-full gap-4">
+                        <img
+                          src={`data:image/png;base64,${s.student.account?.avatar?.data}`}
+                          alt={s.student.name}
+                          className="object-cover w-10 h-10 rounded-full"
+                        />
+                        <div>
+                          <h4
+                            className="text-lg font-semibold cursor-pointer hover:underline hover:text-blue-600"
+                            onClick={() => {
+                              setPreviewId(s.cv)
+                              setCvType(s.cvType)
+                            }}
+                          >{s.student.name}</h4>
+                          <p className="text-sm text-gray-500">{s.student.account?.email}</p>
+                        </div>
+                      </div>
+
+                      <button
+                        className="px-6 py-2 text-white bg-red-600 rounded-lg cursor-pointer hover:bg-red-700"
+                        onClick={() => handleApplyClick(s.student._id, 'reject')}
+                      >
+                        Huỷ
+                      </button>
+                    </div>
+                  )))
+                }
+              </div>
+
+              <div className="flex flex-col gap-5 p-10 mt-5 rounded-medium bg-white-bright">
                 <h3 className="text-xl font-semibold">Danh sách sinh viên đã vào dự án</h3>
                 {acceptedDetails.length === 0 ? (
                   <p className="text-gray-500">Chưa có sinh viên</p>
@@ -372,7 +413,14 @@ const JobDetail = () => {
           </div>
 
           <div className='w-full p-10 mt-10 overflow-hidden bg-white-bright rounded-medium'>
-            <RcmStudent id={project._id} title={<Section title="Ứng viên phù hợp" />} />
+            <RcmStudent
+              id={project._id}
+              title={<Section title="Ứng viên phù hợp" />}
+              isOwner={isOwner}
+              projectId={id}
+              toast={toast}
+              reload={fetchFullProjectData}
+            />
           </div>
         </main>
       </div>
