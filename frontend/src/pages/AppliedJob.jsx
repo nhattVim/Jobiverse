@@ -1,3 +1,4 @@
+/* eslint-disable indent */
 import React, { useEffect, useState } from 'react'
 import apiFetch from '../services/api'
 import BannerText from '../components/BannerText'
@@ -85,7 +86,7 @@ const AppliedJob = () => {
           <div className="flex-1 space-y-6">
             {appliedJobs.length === 0 ? (
               <div className="flex flex-col items-center justify-center gap-5 py-6 bg-white-low rounded-medium">
-                <h2 className="w-full text-xl font-semibold text-left pl-6">
+                <h2 className="w-full pl-6 text-xl font-semibold text-left">
                   Việc làm đã ứng tuyển
                 </h2>
                 <img
@@ -93,7 +94,7 @@ const AppliedJob = () => {
                   alt="job"
                   className="w-20"
                 />
-                <p className="text-gray-500 text-center">
+                <p className="text-center text-gray-500">
                   Bạn chưa ứng tuyển việc làm nào
                 </p>
                 <button
@@ -135,19 +136,19 @@ const AppliedJob = () => {
                           {job.profile?.name || job.profile?.companyName}
                         </p>
                         <div className="flex items-center text-black-low space-x-2 mt-2.5">
-                          <span className="flex gap-2 items-center">
-                            <CurrencyDollarIcon className="text-blue w-6 h-6" />
+                          <span className="flex items-center gap-2">
+                            <CurrencyDollarIcon className="w-6 h-6 text-blue" />
                             {job.salary}
                           </span>
                           <span>|</span>
                           <span className="flex gap-2 items-cente">
-                            <MapPinIcon className="text-blue w-6 h-6" />
+                            <MapPinIcon className="w-6 h-6 text-blue" />
                             {job.location?.province}
                           </span>
                         </div>
                       </div>
                     </div>
-                    <div className="flex flex-col justify-between gap-8 h-full text-right">
+                    <div className="flex flex-col justify-between h-full gap-8 text-right">
                       <p className="text-sm text-black-low">
                         Đã ứng tuyển:{' '}
                         {applicant && (
@@ -156,51 +157,51 @@ const AppliedJob = () => {
                           </span>
                         )}
                       </p>
-                      <div className="flex items-center space-x-3 justify-end">
+                      <div className="flex items-center justify-end space-x-3">
                         {(() => {
                           let status = applicant?.status
                           switch (status) {
-                          case 'pending':
-                            return (
-                              <div className="flex items-center space-x-3 justify-end">
+                            case 'pending':
+                              return (
+                                <div className="flex items-center justify-end space-x-3">
+                                  <StatusTag
+                                    icon={
+                                      <ClockIcon className="w-5 h-5 mr-1" />
+                                    }
+                                    content="Đang chờ duyệt"
+                                    className="text-yellow-500 border border-yellow-500 rounded-full bg-yellow-50"
+                                  />
+                                  <button
+                                    title="Huỷ ứng tuyển"
+                                    className="flex items-center justify-center px-3 py-2 text-white transition duration-300 rounded-full shadow-md cursor-pointer bg-red hover:bg-red-700"
+                                    onClick={() => handleDeleteApplied(job._id)}
+                                  >
+                                    <span>Huỷ</span>
+                                  </button>
+                                </div>
+                              )
+                            case 'accepted':
+                              return (
                                 <StatusTag
                                   icon={
-                                    <ClockIcon className="w-5 h-5 mr-1" />
+                                    <CheckCircleIcon className="w-5 h-5 mr-1" />
                                   }
-                                  content="Đang chờ duyệt"
-                                  className="text-yellow-500 border border-yellow-500 rounded-full bg-yellow-50"
+                                  content="Đã duyệt"
+                                  className="text-green-500 border border-green-500 rounded-full bg-green-50"
                                 />
-                                <button
-                                  title="Huỷ ứng tuyển"
-                                  className="flex items-center justify-center px-3 py-2 rounded-full bg-red hover:bg-red-700 text-white transition duration-300 shadow-md cursor-pointer"
-                                  onClick={() => handleDeleteApplied(job._id)}
-                                >
-                                  <span>Huỷ</span>
-                                </button>
-                              </div>
-                            )
-                          case 'accepted':
-                            return (
-                              <StatusTag
-                                icon={
-                                  <CheckCircleIcon className="w-5 h-5 mr-1" />
-                                }
-                                content="Đã duyệt"
-                                className="text-green-500 border border-green-500 rounded-full bg-green-50"
-                              />
-                            )
-                          case 'rejected':
-                            return (
-                              <StatusTag
-                                icon={
-                                  <XCircleIcon className="w-5 h-5 mr-1" />
-                                }
-                                content="Bị từ chối"
-                                className="text-red-500 border border-red-500 rounded-full bg-red-50"
-                              />
-                            )
-                          default:
-                            return null
+                              )
+                            case 'rejected':
+                              return (
+                                <StatusTag
+                                  icon={
+                                    <XCircleIcon className="w-5 h-5 mr-1" />
+                                  }
+                                  content="Bị từ chối"
+                                  className="text-red-500 border border-red-500 rounded-full bg-red-50"
+                                />
+                              )
+                            default:
+                              return null
                           }
                         })()}
                       </div>

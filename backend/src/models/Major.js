@@ -7,7 +7,6 @@ const MajorSchema = new mongoose.Schema({
     unique: true
   },
   description: String
-
 })
 
 module.exports = mongoose.model('Major', MajorSchema)

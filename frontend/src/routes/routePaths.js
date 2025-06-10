@@ -26,5 +26,7 @@ export const ROUTES = {
   // SECURITY PATHS
   SECURITY: '/security',
   // NOTIFICATION PATHS
-  NOTIFY: '/notify'
+  NOTIFY: '/notify',
+  // JOB INVITES PATH
+  JOB_INVITES: '/job-invites'
 }

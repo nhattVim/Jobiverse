@@ -7,7 +7,7 @@ const { uploadMultiple } = require('../middlewares/upload')
 router.get('/my', verifyToken(['student']), CVController.getAllMyCV)
 router.get('/my/uploads', verifyToken(['student']), CVController.getAllMyUpCv)
 router.get('/default', verifyToken(['student']), CVController.getDefaultCv)
-router.get('/default/:id', verifyToken(['student']), CVController.getDefaultCvById)
+router.get('/default/:id', verifyToken(['student']), CVController.getDefaultCvByStudentId)
 router.post('/', verifyToken(['student']), CVController.createCV)
 
 router.post('/uploads', verifyToken(['student']), uploadMultiple('files', 5), CVController.uploadCV)

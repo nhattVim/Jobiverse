@@ -176,7 +176,12 @@ const NavBar = () => {
                   onMouseEnter={() => setHoveredMenu('account')}
                   onMouseLeave={() => setHoveredMenu(null)}
                 >
-                  <UserCircleIcon className="w-6 h-6" />
+                  <img
+                    src={`${import.meta.env.VITE_API_URL}/account/avatar?timestamp=${user?.avatarTimestamp || ''}`}
+                    onError={(e) => { e.currentTarget.src = '/default-avatar.png' }}
+                    alt="Avatar"
+                    className="flex-shrink-0 w-8 h-8 rounded-full"
+                  />
                   <ChevronDownIcon className="w-4 h-4" />
                   {hoveredMenu === 'account' && (
                     <div className="w-[300px] absolute top-full right-0 z-40">

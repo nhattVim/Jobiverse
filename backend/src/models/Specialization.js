@@ -6,8 +6,7 @@ const SpecializationSchema = new mongoose.Schema({
     required: true,
     unique: true
   },
-  description: String
-  ,
+  description: String,
   major: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Major',
