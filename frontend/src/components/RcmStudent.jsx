@@ -49,6 +49,7 @@ const RcmStudent = ({ id, title, isOwner, projectId, toast, reload }) => {
       toast.error('Gửi lời mời thất bại: ' + error.message)
     }
   }
+  console.log(students)
 
   return (
     <div className="flex flex-col items-start">

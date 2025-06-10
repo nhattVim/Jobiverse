@@ -114,7 +114,7 @@ class ProjectController {
           .lean()
       } else if (project.account.role === 'employer') {
         profile = await Employer.findOne({ account: project.account._id })
-          .select('companyName')
+          .select('companyName businessScale industry address')
           .lean()
       }
 
