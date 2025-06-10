@@ -2,16 +2,6 @@ const mongoose = require('mongoose')
 const Major = require('../models/Major')
 const Specialization = require('../models/Specialization')
 
-// Kết nối MongoDB
-mongoose.connect('mongodb+srv://nhattVim:nhattVim2%2A@nhattvim.altt30u.mongodb.net/Jobiverse?retryWrites=true&w=majority&appName=nhattVim', {
-  useNewUrlParser: true,
-  useUnifiedTopology: true
-}).then(() => {
-  console.log('✅ Đã kết nối MongoDB')
-}).catch((err) => {
-  console.error('❌ Lỗi kết nối:', err)
-})
-
 const data = [
   {
     'name': 'Quản lý Giáo dục',
@@ -243,43 +233,6 @@ const data = [
     'name': 'Quản lý đất đai',
     'description': '',
     'specializations': []
-  }
-]
-
-// Dữ liệu ngành & chuyên ngành QNU (mẫu)
-const data2 = [
-  {
-    name: 'Công nghệ thông tin',
-    description: 'Ngành đào tạo kỹ sư phần mềm, hệ thống thông tin và mạng máy tính.',
-    specializations: [
-      { name: 'Kỹ thuật phần mềm', description: 'Phát triển phần mềm ứng dụng, web, mobile.' },
-      { name: 'Hệ thống thông tin', description: 'Xây dựng và quản lý hệ thống thông tin doanh nghiệp.' },
-      { name: 'Mạng máy tính', description: 'Thiết kế và vận hành hệ thống mạng, bảo mật.' }
-    ]
-  },
-  {
-    name: 'Sư phạm Toán học',
-    description: 'Đào tạo giáo viên Toán cấp phổ thông.',
-    specializations: [
-      { name: 'Toán ứng dụng', description: 'Ứng dụng Toán học trong kỹ thuật và kinh tế.' },
-      { name: 'Giải tích', description: 'Nghiên cứu hàm số, tích phân và vi phân.' }
-    ]
-  },
-  {
-    name: 'Kinh tế',
-    description: 'Ngành nghiên cứu về phân tích và điều hành hoạt động kinh tế.',
-    specializations: [
-      { name: 'Kinh tế phát triển', description: 'Phân tích và phát triển kinh tế khu vực.' },
-      { name: 'Kinh tế quốc tế', description: 'Thương mại và chính sách kinh tế quốc tế.' }
-    ]
-  },
-  {
-    name: 'Ngôn ngữ Anh',
-    description: 'Đào tạo cử nhân tiếng Anh ứng dụng và giảng dạy.',
-    specializations: [
-      { name: 'Biên - Phiên dịch', description: 'Dịch thuật trong các lĩnh vực chuyên ngành.' },
-      { name: 'Tiếng Anh thương mại', description: 'Sử dụng tiếng Anh trong môi trường kinh doanh.' }
-    ]
   }
 ]
 

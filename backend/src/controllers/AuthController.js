@@ -141,11 +141,11 @@ class AccountController {
 
         if (!account) return res.status(404).json({ message: 'Email hoặc số điện thoại không tồn tại' })
         if (!account.password || typeof account.password !== 'string') {
-          return res.status(401).json({ message: 'Tài khoản này không thể đăng nhập bằng mật khẩu' })
+          return res.status(400).json({ message: 'Tài khoản này không thể đăng nhập bằng mật khẩu' })
         }
 
         const isMatch = await bcrypt.compare(password, account.password)
-        if (!isMatch) return res.status(401).json({ message: 'Sai mật khẩu' })
+        if (!isMatch) return res.status(404).json({ message: 'Sai mật khẩu' })
 
         const token = jwt.sign({ id: account._id, type: account.role }, JWT_SECRET, { expiresIn: '7d' })
         res.cookie('token', token, { httpOnly: true, secure: true, sameSite: 'none', maxAge: 7 * 24 * 60 * 60 * 1000 })
