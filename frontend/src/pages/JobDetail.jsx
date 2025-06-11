@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import { useEffect, useCallback, useState, useContext } from 'react'
 import {
   useParams,
@@ -5,7 +6,6 @@ import {
   useLocation,
   useSearchParams
 } from 'react-router-dom'
-// eslint-disable-next-line no-unused-vars
 import { motion, AnimatePresence } from 'framer-motion'
 
 import Banner from '../components/Banner'
@@ -177,11 +177,9 @@ const JobDetail = () => {
                 <button
                   key={tab.key}
                   onClick={() => setActiveTab(tab.key)}
-                  className={`relative font-semibold text-[17px] pb-2 outline-none cursor-pointer transition-colors duration-300 ${
-                    activeTab === tab.key
-                      ? 'text-blue'
-                      : 'text-gray-500 hover:text-blue'
-                  }`}
+                  className={`relative font-semibold text-[17px] pb-2 outline-none cursor-pointer transition-colors duration-300 ${activeTab === tab.key
+                    ? 'text-blue'
+                    : 'text-gray-500 hover:text-blue'}`}
                 >
                   {tab.label}
                   {activeTab === tab.key && (

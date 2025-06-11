@@ -105,7 +105,7 @@ const CVCardList = ({
 
                 <button
                   onClick={() => onDelete(cv._id)}
-                  className="px-4 py-1.5 text-sm text-white bg-red-600 rounded-full hover:bg-red-700"
+                  className="px-4 py-1.5 text-sm text-white bg-red-600 rounded-full hover:bg-red-700 cursor-pointer"
                 >
                   <TrashIcon className='w-5 h-5' />
                 </button>
@@ -198,6 +198,7 @@ const CVManagement = () => {
         toast.success('Tải lên thành công!')
         const updatedUploads = await apiFetch('/cv/my/uploads', 'GET')
         setCvUploads(updatedUploads)
+        loadDefaultCv()
       } catch (err) {
         toast.error('Tải lên thất bại: ' + err.message)
       } finally {

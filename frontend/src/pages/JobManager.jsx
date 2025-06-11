@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useCallback } from 'react'
 import Sidebar from '../components/Sidebar'
 import apiFetch from '../services/api'
 import { useNavigate, Link } from 'react-router-dom'
@@ -15,15 +15,16 @@ const JobManager = () => {
   const [loading, setLoading] = useState(true)
   const navigate = useNavigate()
 
-  useEffect(() => {
-    const loadData = async () => {
-      setLoading(true)
-      const data = await apiFetch('/projects/my', 'GET')
-      setJobList(data)
-      setLoading(false)
-    }
-    loadData()
+  const loadData = useCallback(async () => {
+    setLoading(true)
+    const data = await apiFetch('/projects/my', 'GET')
+    setJobList(data)
+    setLoading(false)
   }, [])
+
+  useEffect(() => {
+    loadData()
+  }, [loadData])
 
   const handleDelete = async (id) => {
     if (!window.confirm('Bạn có chắc chắn muốn xoá CV này?')) return
@@ -51,6 +52,7 @@ const JobManager = () => {
         <div className="flex-shrink-0 w-1/4">
           <Sidebar />
         </div>
+
         <div className="w-3/4 space-y-10">
           {/* Job đã tạo */}
           <div className="flex items-center justify-between p-6 shadow bg-white-low rounded-medium">
@@ -83,7 +85,7 @@ const JobManager = () => {
                         alt="job"
                         className="w-20"
                       />
-                      <p className="text-gray-500 text-center">Bạn chưa tạo dự án nào</p>
+                      <p className="text-center text-gray-500">Bạn chưa tạo dự án nào</p>
                     </div>
                   ) : (
                     jobList.map(job => (

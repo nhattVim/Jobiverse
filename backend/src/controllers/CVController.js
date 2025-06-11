@@ -76,6 +76,12 @@ class CVController {
       if (!student) return res.status(404).json({ message: 'Không tìm thấy sinh viên' })
 
       const newCV = await CV.create({ student: student._id, ...content, lastUpdated: Date.now() })
+
+      if (!student.defaultCV || !student.defaultCV.cv) {
+        student.defaultCV = { cv: newCV._id, type: 'CV' }
+        await student.save()
+      }
+
       res.status(201).json({ message: 'Tạo CV thành công', newCV })
     } catch (err) {
       res.status(500).json({ message: 'Lỗi khi tạo CV ' + err.message, err: err.message })
@@ -108,6 +114,11 @@ class CVController {
           })
         )
       )
+
+      if (!student.defaultCV || !student.defaultCV.cv) {
+        student.defaultCV = { cv: uploadedFiles[0]._id, type: 'CVUpload' }
+        await student.save()
+      }
 
       res.status(201).json({ message: 'Tải lên CV thành công', uploadedFiles })
     } catch (err) {
@@ -148,7 +159,7 @@ class CVController {
   }
 
   // [GET] /cv/default/:id
-  async getDefaultCvById(req, res) {
+  async getDefaultCvByStudentId(req, res) {
     try {
       const { id } = req.params
 
@@ -225,8 +236,20 @@ class CVController {
   async deleteCV(req, res) {
     try {
       const cvId = req.params.id
-      const cv = await CV.findByIdAndDelete(cvId)
+
+      const cv = await CV.findById(cvId)
       if (!cv) return res.status(404).json({ message: 'CV không tồn tại' })
+
+      const student = await Student.findById(cv.student)
+      if (!student) return res.status(404).json({ message: 'Không tìm thấy sinh viên' })
+
+      await CV.findByIdAndDelete(cvId)
+
+      if (student.defaultCV?.cv?.toString() === cvId && student.defaultCV?.type === 'CV') {
+        student.defaultCV = undefined
+        await student.save()
+      }
+
       res.status(200).json({ message: 'Xoá CV thành công' })
     } catch (err) {
       res.status(500).json({ message: 'Lỗi khi xoá CV', error: err.message })
@@ -237,8 +260,20 @@ class CVController {
   async deleteUpCV(req, res, next) {
     try {
       const cvId = req.params.id
-      const upCV = await CVUpload.findByIdAndDelete(cvId)
+
+      const upCV = await CVUpload.findById(cvId)
       if (!upCV) return res.status(404).json({ message: 'CV không tồn tại' })
+
+      const student = await Student.findById(upCV.student)
+      if (!student) return res.status(404).json({ message: 'Không tìm thấy sinh viên' })
+
+      await CVUpload.findByIdAndDelete(cvId)
+
+      if (student.defaultCV?.cv?.toString() === cvId && student.defaultCV?.type === 'CVUpload') {
+        student.defaultCV = undefined
+        await student.save()
+      }
+
       res.status(200).json({ message: 'Xoá CV thành công' })
     } catch (err) {
       res.status(500).json({ message: 'Lỗi khi xoá CV', error: err.message })

@@ -6,10 +6,7 @@ const MajorSchema = new mongoose.Schema({
     required: true,
     unique: true
   },
-  description: {
-    type: String,
-    required: true
-  }
+  description: String
 })
 
 module.exports = mongoose.model('Major', MajorSchema)

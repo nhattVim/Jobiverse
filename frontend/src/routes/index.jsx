@@ -22,7 +22,7 @@ import Security from '../pages/Security'
 import Notify from '../pages/Notify'
 import Contact from '../pages/Contact'
 import AboutPage from '../pages/AboutPage'
-import CVPreviewPage from '../components/CVPreviewModal'
+import JobInvites from '../pages/JobInvites'
 
 export const router = createBrowserRouter([
   {
@@ -105,6 +105,11 @@ export const router = createBrowserRouter([
       {
         path: ROUTES.NOTIFY,
         element: <ProtectedRoute><Notify /></ProtectedRoute>
+      },
+      // JOB INVITES ROUTE
+      {
+        path: ROUTES.JOB_INVITES,
+        element: <ProtectedRoute><JobInvites /></ProtectedRoute>
       }
     ]
   },

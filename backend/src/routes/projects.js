@@ -10,11 +10,13 @@ router.get('/my', projectController.getProjects)
 router.post('/my', projectController.createProject)
 
 router.get('/applied', verifyToken(['student']), projectController.getProjectsApplied)
+router.get('/invitations', verifyToken(['student']), projectController.getProjectInvitations)
 
 router.put('/my/:id', projectController.updateProject)
 router.put('/my/:id/status', projectController.updateProjectStatus)
 router.delete('/my/:id', projectController.deleteProject)
 
+router.post('/invitations/:projectId/:action', verifyToken([]), projectController.studentResponeInvitations)
 router.post('/:projectId/invite/:studentId', verifyToken([]), projectController.InviteStudentToProject)
 router.post('/:projectId/apply', verifyToken(['student']), projectController.applyToProject)
 router.post('/:projectId/respond/:studentId', verifyToken([]), projectController.respondToApplication)

@@ -49,7 +49,6 @@ const RcmStudent = ({ id, title, isOwner, projectId, toast, reload }) => {
       toast.error('Gửi lời mời thất bại: ' + error.message)
     }
   }
-  console.log(students)
 
   return (
     <div className="flex flex-col items-start">
@@ -104,8 +103,12 @@ const RcmStudent = ({ id, title, isOwner, projectId, toast, reload }) => {
                 <button
                   className='p-4 text-white transition-colors duration-300 bg-black rounded-full cursor-pointer hover:bg-gray-800'
                   onClick={() => {
-                    setPreviewId(s.defaultCV.cv)
-                    setCvType(s.defaultCV.type)
+                    if (s.defaultCV) {
+                      setPreviewId(s.defaultCV.cv)
+                      setCvType(s.defaultCV.type)
+                    } else {
+                      toast.warn('Sinh viên này chưa có CV.')
+                    }
                   }}
                 >
                   Xem CV
@@ -114,7 +117,13 @@ const RcmStudent = ({ id, title, isOwner, projectId, toast, reload }) => {
                 {isOwner && (
                   <button
                     className='p-4 text-white transition-colors duration-300 rounded-full cursor-pointer bg-blue hover:bg-blue-dark'
-                    onClick={() => handleInvite(s._id)}
+                    onClick={() => {
+                      if (s.defaultCV) {
+                        handleInvite(s._id)
+                      } else {
+                        toast.warn('Sinh viên này chưa có CV.')
+                      }
+                    }}
                   >
                     Mời
                   </button>

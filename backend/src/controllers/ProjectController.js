@@ -143,6 +143,60 @@ class ProjectController {
     }
   }
 
+  // [GET] /projects/invitations
+  async getProjectInvitations(req, res, next) {
+    try {
+      const accountId = req.account._id
+
+      const student = await Student.findOne({ account: accountId })
+      if (!student) return res.status(404).json({ message: 'Student not found' })
+
+      const studentId = student._id
+
+      const projects = await Project.find({
+        'applicants': {
+          $elemMatch: {
+            student: studentId,
+            status: 'invited'
+          }
+        }
+      })
+        .populate('account', 'avatar role')
+        .select('-__v')
+        .sort({ createdAt: -1 })
+        .lean()
+
+      const filteredProjects = await Promise.all(
+        projects.map(async (project) => {
+
+          const applicants = project.applicants.filter(app =>
+            app.student.toString() === studentId.toString() &&
+            app.status === 'invited'
+          )
+
+          let profile = null
+          if (project.account?.role === 'student') {
+            const stu = await Student.findOne({ account: project.account._id }).select('name').lean()
+            profile = stu ? { name: stu.name } : null
+          } else if (project.account?.role === 'employer') {
+            const emp = await Employer.findOne({ account: project.account._id }).select('companyName').lean()
+            profile = emp ? { companyName: emp.companyName } : null
+          }
+
+          return {
+            ...project,
+            applicants,
+            profile
+          }
+        })
+      )
+
+      res.json(filteredProjects)
+    } catch (error) {
+      res.status(500).json({ message: 'Lỗi khi lấy danh sách lời mời', error: error.message })
+    }
+  }
+
   // [POST] /projects/my
   async createProject(req, res, next) {
     try {
@@ -285,7 +339,7 @@ class ProjectController {
 
       await Notification.create({
         account: project.account,
-        content: `Student "${student.name}" has applied to your project "${project.title}"`
+        content: `Ứng viên "${student.name}" đã ứng tuyển vào dự án "${project.title}" của bạn`
       })
 
       res.status(200).json({ message: 'Application submitted successfully' })
@@ -400,7 +454,11 @@ class ProjectController {
       if (action === 'accept') {
         applicant.status = 'accepted'
       } else if (action === 'reject') {
-        applicant.status = 'rejected'
+        if (applicant.status === 'pending') {
+          applicant.status = 'rejected'
+        } else if (applicant.status === 'invited') {
+          project.applicants = project.applicants.filter((app) => app.student.toString() !== studentId)
+        }
       } else {
         return res.status(400).json({
           message: 'Invalid action. Must be "accept", "reject", or "assign"'
@@ -479,8 +537,70 @@ class ProjectController {
 
       await project.save()
 
+      const account = await Account.findById(project.account)
+      if (!account) return res.status(404).json({ message: 'Account not found' })
+
+      let profile = null
+      if (account.role === 'student') {
+        profile = await Student.findOne({ account: account._id })
+      } else if (account.role === 'employer') {
+        profile = await Employer.findOne({ account: account._id })
+      }
+
+      const displayName = account.role === 'student'
+        ? profile?.name || 'Sinh viên'
+        : profile?.companyName || 'Nhà tuyển dụng'
+
+      await Notification.create({
+        account: student.account,
+        content: `Bạn đã được "${displayName}" mời vào dự án "${project.title}".`
+      })
+
       res.json({ message: 'Student invited successfully' })
     } catch (error) {
+      res.status(500).json({ message: 'Server error' + error.message })
+    }
+  }
+
+  // [POST] /projects/invitations/:projectId/:action
+  async studentResponeInvitations(req, res, next) {
+    const { projectId, action } = req.params
+    const accountId = req.account._id
+
+    try {
+      const project = await Project.findById(projectId)
+      if (!project) return res.status(404).json({ message: 'Project not found' })
+
+      const student = await Student.findOne({ account: accountId })
+      if (!student) return res.status(404).json({ message: 'Student not found' })
+
+      const applicantIndex = project.applicants.findIndex((app) => app.student.toString() === student._id.toString())
+      if (applicantIndex === -1) return res.status(404).json({ message: 'You have not been invited to this project' })
+
+      const applicant = project.applicants[applicantIndex]
+      if (applicant.status !== 'invited') return res.status(400).json({ message: 'You can only respond to invitations' })
+
+      if (action === 'accept') {
+        applicant.status = 'accepted'
+      } else if (action === 'reject') {
+        applicant.status = 'rejected'
+      } else {
+        return res.status(400).json({ message: 'Invalid action. Must be "accept" or "reject"' })
+      }
+
+      await project.save()
+
+      const account = await Account.findById(project.account)
+      if (!account) return res.status(404).json({ message: 'Account not found' })
+
+      await Notification.create({
+        account: account,
+        content: `Ứng viên "${student.name}" đã ${action === 'accept' ? 'chấp nhận' : 'từ chối'} lời mời vào dự án "${project.title}" của bạn.`
+      })
+
+      res.status(200).json({ message: `You have ${action === 'accept' ? 'accepted' : 'rejected'} the invitation successfully` })
+    } catch (error) {
+      console.error('Error responding to invitation:', error)
       res.status(500).json({ message: 'Server error', error: error.message })
     }
   }
