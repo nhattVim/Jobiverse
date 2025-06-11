@@ -1,6 +1,6 @@
 /* eslint-disable indent */
 import { useState, useMemo, useEffect, useContext } from 'react'
-import { MapPinIcon, CurrencyDollarIcon, ClockIcon, CheckCircleIcon, XCircleIcon } from '@heroicons/react/24/outline'
+import { MapPinIcon, CurrencyDollarIcon, ClockIcon, CheckCircleIcon, XCircleIcon, EyeIcon } from '@heroicons/react/24/outline'
 import ButtonArrowOne from '../shared/ButtonArrowOne'
 import { Link } from 'react-router-dom'
 import { ApplicationStatusContext } from '../contexts/ApplicationStatusContext'
@@ -118,7 +118,14 @@ const JobListItem = ({ job, a, b }) => {
         {isOwner ? (
           <ButtonArrowOne selectedPage={`/job/${job._id}`}>
             Chỉnh sửa
-          </ButtonArrowOne>) : applicantStatus ? (
+          </ButtonArrowOne>
+          ) : user?.role === 'employer' ? (
+              <StatusTag
+                icon={<EyeIcon className="w-5 h-5 mr-1" />}
+                content="Chỉ được xem"
+                className="text-blue border border-blue rounded-full bg-blue-50"
+              />
+            ) : applicantStatus ? (
             (() => {
               switch (applicantStatus) {
                 case 'pending':

@@ -140,6 +140,13 @@ const JobDetail = () => {
   console.log('Accepted Details:', acceptedDetails)
   console.log('Project:', project)
 
+  // Variants
+  const tabContentVariants = {
+    initial: { opacity: 0, x: 40 },
+    animate: { opacity: 1, x: 0 },
+    exit: { opacity: 0, x: -40 }
+  }
+
   return (
     <>
       {isOpen && (
@@ -165,7 +172,7 @@ const JobDetail = () => {
         <main className="container-responsive">
           {/* Tabs */}
           {isOwner && (
-            <div className="flex items-center justify-center gap-10 mb-10">
+            <div className="flex items-center justify-center gap-6 mb-10">
               {tabs.map((tab) => (
                 <button
                   key={tab.key}
@@ -178,7 +185,11 @@ const JobDetail = () => {
                 >
                   {tab.label}
                   {activeTab === tab.key && (
-                    <span className="absolute left-0 bottom-0 h-[2px] rounded-full w-full bg-blue"></span>
+                    <motion.span
+                      layoutId="tab-underline"
+                      className="absolute left-0 bottom-0 h-[2px] rounded-full w-full bg-blue"
+                      transition={{ type: 'spring', stiffness: 500, damping: 30 }}
+                    />
                   )}
                 </button>
               ))}
@@ -191,9 +202,10 @@ const JobDetail = () => {
               {activeTab === 'job' && (
                 <motion.div
                   key="job"
-                  initial={{ opacity: 0, x: 40 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  exit={{ opacity: 0, x: -40 }}
+                  variants={tabContentVariants}
+                  initial="initial"
+                  animate="animate"
+                  exit="exit"
                   transition={{ duration: 0.3 }}
                   className="w-full"
                 >
@@ -213,9 +225,10 @@ const JobDetail = () => {
               {activeTab === 'applicants' && isOwner && (
                 <motion.div
                   key="applicants"
-                  initial={{ opacity: 0, x: 40 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  exit={{ opacity: 0, x: -40 }}
+                  variants={tabContentVariants}
+                  initial="initial"
+                  animate="animate"
+                  exit="exit"
                   transition={{ duration: 0.3 }}
                   className="w-full"
                 >
@@ -230,9 +243,10 @@ const JobDetail = () => {
               {activeTab === 'accepted' && isOwner && (
                 <motion.div
                   key="accepted"
-                  initial={{ opacity: 0, x: 40 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  exit={{ opacity: 0, x: -40 }}
+                  variants={tabContentVariants}
+                  initial="initial"
+                  animate="animate"
+                  exit="exit"
                   transition={{ duration: 0.3 }}
                   className="w-full"
                 >
@@ -246,9 +260,10 @@ const JobDetail = () => {
               {activeTab === 'invited' && isOwner && (
                 <motion.div
                   key="invited"
-                  initial={{ opacity: 0, x: 40 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  exit={{ opacity: 0, x: -40 }}
+                  variants={tabContentVariants}
+                  initial="initial"
+                  animate="animate"
+                  exit="exit"
                   transition={{ duration: 0.3 }}
                   className="w-full"
                 >
