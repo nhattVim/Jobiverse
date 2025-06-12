@@ -5,7 +5,9 @@ import {
   HeartIcon,
   CheckCircleIcon,
   ClockIcon,
-  XCircleIcon
+  XCircleIcon,
+  EyeIcon,
+  InboxArrowDownIcon
 } from '@heroicons/react/24/outline'
 import { HeartIcon as HeartSolidIcon } from '@heroicons/react/24/solid'
 import React, { useContext, useState } from 'react'
@@ -51,7 +53,7 @@ const JobCard = ({ job, currentIndex, isFavoritedInitially }) => {
       style={{ transform: `translateX(-${currentIndex * 100}%)` }}
     >
       <div className="mr-[50px]">
-        <div className="group flex flex-col items-start gap-[30px] p-10 bg-white rounded-medium w-full cursor-pointer" >
+        <div className="group flex flex-col items-start gap-[30px] p-10 bg-white rounded-medium w-full cursor-pointer">
           <div className="flex flex-col items-start w-full gap-5">
             <div className="flex items-start justify-between w-full">
               <div className="w-[70px] h-[70px] bg-white border border-white-low rounded-small flex justify-center items-center">
@@ -84,7 +86,11 @@ const JobCard = ({ job, currentIndex, isFavoritedInitially }) => {
                   <MapPinIcon className="w-6 h-6 text-blue mr-[6px]" />
                 </div>
                 <p className="text-black-low line-clamp-1">
-                  {[job.location?.ward, job.location?.district, job.location?.province]
+                  {[
+                    job.location?.ward,
+                    job.location?.district,
+                    job.location?.province
+                  ]
                     .filter(Boolean)
                     .join(', ')}
                 </p>
@@ -96,6 +102,12 @@ const JobCard = ({ job, currentIndex, isFavoritedInitially }) => {
               <ButtonArrowOne selectedPage={`/job/${job._id}`}>
                 Chỉnh sửa
               </ButtonArrowOne>
+            ) : user?.role === 'employer' ? (
+              <StatusTag
+                icon={<EyeIcon className="w-5 h-5 mr-1" />}
+                content="Chỉ được xem"
+                className="text-blue border border-blue rounded-full bg-blue-50"
+              />
             ) : applicantStatus ? (
               (() => {
                 switch (applicantStatus) {
@@ -123,6 +135,14 @@ const JobCard = ({ job, currentIndex, isFavoritedInitially }) => {
                         className="text-red-500 border border-red-500 rounded-full bg-red-50"
                       />
                     )
+                    case 'invited':
+                      return (
+                        <StatusTag
+                          icon={<InboxArrowDownIcon className="w-5 h-5 mr-1" />}
+                          content="Được mời"
+                          className="text-orange-500 border border-orange-500 rounded-full bg-orange-50"
+                        />
+                      )
                   default:
                     return null
                 }
@@ -130,8 +150,8 @@ const JobCard = ({ job, currentIndex, isFavoritedInitially }) => {
             ) : (
               <ButtonArrowOne
                 selectedPage={`/job-detail/${job._id}?openApply=true&isFavorited=${isFavorited}`}
-                target='_blank'
-                rel='noopener noreferrer'
+                target="_blank"
+                rel="noopener noreferrer"
               >
                 Ứng tuyển
               </ButtonArrowOne>
@@ -141,9 +161,12 @@ const JobCard = ({ job, currentIndex, isFavoritedInitially }) => {
               className="h-[46px] w-[46px] flex justify-center items-center rounded-full border-2 border-blue invisible group-hover:visible"
             >
               {isFavorited ? (
-                <HeartSolidIcon title='Bỏ lưu' className="w-6 h-6 text-blue animate-pop" />
+                <HeartSolidIcon
+                  title="Bỏ lưu"
+                  className="w-6 h-6 text-blue animate-pop"
+                />
               ) : (
-                <HeartIcon title='Lưu' className="w-6 h-6 text-blue" />
+                <HeartIcon title="Lưu" className="w-6 h-6 text-blue" />
               )}
             </div>
           </div>
@@ -155,7 +178,7 @@ const JobCard = ({ job, currentIndex, isFavoritedInitially }) => {
 
 const StatusTag = ({ icon, content, className }) => {
   return (
-    <span className={`flex items-center px-3 py-2 font-medium ${className}`}>
+    <span className={`flex items-center h-[46px] px-3 font-medium ${className}`}>
       {icon}
       {content}
     </span>

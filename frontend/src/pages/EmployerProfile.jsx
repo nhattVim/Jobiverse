@@ -3,9 +3,11 @@ import Profile from '../components/Profile'
 import { useNavigate } from 'react-router-dom'
 import apiFetch from '../services/api'
 import UserContext from '../contexts/UserContext'
+import SpinnerLoading from '../shared/SpinnerLoading'
 
 const EmployerProfile = () => {
   const navigate = useNavigate()
+  const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
   const [form, setForm] = useState({
     representativeName: '',
@@ -35,16 +37,20 @@ const EmployerProfile = () => {
       }
     }
 
+    setLoading(true)
+
     try {
       await apiFetch('/employers', 'POST', form)
       await apiFetch('/account/profile', 'PUT')
       const user = await apiFetch('/account/detail', 'GET')
-      setUser(user)
       updateTimestamp()
       navigate('/')
+      setTimeout(() => setUser(user), 1000)
     } catch (err) {
       console.error(err)
       setError('Tạo profile thất bại, vui lòng thử lại.')
+    } finally {
+      setLoading(false)
     }
   }
 
@@ -190,9 +196,11 @@ const EmployerProfile = () => {
               </button>
               <button
                 type="submit"
-                className="px-6 py-2 text-white transition rounded-full bg-blue hover:bg-blue-700 cursor-pointer"
+                className="relative px-6 py-2 text-white transition rounded-full bg-blue hover:bg-blue-700 cursor-pointer disabled:bg-blue-700"
+                disabled={loading}
               >
-                Hoàn tất
+                <span className={`${loading ? 'invisible' : 'visible'}`}>Hoàn tất</span>
+                {loading && <SpinnerLoading width={6} height={6} className={'absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2'} />}
               </button>
             </div>
           </div>

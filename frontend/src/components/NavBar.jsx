@@ -109,6 +109,7 @@ const NavBar = () => {
   const accountMenuItems = [
     { label: 'Thông tin cá nhân', to: ROUTES.SET_INFORMATION },
     { label: 'CV của tôi', to: ROUTES.CV_MANAGER, hidden: user?.role !== 'student' },
+    { label: 'Dự án đã đăng', to: ROUTES.JOB_MANAGER },
     { label: 'Việc làm đã lưu', to: ROUTES.SAVED_JOB },
     { label: 'Việc làm đã ứng tuyển', to: ROUTES.APPLIED_JOB, hidden: user?.role !== 'student' },
     { label: 'Cài đặt bảo mật', to: ROUTES.SECURITY }

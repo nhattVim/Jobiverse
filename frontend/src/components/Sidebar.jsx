@@ -53,7 +53,9 @@ const Sidebar = () => {
       { path: ROUTES.APPLIED_JOB, icon: <BriefcaseIcon className='w-6 h-6' />, label: 'Việc làm đã ứng tuyển' }
     ] : []),
 
-    { path: '/job-invites', icon: <ArchiveBoxIcon className='w-6 h-6' />, label: 'Lời mời công việc' },
+    ...(user.role === 'student' ? [
+      { path: ROUTES.JOB_INVITES, icon: <ArchiveBoxIcon className='w-6 h-6' />, label: 'Lời mời công việc' }
+    ] : []),
     { path: ROUTES.SECURITY, icon: <ShieldCheckIcon className='w-6 h-6' />, label: 'Cài đặt Bảo mật' }
   ]
 

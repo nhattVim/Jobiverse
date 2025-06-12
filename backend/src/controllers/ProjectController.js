@@ -110,7 +110,9 @@ class ProjectController {
       let profile = null
       if (project.account.role === 'student') {
         profile = await Student.findOne({ account: project.account._id })
-          .select('name')
+          .select('name university major specialization')
+          .populate({ path: 'major', select: 'name' })
+          .populate({ path: 'specialization', select: 'name' })
           .lean()
       } else if (project.account.role === 'employer') {
         profile = await Employer.findOne({ account: project.account._id })

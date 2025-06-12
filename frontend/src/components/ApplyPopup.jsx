@@ -14,6 +14,7 @@ import { ROUTES } from '../routes/routePaths'
 import { TrashIcon } from '@heroicons/react/24/outline'
 import 'react-toastify/dist/ReactToastify.css'
 import { ApplicationStatusContext } from '../contexts/ApplicationStatusContext'
+import SpinnerLoading from '../shared/SpinnerLoading'
 
 const ApplyPopup = ({ closePopup, applyTitle, projectId, toast }) => {
   const navigate = useNavigate()
@@ -367,16 +368,12 @@ const ApplyPopup = ({ closePopup, applyTitle, projectId, toast }) => {
             onClick={handleSubmit}
             disabled={loading}
           >
-            {loading ? <Spinner /> : 'Nộp hồ sơ ứng tuyển'}
+            {loading ? <SpinnerLoading width={6} height={6} /> : 'Nộp hồ sơ ứng tuyển'}
           </button>
         </div>
       </div>
     </div>
   )
 }
-
-const Spinner = () => (
-  <div className="w-6 h-6 border-4 border-white rounded-full border-t-transparent animate-spin"></div>
-)
 
 export default ApplyPopup

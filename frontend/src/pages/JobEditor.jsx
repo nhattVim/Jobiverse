@@ -43,7 +43,7 @@ const JobEditor = () => {
     const fetchData = async () => {
       if (id) {
         try {
-          const data = await apiFetch(`/projects/${id}`, 'GET')
+          const data = await apiFetch(`/projects/detail/${id}`, 'GET')
           console.log('Fetched job data:', data)
           setForm(data)
         } catch (err) {

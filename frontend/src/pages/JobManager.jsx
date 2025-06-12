@@ -44,8 +44,8 @@ const JobManager = () => {
       <ToastContainer position="top-right" autoClose={3000} />
 
       <BannerText
-        title="Thông tin cá nhân"
-        caption="Hồ sơ ấn tượng bắt đầu từ những thông tin cá nhân đầy đủ và rõ ràng. Cập nhật chính xác để nhà tuyển dụng có thể dễ dàng kết nối và hiểu rõ tiềm năng của bạn."
+        title="Dự án đã đăng"
+        caption="Theo dõi, chỉnh sửa và quản lý trạng thái tuyển dụng dễ dàng."
       />
 
       <div className="flex items-start gap-16 px-6 py-20 mx-auto max-w-7xl">

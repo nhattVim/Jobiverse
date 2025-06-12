@@ -1,6 +1,14 @@
 /* eslint-disable indent */
 import { useState, useMemo, useEffect, useContext } from 'react'
-import { MapPinIcon, CurrencyDollarIcon, ClockIcon, CheckCircleIcon, XCircleIcon } from '@heroicons/react/24/outline'
+import {
+  MapPinIcon,
+  CurrencyDollarIcon,
+  ClockIcon,
+  CheckCircleIcon,
+  XCircleIcon,
+  EyeIcon,
+  InboxArrowDownIcon
+} from '@heroicons/react/24/outline'
 import ButtonArrowOne from '../shared/ButtonArrowOne'
 import { Link } from 'react-router-dom'
 import { ApplicationStatusContext } from '../contexts/ApplicationStatusContext'
@@ -74,8 +82,7 @@ const JobListItem = ({ job, a, b }) => {
               <p className="text-[16px] font-normal leading-[21px] text-black-low line-clamp-2 w-4/5">
                 {job.account?.role === 'employer'
                   ? job.profile?.companyName
-                  : job.profile?.name
-                }
+                  : job.profile?.name}
               </p>
             </div>
           </div>
@@ -93,7 +100,11 @@ const JobListItem = ({ job, a, b }) => {
           <div className="flex items-center">
             <MapPinIcon className="w-6 h-6 text-blue mr-[6px]" />
             <p className="text-black-low">
-              {[job.location?.ward, job.location?.district, job.location?.province]
+              {[
+                job.location?.ward,
+                job.location?.district,
+                job.location?.province
+              ]
                 .filter(Boolean)
                 .join(', ')}
             </p>
@@ -118,38 +129,54 @@ const JobListItem = ({ job, a, b }) => {
         {isOwner ? (
           <ButtonArrowOne selectedPage={`/job/${job._id}`}>
             Chỉnh sửa
-          </ButtonArrowOne>) : applicantStatus ? (
-            (() => {
-              switch (applicantStatus) {
-                case 'pending':
-                  return (
-                    <StatusTag
-                      icon={<ClockIcon className="w-5 h-5 mr-1" />}
-                      content="Đang chờ duyệt"
-                      className="text-yellow-500 border border-yellow-500 rounded-full bg-yellow-50"
-                    />
-                  )
-                case 'accepted':
-                  return (
-                    <StatusTag
-                      icon={<CheckCircleIcon className="w-5 h-5 mr-1" />}
-                      content="Đã duyệt"
-                      className="text-green-500 border border-green-500 rounded-full bg-green-50"
-                    />
-                  )
-                case 'rejected':
-                  return (
-                    <StatusTag
-                      icon={<XCircleIcon className="w-5 h-5 mr-1" />}
-                      content="Bị từ chối"
-                      className="text-red-500 border border-red-500 rounded-full bg-red-50"
-                    />
-                  )
-                default:
-                  return null
-              }
-            })()
-          ) : (
+          </ButtonArrowOne>
+        ) : user?.role === 'employer' ? (
+          <StatusTag
+            icon={<EyeIcon className="w-5 h-5 mr-1" />}
+            content="Chỉ được xem"
+            className="text-blue border border-blue rounded-full bg-blue-50"
+          />
+        ) : applicantStatus ? (
+          (() => {
+            switch (applicantStatus) {
+              case 'pending':
+                return (
+                  <StatusTag
+                    icon={<ClockIcon className="w-5 h-5 mr-1" />}
+                    content="Đang chờ duyệt"
+                    className="text-yellow-500 border border-yellow-500 rounded-full bg-yellow-50"
+                  />
+                )
+              case 'accepted':
+                return (
+                  <StatusTag
+                    icon={<CheckCircleIcon className="w-5 h-5 mr-1" />}
+                    content="Đã duyệt"
+                    className="text-green-500 border border-green-500 rounded-full bg-green-50"
+                  />
+                )
+              case 'rejected':
+                return (
+                  <StatusTag
+                    icon={<XCircleIcon className="w-5 h-5 mr-1" />}
+                    content="Bị từ chối"
+                    className="text-red-500 border border-red-500 rounded-full bg-red-50"
+                  />
+                )
+
+              case 'invited':
+                return (
+                  <StatusTag
+                    icon={<InboxArrowDownIcon className="w-5 h-5 mr-1" />}
+                    content="Được mời"
+                    className="text-orange-500 border border-orange-500 rounded-full bg-orange-50"
+                  />
+                )
+              default:
+                return null
+            }
+          })()
+        ) : (
           <ButtonArrowOne
             selectedPage={`/job-detail/${job._id}?openApply=true`}
             target="_blank"
@@ -165,7 +192,9 @@ const JobListItem = ({ job, a, b }) => {
 
 const StatusTag = ({ icon, content, className }) => {
   return (
-    <span className={`flex items-center px-3 py-2 font-medium ${className}`}>
+    <span
+      className={`flex items-center h-[46px] px-3 font-medium ${className}`}
+    >
       {icon}
       {content}
     </span>
