@@ -185,7 +185,7 @@ const Login = () => {
                 <button
                   type="button"
                   onClick={handleStepBack}
-                  className="text-sm underline text-blue"
+                  className="underline text-blue"
                 >
                   Quay lại
                 </button>
@@ -196,7 +196,7 @@ const Login = () => {
 
         {step === 1 && (
           <>
-            <div className="flex items-center w-full gap-4 my-4">
+            <div className="flex items-center w-full gap-4">
               <hr className="flex-grow border-t border-gray-300" />
               <span className="text-sm text-gray-500 whitespace-nowrap">Or</span>
               <hr className="flex-grow border-t border-gray-300" />
@@ -210,18 +210,18 @@ const Login = () => {
 
               <button
                 onClick={handleFacebookLogin}
-                className="px-6 bg-white h-[50px] flex items-center justify-center gap-3 border border-gray-300 text-black font-medium rounded-lg hover:bg-gray-100 transition"
+                className="px-6 bg-white h-[50px] flex items-center justify-center gap-3 border border-gray-300 text-black font-medium rounded-lg hover:bg-gray-100 transition cursor-pointer"
               >
                 <img
                   src="https://upload.wikimedia.org/wikipedia/commons/5/51/Facebook_f_logo_%282019%29.svg"
                   alt="Facebook"
                   className="w-5 h-5"
                 />
-                <span>Continue with Facebook</span>
+                <span>Tiếp tục với Facebook</span>
               </button>
             </div>
 
-            <div className="flex items-center justify-between w-full mt-5">
+            <div className="flex items-center justify-between w-full">
               <p className="font-medium leading-6">
                 Bạn chưa có tài khoản?{' '}
                 <Link to={ROUTES.REGISTER} className="underline text-blue">

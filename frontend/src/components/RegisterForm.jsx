@@ -122,37 +122,39 @@ const RegisterForm = ({ role, onBack }) => {
           <img src={Logo1} alt="logo" className="w-[68px]" />
         </div>
 
-        <h2 className="text-3xl font-bold">Đăng ký tài khoản</h2>
-        <p className="mb-4 font-medium leading-6">
-          Tạo tài khoản và bắt đầu sử dụng Jobiverse.
-        </p>
+        <div className="flex flex-col gap-2.5 text-left">
+          <h2 className="text-3xl font-bold">Đăng ký tài khoản</h2>
+          <p className="font-medium leading-6">
+            Tạo tài khoản và bắt đầu sử dụng Jobiverse.
+          </p>
+        </div>
 
         {error && <p className="text-sm text-red-600">{error}</p>}
 
-        <form onSubmit={handleRegister} className="flex flex-col gap-5">
+        <form onSubmit={handleRegister} className="flex flex-col gap-4">
           <input
             type="email"
             placeholder="Email của bạn"
-            className="input-field"
+            className="input-field input-field-focus"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
           />
           <input
             type="tel"
             placeholder="Số điện thoại của bạn"
-            className="input-field"
+            className="input-field input-field-focus"
             value={phoneNumber}
             onChange={(e) => setPhoneNumber(e.target.value)}
           />
           <input
             type="password"
             placeholder="Mật khẩu"
-            className="input-field"
+            className="input-field input-field-focus"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
           />
 
-          <label className="flex items-center gap-2 text-sm">
+          <label className="flex items-center gap-2">
             <input
               type="checkbox"
               checked={acceptPolicy}
@@ -172,7 +174,7 @@ const RegisterForm = ({ role, onBack }) => {
           </button>
         </form>
 
-        <div className="flex items-center w-full gap-4 my-4">
+        <div className="flex items-center w-full gap-4">
           <hr className="flex-grow border-t border-gray-300" />
           <span className="text-sm text-gray-500 whitespace-nowrap">Or</span>
           <hr className="flex-grow border-t border-gray-300" />
@@ -204,21 +206,22 @@ const RegisterForm = ({ role, onBack }) => {
           />
         </div>
 
-        <p className="mt-6 text-center">
-          Bạn đã có tài khoản?{' '}
-          <Link to="/login" className="underline text-blue">
-            Đăng nhập
-          </Link>
-        </p>
-
-        {onBack && (
-          <button
-            onClick={onBack}
-            className="mb-2 -mt-4 text-sm underline text-blue hover:text-blue-800"
-          >
-            ← Quay lại chọn loại tài khoản
-          </button>
-        )}
+        <div className="flex items-center justify-between">
+          <p className="text-center">
+            Bạn đã có tài khoản?{' '}
+            <Link to="/login" className="underline text-blue">
+              Đăng nhập
+            </Link>
+          </p>
+          {onBack && (
+            <button
+              onClick={onBack}
+              className="flex underline text-blue hover:text-blue-800"
+            >
+              Quay lại chọn loại tài khoản
+            </button>
+          )}
+        </div>
       </div>
     </div>
   )

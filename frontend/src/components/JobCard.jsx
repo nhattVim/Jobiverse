@@ -6,7 +6,8 @@ import {
   CheckCircleIcon,
   ClockIcon,
   XCircleIcon,
-  EyeIcon
+  EyeIcon,
+  InboxArrowDownIcon
 } from '@heroicons/react/24/outline'
 import { HeartIcon as HeartSolidIcon } from '@heroicons/react/24/solid'
 import React, { useContext, useState } from 'react'
@@ -134,6 +135,14 @@ const JobCard = ({ job, currentIndex, isFavoritedInitially }) => {
                         className="text-red-500 border border-red-500 rounded-full bg-red-50"
                       />
                     )
+                    case 'invited':
+                      return (
+                        <StatusTag
+                          icon={<InboxArrowDownIcon className="w-5 h-5 mr-1" />}
+                          content="Được mời"
+                          className="text-orange-500 border border-orange-500 rounded-full bg-orange-50"
+                        />
+                      )
                   default:
                     return null
                 }
@@ -169,7 +178,7 @@ const JobCard = ({ job, currentIndex, isFavoritedInitially }) => {
 
 const StatusTag = ({ icon, content, className }) => {
   return (
-    <span className={`flex items-center px-3 py-2 font-medium ${className}`}>
+    <span className={`flex items-center h-[46px] px-3 font-medium ${className}`}>
       {icon}
       {content}
     </span>

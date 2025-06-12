@@ -53,7 +53,7 @@ const JobDetail = () => {
 
   const fetchFullProjectData = useCallback(async () => {
     try {
-      const res = await apiFetch(`/projects/${id}`, 'GET')
+      const res = await apiFetch(`/projects/detail/${id}`, 'GET')
       setProject(res)
 
       let pending = []
@@ -113,8 +113,10 @@ const JobDetail = () => {
         action
       })
       await fetchFullProjectData()
+      toast.success('Thao tác thành công. Ứng viên đã được xử lý.')
     } catch (error) {
       console.error('Failed to handle apply click:', error)
+      toast.error(`Thao tác thất bại: ${error?.message || 'Đã xảy ra lỗi.'}`)
     }
   }
 
@@ -139,6 +141,7 @@ const JobDetail = () => {
   console.log('Applicant Details:', applicantDetails)
   console.log('Accepted Details:', acceptedDetails)
   console.log('Project:', project)
+  console.log('invited:', invitedDetails)
 
   // Variants
   const tabContentVariants = {

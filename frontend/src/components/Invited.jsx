@@ -10,14 +10,14 @@ const Invited = ({ invitedDetails, setPreviewId, setCvType, handleApplyClick }) 
           <span className='text-gray-500 w-1/6'>Email</span>
           <span className='text-gray-500 w-1/6'>Tên trường</span>
           <span className='text-gray-500 w-[15%]'>Ngày ứng tuyển</span>
-          <span className='text-gray-500 w-[10%]'>CV ứng tuyển</span>
-          <span className='text-gray-500 w-1/6 pl-[19px]'>Hành động</span>
+          <span className='text-gray-500 w-[15%]'>CV ứng tuyển</span>
+          <span className='text-gray-500 w-[10%]'>Hành động</span>
         </div>
       )}
       {invitedDetails.length === 0 ? (
         <div className="flex flex-col items-center justify-center gap-2 h-[400px]">
           <img className='w-1/5' src={emptyFolder} alt="emptyFolder" />
-          <p className="text-gray-500 font-semibold">Chưa có ai ứng tuyển.</p>
+          <p className="text-gray-500 font-semibold">Bạn chưa mời ai vào dự án.</p>
         </div>
       ) : (
         invitedDetails.map((s, index) => (
@@ -43,7 +43,7 @@ const Invited = ({ invitedDetails, setPreviewId, setCvType, handleApplyClick }) 
             <span className="text-sm text-gray-500 w-1/6">{s.student.account?.email}</span>
             <span className="text-sm text-gray-500 w-1/6">{s.student.university}</span>
             <span className="text-sm text-gray-500 w-[15%]">{formatDate(s.appliedAt)}</span>
-            <span className="text-sm text-blue w-[10%] font-semibold underline cursor-pointer"
+            <span className="text-sm text-blue w-[15%] font-semibold underline cursor-pointer"
 
               onClick={() => {
                 setPreviewId(s.cv)
@@ -51,7 +51,7 @@ const Invited = ({ invitedDetails, setPreviewId, setCvType, handleApplyClick }) 
               }}
             >Xem CV</span>
 
-            <div className="w-1/6">
+            <div className="w-[10%]">
               <button
                 className="text-sm px-4 py-2 text-white bg-red rounded-full cursor-pointer hover:bg-red-700 outline-none"
                 onClick={() => handleApplyClick(s.student._id, 'reject')}

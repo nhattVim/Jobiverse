@@ -6,6 +6,7 @@ import {
   ArrowLongLeftIcon,
   ArrowLongRightIcon
 } from '@heroicons/react/24/solid'
+import { BookOpenIcon, BuildingLibraryIcon } from '@heroicons/react/24/outline'
 
 const RcmStudent = ({ id, title, isOwner, projectId, toast, reload }) => {
   const [currentIndex, setCurrentIndex] = useState(0)
@@ -50,6 +51,8 @@ const RcmStudent = ({ id, title, isOwner, projectId, toast, reload }) => {
     }
   }
 
+  console.log(students)
+
   return (
     <div className="flex flex-col items-start">
       {previewId && (
@@ -82,52 +85,81 @@ const RcmStudent = ({ id, title, isOwner, projectId, toast, reload }) => {
             Hiện tại không ứng viên phù hợp
           </div>
         ) : (
-          <div className="flex h-full gap-5 overflow-hidden whitespace-nowrap mr-[50px]">
+          <div className="flex h-full gap-[50px] overflow-hidden whitespace-nowrap mr-[50px]">
             {students.map((s, i) => (
               <div
                 key={s._id || i}
-                className="flex flex-col items-start gap-[30px] p-10 bg-white rounded-medium w-[33%] h-full"
+                className="flex flex-col items-center justify-center bg-white-bright rounded-medium w-[30%] h-full border border-gray-light"
               >
-                <div className="w-[70px] h-[70px] bg-white border border-white-low rounded-small flex justify-center items-center">
+                <div className="flex flex-col items-center gap-4 p-10">
                   <img
                     src={`data:image/png;base64,${s.account?.avatar?.data}`}
                     alt="imgcompany"
-                    className="object-cover w-10 h-10 rounded-full"
+                    className="object-cover w-25 h-25 rounded-full"
                   />
+                  <div className="text-center space-y-2">
+                    <h1 className="text-xl font-semibold leading-[28.6px] line-clamp-1 hover:text-blue transition-colors duration-300" >
+                      {s.name}
+                    </h1>
+                    <div className="flex items-center justify-center gap-2">
+                      {Array.isArray(s.interests) && s.interests.length > 1 ? (
+                        s.interests.map((e, i) => (
+                          <p key={i} className='text-yellow-600 bg-yellow-100 text-sm px-3 py-1 rounded-small'>{e}</p>
+                        ))
+                      ) : (
+                        <p className="text-yellow-600 bg-yellow-100 text-sm px-3 py-1 rounded-small">Chưa có kĩ năng</p>
+                      )}
+                    </div>
+                  </div>
                 </div>
 
-                <h1 className="text-[22px] font-semibold leading-[28.6px] line-clamp-1 hover:text-blue transition-colors duration-300" >
-                  {s.name}
-                </h1>
-
-                <button
-                  className='p-4 text-white transition-colors duration-300 bg-black rounded-full cursor-pointer hover:bg-gray-800'
-                  onClick={() => {
-                    if (s.defaultCV) {
-                      setPreviewId(s.defaultCV.cv)
-                      setCvType(s.defaultCV.type)
-                    } else {
-                      toast.warn('Sinh viên này chưa có CV.')
-                    }
-                  }}
-                >
-                  Xem CV
-                </button>
-
-                {isOwner && (
-                  <button
-                    className='p-4 text-white transition-colors duration-300 rounded-full cursor-pointer bg-blue hover:bg-blue-dark'
-                    onClick={() => {
-                      if (s.defaultCV) {
-                        handleInvite(s._id)
-                      } else {
-                        toast.warn('Sinh viên này chưa có CV.')
-                      }
-                    }}
-                  >
-                    Mời
-                  </button>
-                )}
+                <div className="w-full p-10 bg-gray-50 rounded-bl-medium rounded-br-medium space-y-5">
+                  <div className="flex items-center gap-5">
+                    <div className="flex flex-col items-start gap-2">
+                      <span className='text-gray-dark text-sm'>Trường</span>
+                      <div className="flex items-center gap-2">
+                        <BuildingLibraryIcon className='w-5 h-5 text-black'/>
+                        <p className='text-sm'>{s.university}</p>
+                      </div>
+                    </div>
+                    <div className="flex flex-col items-start gap-2">
+                      <span className='text-gray-dark text-sm'>Ngành</span>
+                      <div className="flex items-center gap-2">
+                        <BookOpenIcon className='w-5 h-5 text-black'/>
+                        <p className='text-sm text-wrap'>{s.major.name}</p>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="w-full flex items-center justify-between gap-3">
+                    <button
+                      className='w-full py-3 text-blue text-sm transition-colors duration-300 bg-blue-100 rounded-full cursor-pointer hover:bg-blue hover:text-white ease-in-out'
+                      onClick={() => {
+                        if (s.defaultCV) {
+                          setPreviewId(s.defaultCV.cv)
+                          setCvType(s.defaultCV.type)
+                        } else {
+                          toast.warn('Sinh viên này chưa có CV.')
+                        }
+                      }}
+                    >
+                      Xem CV
+                    </button>
+                    {isOwner && (
+                      <button
+                        className='w-full py-3 text-sm text-white transition-colors duration-300 rounded-full cursor-pointer bg-blue hover:bg-blue-mid'
+                        onClick={() => {
+                          if (s.defaultCV) {
+                            handleInvite(s._id)
+                          } else {
+                            toast.warn('Sinh viên này chưa có CV.')
+                          }
+                        }}
+                      >
+                        Mời tham gia
+                      </button>
+                    )}
+                  </div>
+                </div>
               </div>
             ))}
           </div>

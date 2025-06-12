@@ -38,8 +38,8 @@ const JobInvites = () => {
       <ToastContainer position="top-right" autoClose={3000} />
 
       <BannerText
-        title="Thông tin cá nhân"
-        caption="Hồ sơ ấn tượng bắt đầu từ những thông tin cá nhân đầy đủ và rõ ràng. Cập nhật chính xác để nhà tuyển dụng có thể dễ dàng kết nối và hiểu rõ tiềm năng của bạn."
+        title="Lời mời công việc"
+        caption="Cơ hội vàng đang chờ đón bạn. Hãy tự tin nắm bắt công việc mơ ước với lời mời hấp dẫn này. Bắt đầu hành trình sự nghiệp mới ngay hôm nay."
       />
 
       <div className="flex items-start gap-16 px-6 py-20 mx-auto max-w-7xl">
@@ -70,7 +70,7 @@ const JobInvites = () => {
                         alt="job"
                         className="w-20"
                       />
-                      <p className="text-center text-gray-500">Bạn chưa tạo dự án nào</p>
+                      <p className="text-center text-gray-500">Bạn chưa được mời vào dự án nào.</p>
                     </div>
                   ) : (
                     jobList.map(job => (

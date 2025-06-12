@@ -7,7 +7,7 @@ import {
   BookOpenIcon
 } from '@heroicons/react/24/solid'
 import {
-  CheckCircleIcon, ClockIcon as ClockIconOutline, EyeIcon, HeartIcon, XCircleIcon
+  CheckCircleIcon, ClockIcon as ClockIconOutline, EyeIcon, HeartIcon, InboxArrowDownIcon, XCircleIcon
 } from '@heroicons/react/24/outline'
 import { useContext, useState } from 'react'
 import { formatDate } from '../utils/dateUtils'
@@ -83,6 +83,14 @@ const JobInfo = ({ project, isOwner, applicantStatus, setIsOpen, isFavorited, ha
                           hoverContent="Ứng tuyển lại"
                           className="text-red-500 border border-red-500 rounded-full cursor-pointer bg-red-50 hover:bg-red-100"
                           onClick={() => setIsOpen(true)}
+                        />
+                      )
+                    case 'invited':
+                      return (
+                        <StatusTag
+                          icon={<InboxArrowDownIcon className="w-5 h-5 mr-1" />}
+                          content="Được mời"
+                          className="text-orange-500 border border-orange-500 rounded-full bg-orange-50"
                         />
                       )
                     default:
@@ -170,20 +178,24 @@ const JobInfo = ({ project, isOwner, applicantStatus, setIsOpen, isFavorited, ha
         </div>
       </div>
 
-      <div className='w-full p-10 mt-10 overflow-hidden bg-white-bright rounded-medium'>
-        <RcmJob id={project._id} title={<Section title="Tuyển dụng tương tự" />} />
-      </div>
+      {user?.role === 'student' && (
+        <div className='w-full p-10 mt-10 overflow-hidden bg-white-bright rounded-medium'>
+          <RcmJob id={project._id} title={<Section title="Tuyển dụng tương tự" />} />
+        </div>
+      )}
 
-      <div className='w-full p-10 mt-10 overflow-hidden bg-white-bright rounded-medium'>
-        <RcmStudent
-          id={project._id}
-          title={<Section title="Ứng viên phù hợp" />}
-          isOwner={isOwner}
-          projectId={id}
-          toast={toast}
-          reload={fetchFullProjectData}
-        />
-      </div>
+      {isOwner && (
+        <div className='w-full p-10 mt-10 overflow-hidden bg-white-bright rounded-medium'>
+          <RcmStudent
+            id={project._id}
+            title={<Section title="Ứng viên phù hợp" />}
+            isOwner={isOwner}
+            projectId={id}
+            toast={toast}
+            reload={fetchFullProjectData}
+          />
+        </div>
+      )}
     </div>
   )
 }

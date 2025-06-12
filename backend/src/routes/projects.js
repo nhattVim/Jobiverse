@@ -4,6 +4,9 @@ const projectController = require('../controllers/ProjectController')
 const verifyToken = require('../middlewares/verifyToken')
 
 router.get('/', projectController.getAllProjects)
+router.get('/detail/:id', projectController.getProjectById)
+router.get('/rcm/:id', projectController.RcmProjectByProject)
+router.get('/rcm/student/:id', projectController.RcmStudentByProject)
 router.use(verifyToken([]))
 
 router.get('/my', projectController.getProjects)
@@ -22,10 +25,5 @@ router.post('/:projectId/apply', verifyToken(['student']), projectController.app
 router.post('/:projectId/respond/:studentId', verifyToken([]), projectController.respondToApplication)
 
 router.delete('/applied/:id', verifyToken(['student']), projectController.deleteAppliedProject)
-
-router.get('/rcm/:id', projectController.RcmProjectByProject)
-router.get('/rcm/student/:id', projectController.RcmStudentByProject)
-
-router.get('/:id', projectController.getProjectById)
 
 module.exports = router

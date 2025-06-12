@@ -6,6 +6,7 @@ import UserContext from '../contexts/UserContext'
 
 const StudentProfile = () => {
   const navigate = useNavigate()
+  const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
   const [form, setForm] = useState({
     name: '',
@@ -53,16 +54,20 @@ const StudentProfile = () => {
       }
     }
 
+    setLoading(true)
+
     try {
       await apiFetch('/students', 'POST', form)
       await apiFetch('/account/profile', 'PUT')
       const user = await apiFetch('/account/detail', 'GET')
-      setUser(user)
       updateTimestamp()
       navigate('/')
+      setTimeout(() => setUser(user), 1000)
     } catch (err) {
       console.error(err)
       setError('Tạo profile thất bại, vui lòng thử lại.')
+    } finally {
+      setLoading(false)
     }
   }
 
@@ -184,9 +189,11 @@ const StudentProfile = () => {
               {/* Nút submit */}
               <button
                 type="submit"
-                className="px-6 py-2 text-white transition rounded-full cursor-pointer bg-blue hover:bg-blue-700"
+                className="px-6 py-2 text-white transition rounded-full cursor-pointer bg-blue hover:bg-blue-700 disabled:bg-blue-700"
+                disabled={loading}
               >
-                Hoàn tất
+                <span className={`${loading ? 'invisible' : 'visible'}`}>Hoàn tất</span>
+                {loading && <SpinnerLoading width={6} height={6} className={'absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2'} />}
               </button>
             </div>
           </div>
