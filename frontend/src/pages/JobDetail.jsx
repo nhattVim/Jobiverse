@@ -10,7 +10,7 @@ import { motion, AnimatePresence } from 'framer-motion'
 
 import Banner from '../components/Banner'
 import ApplyPopup from '../components/ApplyPopup'
-import UserContext from '../contexts/UserContext'
+import { UserContext } from '../contexts/UserContext'
 import apiFetch from '../services/api'
 import CVPreviewModal from '../components/CVPreviewModal'
 import PdfModal from '../components/PdfModal'

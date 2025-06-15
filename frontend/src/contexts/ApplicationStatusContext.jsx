@@ -1,6 +1,6 @@
 import React, { createContext, useState, useEffect, useContext, useCallback } from 'react'
 import apiFetch from '../services/api'
-import UserContext from './UserContext'
+import { UserContext } from './UserContext'
 
 const ApplicationStatusContext = createContext({})
 

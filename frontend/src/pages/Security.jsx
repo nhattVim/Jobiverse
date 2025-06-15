@@ -3,7 +3,7 @@ import Sidebar from '../components/Sidebar'
 import BannerText from '../components/BannerText'
 import { ToastContainer, toast } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
-import UserContext from '../contexts/UserContext'
+import { UserContext } from '../contexts/UserContext'
 import apiFetch from '../services/api'
 import Note from '../components/Note'
 

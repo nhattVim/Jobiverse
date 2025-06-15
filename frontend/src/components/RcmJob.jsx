@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext } from 'react'
-import UserContext from '../contexts/UserContext'
+import { UserContext } from '../contexts/UserContext'
 import { ApplicationStatusContext } from '../contexts/ApplicationStatusContext'
 import apiFetch from '../services/api'
 import JobCard from '../components/JobCard'

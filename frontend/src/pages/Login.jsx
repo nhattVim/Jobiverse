@@ -5,7 +5,7 @@ import apiFetch from '../services/api'
 import { GoogleLogin } from '@react-oauth/google'
 import { UserIcon, LockClosedIcon } from '@heroicons/react/24/solid'
 import { ROUTES } from '../routes/routePaths'
-import UserContext from '../contexts/UserContext'
+import { UserContext } from '../contexts/UserContext'
 
 const Login = () => {
   const navigate = useNavigate()

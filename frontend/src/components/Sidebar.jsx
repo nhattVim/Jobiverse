@@ -1,6 +1,6 @@
 import React, { useRef, useContext } from 'react'
 import { Routes, useLocation, useNavigate } from 'react-router-dom'
-import UserContext from '../contexts/UserContext'
+import { UserContext } from '../contexts/UserContext'
 import { ROUTES } from '../routes/routePaths'
 import apiFetch from '../services/api'
 import {

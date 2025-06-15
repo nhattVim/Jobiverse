@@ -15,6 +15,8 @@ import { TrashIcon } from '@heroicons/react/24/outline'
 import 'react-toastify/dist/ReactToastify.css'
 import { ApplicationStatusContext } from '../contexts/ApplicationStatusContext'
 import SpinnerLoading from '../shared/SpinnerLoading'
+import PdfModal from '../components/PdfModal'
+import CVPreviewModal from '../components/CVPreviewModal'
 
 const ApplyPopup = ({ closePopup, applyTitle, projectId, toast }) => {
   const navigate = useNavigate()
@@ -26,8 +28,12 @@ const ApplyPopup = ({ closePopup, applyTitle, projectId, toast }) => {
   const [active, setActive] = useState('a')
   const [selectedCV, setSelectedCV] = useState(null)
   const [uploadedCVId, setUploadedCVId] = useState(null)
-  const [loading, setLoading] = useState(false)
+  const [cvDefault, setCvDefault] = useState(null)
+  const [loadingSubmit, setLoadingSubmit] = useState(false)
+  const [loadingCVList, setLoadingCVList] = useState(true)
   const [coverLetter, setCoverLetter] = useState('')
+  const [previewId, setPreviewId] = useState(null)
+  const [cvType, setCvType] = useState('')
   const { updateStatus, fetchAppliedStatus } = useContext(ApplicationStatusContext)
 
   const handleToggle = (key) => {
@@ -97,17 +103,38 @@ const ApplyPopup = ({ closePopup, applyTitle, projectId, toast }) => {
     }
   }
 
+  const selectDefaultCV = (cvDefault, cvOnline, cvUpload) => {
+    if (cvDefault?.type === 'CV') {
+      const match = cvOnline.find(cv => cv._id === cvDefault.cv._id)
+      if (match) {
+        setSelectedCV(match)
+        setActive('a')
+      }
+    } else if (cvDefault?.type === 'CVUpload') {
+      const match = cvUpload.find(cv => cv._id === cvDefault.cv._id)
+      if (match) {
+        setSelectedCV(match)
+        setActive('a')
+      }
+    }
+  }
+
   useEffect(() => {
     const loadCV = async () => {
       try {
-        const [cvOnline, cvUpload] = await Promise.all([
+        const [cvOnline, cvUpload, cvDefault] = await Promise.all([
           apiFetch('/cv/my', 'GET'),
-          apiFetch('/cv/my/uploads', 'GET')
+          apiFetch('/cv/my/uploads', 'GET'),
+          apiFetch('/cv/default', 'GET')
         ])
         setCvList(cvOnline)
         setCvUploads(cvUpload)
+        setCvDefault(cvDefault)
+        selectDefaultCV(cvDefault, cvOnline, cvUpload)
       } catch (err) {
         console.error('Lỗi khi lấy dữ liệu CV:', err)
+      } finally {
+        setLoadingCVList(false)
       }
     }
 
@@ -120,7 +147,7 @@ const ApplyPopup = ({ closePopup, applyTitle, projectId, toast }) => {
       return
     }
 
-    setLoading(true)
+    setLoadingSubmit(true)
 
     try {
       if (selectedCV) {
@@ -141,12 +168,20 @@ const ApplyPopup = ({ closePopup, applyTitle, projectId, toast }) => {
       setError('Nộp hồ sơ thất bại. ' + err.message)
       toast.error('Nộp hồ sơ thất bại. ' + err.message)
     } finally {
-      setLoading(false)
+      setLoadingSubmit(false)
     }
   }
 
   return (
     <div className="fixed z-[999] inset-0 flex justify-center items-center">
+      {previewId && (
+        cvType === 'CVUpload' ? (
+          <PdfModal cvId={previewId} onClose={() => setPreviewId(null)} />
+        ) : (
+          <CVPreviewModal cvId={previewId} onClose={() => setPreviewId(null)} />
+        )
+      )}
+
       <div className="absolute inset-0 bg-black opacity-50"></div>
       <div className="relative z-10 bg-white-bright min-h-[90%] mx-auto shadow-lg w-full max-w-2xl rounded-small animate-slideUp">
         <div className="fixed z-50 flex items-center justify-between w-full max-w-2xl px-8 py-5 shadow">
@@ -195,72 +230,98 @@ const ApplyPopup = ({ closePopup, applyTitle, projectId, toast }) => {
                   transition={{ duration: 0.3 }}
                   className="overflow-hidden"
                 >
-                  {cvList.length === 0 && cvUploads.length === 0 ? (
-                    <div className="flex flex-col items-center justify-center gap-2 pt-5">
-                      Bạn chưa có CV nào trong thư viện
-                      <Link
-                        to={ROUTES.CREATE_CV}
-                        className="px-4 py-2 transition-colors rounded-full cursor-pointer text-white-bright bg-blue hover:bg-blue-mid"
-                      >
-                        Tạo CV mới
-                      </Link>
+                  {loadingCVList ? (
+                    <div className="flex items-center justify-center py-6">
+                      <SpinnerLoading width={6} height={6} color='border-gray-400' />
                     </div>
                   ) : (
                     <>
-                      {cvList.length === 0 ? (
-                        ''
-                      ) : (
-                        <div className="space-y-2">
-                          <p className="mt-4 font-semibold">CV Online</p>{' '}
-                          {cvList.map((data) => (
-                            <div
-                              key={data._id}
-                              className={`group/a flex justify-between items-center transition-all duration-300 px-4 py-3 border rounded-small cursor-pointer ${selectedCV && selectedCV._id === data._id
-                                ? 'border-blue bg-blue-50'
-                                : 'border-gray-light hover:border-blue'}`}
-                              onClick={() => handleSelectCV(data)}
-                            >
-                              {data.title || 'Chưa đặt tên'}
-                              <Link
-                                to={`/cv/${data._id}`}
-                                className={`${selectedCV && selectedCV._id === data._id
-                                  ? 'visible'
-                                  : ''} invisible text-blue group-hover/a:visible`}
-                              >
-                                Xem
-                              </Link>
-                            </div>
-                          ))}
+                      {cvList.length === 0 && cvUploads.length === 0 ? (
+                        <div className="flex flex-col items-center justify-center gap-2 pt-5">
+                          Bạn chưa có CV nào trong thư viện
+                          <Link
+                            to={ROUTES.CREATE_CV}
+                            className="px-4 py-2 transition-colors rounded-full cursor-pointer text-white-bright bg-blue hover:bg-blue-mid"
+                          >
+                            Tạo CV mới
+                          </Link>
                         </div>
-                      )}
+                      ) : (
+                        <>
+                          {cvList.length === 0 ? (
+                            ''
+                          ) : (
+                            <div className="space-y-2">
+                              <p className="mt-4 font-semibold">CV Online</p>{' '}
+                              {cvList.map((data) => (
+                                <div
+                                  key={data._id}
+                                  className={`group/a flex justify-between items-center transition-all duration-300 px-4 py-3 border rounded-small cursor-pointer ${selectedCV && selectedCV._id === data._id
+                                    ? 'border-blue bg-blue-50'
+                                    : 'border-gray-light hover:border-blue'}`}
+                                  onClick={() => handleSelectCV(data)}
+                                >
+                                  {data.title || 'Chưa đặt tên'}
 
-                      {cvUploads.length === 0 ? (
-                        ''
-                      ) : (
-                        <div className="space-y-2">
-                          <p className="mt-4 font-semibold">CV đã tải lên</p>
-                          {cvUploads.map((data) => (
-                            <div
-                              key={data._id}
-                              className={`group/a flex justify-between items-center transition-all duration-300 px-4 py-3 border rounded-small cursor-pointer ${selectedCV && selectedCV._id === data._id
-                                ? 'border-blue bg-blue-50'
-                                : 'border-gray-light hover:border-blue'}`}
-                              onClick={() => handleSelectCV(data)}
-                            >
-                              {data.title || 'Chưa đặt tên'}
-                              <a
-                                href={`${import.meta.env.VITE_API_URL}/cv/uploads/${data._id}`}
-                                target="_blank"
-                                rel="noreferrer"
-                                className={`${selectedCV && selectedCV._id === data._id
-                                  ? 'visible'
-                                  : ''} invisible text-blue group-hover/a:visible`}
-                              >
-                                Xem
-                              </a>
+                                  {cvDefault?.type === 'CV' && cvDefault?.cv._id === data._id && (
+                                    <span className="px-2 py-0.5 text-xs font-semibold text-white bg-green-500 rounded-full">
+                                      Mặc định
+                                    </span>
+                                  )}
+
+                                  <button
+                                    className={`${selectedCV && selectedCV._id === data._id
+                                      ? 'visible'
+                                      : ''} invisible text-blue group-hover/a:visible`}
+                                    onClick={() => {
+                                      setPreviewId(data._id)
+                                      setCvType('CV')
+                                    }}
+                                  >
+                                    Xem
+                                  </button>
+                                </div>
+                              ))}
                             </div>
-                          ))}
-                        </div>
+                          )}
+
+                          {cvUploads.length === 0 ? (
+                            ''
+                          ) : (
+                            <div className="space-y-2">
+                              <p className="mt-4 font-semibold">CV đã tải lên</p>
+                              {cvUploads.map((data) => (
+                                <div
+                                  key={data._id}
+                                  className={`group/a flex justify-between items-center transition-all duration-300 px-4 py-3 border rounded-small cursor-pointer ${selectedCV && selectedCV._id === data._id
+                                    ? 'border-blue bg-blue-50'
+                                    : 'border-gray-light hover:border-blue'}`}
+                                  onClick={() => handleSelectCV(data)}
+                                >
+                                  {data.title || 'Chưa đặt tên'}
+
+                                  {cvDefault?.type === 'CVUpload' && cvDefault?.cv._id === data._id && (
+                                    <span className="px-2 py-0.5 text-xs text-white bg-green-500 rounded-full">
+                                      Mặc định
+                                    </span>
+                                  )}
+
+                                  <button
+                                    className={`${selectedCV && selectedCV._id === data._id
+                                      ? 'visible'
+                                      : ''} invisible text-blue group-hover/a:visible`}
+                                    onClick={() => {
+                                      setPreviewId(data._id)
+                                      setCvType('CVUpload')
+                                    }}
+                                  >
+                                    Xem
+                                  </button>
+                                </div>
+                              ))}
+                            </div>
+                          )}
+                        </>
                       )}
                     </>
                   )}
@@ -366,9 +427,9 @@ const ApplyPopup = ({ closePopup, applyTitle, projectId, toast }) => {
           <button
             className="flex items-center justify-center w-full p-3 text-white rounded-full cursor-pointer bg-blue"
             onClick={handleSubmit}
-            disabled={loading}
+            disabled={loadingSubmit}
           >
-            {loading ? <SpinnerLoading width={6} height={6} /> : 'Nộp hồ sơ ứng tuyển'}
+            {loadingSubmit ? <SpinnerLoading width={6} height={6} /> : 'Nộp hồ sơ ứng tuyển'}
           </button>
         </div>
       </div>

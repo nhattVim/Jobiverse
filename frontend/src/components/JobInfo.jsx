@@ -15,7 +15,7 @@ import ButtonArrowOne from '../shared/ButtonArrowOne'
 import { Link } from 'react-router-dom'
 import RcmJob from '../components/RcmJob'
 import RcmStudent from '../components/RcmStudent'
-import UserContext from '../contexts/UserContext'
+import { UserContext } from '../contexts/UserContext'
 
 const JobInfo = ({ project, isOwner, applicantStatus, setIsOpen, isFavorited, handleFavorite, id, toast, fetchFullProjectData }) => {
   const { user } = useContext(UserContext)
@@ -54,7 +54,7 @@ const JobInfo = ({ project, isOwner, applicantStatus, setIsOpen, isFavorited, ha
                   <StatusTag
                     icon={<EyeIcon className="w-5 h-5 mr-1" />}
                     content="Chỉ được xem"
-                    className="text-blue border border-blue rounded-full bg-blue-50"
+                    className="border rounded-full text-blue border-blue bg-blue-50"
                   />
                 ) : applicantStatus ? (
                   (() => {

@@ -24,6 +24,8 @@ const CVCardList = ({
   type,
   onPreview
 }) => {
+  const navigate = useNavigate()
+
   return (
     <div className="flex items-center justify-between p-6 shadow bg-white-low rounded-medium">
       <div className='w-full space-y-1.5'>
@@ -85,7 +87,7 @@ const CVCardList = ({
 
                 {type === 'CV' && (
                   <button
-                    onClick={() => onCreate(cv._id)}
+                    onClick={() => navigate(`/cv/${cv._id}`)}
                     className="px-4 py-1.5 text-sm text-white bg-green-600 rounded-full hover:bg-green-700"
                   >
                     <PencilSquareIcon className='w-5 h-5' />
@@ -217,6 +219,7 @@ const CVManagement = () => {
           <CVPreviewModal cvId={previewId} onClose={() => setPreviewId(null)} />
         )
       )}
+
       <ToastContainer position="top-right" autoClose={3000} />
       <BannerText title="CV của tôi" caption="Tải CV của bạn bên dưới để có thể sử dụng xuyên suốt quá trình tìm việc." />
       <div className="flex items-start gap-16 px-6 py-20 mx-auto max-w-7xl">

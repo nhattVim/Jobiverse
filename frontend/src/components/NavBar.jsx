@@ -9,7 +9,7 @@ import {
 import ButtonArrowOne from '../shared/ButtonArrowOne'
 import { ROUTES } from '../routes/routePaths'
 import apiFetch from '../services/api'
-import UserContext from '../contexts/UserContext'
+import { UserContext } from '../contexts/UserContext'
 
 const MenuItem = ({ to, children, hidden }) => (
   <li className="px-4 py-2.5 transition-colors duration-300 hover:text-blue items-center flex justify-start" hidden={hidden}>

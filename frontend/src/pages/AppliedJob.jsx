@@ -10,7 +10,7 @@ import {
   MapPinIcon,
   XCircleIcon
 } from '@heroicons/react/24/outline'
-import UserContext from '../contexts/UserContext'
+import { UserContext } from '../contexts/UserContext'
 import { useContext } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { ApplicationStatusContext } from '../contexts/ApplicationStatusContext'

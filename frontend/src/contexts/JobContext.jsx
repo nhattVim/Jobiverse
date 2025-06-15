@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState } from 'react'
+import React, { createContext, useState } from 'react'
 
 const JobContext = createContext()
 
@@ -34,4 +34,4 @@ export const JobProvider = ({ children }) => {
   )
 }
 
-export const useJobContext = () => useContext(JobContext)
+export { JobContext }
