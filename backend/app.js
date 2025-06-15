@@ -19,6 +19,11 @@ app.use(express.urlencoded({ extended: true, limit: '10mb' }))
 app.use(cookieParser())
 app.use(express.static(path.join(__dirname, 'public')))
 
+// Check if server is ready
+app.get('/health-check', (req, res) => {
+  res.status(200).send('OK')
+})
+
 // Route handler
 route(app)
 
