@@ -9,6 +9,7 @@ import {
 import { motion, AnimatePresence } from 'framer-motion'
 
 import Banner from '../components/Banner'
+import { ROUTES } from '../routes/routePaths'
 import ApplyPopup from '../components/ApplyPopup'
 import { UserContext } from '../contexts/UserContext'
 import apiFetch from '../services/api'
@@ -34,6 +35,7 @@ const JobDetail = () => {
   const [isOpen, setIsOpen] = useState(
     searchParams.get('openApply') === 'true'
   )
+  const [searchQuery, setSearchQuery] = useState(!searchParams.get('q') ? '' : searchParams.get('q'))
   const [isFavorited, setIsFavorited] = useState(isFavoritedInitial)
   const [project, setProject] = useState(null)
   const [applicantDetails, setApplicantDetails] = useState([])
@@ -165,7 +167,12 @@ const JobDetail = () => {
         ))}
 
       <ToastContainer position="top-right" autoClose={2000} />
-      <Banner />
+
+      <Banner
+        searchQuery={searchQuery}
+        setSearchQuery={setSearchQuery}
+        onClick={() => navigate(`${ROUTES.JOB_LIST}?q=${searchQuery}`)}
+      />
 
       <div className="w-full py-20">
         <main className="container-responsive">

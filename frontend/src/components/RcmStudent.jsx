@@ -115,26 +115,26 @@ const RcmStudent = ({ id, title, isOwner, projectId, toast, reload }) => {
 
                 <div className="w-full p-10 space-y-5 bg-gray-50 rounded-bl-medium rounded-br-medium">
                   <div className="flex items-center gap-5">
-                    <div className="flex flex-col items-start gap-2 min-w-0">
+                    <div className="flex flex-col items-start min-w-0 gap-2">
                       <span className='text-sm text-gray-dark'>Trường</span>
-                      <div className="flex items-center gap-2 min-w-0">
-                        <BuildingLibraryIcon className='w-5 h-5 text-black flex-shrink-0' />
+                      <div className="flex items-center min-w-0 gap-2">
+                        <BuildingLibraryIcon className='flex-shrink-0 w-5 h-5 text-black' />
                         <p className='text-sm truncate max-w-[120px]'>{s.university}</p>
                       </div>
                     </div>
-                    <div className="flex flex-col items-start gap-2 min-w-0">
+                    <div className="flex flex-col items-start min-w-0 gap-2">
                       <span className='text-sm text-gray-dark'>Ngành</span>
-                      <div className="flex items-center gap-2 min-w-0">
-                        <BookOpenIcon className='w-5 h-5 text-black flex-shrink-0' />
+                      <div className="flex items-center min-w-0 gap-2">
+                        <BookOpenIcon className='flex-shrink-0 w-5 h-5 text-black' />
                         <p className='text-sm truncate max-w-[120px]'>{s.major.name}</p>
                       </div>
                     </div>
                   </div>
                   <div className="flex items-center justify-between w-full gap-3">
                     <button
-                      className='w-full py-3 text-sm transition-colors duration-300 ease-in-out bg-blue-100 rounded-full cursor-pointer text-blue hover:bg-blue hover:text-white outline-none'
+                      className='w-full py-3 text-sm transition-colors duration-300 ease-in-out bg-blue-100 rounded-full outline-none cursor-pointer text-blue hover:bg-blue hover:text-white'
                       onClick={() => {
-                        if (s.defaultCV.cv) {
+                        if (s.defaultCV?.cv) {
                           setPreviewId(s.defaultCV.cv)
                           setCvType(s.defaultCV.type)
                         } else {
@@ -146,9 +146,9 @@ const RcmStudent = ({ id, title, isOwner, projectId, toast, reload }) => {
                     </button>
                     {isOwner && (
                       <button
-                        className='w-full py-3 text-sm text-white transition-colors duration-300 rounded-full cursor-pointer bg-blue hover:bg-blue-mid outline-none'
+                        className='w-full py-3 text-sm text-white transition-colors duration-300 rounded-full outline-none cursor-pointer bg-blue hover:bg-blue-mid'
                         onClick={() => {
-                          if (s.defaultCV.cv) {
+                          if (s.defaultCV?.cv) {
                             handleInvite(s._id)
                           } else {
                             toast.warn('Sinh viên này chưa có CV.')

@@ -1,7 +1,7 @@
 import { MagnifyingGlassIcon, MapPinIcon } from '@heroicons/react/24/outline'
 import React from 'react'
 
-const Banner = ({ searchQuery, setSearchQuery }) => {
+const Banner = ({ searchQuery, setSearchQuery, onClick }) => {
   return (
     <div className="container-responsive">
       <div className="relative h-[240px] w-full">
@@ -31,10 +31,19 @@ const Banner = ({ searchQuery, setSearchQuery }) => {
                   className="flex-1 border-none outline-none"
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter') {
+                      e.preventDefault()
+                      onClick()
+                    }
+                  }}
                 />
               </div>
               <div className="flex justify-end pl-5 border-l border-l-gray-dark">
-                <button className="w-full bg-blue text-white rounded-full py-4 px-[30px] font-semibold hover:bg-blue-mid transition-all duration-300 ease-in-out cursor-pointer">
+                <button
+                  className="w-full bg-blue text-white rounded-full py-4 px-[30px] font-semibold hover:bg-blue-mid transition-all duration-300 ease-in-out cursor-pointer"
+                  onClick={onClick}
+                >
                   Tìm kiếm
                 </button>
               </div>
