@@ -2,8 +2,8 @@ import React, { useContext, useState } from 'react'
 import Profile from '../components/Profile'
 import { useNavigate } from 'react-router-dom'
 import apiFetch from '../services/api'
-import UserContext from '../contexts/UserContext'
 import SpinnerLoading from '../shared/loading/SpinnerLoading'
+import { UserContext } from '../contexts/UserContext'
 
 const EmployerProfile = () => {
   const navigate = useNavigate()
@@ -191,12 +191,12 @@ const EmployerProfile = () => {
 
             {/* Nút submit */}
             <div className="flex items-center gap-4">
-              <button onClick={() => navigate('/')} className="px-6 py-2 text-white transition rounded-full bg-red hover:bg-red-700 cursor-pointer">
+              <button onClick={() => navigate('/')} className="px-6 py-2 text-white transition rounded-full cursor-pointer bg-red hover:bg-red-700">
                 Huỷ
               </button>
               <button
                 type="submit"
-                className="relative px-6 py-2 text-white transition rounded-full bg-blue hover:bg-blue-700 cursor-pointer disabled:bg-blue-700"
+                className="relative px-6 py-2 text-white transition rounded-full cursor-pointer bg-blue hover:bg-blue-700 disabled:bg-blue-700"
                 disabled={loading}
               >
                 <span className={`${loading ? 'invisible' : 'visible'}`}>Hoàn tất</span>

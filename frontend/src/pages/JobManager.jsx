@@ -9,6 +9,7 @@ import {
   PencilSquareIcon,
   TrashIcon
 } from '@heroicons/react/24/outline'
+import { formatDate } from '../utils/dateUtils'
 
 const JobManager = () => {
   const [jobList, setJobList] = useState([])
@@ -27,7 +28,7 @@ const JobManager = () => {
   }, [loadData])
 
   const handleDelete = async (id) => {
-    if (!window.confirm('Bạn có chắc chắn muốn xoá CV này?')) return
+    if (!window.confirm('Bạn có chắc chắn muốn xoá dự án này?')) return
 
     try {
       await apiFetch(`/projects/my/${id}`, 'DELETE')
@@ -39,6 +40,7 @@ const JobManager = () => {
     }
   }
 
+  console.log(jobList)
   return (
     <div className="min-h-screen">
       <ToastContainer position="top-right" autoClose={3000} />
@@ -102,13 +104,13 @@ const JobManager = () => {
                             {job.title || 'Không có tiêu đề'}
                           </Link>
                           <p className="text-sm italic text-gray-500">
-                            {job.description || 'Chưa có mô tả'}
+                            {job.createdAt === job.updatedAt ? `Đã tạo: ${formatDate(job.createdAt)}` : `Đã cập nhật: ${formatDate(job.updatedAt)}`}
                           </p>
                         </div>
 
                         <div className="flex items-center space-x-2">
                           <button
-                            onClick={() => navigate(`/job-detail/${job._id}`)}
+                            onClick={() => navigate(`/job/${job._id}`)}
                             className="px-4 py-1.5 text-sm text-white bg-green-600 rounded-full hover:bg-green-700 transition cursor-pointer"
                           >
                             <PencilSquareIcon className='w-5 h-5' />

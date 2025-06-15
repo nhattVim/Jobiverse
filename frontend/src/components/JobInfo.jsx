@@ -10,12 +10,11 @@ import {
   CheckCircleIcon, ClockIcon as ClockIconOutline, EyeIcon, HeartIcon, InboxArrowDownIcon, XCircleIcon
 } from '@heroicons/react/24/outline'
 import { useContext, useState } from 'react'
-import { formatDate } from '../utils/dateUtils'
 import ButtonArrowOne from '../shared/ButtonArrowOne'
 import { Link } from 'react-router-dom'
 import RcmJob from '../components/RcmJob'
 import RcmStudent from '../components/RcmStudent'
-import UserContext from '../contexts/UserContext'
+import { UserContext } from '../contexts/UserContext'
 
 const JobInfo = ({ project, isOwner, applicantStatus, setIsOpen, isFavorited, handleFavorite, id, toast, fetchFullProjectData }) => {
   const { user } = useContext(UserContext)
@@ -43,7 +42,7 @@ const JobInfo = ({ project, isOwner, applicantStatus, setIsOpen, isFavorited, ha
             <div className="flex flex-wrap items-center justify-between gap-4">
               <div className="flex items-center px-3 py-1 text-sm font-medium bg-blue-100 rounded-full text-blue-mid">
                 <CalendarDaysIcon className="w-4 h-4 mr-1" />
-                {project.deadline ? `Hạn nộp hồ sơ : ${formatDate(project.deadline)}` : 'Chưa có thông tin'}
+                {project.deadline ? `Hạn nộp hồ sơ : ${new Date(project.deadline).toLocaleDateString('vi-VN')}` : 'Chưa có thông tin'}
               </div>
               <div className="flex gap-3 ml-auto">
                 {isOwner ? (
@@ -54,7 +53,7 @@ const JobInfo = ({ project, isOwner, applicantStatus, setIsOpen, isFavorited, ha
                   <StatusTag
                     icon={<EyeIcon className="w-5 h-5 mr-1" />}
                     content="Chỉ được xem"
-                    className="text-blue border border-blue rounded-full bg-blue-50"
+                    className="border rounded-full text-blue border-blue bg-blue-50"
                   />
                 ) : applicantStatus ? (
                   (() => {

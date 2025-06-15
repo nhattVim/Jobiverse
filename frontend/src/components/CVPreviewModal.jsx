@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import CVPreview from './CVPreview'
 import apiFetch from '../services/api'
 import { XMarkIcon } from '@heroicons/react/24/solid'
+import SpinnerLoading from '../shared/loading/SpinnerLoading'
 
 export default function CVPreviewModal({ cvId, cvData: propData, onClose }) {
   const [cvData, setCvData] = useState(propData || null)
@@ -60,14 +61,16 @@ export default function CVPreviewModal({ cvId, cvData: propData, onClose }) {
           onClick={(e) => e.stopPropagation()}
         >
           {loading ? (
-            <div className="p-6">Đang tải CV...</div>
+            <div className="flex items-center justify-center">
+              <SpinnerLoading color='border-blue'/>
+            </div>
           ) : (
             <CVPreview cvData={cvData} />
           )}
         </div>
 
 
-        <div className="absolute bottom-0 left-0 right-0 z-20 flex flex-col items-center justify-between w-full max-w-3xl h-4 border-t bg-white-bright rounded-br-small rounded-bl-small border-white-low">
+        <div className="absolute bottom-0 left-0 right-0 z-20 flex flex-col items-center justify-between w-full max-w-3xl h-4 border-t bg-white rounded-br-small rounded-bl-small border-white-low">
         </div>
       </div>
     </div>

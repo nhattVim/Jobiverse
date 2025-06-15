@@ -14,7 +14,7 @@ import React, { useContext, useState } from 'react'
 import ButtonArrowOne from '../shared/ButtonArrowOne'
 import apiFetch from '../services/api'
 import { ROUTES } from '../routes/routePaths'
-import UserContext from '../contexts/UserContext'
+import { UserContext } from '../contexts/UserContext'
 import { Link } from 'react-router-dom'
 import { ApplicationStatusContext } from '../contexts/ApplicationStatusContext'
 
@@ -100,7 +100,7 @@ const JobCard = ({ job, currentIndex, isFavoritedInitially }) => {
               <StatusTag
                 icon={<EyeIcon className="w-5 h-5 mr-1" />}
                 content="Chỉ được xem"
-                className="text-blue border border-blue rounded-full bg-blue-50"
+                className="border rounded-full text-blue border-blue bg-blue-50"
               />
             ) : applicantStatus ? (
               (() => {

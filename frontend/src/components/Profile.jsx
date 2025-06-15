@@ -2,7 +2,7 @@ import { ArrowLeftIcon } from '@heroicons/react/24/outline'
 import React, { useContext, useEffect } from 'react'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { ROUTES } from '../routes/routePaths'
-import UserContext from '../contexts/UserContext'
+import { UserContext } from '../contexts/UserContext'
 
 const Profile = ({ children, title, caption }) => {
   const navigate = useNavigate()

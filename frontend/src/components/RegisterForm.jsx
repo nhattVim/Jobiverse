@@ -6,7 +6,7 @@ import { GoogleLogin } from '@react-oauth/google'
 import FacebookLogin from 'react-facebook-login/dist/facebook-login-render-props'
 import { ROUTES } from '../routes/routePaths'
 import { sendEmail } from '../utils/sendEmail'
-import UserContext from '../contexts/UserContext'
+import { UserContext } from '../contexts/UserContext'
 
 const RegisterForm = ({ role, onBack }) => {
   const navigate = useNavigate()

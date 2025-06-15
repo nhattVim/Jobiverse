@@ -12,7 +12,7 @@ import {
 import ButtonArrowOne from '../shared/ButtonArrowOne'
 import { Link } from 'react-router-dom'
 import { ApplicationStatusContext } from '../contexts/ApplicationStatusContext'
-import UserContext from '../contexts/UserContext'
+import { UserContext } from '../contexts/UserContext'
 
 const JobListItem = ({ job, a, b }) => {
   const [majors, setMajors] = useState([])
@@ -134,7 +134,7 @@ const JobListItem = ({ job, a, b }) => {
           <StatusTag
             icon={<EyeIcon className="w-5 h-5 mr-1" />}
             content="Chỉ được xem"
-            className="text-blue border border-blue rounded-full bg-blue-50"
+            className="border rounded-full text-blue border-blue bg-blue-50"
           />
         ) : applicantStatus ? (
           (() => {

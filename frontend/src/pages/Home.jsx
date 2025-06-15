@@ -15,7 +15,7 @@ import JobCard from '../components/JobCard'
 import ButtonArrowOne from '../shared/ButtonArrowOne'
 import { ROUTES } from '../routes/routePaths'
 import apiFetch from '../services/api'
-import UserContext from '../contexts/UserContext'
+import { UserContext } from '../contexts/UserContext'
 import { ApplicationStatusContext } from '../contexts/ApplicationStatusContext'
 import JobCardSkeleton from '../shared/loading/JobCardSkeleton'
 

@@ -4,7 +4,7 @@ import apiFetch from '../services/api'
 import BannerText from '../components/BannerText'
 import { ToastContainer, toast } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
-import UserContext from '../contexts/UserContext'
+import { UserContext } from '../contexts/UserContext'
 import EmployerInfo from '../components/EmployerInfo'
 import StudentInfo from '../components/StudentInfo'
 
@@ -34,7 +34,7 @@ const SetInformation = () => {
   const [email, setEmail] = useState('')
   const [loading, setLoading] = useState(false)
   const [loadingSubmit, setLoadingSubmit] = useState(false)
-  const { user } = useContext(UserContext)
+  const { user, setUser } = useContext(UserContext)
 
   const fetchProfile = async (type, endpoint) => {
     const profileData = await apiFetch(endpoint)
@@ -84,6 +84,10 @@ const SetInformation = () => {
       const endpoint =
         user.role === 'student' ? '/students' : '/employers'
       await apiFetch(endpoint, 'PUT', profile)
+
+      const userDetail = await apiFetch('/account/detail', 'GET')
+      setUser(userDetail)
+
       toast.success('Cập nhật thông tin thành công!')
     } catch (err) {
       console.error(err)

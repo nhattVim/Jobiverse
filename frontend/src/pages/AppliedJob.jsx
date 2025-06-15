@@ -10,10 +10,11 @@ import {
   MapPinIcon,
   XCircleIcon
 } from '@heroicons/react/24/outline'
-import UserContext from '../contexts/UserContext'
+import { UserContext } from '../contexts/UserContext'
 import { useContext } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { ApplicationStatusContext } from '../contexts/ApplicationStatusContext'
+import { formatDate } from '../utils/dateUtils'
 
 const AppliedJob = () => {
   const { user } = useContext(UserContext)
@@ -153,7 +154,7 @@ const AppliedJob = () => {
                         Đã ứng tuyển:{' '}
                         {applicant && (
                           <span>
-                            {new Date(applicant.appliedAt).toLocaleDateString()}
+                            {formatDate(applicant.appliedAt)}
                           </span>
                         )}
                       </p>

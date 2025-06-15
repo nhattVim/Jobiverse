@@ -2,7 +2,7 @@ import React, { useContext, useEffect, useState } from 'react'
 import Profile from '../components/Profile'
 import apiFetch from '../services/api'
 import { useNavigate } from 'react-router-dom'
-import UserContext from '../contexts/UserContext'
+import { UserContext } from '../contexts/UserContext'
 import SpinnerLoading from '../shared/loading/SpinnerLoading'
 
 const StudentProfile = () => {
