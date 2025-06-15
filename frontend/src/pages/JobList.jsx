@@ -5,6 +5,7 @@ import JobListItem from '../components/JobListItem'
 import apiFetch from '../services/api'
 import { ApplicationStatusContext } from '../contexts/ApplicationStatusContext'
 import { useSearchParams } from 'react-router-dom'
+import JobListSkeleton from '../shared/loading/JobListSkeleton'
 
 const expItem = [
   { id: 0, name: 'Không yêu cầu' },
@@ -47,6 +48,7 @@ const JobList = () => {
   const [showAllSpecs, setShowAllSpecs] = useState(false)
   const [showAllExps, setShowAllExps] = useState(false)
   const [showAllTypes, setShowAllTypes] = useState(false)
+  const [loading, setLoading] = useState(true)
 
   const fetchInitialData = async () => {
     const [majors, specs] = await Promise.all([
@@ -59,8 +61,7 @@ const JobList = () => {
 
   useEffect(() => {
     fetchInitialData()
-    fetchAppliedStatus()
-  }, [fetchAppliedStatus])
+  }, [])
 
   useEffect(() => {
     const buildQuery = () => {
@@ -81,10 +82,12 @@ const JobList = () => {
       const query = buildQuery()
       const data = await apiFetch(`/projects?${query}`)
       setJobs(data)
+      setLoading(false)
     }
 
+    fetchAppliedStatus()
     fetchJobs()
-  }, [selectedMajors, selectedSpecs, selectedExps, selectedTypes, sortOption, searchQuery])
+  }, [selectedMajors, selectedSpecs, selectedExps, selectedTypes, sortOption, searchQuery, fetchAppliedStatus])
 
   const handleCheckboxChange = (value, selected, setSelected) => {
     setSelected(
@@ -134,6 +137,7 @@ const JobList = () => {
     )
   }
 
+  console.log(loading)
   return (
     <>
       <Banner searchQuery={searchQuery} setSearchQuery={setSearchQuery} />
@@ -225,7 +229,7 @@ const JobList = () => {
                   </div>
                 </div>
               </div>
-
+              {loading && <JobListSkeleton jobList={4} />}
               {jobs.map((job, i) => (
                 <JobListItem key={i} job={job} a={majors} b={specs} />
               ))}

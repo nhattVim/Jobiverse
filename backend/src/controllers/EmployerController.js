@@ -17,16 +17,18 @@ class EmployerController {
     }
   }
 
-  // [GET] /employers/:id
+  // [GET] /employers/detail/:id
   async getProfileById(req, res, next) {
     try {
-      const employer = await Employer.findById(req.params.id)
+      const accountId = req.params.id
+      const employer = await Employer.findOne({ account: accountId })
         .select('-__v')
         .populate({
           path: 'account',
           match: { deleted: false },
           select: '-password'
         })
+        .lean()
 
       if (!employer || !employer.account) {
         return res.status(404).json({ message: 'Không tìm thấy employer hoặc tài khoản đã bị xoá' })

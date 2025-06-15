@@ -3,7 +3,7 @@ import Profile from '../components/Profile'
 import { useNavigate } from 'react-router-dom'
 import apiFetch from '../services/api'
 import UserContext from '../contexts/UserContext'
-import SpinnerLoading from '../shared/SpinnerLoading'
+import SpinnerLoading from '../shared/loading/SpinnerLoading'
 
 const EmployerProfile = () => {
   const navigate = useNavigate()

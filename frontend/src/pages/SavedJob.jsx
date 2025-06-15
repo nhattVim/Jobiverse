@@ -4,7 +4,7 @@ import BannerText from '../components/BannerText'
 import ButtonArrowOne from '../shared/ButtonArrowOne'
 import apiFetch from '../services/api'
 import { CurrencyDollarIcon, MapPinIcon } from '@heroicons/react/24/outline'
-import { useNavigate } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 
 const SavedJob = () => {
   const [favoriteJobs, setFavoriteJobs] = useState([])
@@ -15,7 +15,6 @@ const SavedJob = () => {
     const fetchFavoriteJobs = async () => {
       try {
         const data = await apiFetch('/favorites', 'GET')
-        console.log(data)
         setFavoriteJobs(data)
       } catch (err) {
         console.log('Error fetch favorite job', err.message)
@@ -91,7 +90,14 @@ const SavedJob = () => {
                     </div>
                     <div>
                       <h3 className="font-semibold text-[22px]">
-                        {job.project?.title}
+                        <Link
+                          to={`/job-detail/${job.project?._id}`}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-[22px] font-semibold leading-[28.6px] line-clamp-1 hover:text-blue transition-colors duration-300"
+                        >
+                          {job.project?.title}
+                        </Link>
                       </h3>
                       <p className="text-black-low mt-2.5">
                         {job.project?.profile?.name ||

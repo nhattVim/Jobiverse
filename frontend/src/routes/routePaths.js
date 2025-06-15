@@ -17,7 +17,7 @@ export const ROUTES = {
   REGISTER: '/register',
   LOGIN: '/login',
   // INFO PATHS
-  EMPLOYER_DETAIL: '/employer-detail',
+  EMPLOYER_DETAIL: '/employer-detail/:id',
   EMPLOYER_PROFILE: '/employer-profile',
   STUDENT_PROFILE: '/student-profile',
   SET_INFORMATION: '/set-infomation',

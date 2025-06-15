@@ -62,7 +62,7 @@ const JobListItem = ({ job, a, b }) => {
       <div className="flex flex-col items-start gap-5 w-full pb-[15px] border-b border-b-gray-light">
         <div className="flex items-start justify-between w-full">
           <div className="flex items-center w-full gap-5">
-            <div className="w-[60px] h-[60px] bg-white border border-white-low rounded-small flex justify-center items-center shrink-0">
+            <div className="w-[60px] h-[60px] bg-white-bright border border-white-low rounded-small flex justify-center items-center shrink-0">
               <img
                 src={`data:image/png;base64,${job.account?.avatar?.data}`}
                 alt="imgcompany"

@@ -14,7 +14,7 @@ import { ROUTES } from '../routes/routePaths'
 import { TrashIcon } from '@heroicons/react/24/outline'
 import 'react-toastify/dist/ReactToastify.css'
 import { ApplicationStatusContext } from '../contexts/ApplicationStatusContext'
-import SpinnerLoading from '../shared/SpinnerLoading'
+import SpinnerLoading from '../shared/loading/SpinnerLoading'
 
 const ApplyPopup = ({ closePopup, applyTitle, projectId, toast }) => {
   const navigate = useNavigate()

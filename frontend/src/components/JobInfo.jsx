@@ -152,8 +152,8 @@ const JobInfo = ({ project, isOwner, applicantStatus, setIsOpen, isFavorited, ha
                     <ListItem icon={<TagIcon />} label="Lĩnh vực" value={project.profile?.industry || 'Chưa có'} />
                     <ListItem icon={<MapPinIcon />} label="Địa điểm" value={project.profile?.address || 'Chưa có'} />
                   </ul>
-                  <Link to={'/employer-detail'} className="w-full text-center px-4 py-2.5 text-white bg-blue hover:bg-blue-600 rounded-full cursor-pointer">
-                        Xem chi tiết
+                  <Link to={`/employer-detail/${project.account?._id}`} className="w-full text-center px-4 py-2.5 text-white bg-blue hover:bg-blue-600 rounded-full cursor-pointer">
+                    Xem chi tiết
                   </Link>
                 </div>
               ) : (

@@ -20,6 +20,8 @@ import JobInfo from '../components/JobInfo'
 import Applicants from '../components/Applicants'
 import Accepted from '../components/Accepted'
 import Invited from '../components/Invited'
+import Skeleton, { SkeletonTheme } from 'react-loading-skeleton'
+import 'react-loading-skeleton/dist/skeleton.css'
 
 const JobDetail = () => {
   const { id } = useParams()
@@ -131,17 +133,27 @@ const JobDetail = () => {
     return (
       <>
         <Banner />
-        <div className="text-center py-50">Đang tải thông tin công việc...</div>
+        <div className="container-responsive py-20">
+          <SkeletonTheme baseColor='#ffffff' highlightColor='#eeeeee'>
+            <div className="grid grid-cols-[1fr_0.5fr] gap-10 min-h-full">
+              <div className="w-full">
+                <Skeleton width={907} height={266} borderRadius={30}/>
+                <Skeleton width={907} height={600} borderRadius={30} style={{ marginTop: 40 }}/>
+              </div>
+              <div className="w-full overflow-visible">
+                <div className="sticky top-[120px]">
+                  <Skeleton width={453} height={300} borderRadius={30}/>
+                  <Skeleton width={453} height={248} borderRadius={30} style={{ marginTop: 40 }}/>
+                </div>
+              </div>
+            </div>
+          </SkeletonTheme>
+        </div>
       </>
     )
   }
 
   const applicantStatus = statusMap[project._id]?.status
-
-  console.log('Applicant Details:', applicantDetails)
-  console.log('Accepted Details:', acceptedDetails)
-  console.log('Project:', project)
-  console.log('invited:', invitedDetails)
 
   // Variants
   const tabContentVariants = {

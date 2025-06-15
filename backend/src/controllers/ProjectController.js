@@ -84,7 +84,7 @@ class ProjectController {
       const project = await Project.findOne({ _id: projectId })
         .populate({
           path: 'account',
-          select: 'role avatar deleted email'
+          select: '_id role avatar deleted email'
         })
         .populate({
           path: 'applicants.student',
@@ -125,6 +125,64 @@ class ProjectController {
       res.status(200).json(project)
     } catch (err) {
       res.status(500).json({ message: 'Error retrieving project', error: err.message })
+    }
+  }
+
+  // [GET] /projects/employer/:id
+  async getProjectsByEmployer(req, res) {
+    try {
+      const accountId = req.params.id
+      const projects = await Project.find({ account: accountId })
+        .populate({
+          path: 'account',
+          select: 'role avatar deleted email'
+        })
+        .select('title location salary workType')
+        .lean()
+
+      const populatedProjects = await Promise.all(
+        projects
+          .filter((project) => project.account && !project.account.deleted)
+          .map(async (project) => {
+            let profile = null
+
+            if (project.account.role === 'employer') {
+              profile = await Employer.findOne({ account: project.account._id })
+                .select('companyName')
+                .lean()
+            }
+
+            return {
+              ...project,
+              profile
+            }
+          })
+      )
+
+      res.status(200).json(populatedProjects)
+    } catch (err) {
+      res.status(500).json({ message: 'Error retrieving projects', error: err.message })
+    }
+  }
+
+  // [GET] /projects/latest
+  async getProjectsLatest(req, res) {
+    try {
+      const projects = await Project.find({ status: 'open' })
+        .sort({ salary: -1, createdAt: -1 })
+        .limit(9)
+        .populate({
+          path: 'account',
+          select: 'role avatar deleted'
+        })
+        .select('title location salary workType createdAt')
+        .lean()
+
+      const filteredProjects = projects.filter(p => p.account && !p.account.deleted)
+
+      res.status(200).json(filteredProjects)
+    } catch (err) {
+      res.status(500).json({ message: 'Error retrieving latest projects', error: err.message })
     }
   }
 
@@ -297,6 +355,7 @@ class ProjectController {
       const project = await Project.findById(projectId)
       if (!project) return res.status(404).json({ message: 'Project not found' })
       if (project.status !== 'open') return res.status(400).json({ message: 'Project is not open for applicants' })
+
 
       const student = await Student.findOne({ account: accountId })
       if (!student) return res.status(404).json({ message: 'Student not found' })

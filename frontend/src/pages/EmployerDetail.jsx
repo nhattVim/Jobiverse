@@ -1,49 +1,61 @@
 import {
   ArrowUpRightIcon,
   BriefcaseIcon,
-  InboxStackIcon,
+  CurrencyDollarIcon,
   MapPinIcon,
   TagIcon
 } from '@heroicons/react/24/outline'
 import ButtonArrowOne from '../shared/ButtonArrowOne'
+import { useEffect, useState } from 'react'
+import apiFetch from '../services/api'
+import { useParams } from 'react-router-dom'
 
-const jobItem = {
-  jobTitle: 'Backend Developer (C#, .NET)',
-  companyInfo: {
-    img: 'https://cdn.prod.website-files.com/66b757e42412d2f5e0906c5f/66bf2b9a2ff5d8f19427f6db_job-07.svg',
-    name: 'CodeLink',
-    location: 'TP Hồ Chí Minh'
-  },
-  jobType: 'Thực tập',
-  salary: 'Từ 2 - 4 triệu',
-  location: 'TP Hồ Chí Minh',
-  skill: ['C#', '.NET', 'SQL Server', 'REST API']
-}
-
-const jobItems = Array(4).fill(jobItem)
 const EmployerDetail = () => {
+  const { id } = useParams()
+  const [employerDetail, setEmployerDetail] = useState({})
+  const [jobsOfEmployer, setJobsOfEmployer] = useState([])
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const [employerRes, jobsRes] = await Promise.all([
+          apiFetch(`/employers/detail/${id}`, 'GET'),
+          apiFetch(`/projects/employer/${id}`, 'GET')
+        ])
+        setEmployerDetail(employerRes)
+        setJobsOfEmployer(jobsRes)
+      } catch (error) {
+        console.error('Error fetching employer or jobs data:', error)
+      }
+    }
+    fetchData()
+  }, [id])
+
+  const avatarBase64 = employerDetail.account?.avatar?.data
+  const avatarSrc = avatarBase64
+    ? `data:image/png;base64,${avatarBase64}`
+    : '/default-avatar.png'
+
   return (
     <>
       <div className="container-responsive">
         <div className="flex justify-between w-full bg-gradient-blue-right py-10 rounded-medium px-25">
           <div className="flex justify-center items-center gap-5">
-            <div className="w-40 h-40 bg-white border border-white-low rounded-small flex justify-center items-center">
-              <img
-                src="https://itviec.com/rails/active_storage/representations/proxy/eyJfcmFpbHMiOnsibWVzc2FnZSI6IkJBaHBBK0xPTEE9PSIsImV4cCI6bnVsbCwicHVyIjoiYmxvYl9pZCJ9fQ==--e622a8382b21b032819f520d792bef976ace053e/eyJfcmFpbHMiOnsibWVzc2FnZSI6IkJBaDdCem9MWm05eWJXRjBPZ2wzWldKd09oSnlaWE5wZW1WZmRHOWZabWwwV3dkcEFhb3ciLCJleHAiOm51bGwsInB1ciI6InZhcmlhdGlvbiJ9fQ==--bb0ebae071595ab1791dc0ad640ef70a76504047/TX_RGB_Primary_onWhite.png"
-                alt="imgcompany"
-                className="object-cover"
-              />
-            </div>
+            <img
+              src={avatarSrc}
+              alt="imgcompany"
+              className="object-cover w-40 h-40 rounded-small border-2 border-white-bright"
+            />
             <div className="text-white flex flex-col items-start gap-5">
-              <h6 className="text-3xl font-semibold">TymeX</h6>
+              <h6 className="text-3xl font-semibold">{employerDetail.companyName}</h6>
               <div className="flex gap-5">
                 <div className="flex items-center">
                   <MapPinIcon className="w-6 h-6 mr-[6px] text-gray" />
-                  <p>TP Hồ Chí Minh</p>
+                  <p>{employerDetail.address}</p>
                 </div>
                 <div className="flex items-center">
                   <BriefcaseIcon className="w-6 h-6 mr-[6px] text-gray" />
-                  <p>10 việc làm đang tuyển dụng</p>
+                  <p>{jobsOfEmployer.length} việc làm đang tuyển dụng</p>
                 </div>
               </div>
               <a
@@ -68,30 +80,7 @@ const EmployerDetail = () => {
                 <h5 className="text-[22px] font-semibold pb-5 border-b border-gray-light">
                   Giới thiệu công ty
                 </h5>
-                <p className="mt-5">
-                  TymeX is a part of Tyme Group - one of the world’s
-                  fastest-growing digital banking groups. Tyme Group is one of
-                  the world’s fastest-growing digital banking groups, building
-                  high-tech and high-touch banks in fast-growing, emerging
-                  markets. Headquartered in Singapore with a Technology and
-                  product Development Hub in Vietnam, Tyme designs, builds, and
-                  commercializes digital banks for emerging markets, with
-                  particular expertise in serving under-served and under-banked
-                  populations. Established in 2016, TymeX has been Tyme Group's
-                  Product & Technology Development Hub, bringing together
-                  engineering and product people who share a global mission to
-                  become serial bank builders, shaping the future of banking
-                  through technology. We build products with the principle of
-                  finding the right balance between the digital and physical
-                  worlds. We have proudly provided the banking platform as a
-                  service for: TymeBank, based in South Africa, is one of the
-                  world’s fastest-growing digital banks, with over 7 million
-                  customers since launching in February 2019. GoTyme Bank, based
-                  in the Philippines, is a joint venture between the Gokongwei
-                  Group and Tyme Group with the official launch in October 2022
-                  and onboarded more than 1 million customers in less than nine
-                  months.
-                </p>
+                <p className="mt-5">{employerDetail.companyInfo}</p>
               </div>
 
               <div
@@ -101,41 +90,45 @@ const EmployerDetail = () => {
                 <h5 className="text-[22px] font-semibold pb-5 border-b border-gray-light">
                   Tuyển dụng
                 </h5>
-                {jobItems.map((job, index) => (
+                {jobsOfEmployer.map((job, index) => (
                   <div
                     key={index}
-                    className="bg-white p-6 rounded-medium shadow flex items-center justify-between hover:shadow-md transition-all duration-300"
+                    className="bg-blue-50 p-6 rounded-medium border border-white-low flex items-center justify-between hover:shadow-md hover:border-blue transition-all duration-300"
                   >
                     <div className="flex items-center space-x-5">
-                      <div className="w-16 h-16 bg-[#d5f5f6] rounded-xl flex items-center justify-center">
+                      <div className="w-[70px] h-[70px] bg-white-bright border border-white-low rounded-small flex justify-center items-center">
                         <img
-                          src="https://cdn-icons-png.freepik.com/256/17359/17359748.png"
-                          alt="logo"
-                          className="w-10 h-10"
+                          src={avatarSrc}
+                          alt="imgcompany"
+                          className="object-cover w-10 h-10 rounded-full"
                         />
                       </div>
                       <div>
                         <h3 className="font-semibold text-[22px]">
-                          {job.jobTitle}
+                          {job.title}
                         </h3>
-                        <p className="text-black-low mt-2.5">{job.jobType}</p>
+                        <p className="text-black-low mt-2.5">{job.profile?.companyName}</p>
                         <div className="flex items-center text-black-low space-x-2 mt-2.5">
                           <span className="flex gap-2 items-center">
-                            <InboxStackIcon className="text-blue w-6 h-6" />{' '}
-                            Đang mở
+                            <CurrencyDollarIcon className="text-blue w-6 h-6" />
+                            <p>{job.salary}</p>
                           </span>
                           <span>|</span>
                           <span className="flex gap-2 items-center">
-                            <MapPinIcon className="text-blue w-6 h-6" />{' '}
-                            {job.location}
+                            <MapPinIcon className="text-blue w-6 h-6" />
+                            <p>{job.location?.province}</p>
                           </span>
                         </div>
                       </div>
                     </div>
-                    <div className="flex flex-col justify-between h-full text-right gap-5">
-                      <p className="text-sm text-black-low">{job.salary}</p>
+                    <div className="flex flex-col items-end justify-between h-full text-right gap-5">
+                      <div className="text-sm bg-yellow px-2 py-1 rounded-lg">{job.workType}</div>
                       <div className="flex items-center space-x-3 justify-end">
-                        <ButtonArrowOne>Ứng tuyển</ButtonArrowOne>
+                        <ButtonArrowOne
+                          selectedPage={`/job-detail/${job._id}?openApply=true`}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                        >Ứng tuyển</ButtonArrowOne>
                       </div>
                     </div>
                   </div>
@@ -156,14 +149,13 @@ const EmployerDetail = () => {
                         <p className="font-semibold">Địa chỉ công ty</p>
                       </div>
                       <p className="text-sm">
-                        Số 6 Quang Trung, phường Trần Hưng Đạo, Quận Hoàn Kiếm,
-                        Thành phố Hà Nội
+                        {employerDetail.address}
                       </p>
                     </div>
                     <div className="flex items-center">
                       <TagIcon className="w-5 h-5 mr-[6px] text-blue" />
                       <span className="font-semibold mr-[6px]">Lĩnh vực: </span>
-                      <p className="text-sm">Phần mềm</p>
+                      <p className="text-sm">{employerDetail.industry}</p>
                     </div>
                   </div>
                 </div>

@@ -22,7 +22,7 @@ const JobCard = ({ job, currentIndex, isFavoritedInitially }) => {
   const [isFavorited, setIsFavorited] = useState(isFavoritedInitially)
   const { user } = useContext(UserContext)
   const { statusMap } = useContext(ApplicationStatusContext)
-  const applicantStatus = statusMap[job._id]?.status
+  const applicantStatus = statusMap[job?._id]?.status
   const isOwner = job?.account?._id === user?._id
 
   const handleFavorite = async () => {
@@ -53,7 +53,7 @@ const JobCard = ({ job, currentIndex, isFavoritedInitially }) => {
       style={{ transform: `translateX(-${currentIndex * 100}%)` }}
     >
       <div className="mr-[50px]">
-        <div className="group flex flex-col items-start gap-[30px] p-10 bg-white rounded-medium w-full cursor-pointer">
+        <div className="flex flex-col items-start gap-[30px] p-10 bg-white rounded-medium w-full cursor-pointer">
           <div className="flex flex-col items-start w-full gap-5">
             <div className="flex items-start justify-between w-full">
               <div className="w-[70px] h-[70px] bg-white border border-white-low rounded-small flex justify-center items-center">
@@ -86,13 +86,7 @@ const JobCard = ({ job, currentIndex, isFavoritedInitially }) => {
                   <MapPinIcon className="w-6 h-6 text-blue mr-[6px]" />
                 </div>
                 <p className="text-black-low line-clamp-1">
-                  {[
-                    job.location?.ward,
-                    job.location?.district,
-                    job.location?.province
-                  ]
-                    .filter(Boolean)
-                    .join(', ')}
+                  {job.location?.province}
                 </p>
               </div>
             </div>
@@ -135,14 +129,14 @@ const JobCard = ({ job, currentIndex, isFavoritedInitially }) => {
                         className="text-red-500 border border-red-500 rounded-full bg-red-50"
                       />
                     )
-                    case 'invited':
-                      return (
-                        <StatusTag
-                          icon={<InboxArrowDownIcon className="w-5 h-5 mr-1" />}
-                          content="Được mời"
-                          className="text-orange-500 border border-orange-500 rounded-full bg-orange-50"
-                        />
-                      )
+                  case 'invited':
+                    return (
+                      <StatusTag
+                        icon={<InboxArrowDownIcon className="w-5 h-5 mr-1" />}
+                        content="Được mời"
+                        className="text-orange-500 border border-orange-500 rounded-full bg-orange-50"
+                      />
+                    )
                   default:
                     return null
                 }
@@ -158,7 +152,7 @@ const JobCard = ({ job, currentIndex, isFavoritedInitially }) => {
             )}
             <div
               onClick={handleFavorite}
-              className="h-[46px] w-[46px] flex justify-center items-center rounded-full border-2 border-blue invisible group-hover:visible"
+              className="h-[46px] w-[46px] flex justify-center items-center rounded-full border-2 border-blue"
             >
               {isFavorited ? (
                 <HeartSolidIcon
@@ -178,7 +172,9 @@ const JobCard = ({ job, currentIndex, isFavoritedInitially }) => {
 
 const StatusTag = ({ icon, content, className }) => {
   return (
-    <span className={`flex items-center h-[46px] px-3 font-medium ${className}`}>
+    <span
+      className={`flex items-center h-[46px] px-3 font-medium ${className}`}
+    >
       {icon}
       {content}
     </span>

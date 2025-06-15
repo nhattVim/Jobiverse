@@ -17,12 +17,14 @@ import { ROUTES } from '../routes/routePaths'
 import apiFetch from '../services/api'
 import UserContext from '../contexts/UserContext'
 import { ApplicationStatusContext } from '../contexts/ApplicationStatusContext'
+import JobCardSkeleton from '../shared/loading/JobCardSkeleton'
 
 const Home = () => {
   const [currentIndex, setCurrentIndex] = useState(0)
   const [projects, setProjects] = useState([])
   const [favorites, setFavorites] = useState([])
   const [query, setQuery] = useState('')
+  const [loading, setLoading] = useState(true)
   const { user } = useContext(UserContext)
   const { fetchAppliedStatus } = useContext(ApplicationStatusContext)
   const navigate = useNavigate()
@@ -48,7 +50,7 @@ const Home = () => {
           : Promise.resolve([])
 
         const [projectsData, favoritesData] = await Promise.all([
-          apiFetch('/projects', 'GET'),
+          apiFetch('/projects/latest', 'GET'),
           favoritesPromise
         ])
 
@@ -67,6 +69,8 @@ const Home = () => {
         )
       } catch (error) {
         console.error('Error fetching projects:', error.message)
+      } finally {
+        setLoading(false)
       }
     }
 
@@ -219,12 +223,14 @@ const Home = () => {
             </div>
             <div className="w-full">
               <div className="h-full overflow-hidden whitespace-nowrap">
+                {loading && <JobCardSkeleton jobCards={4}/>}
                 {projects.map((item, index) => (
                   <JobCard
                     key={index}
                     job={item}
                     currentIndex={currentIndex}
                     isFavoritedInitially={favorites.includes(item._id)}
+                    loading={false}
                   />
                 ))}
               </div>
@@ -272,12 +278,12 @@ const Home = () => {
               </div>
 
               <div className="flex items-center bg-white-low rounded-medium p-[30px] gap-[30px]">
-                <div className="flex flex-col items-start">
+                <div className="flex flex-col items-start h-full">
                   <h6 className="text-[22px] leading-[28.6px] font-semibold mb-2.5">
                     CV Builder 2.0
                   </h6>
 
-                  <p className="mb-5 text-sm text-gray-dark">
+                  <p className="flex-1 mb-5 text-sm text-gray-dark">
                     Một chiếc CV chuyên nghiệp sẽ giúp bạn gây ấn tượng với nhà
                     tuyển dụng và tăng khả năng vượt qua vòng lọc CV.
                   </p>
