@@ -44,7 +44,7 @@ const ProjectSchema = new mongoose.Schema({
     coverLetter: String,
     status: {
       type: String,
-      enum: ['pending', 'rejected', 'accepted', 'invited'],
+      enum: ['pending', 'rejected', 'accepted', 'invited', 'declinedInvitation'],
       default: 'pending'
     },
     appliedAt: {

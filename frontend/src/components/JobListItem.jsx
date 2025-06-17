@@ -173,7 +173,15 @@ const JobListItem = ({ job, a, b }) => {
                   />
                 )
               default:
-                return null
+                return (
+                  <ButtonArrowOne
+                    selectedPage={`/job-detail/${job._id}?openApply=true`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    Ứng tuyển
+                  </ButtonArrowOne>
+                )
             }
           })()
         ) : (

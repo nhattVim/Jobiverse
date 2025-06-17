@@ -107,10 +107,10 @@ const AppliedJob = () => {
               </div>
             ) : (
               appliedJobs.map((job, index) => {
-                // Lấy applicant của user hiện tại
                 const applicant = job.applicants?.find(
                   (data) => data && data.student === profile._id
                 )
+                if (applicant?.status === 'invited') return null
                 return (
                   <div
                     key={index}
@@ -153,9 +153,7 @@ const AppliedJob = () => {
                       <p className="text-sm text-black-low">
                         Đã ứng tuyển:{' '}
                         {applicant && (
-                          <span>
-                            {formatDate(applicant.appliedAt)}
-                          </span>
+                          <span>{formatDate(applicant.appliedAt)}</span>
                         )}
                       </p>
                       <div className="flex items-center justify-end space-x-3">
@@ -193,13 +191,22 @@ const AppliedJob = () => {
                               )
                             case 'rejected':
                               return (
-                                <StatusTag
-                                  icon={
-                                    <XCircleIcon className="w-5 h-5 mr-1" />
-                                  }
-                                  content="Bị từ chối"
-                                  className="text-red-500 border border-red-500 rounded-full bg-red-50"
-                                />
+                                <div className="flex items-center justify-end space-x-3">
+                                  <StatusTag
+                                    icon={
+                                      <XCircleIcon className="w-5 h-5 mr-1" />
+                                    }
+                                    content="Bị từ chối"
+                                    className="text-red-500 border border-red-500 rounded-full bg-red-50"
+                                  />
+                                  <button
+                                    title="Huỷ ứng tuyển"
+                                    className="flex items-center justify-center px-3 py-2 text-white transition duration-300 rounded-full shadow-md cursor-pointer bg-red hover:bg-red-700"
+                                    onClick={() => handleDeleteApplied(job._id)}
+                                  >
+                                    <span>Huỷ</span>
+                                  </button>
+                                </div>
                               )
                             default:
                               return null

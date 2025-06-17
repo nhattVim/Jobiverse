@@ -170,7 +170,7 @@ class ProjectController {
     try {
       const projects = await Project.find({ status: 'open' })
         .sort({ salary: -1, createdAt: -1 })
-        .limit(9)
+        .limit(10)
         .populate({
           path: 'account',
           select: 'role avatar deleted'
@@ -575,7 +575,7 @@ class ProjectController {
       if (applicantIndex !== -1) {
         const existingApplication = project.applicants[applicantIndex]
 
-        if (existingApplication.status === 'rejected') {
+        if (existingApplication.status === 'declinedInvitation') {
           project.applicants[applicantIndex] = {
             ...existingApplication.toObject(),
             status: 'invited',
@@ -642,7 +642,7 @@ class ProjectController {
       if (action === 'accept') {
         applicant.status = 'accepted'
       } else if (action === 'reject') {
-        applicant.status = 'rejected'
+        applicant.status = 'declinedInvitation'
       } else {
         return res.status(400).json({ message: 'Invalid action. Must be "accept" or "reject"' })
       }
@@ -661,6 +661,59 @@ class ProjectController {
     } catch (error) {
       console.error('Error responding to invitation:', error)
       res.status(500).json({ message: 'Server error', error: error.message })
+    }
+  }
+
+  // [DELETE] /projects/invited/:id
+  async deleteStudentInvited(req, res, next) {
+    try {
+      const { studentId } = req.body
+      const projectId = req.params.id
+
+      const [student, project] = await Promise.all([
+        Student.findOne({ _id: studentId }),
+        Project.findById(projectId)
+      ])
+
+      if (!student)
+        return res.status(404).json({ message: 'Student not found' })
+
+      if (!project)
+        return res.status(404).json({ message: 'Project not found' })
+
+      const initialLength = project.applicants.length
+      project.applicants = project.applicants.filter(
+        (app) => app.student.toString() !== student._id.toString()
+      )
+
+      if (project.applicants.length === initialLength) {
+        return res.status(404).json({ message: 'Application not found' })
+      }
+
+      await project.save()
+
+      const account = await Account.findById(project.account)
+      if (!account) return res.status(404).json({ message: 'Account not found' })
+
+      let profile = null
+      if (account.role === 'student') {
+        profile = await Student.findOne({ account: account._id })
+      } else if (account.role === 'employer') {
+        profile = await Employer.findOne({ account: account._id })
+      }
+
+      const displayName = account.role === 'student'
+        ? profile?.name || 'Sinh viên'
+        : profile?.companyName || 'Nhà tuyển dụng'
+
+      await Notification.create({
+        account: student.account,
+        content: `"${displayName}" đã huỷ mời bạn vào dự án "${project.title}".`
+      })
+
+      res.status(200).json({ message: 'Application deleted successfully' })
+    } catch (err) {
+      res.status(500).json({ message: 'Server error', error: err.message })
     }
   }
 

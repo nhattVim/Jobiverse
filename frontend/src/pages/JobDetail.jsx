@@ -68,7 +68,7 @@ const JobDetail = () => {
           pending.push(applicant)
         } else if (applicant.status === 'accepted') {
           accepted.push(applicant)
-        } else if (applicant.status === 'invited') {
+        } else if (applicant.status === 'invited' || applicant.status === 'declinedInvitation') {
           invited.push(applicant)
         }
       })
@@ -147,6 +147,9 @@ const JobDetail = () => {
     animate: { opacity: 1, x: 0 },
     exit: { opacity: 0, x: -40 }
   }
+
+  console.log(project)
+  console.log(invitedDetails)
 
   return (
     <>
@@ -273,9 +276,12 @@ const JobDetail = () => {
                 >
                   <Invited
                     invitedDetails={invitedDetails}
+                    setInvitedDetails={setInvitedDetails}
                     setPreviewId={setPreviewId}
                     setCvType={setCvType}
-                    handleApplyClick={handleApplyClick}
+                    id={id}
+                    reload={fetchFullProjectData}
+                    toast={toast}
                   />
                 </motion.div>
               )}
