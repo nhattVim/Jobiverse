@@ -5,8 +5,6 @@ namespace api.Models;
 
 public partial class Favorite
 {
-    public string FavoriteId { get; set; } = null!;
-
     public string AccountId { get; set; } = null!;
 
     public string ProjectId { get; set; } = null!;

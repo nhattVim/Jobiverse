@@ -85,5 +85,20 @@ namespace api.Controllers
 
             return Ok(new { message = "Đã cập nhật trạng thái có profile" });
         }
+
+        [Authorize()]
+        [HttpGet("has-password")]
+        public async Task<IActionResult> HasPassword()
+        {
+            var accountId = User.FindFirst("AccountId")?.Value;
+            if (accountId == null) return Unauthorized(new { message = "Unauthorized" });
+
+            return Ok(new
+            {
+                hasPassword = await _context.Accounts
+                    .Where(a => a.AccountId == accountId && a.Password != null)
+                    .AnyAsync()
+            });
+        }
     }
 }

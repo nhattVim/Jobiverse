@@ -93,10 +93,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-
 app.UseCors("AllowFrontend");
-
-app.UseHttpsRedirection();
 
 app.UseAuthentication();
 
@@ -105,5 +102,7 @@ app.UseAuthorization();
 app.UseExceptionHandler("/error");
 
 app.MapControllers();
+
+app.MapGet("/health-check", () => Results.Ok(new { status = "ok" }));
 
 app.Run();

@@ -14,7 +14,7 @@ export default async function apiFetch(path, method = 'GET', body = null) {
     const contentType = res.headers.get('Content-Type') || ''
 
     if (!res.ok) {
-      if (res.status === 401) {
+      if (res.status === 498) {
         console.warn('Token invalid, calling logout API...')
         await fetch(`${API_BASE}/logout`, {
           method: 'POST',

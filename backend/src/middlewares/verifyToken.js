@@ -8,7 +8,7 @@ const verifyToken = ([...role]) => {
 
     const token = req.cookies.token
 
-    if (!token) return res.status(401).json({ message: 'Chưa đăng nhập, vui lòng đăng nhập' })
+    if (!token) return res.status(498).json({ message: 'Invalid Token' })
 
     try {
       const decoded = jwt.verify(token, JWT_SECRET)

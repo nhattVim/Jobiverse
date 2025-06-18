@@ -145,7 +145,7 @@ class AccountController {
         }
 
         const isMatch = await bcrypt.compare(password, account.password)
-        if (!isMatch) return res.status(404).json({ message: 'Sai mật khẩu' })
+        if (!isMatch) return res.status(401).json({ message: 'Sai mật khẩu' })
 
         const token = jwt.sign({ id: account._id, type: account.role }, JWT_SECRET, { expiresIn: '7d' })
         res.cookie('token', token, { httpOnly: true, secure: true, sameSite: 'none', maxAge: 7 * 24 * 60 * 60 * 1000 })
@@ -162,7 +162,7 @@ class AccountController {
 
         const account = await Account.findOne({ email, deleted: false })
         console.log(account)
-        if (!account) return res.status(404).json({ message: 'Tài khoản Google chưa đăng ký' })
+        if (!account) return res.status(401).json({ message: 'Tài khoản Google chưa đăng ký' })
 
         const token = jwt.sign({ id: account._id, type: account.role }, JWT_SECRET, { expiresIn: '7d' })
         res.cookie('token', token, { httpOnly: true, secure: true, sameSite: 'none', maxAge: 7 * 24 * 60 * 60 * 1000 })
@@ -182,7 +182,7 @@ class AccountController {
         })
 
         const { email } = fbResponse.data
-        if (!email) return res.status(400).json({ message: 'Không lấy được email từ Facebook' })
+        if (!email) return res.status(404).json({ message: 'Không lấy được email từ Facebook' })
 
         const account = await Account.findOne({ email, deleted: false })
         if (!account) return res.status(404).json({ message: 'Tài khoản Facebook chưa đăng ký' })

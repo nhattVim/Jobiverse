@@ -22,79 +22,79 @@ namespace api.Controllers
             _context = context;
         }
 
-        [HttpGet]
-        public async Task<IActionResult> GetFavorites()
-        {
-            var accountId = User.FindFirst("AccountId")?.Value;
+        // [HttpGet]
+        // public async Task<IActionResult> GetFavorites()
+        // {
+        //     var accountId = User.FindFirst("AccountId")?.Value;
 
-            var favorites = await _context.Favorites
-                .AsNoTracking()
-                .Where(f => f.AccountId == accountId)
-                .ToListAsync();
+        //     var favorites = await _context.Favorites
+        //         .AsNoTracking()
+        //         .Where(f => f.AccountId == accountId)
+        //         .ToListAsync();
 
-            var result = favorites.Select(f => new
-            {
-                _id = f.FavoriteId,
-                account = f.AccountId,
-                createdAt = f.CreatedAt,
-                project = _context.Projects
-                    .Where(p => p.ProjectId == f.ProjectId)
-                    .Select(p => new
-                    {
-                        _id = p.ProjectId,
-                        account = p.AccountId,
-                        p.Title,
-                        p.Description,
-                        p.Status,
-                        p.Location
-                    })
-                    .FirstOrDefault()
-            });
+        //     var result = favorites.Select(f => new
+        //     {
+        //         _id = f.FavoriteId,
+        //         account = f.AccountId,
+        //         createdAt = f.CreatedAt,
+        //         project = _context.Projects
+        //             .Where(p => p.ProjectId == f.ProjectId)
+        //             .Select(p => new
+        //             {
+        //                 _id = p.ProjectId,
+        //                 account = p.AccountId,
+        //                 p.Title,
+        //                 p.Description,
+        //                 p.Status,
+        //                 p.Location
+        //             })
+        //             .FirstOrDefault()
+        //     });
 
-            return Ok(result);
-        }
+        //     return Ok(result);
+        // }
 
-        [HttpPost]
-        public async Task<IActionResult> AddFavorite([FromBody] FavoriteDto req)
-        {
-            var accountId = User.FindFirst("AccountId")?.Value;
-            if (string.IsNullOrEmpty(accountId)) return Unauthorized("You must be logged in to add a favorite.");
+        // [HttpPost]
+        // public async Task<IActionResult> AddFavorite([FromBody] FavoriteDto req)
+        // {
+        //     var accountId = User.FindFirst("AccountId")?.Value;
+        //     if (string.IsNullOrEmpty(accountId)) return Unauthorized("You must be logged in to add a favorite.");
 
-            var existingFavorite = await _context.Favorites
-                .FirstOrDefaultAsync(f => f.ProjectId == req.projectId && f.AccountId == accountId);
+        //     var existingFavorite = await _context.Favorites
+        //         .FirstOrDefaultAsync(f => f.ProjectId == req.projectId && f.AccountId == accountId);
 
-            if (existingFavorite != null) return Conflict("This job is already in your favorites.");
+        //     if (existingFavorite != null) return Conflict("This job is already in your favorites.");
 
-            var favorite = new Favorite
-            {
-                FavoriteId = Guid.NewGuid().ToString(),
-                AccountId = accountId,
-                ProjectId = req.projectId,
-            };
+        //     var favorite = new Favorite
+        //     {
+        //         FavoriteId = Guid.NewGuid().ToString(),
+        //         AccountId = accountId,
+        //         ProjectId = req.projectId,
+        //     };
 
-            _context.Favorites.Add(favorite);
-            await _context.SaveChangesAsync();
+        //     _context.Favorites.Add(favorite);
+        //     await _context.SaveChangesAsync();
 
-            return Ok(new { Message = "Job added to favorites successfully." });
-        }
+        //     return Ok(new { Message = "Job added to favorites successfully." });
+        // }
 
-        [HttpDelete("{projectId}")]
-        public async Task<IActionResult> RemoveFavorite(string? projectId)
-        {
-            if (string.IsNullOrEmpty(projectId)) return BadRequest("Project ID is required to remove a favorite.");
+        // [HttpDelete("{projectId}")]
+        // public async Task<IActionResult> RemoveFavorite(string? projectId)
+        // {
+        //     if (string.IsNullOrEmpty(projectId)) return BadRequest("Project ID is required to remove a favorite.");
 
-            var accountId = User.FindFirst("AccountId")?.Value;
-            if (string.IsNullOrEmpty(accountId)) return Unauthorized("You must be logged in to remove a favorite.");
+        //     var accountId = User.FindFirst("AccountId")?.Value;
+        //     if (string.IsNullOrEmpty(accountId)) return Unauthorized("You must be logged in to remove a favorite.");
 
-            var favorite = await _context.Favorites
-                .FirstOrDefaultAsync(f => f.ProjectId == projectId && f.AccountId == accountId);
+        //     var favorite = await _context.Favorites
+        //         .FirstOrDefaultAsync(f => f.ProjectId == projectId && f.AccountId == accountId);
 
-            if (favorite == null) return NotFound("This job is not in your favorites.");
+        //     if (favorite == null) return NotFound("This job is not in your favorites.");
 
-            _context.Favorites.Remove(favorite);
-            await _context.SaveChangesAsync();
+        //     _context.Favorites.Remove(favorite);
+        //     await _context.SaveChangesAsync();
 
-            return Ok(new { Message = "Job removed from favorites successfully." });
-        }
+        //     return Ok(new { Message = "Job removed from favorites successfully." });
+        // }
     }
 }
