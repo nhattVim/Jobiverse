@@ -7,11 +7,13 @@ import {
   ArrowLongLeftIcon,
   ArrowLongRightIcon
 } from '@heroicons/react/24/solid'
+import JobCardSkeleton from '../shared/loading/JobCardSkeleton'
 
 const RcmJob = ({ id, title }) => {
   const [currentIndex, setCurrentIndex] = useState(0)
   const [projects, setProjects] = useState([])
   const [favorites, setFavorites] = useState([])
+  const [loading, setLoading] = useState(true)
   const { user } = useContext(UserContext)
   const { fetchAppliedStatus } = useContext(ApplicationStatusContext)
 
@@ -55,6 +57,8 @@ const RcmJob = ({ id, title }) => {
         )
       } catch (error) {
         console.error('Error fetching projects:', error.message)
+      } finally {
+        setLoading(false)
       }
     }
 
@@ -81,7 +85,11 @@ const RcmJob = ({ id, title }) => {
       </div>
 
       <div className="w-full">
-        {projects.length === 0 ? (
+        {loading ? (
+          <div className="h-full overflow-hidden whitespace-nowrap">
+            <JobCardSkeleton jobCards={4}/>
+          </div>
+        ) : projects.length === 0 ? (
           <div className="py-10 text-center text-gray-500">
             Hiện tại không có dự án tương tự
           </div>
