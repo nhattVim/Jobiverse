@@ -62,16 +62,13 @@ const Sidebar = () => {
   return (
     <div className="w-full p-6 space-y-6 shadow-lg bg-white-low rounded-medium">
       <div className="flex items-center space-x-3">
-        <div className="relative w-12 h-12">
+        <div className="relative w-12 h-12 cursor-pointer" onClick={handleAvatarClick} >
           <img
             src={`${import.meta.env.VITE_API_URL}/account/avatar?timestamp=${user?.avatarTimestamp || ''}`}
             alt="Avatar"
             className="object-cover w-full h-full rounded-full"
           />
-          <div
-            className="absolute bottom-0 right-0 bg-white rounded-full p-[2px] shadow cursor-pointer"
-            onClick={handleAvatarClick}
-          >
+          <div className="absolute bottom-0 right-0 bg-white rounded-full p-[2px] shadow cursor-pointer">
             <img
               src="https://cdn-icons-png.freepik.com/256/4265/4265710.png"
               alt="Camera"

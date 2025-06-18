@@ -137,7 +137,6 @@ const JobList = () => {
     )
   }
 
-  console.log(loading)
   return (
     <>
       <Banner searchQuery={searchQuery} setSearchQuery={setSearchQuery} />
