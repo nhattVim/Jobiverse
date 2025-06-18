@@ -174,7 +174,7 @@ export default function CVForm({ cvData, setCvData, onSubmit }) {
         fields={educationFields}
         items={cvData.educations}
         onChange={(e, idx) => handleListChange(e, idx, 'educations')}
-        onAdd={() => addItem('educations', { language: '', level: '' })}
+        onAdd={() => addItem('educations', { degree: '', school: '', start: '', end: '' })}
         onRemove={(idx) => removeItem(idx, 'educations')}
         focusedField={focusedField}
         setFocusedField={setFocusedField}

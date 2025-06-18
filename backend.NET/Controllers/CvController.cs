@@ -24,11 +24,11 @@ namespace api.Controllers
 
         public record GeneratePdfRequestDto(string fileName = null!, string html = null!);
 
-        [HttpGet]
+        [HttpGet("my")]
         public async Task<IActionResult> GetMyCVs()
         {
             var accountId = User.FindFirst("AccountId")?.Value;
-            if (accountId == null) return Unauthorized("AccountId not found in token");
+            if (accountId == null) return Unauthorized("Unauthorized");
 
             var student = await _context.Students
                 .AsNoTracking()
@@ -51,11 +51,11 @@ namespace api.Controllers
             return Ok(result);
         }
 
-        [HttpGet("uploads")]
+        [HttpGet("my/uploads")]
         public async Task<IActionResult> GetCVUploads()
         {
             var accountId = User.FindFirst("AccountId")?.Value;
-            if (accountId == null) return Unauthorized("AccountId not found in token");
+            if (accountId == null) return Unauthorized("Unauthorized");
 
             var student = await _context.Students
                 .AsNoTracking()
@@ -171,13 +171,14 @@ namespace api.Controllers
         public async Task<IActionResult> CreateCV([FromBody] CvDto req)
         {
             var accountId = User.FindFirst("AccountId")?.Value;
-            if (accountId == null) return Unauthorized("AccountId not found in token");
-            if (req == null) return BadRequest("CV cannot be null");
+            if (accountId == null) return Unauthorized("Unauthorized");
 
             var student = await _context.Students
                 .AsNoTracking()
                 .FirstOrDefaultAsync(s => s.AccountId == accountId);
             if (student == null) return NotFound("Student not found");
+
+            if (req == null) return BadRequest("CV cannot be null");
 
             var cvEntity = new Cv
             {
@@ -263,7 +264,7 @@ namespace api.Controllers
         public async Task<IActionResult> UploadCV([FromForm] List<IFormFile> files)
         {
             var accountId = User.FindFirst("AccountId")?.Value;
-            if (accountId == null) return Unauthorized("AccountId not found in token");
+            if (accountId == null) return Unauthorized("Unauthorized");
 
             var student = await _context.Students
                 .AsNoTracking()
@@ -303,6 +304,129 @@ namespace api.Controllers
             return Ok("Tải lên thành công.");
         }
 
+        [HttpPut("{id}")]
+        public async Task<IActionResult> UpdateCV(string id, [FromBody] CvDto req)
+        {
+            try
+            {
+                var accountId = User.FindFirst("AccountId")?.Value;
+                if (accountId == null) return Unauthorized("Unauthorized");
+
+                var student = await _context.Students
+                    .AsNoTracking()
+                    .FirstOrDefaultAsync(s => s.AccountId == accountId);
+                if (student == null) return NotFound("Student not found");
+
+                if (req == null) return BadRequest("CV cannot be null");
+
+                var cvEntity = await _context.Cvs
+                    .Include(c => c.CvAchievements)
+                    .Include(c => c.CvActivities)
+                    .Include(c => c.CvEducations)
+                    .Include(c => c.CvLanguages)
+                    .Include(c => c.CvSocials)
+                    .Include(c => c.CvExperiences)
+                    .Include(c => c.CvSkills)
+                    .FirstOrDefaultAsync(c => c.Cvid == id);
+                if (cvEntity == null) return NotFound("CV not found");
+
+                // Cập nhật thông tin cơ bản
+                cvEntity.Title = req.Title;
+                cvEntity.Avatar = req.Avatar;
+                cvEntity.Name = req.Name;
+                cvEntity.Birthday = req.Birthday;
+                cvEntity.Gender = req.Gender;
+                cvEntity.Phone = req.Phone;
+                cvEntity.Email = req.Email;
+                cvEntity.Address = req.Address;
+                cvEntity.Website = req.Website;
+                cvEntity.Summary = req.Summary;
+                cvEntity.DesiredPosition = req.DesiredPosition;
+                cvEntity.LastUpdated = DateTime.UtcNow;
+
+                // cvEntity.CvAchievements = req.Achievements?.Select(a => new CvAchievement
+                // {
+                //     // AchievementId = Guid.NewGuid().ToString(),
+                //     Title = a.Title,
+                //     Description = a.Description
+                // }).ToList() ?? new List<CvAchievement>();
+
+                _context.CvActivities.RemoveRange(cvEntity.CvActivities);
+                if (req.Activities != null)
+                {
+                    _context.CvActivities.AddRange(req.Activities.Select(a => new CvActivity
+                    {
+                        ActivityId = Guid.NewGuid().ToString(),
+                        Cvid = cvEntity.Cvid,
+                        Title = a.Title,
+                        Organization = a.Organization,
+                        StartDate = a.StartDate,
+                        EndDate = a.EndDate,
+                        Description = a.Description
+                    }));
+                }
+                // cvEntity.CvActivities = req.Activities?.Select(a => new CvActivity
+                // {
+                //     ActivityId = Guid.NewGuid().ToString(),
+                //     Title = a.Title,
+                //     Organization = a.Organization,
+                //     StartDate = a.StartDate,
+                //     EndDate = a.EndDate,
+                //     Description = a.Description
+                // }).ToList() ?? new List<CvActivity>();
+
+                // cvEntity.CvEducations = req.Educations?.Select(e => new CvEducation
+                // {
+                //     EducationId = Guid.NewGuid().ToString(),
+                //     Degree = e.Degree,
+                //     School = e.School,
+                //     StartDate = e.StartDate,
+                //     EndDate = e.EndDate
+                // }).ToList() ?? new List<CvEducation>();
+
+                // cvEntity.CvLanguages = req.Languages?.Select(l => new CvLanguage
+                // {
+                //     LanguageId = Guid.NewGuid().ToString(),
+                //     Language = l.Language,
+                //     Level = l.Level
+                // }).ToList() ?? new List<CvLanguage>();
+
+                // cvEntity.CvSocials = req.Socials?.Select(s => new CvSocial
+                // {
+                //     SocialId = Guid.NewGuid().ToString(),
+                //     Platform = s.Platform,
+                //     Link = s.Link
+                // }).ToList() ?? new List<CvSocial>();
+
+                // cvEntity.CvExperiences = req.Experiences?.Select(e => new CvExperience
+                // {
+                //     ExperienceId = Guid.NewGuid().ToString(),
+                //     Company = e.Company,
+                //     Position = e.Position,
+                //     StartDate = e.Start,
+                //     EndDate = e.End,
+                //     Description = e.Description
+                // }).ToList() ?? new List<CvExperience>();
+
+                // cvEntity.CvSkills = req.Skills?.Select(s => new CvSkill
+                // {
+                //     SkillId = Guid.NewGuid().ToString(),
+                //     SkillName = s
+                // }).ToList() ?? new List<CvSkill>();
+
+                // Lưu thay đổi
+
+                await _context.SaveChangesAsync();
+
+                return Ok("CV updated successfully.");
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError("Error updating CV with ID {Id}: {Message}", id, ex.Message);
+                return StatusCode(500, "An error occurred while updating the CV. " + ex.Message);
+            }
+        }
+
         [HttpPost("generate-pdf")]
         public async Task<IActionResult> GeneratePdf([FromBody] GeneratePdfRequestDto req)
         {
@@ -323,7 +447,6 @@ namespace api.Controllers
             });
 
             return File(pdfBytes, "application/pdf", req.fileName ?? "document.pdf");
-
         }
     }
 }

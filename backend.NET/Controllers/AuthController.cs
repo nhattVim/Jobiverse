@@ -6,6 +6,7 @@ using System.Text.Json;
 using api.Models;
 using api.Settings;
 using Google.Apis.Auth;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
@@ -330,10 +331,9 @@ namespace api.Controllers
             Response.Cookies.Append("token", token, new CookieOptions
             {
                 HttpOnly = true,
-                Secure = true,
-                SameSite = SameSiteMode.None,
+                Secure = false,
+                SameSite = SameSiteMode.Lax,
                 Path = "/",
-                Expires = DateTimeOffset.UtcNow.AddMinutes(_jwtSettings.ExpiresInMinutes)
             });
 
             return Ok(new { message, token });
