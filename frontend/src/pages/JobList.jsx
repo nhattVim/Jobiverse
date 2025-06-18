@@ -48,7 +48,7 @@ const JobList = () => {
   const [showAllSpecs, setShowAllSpecs] = useState(false)
   const [showAllExps, setShowAllExps] = useState(false)
   const [showAllTypes, setShowAllTypes] = useState(false)
-  const [loading, setLoading] = useState(true)
+  const [loading, setLoading] = useState(false)
 
   const fetchInitialData = async () => {
     const [majors, specs] = await Promise.all([
@@ -79,10 +79,17 @@ const JobList = () => {
     }
 
     const fetchJobs = async () => {
-      const query = buildQuery()
-      const data = await apiFetch(`/projects?${query}`)
-      setJobs(data)
-      setLoading(false)
+      setLoading(true)
+
+      try {
+        const query = buildQuery()
+        const data = await apiFetch(`/projects?${query}`)
+        setJobs(data)
+      } catch (error) {
+        console.error('Error fetching jobs:', error)
+      } finally {
+        setLoading(false)
+      }
     }
 
     fetchAppliedStatus()
