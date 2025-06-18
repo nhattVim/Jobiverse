@@ -27,6 +27,10 @@ const JobInfo = ({ project, isOwner, applicantStatus, setIsOpen, isFavorited, ha
     ? `data:image/png;base64,${avatarBase64}`
     : '/default-avatar.png'
 
+  const invitedStudentIds = project?.applicants
+    ?.filter(applicant => applicant.status === 'invited' || applicant.status === 'declinedInvitation')
+    ?.map(applicant => applicant.student?._id) || []
+
   return (
     <div className="">
       <div className="grid grid-cols-[1fr_0.5fr] gap-10 min-h-full">
@@ -192,6 +196,7 @@ const JobInfo = ({ project, isOwner, applicantStatus, setIsOpen, isFavorited, ha
             projectId={id}
             toast={toast}
             reload={fetchFullProjectData}
+            invitedStudentIds={invitedStudentIds}
           />
         </div>
       )}

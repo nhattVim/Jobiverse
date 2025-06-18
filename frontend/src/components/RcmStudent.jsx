@@ -8,11 +8,12 @@ import {
 } from '@heroicons/react/24/solid'
 import { BookOpenIcon, BuildingLibraryIcon } from '@heroicons/react/24/outline'
 
-const RcmStudent = ({ id, title, isOwner, projectId, toast, reload }) => {
+const RcmStudent = ({ id, title, isOwner, projectId, toast, reload, invitedStudentIds }) => {
   const [currentIndex, setCurrentIndex] = useState(0)
   const [students, setStudents] = useState([])
   const [previewId, setPreviewId] = useState(null)
   const [cvType, setCvType] = useState('')
+  const [localInvitedStudentIds, setLocalInvitedStudentIds] = useState(invitedStudentIds || [])
 
   const goToPrevious = () => {
     const isFirstSlide = currentIndex === 0
@@ -44,6 +45,7 @@ const RcmStudent = ({ id, title, isOwner, projectId, toast, reload }) => {
   const handleInvite = async (studentId) => {
     try {
       await apiFetch(`/projects/${projectId}/invite/${studentId}`, 'POST')
+      setLocalInvitedStudentIds(prev => [...prev, studentId])
       reload()
       toast.success('Gửi lời mời thành công')
     } catch (error) {
@@ -51,7 +53,11 @@ const RcmStudent = ({ id, title, isOwner, projectId, toast, reload }) => {
     }
   }
 
-  console.log(students)
+  const isInvited = (studentId) => localInvitedStudentIds.includes(studentId)
+
+  useEffect(() => {
+    setLocalInvitedStudentIds(invitedStudentIds || [])
+  }, [invitedStudentIds])
 
   return (
     <div className="flex flex-col items-start">
@@ -146,7 +152,7 @@ const RcmStudent = ({ id, title, isOwner, projectId, toast, reload }) => {
                     </button>
                     {isOwner && (
                       <button
-                        className='w-full py-3 text-sm text-white transition-colors duration-300 rounded-full outline-none cursor-pointer bg-blue hover:bg-blue-mid'
+                        className={`${isInvited(s._id) ? 'text-blue bg-transparent border border-blue' : 'text-white bg-blue hover:bg-blue-mid'} w-full py-3 text-sm transition-colors duration-300 rounded-full outline-none cursor-pointer`}
                         onClick={() => {
                           if (s.defaultCV?.cv) {
                             handleInvite(s._id)
@@ -154,8 +160,9 @@ const RcmStudent = ({ id, title, isOwner, projectId, toast, reload }) => {
                             toast.warn('Sinh viên này chưa có CV.')
                           }
                         }}
+                        disabled={isInvited(s._id)}
                       >
-                        Mời tham gia
+                        { isInvited(s._id) ? 'Đã mời' : 'Mời tham gia' }
                       </button>
                     )}
                   </div>

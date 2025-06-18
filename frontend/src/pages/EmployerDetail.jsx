@@ -1,14 +1,13 @@
 import {
   ArrowUpRightIcon,
   BriefcaseIcon,
-  CurrencyDollarIcon,
-  MapPinIcon,
-  TagIcon
+  CurrencyDollarIcon
 } from '@heroicons/react/24/outline'
 import ButtonArrowOne from '../shared/ButtonArrowOne'
 import { useEffect, useState } from 'react'
 import apiFetch from '../services/api'
 import { useParams } from 'react-router-dom'
+import { EnvelopeIcon, MapPinIcon, TagIcon } from '@heroicons/react/24/solid'
 
 const EmployerDetail = () => {
   const { id } = useParams()
@@ -47,7 +46,9 @@ const EmployerDetail = () => {
               className="object-cover w-40 h-40 rounded-small border-2 border-white-bright"
             />
             <div className="text-white flex flex-col items-start gap-5">
-              <h6 className="text-3xl font-semibold">{employerDetail.companyName}</h6>
+              <h6 className="text-3xl font-semibold">
+                {employerDetail.companyName}
+              </h6>
               <div className="flex gap-5">
                 <div className="flex items-center">
                   <MapPinIcon className="w-6 h-6 mr-[6px] text-gray" />
@@ -107,7 +108,9 @@ const EmployerDetail = () => {
                         <h3 className="font-semibold text-[22px]">
                           {job.title}
                         </h3>
-                        <p className="text-black-low mt-2.5">{job.profile?.companyName}</p>
+                        <p className="text-black-low mt-2.5">
+                          {job.profile?.companyName}
+                        </p>
                         <div className="flex items-center text-black-low space-x-2 mt-2.5">
                           <span className="flex gap-2 items-center">
                             <CurrencyDollarIcon className="text-blue w-6 h-6" />
@@ -122,13 +125,17 @@ const EmployerDetail = () => {
                       </div>
                     </div>
                     <div className="flex flex-col items-end justify-between h-full text-right gap-5">
-                      <div className="text-sm bg-yellow px-2 py-1 rounded-lg">{job.workType}</div>
+                      <div className="text-sm bg-yellow px-2 py-1 rounded-lg">
+                        {job.workType}
+                      </div>
                       <div className="flex items-center space-x-3 justify-end">
                         <ButtonArrowOne
                           selectedPage={`/job-detail/${job._id}?openApply=true`}
                           target="_blank"
                           rel="noopener noreferrer"
-                        >Ứng tuyển</ButtonArrowOne>
+                        >
+                          Ứng tuyển
+                        </ButtonArrowOne>
                       </div>
                     </div>
                   </div>
@@ -140,22 +147,29 @@ const EmployerDetail = () => {
               <div className="sticky top-[120px]">
                 <div className="bg-white-bright p-10 rounded-medium">
                   <h5 className="text-[22px] font-semibold pb-5 border-b border-gray-light">
-                    Thông tin liên hệ
+                    Thông tin chung
                   </h5>
                   <div className="flex flex-col gap-5 mt-5">
                     <div className="flex flex-col gap-2">
                       <div className="flex items-center">
-                        <MapPinIcon className="w-5 h-5 mr-[6px] text-blue" />
-                        <p className="font-semibold">Địa chỉ công ty</p>
+                        <MapPinIcon className="w-5 h-5 mr-[6px] text-blue shrink-0" />
+                        <p className="text-sm">
+                          <span className="font-semibold mr-[6px]">
+                            Địa chỉ công ty:
+                          </span>
+                          {employerDetail.address}
+                        </p>
                       </div>
-                      <p className="text-sm">
-                        {employerDetail.address}
-                      </p>
                     </div>
                     <div className="flex items-center">
                       <TagIcon className="w-5 h-5 mr-[6px] text-blue" />
                       <span className="font-semibold mr-[6px]">Lĩnh vực: </span>
                       <p className="text-sm">{employerDetail.industry}</p>
+                    </div>
+                    <div className="flex items-center">
+                      <EnvelopeIcon className="w-5 h-5 mr-[6px] text-blue shrink-0" />
+                      <span className="font-semibold mr-[6px]">Email: </span>
+                      <p className="text-sm">{employerDetail.account.email}</p>
                     </div>
                   </div>
                 </div>

@@ -6,6 +6,7 @@ import { ToastContainer, toast } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
 import { CurrencyDollarIcon, MapPinIcon } from '@heroicons/react/24/outline'
 import { Link } from 'react-router-dom'
+import { formatDate } from '../utils/dateUtils'
 
 const JobInvites = () => {
   const [jobList, setJobList] = useState([])
@@ -114,24 +115,24 @@ const JobInvites = () => {
                           </div>
                         </div>
 
-                        <div className='flex flex-col items-end space-y-4'>
+                        <div className='flex flex-col items-end space-y-10'>
                           <p className="text-sm text-black-low">
                             Được mời:{' '}
-                            <span>{new Date(job.applicants[0].appliedAt).toLocaleDateString()}</span>
+                            <span>{formatDate(job.applicants[0].appliedAt)}</span>
                           </p>
                           <div className="flex items-center space-x-2">
                             <button
                               className="px-4 py-1.5 text-sm text-white bg-green-600 rounded-full hover:bg-green-700 transition cursor-pointer"
                               onClick={() => handleInviteResponse(job._id, 'accept')}
                             >
-                              Accept
+                              Chấp nhận
                             </button>
 
                             <button
                               className="px-4 py-1.5 text-sm text-white bg-red-600 rounded-full hover:bg-red-700 transition cursor-pointer"
                               onClick={() => handleInviteResponse(job._id, 'reject')}
                             >
-                              Reject
+                              Từ chối
                             </button>
                           </div>
                         </div>

@@ -27,5 +27,6 @@ router.post('/:projectId/apply', verifyToken(['student']), projectController.app
 router.post('/:projectId/respond/:studentId', verifyToken([]), projectController.respondToApplication)
 
 router.delete('/applied/:id', verifyToken(['student']), projectController.deleteAppliedProject)
+router.delete('/invited/:id', verifyToken([]), projectController.deleteStudentInvited)
 
 module.exports = router

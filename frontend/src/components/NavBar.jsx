@@ -111,6 +111,7 @@ const NavBar = () => {
     { label: 'CV của tôi', to: ROUTES.CV_MANAGER, hidden: user?.role !== 'student' },
     { label: 'Dự án đã đăng', to: ROUTES.JOB_MANAGER },
     { label: 'Việc làm đã lưu', to: ROUTES.SAVED_JOB },
+    { label: 'Lời mời công việc', to: ROUTES.JOB_INVITES, hidden: user?.role !== 'student' },
     { label: 'Việc làm đã ứng tuyển', to: ROUTES.APPLIED_JOB, hidden: user?.role !== 'student' },
     { label: 'Cài đặt bảo mật', to: ROUTES.SECURITY }
   ]

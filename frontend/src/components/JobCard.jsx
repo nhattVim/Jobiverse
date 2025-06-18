@@ -138,7 +138,15 @@ const JobCard = ({ job, currentIndex, isFavoritedInitially }) => {
                       />
                     )
                   default:
-                    return null
+                    return (
+                      <ButtonArrowOne
+                        selectedPage={`/job-detail/${job._id}?openApply=true&isFavorited=${isFavorited}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                      >
+                        Ứng tuyển
+                      </ButtonArrowOne>
+                    )
                 }
               })()
             ) : (

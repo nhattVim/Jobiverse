@@ -11,6 +11,7 @@ import {
   TrashIcon,
   ArrowDownTrayIcon
 } from '@heroicons/react/24/outline'
+import { ArrowUpTrayIcon, PlusIcon } from '@heroicons/react/24/solid'
 
 const CVCardList = ({
   title,
@@ -37,9 +38,9 @@ const CVCardList = ({
           {onCreate && (
             <button
               onClick={onCreate}
-              className="px-5 py-2 text-sm rounded-full cursor-pointer bg-blue hover:bg-blue-700 text-white-bright"
+              className="px-4 py-2 text-sm rounded-full cursor-pointer bg-blue hover:bg-blue-700 text-white-bright"
             >
-              + {type === 'CVUpload' ? 'Tải CV lên' : 'Tạo mới'}
+              {type === 'CVUpload' ? (<div className='flex items-center gap-1'><ArrowUpTrayIcon className='w-4 h-4'/>Tải CV lên</div>) : (<div className='flex items-center gap-1'><PlusIcon className='w-4 h-4'/>Tạo mới</div>)}
             </button>
           )}
         </div>
@@ -79,7 +80,7 @@ const CVCardList = ({
                 ) : (
                   <button
                     onClick={() => onSetDefault(cv._id)}
-                    className="w-40 px-4 py-1.5 text-sm text-white bg-blue-600 rounded-full hover:bg-blue-700 transition cursor-pointer opacity-0 group-hover:opacity-100 text-center mr-20"
+                    className="w-40 px-4 py-1.5 text-sm text-white bg-blue rounded-full hover:bg-blue-700 transition cursor-pointer opacity-0 group-hover:opacity-100 text-center mr-20"
                   >
                     Đặt làm mặc định
                   </button>
@@ -99,7 +100,7 @@ const CVCardList = ({
                     href={`${import.meta.env.VITE_API_URL}/cv/uploads/${cv._id}`}
                     target="_blank"
                     rel="noreferrer"
-                    className="flex items-center justify-center px-4 py-1.5 text-white bg-blue-600 rounded-full hover:bg-blue-700"
+                    className="flex items-center justify-center px-4 py-1.5 text-white bg-blue rounded-full hover:bg-blue-700"
                   >
                     <ArrowDownTrayIcon className="w-5 h-5" />
                   </a>
@@ -107,7 +108,7 @@ const CVCardList = ({
 
                 <button
                   onClick={() => onDelete(cv._id)}
-                  className="px-4 py-1.5 text-sm text-white bg-red-600 rounded-full hover:bg-red-700 cursor-pointer"
+                  className="px-4 py-1.5 text-sm text-white bg-red rounded-full hover:bg-red-700 cursor-pointer"
                 >
                   <TrashIcon className='w-5 h-5' />
                 </button>
