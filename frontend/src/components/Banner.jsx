@@ -34,7 +34,7 @@ const Banner = ({ searchQuery, setSearchQuery, onClick }) => {
                   onKeyDown={(e) => {
                     if (e.key === 'Enter') {
                       e.preventDefault()
-                      onClick()
+                      onClick?.()
                     }
                   }}
                 />
@@ -42,7 +42,7 @@ const Banner = ({ searchQuery, setSearchQuery, onClick }) => {
               <div className="flex justify-end pl-5 border-l border-l-gray-dark">
                 <button
                   className="w-full bg-blue text-white rounded-full py-4 px-[30px] font-semibold hover:bg-blue-mid transition-all duration-300 ease-in-out cursor-pointer"
-                  onClick={onClick}
+                  onClick={() => onClick?.()}
                 >
                   Tìm kiếm
                 </button>

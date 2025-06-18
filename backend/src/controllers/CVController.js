@@ -204,8 +204,7 @@ class CVController {
       const cv = await Model.findById(id)
       if (!cv) return res.status(404).json({ message: 'CV không tồn tại' })
 
-      const studentId = cv.student
-      const student = await Student.findById(studentId)
+      const student = await Student.findOne({ account: req.account._id })
       if (!student) return res.status(404).json({ message: 'Không tìm thấy sinh viên' })
 
       student.defaultCV = { cv: id, type }
