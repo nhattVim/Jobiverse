@@ -126,44 +126,12 @@ class CVController {
     }
   }
 
-  // [GET] /cv/:id/setDefaultCV
+  // [GET] /cv/default
   async getDefaultCv(req, res) {
     try {
       const accountId = req.account._id
 
       const student = await Student.findOne({ account: accountId })
-      if (!student || !student.defaultCV || !student.defaultCV.cv) {
-        return res.status(404).json({ message: 'Sinh viên chưa có CV mặc định' })
-      }
-
-      const { cv: cvId, type } = student.defaultCV
-
-      let defaultCVData
-      if (type === 'CV') {
-        defaultCVData = await CV.findById(cvId).lean()
-      } else if (type === 'CVUpload') {
-        defaultCVData = await CVUpload.findById(cvId).lean()
-      } else {
-        return res.status(400).json({ message: 'Loại CV không hợp lệ' })
-      }
-
-      if (!defaultCVData) {
-        return res.status(404).json({ message: 'Không tìm thấy CV mặc định' })
-      }
-
-      res.json({ type, cv: defaultCVData })
-    } catch (error) {
-      console.error(error)
-      res.status(500).json({ message: 'Lỗi server' })
-    }
-  }
-
-  // [GET] /cv/default/:id
-  async getDefaultCvByStudentId(req, res) {
-    try {
-      const { id } = req.params
-
-      const student = await Student.findById(id)
       if (!student || !student.defaultCV || !student.defaultCV.cv) {
         return res.status(404).json({ message: 'Sinh viên chưa có CV mặc định' })
       }
@@ -231,7 +199,7 @@ class CVController {
     }
   }
 
-  // [DELETE] /cv
+  // [DELETE] /cv/:id
   async deleteCV(req, res) {
     try {
       const cvId = req.params.id
@@ -242,12 +210,12 @@ class CVController {
       const student = await Student.findById(cv.student)
       if (!student) return res.status(404).json({ message: 'Không tìm thấy sinh viên' })
 
-      await CV.findByIdAndDelete(cvId)
-
       if (student.defaultCV?.cv?.toString() === cvId && student.defaultCV?.type === 'CV') {
         student.defaultCV = undefined
         await student.save()
       }
+
+      await CV.findByIdAndDelete(cvId)
 
       res.status(200).json({ message: 'Xoá CV thành công' })
     } catch (err) {
@@ -266,12 +234,12 @@ class CVController {
       const student = await Student.findById(upCV.student)
       if (!student) return res.status(404).json({ message: 'Không tìm thấy sinh viên' })
 
-      await CVUpload.findByIdAndDelete(cvId)
-
       if (student.defaultCV?.cv?.toString() === cvId && student.defaultCV?.type === 'CVUpload') {
         student.defaultCV = undefined
         await student.save()
       }
+
+      await CVUpload.findByIdAndDelete(cvId)
 
       res.status(200).json({ message: 'Xoá CV thành công' })
     } catch (err) {

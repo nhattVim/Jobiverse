@@ -1,4 +1,6 @@
+using System.IdentityModel.Tokens.Jwt;
 using System.Text;
+using System.Text.Json;
 using System.Text.Json.Serialization;
 using api.Models;
 using api.Settings;
@@ -58,6 +60,20 @@ builder.Services.AddAuthentication(options =>
 
     options.Events = new JwtBearerEvents
     {
+        OnAuthenticationFailed = context =>
+        {
+            if (context.Exception is SecurityTokenExpiredException)
+            {
+                context.Response.StatusCode = 498;
+                context.Response.ContentType = "application/json";
+                context.Response.Headers.Append("Set-Cookie", "token=; Path=/; HttpOnly; SameSite=Lax; Max-Age=0");
+                var result = JsonSerializer.Serialize(new { message = "Token expired" });
+                return context.Response.WriteAsync(result);
+            }
+
+            return Task.CompletedTask;
+        },
+
         OnMessageReceived = context =>
         {
             var accessToken = context.Request.Cookies["token"];
@@ -93,17 +109,20 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-
 app.UseCors("AllowFrontend");
-
-app.UseHttpsRedirection();
 
 app.UseAuthentication();
 
 app.UseAuthorization();
 
-app.UseExceptionHandler("/error");
+app.UseExceptionHandler(new ExceptionHandlerOptions
+{
+    ExceptionHandlingPath = "/error",
+    AllowStatusCode404Response = true
+});
 
 app.MapControllers();
+
+app.MapGet("/health-check", () => Results.Ok(new { status = "ok" }));
 
 app.Run();

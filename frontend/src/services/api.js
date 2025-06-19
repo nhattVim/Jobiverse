@@ -14,13 +14,7 @@ export default async function apiFetch(path, method = 'GET', body = null) {
     const contentType = res.headers.get('Content-Type') || ''
 
     if (!res.ok) {
-      if (res.status === 401) {
-        console.warn('Token invalid, calling logout API...')
-        await fetch(`${API_BASE}/logout`, {
-          method: 'POST',
-          credentials: 'include',
-          headers: { 'Content-Type': 'application/json' }
-        })
+      if (res.status === 498) {
         localStorage.removeItem('user')
         window.location.href = '/'
         return undefined

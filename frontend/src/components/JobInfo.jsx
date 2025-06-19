@@ -1,3 +1,4 @@
+/* eslint-disable indent */
 import {
   MapPinIcon, CurrencyDollarIcon, BriefcaseIcon, CalendarDaysIcon,
   UsersIcon, TagIcon, Bars3CenterLeftIcon,
@@ -52,7 +53,7 @@ const JobInfo = ({ project, isOwner, applicantStatus, setIsOpen, isFavorited, ha
               <div className="flex gap-3 ml-auto">
                 {isOwner ? (
                   <ButtonArrowOne selectedPage={`/job/${project._id}`}>
-                      Chỉnh sửa
+                    Chỉnh sửa
                   </ButtonArrowOne>
                 ) : user?.role === 'employer' ? (
                   <StatusTag
@@ -63,42 +64,42 @@ const JobInfo = ({ project, isOwner, applicantStatus, setIsOpen, isFavorited, ha
                 ) : applicantStatus ? (
                   (() => {
                     switch (applicantStatus) {
-                    case 'pending':
-                      return (
-                        <StatusTag
-                          icon={<ClockIconOutline className="w-5 h-5 mr-1" />}
-                          content="Đang chờ duyệt"
-                          className="text-yellow-500 border border-yellow-500 rounded-full bg-yellow-50"
-                        />
-                      )
-                    case 'accepted':
-                      return (
-                        <StatusTag
-                          icon={<CheckCircleIcon className="w-5 h-5 mr-1" />}
-                          content="Đã duyệt"
-                          className="text-green-500 border border-green-500 rounded-full bg-green-50"
-                        />
-                      )
-                    case 'rejected':
-                      return (
-                        <StatusTag
-                          icon={<XCircleIcon className="w-5 h-5 mr-1" />}
-                          content="Bị từ chối"
-                          hoverContent="Ứng tuyển lại"
-                          className="text-red-500 border border-red-500 rounded-full cursor-pointer bg-red-50 hover:bg-red-100"
-                          onClick={() => setIsOpen(true)}
-                        />
-                      )
-                    case 'invited':
-                      return (
-                        <StatusTag
-                          icon={<InboxArrowDownIcon className="w-5 h-5 mr-1" />}
-                          content="Được mời"
-                          className="text-orange-500 border border-orange-500 rounded-full bg-orange-50"
-                        />
-                      )
-                    default:
-                      return null
+                      case 'pending':
+                        return (
+                          <StatusTag
+                            icon={<ClockIconOutline className="w-5 h-5 mr-1" />}
+                            content="Đang chờ duyệt"
+                            className="text-yellow-500 border border-yellow-500 rounded-full bg-yellow-50"
+                          />
+                        )
+                      case 'accepted':
+                        return (
+                          <StatusTag
+                            icon={<CheckCircleIcon className="w-5 h-5 mr-1" />}
+                            content="Đã duyệt"
+                            className="text-green-500 border border-green-500 rounded-full bg-green-50"
+                          />
+                        )
+                      case 'rejected':
+                        return (
+                          <StatusTag
+                            icon={<XCircleIcon className="w-5 h-5 mr-1" />}
+                            content="Bị từ chối"
+                            hoverContent="Ứng tuyển lại"
+                            className="text-red-500 border border-red-500 rounded-full cursor-pointer bg-red-50 hover:bg-red-100"
+                            onClick={() => setIsOpen(true)}
+                          />
+                        )
+                      case 'invited':
+                        return (
+                          <StatusTag
+                            icon={<InboxArrowDownIcon className="w-5 h-5 mr-1" />}
+                            content="Được mời"
+                            className="text-orange-500 border border-orange-500 rounded-full bg-orange-50"
+                          />
+                        )
+                      default:
+                        return null
                     }
                   })()
                 ) : (

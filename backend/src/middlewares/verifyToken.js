@@ -8,12 +8,12 @@ const verifyToken = ([...role]) => {
 
     const token = req.cookies.token
 
-    if (!token) return res.status(401).json({ message: 'Chưa đăng nhập, vui lòng đăng nhập' })
+    if (!token) return res.status(498).json({ message: 'Invalid Token' })
 
     try {
       const decoded = jwt.verify(token, JWT_SECRET)
       const account = await Account.findById(decoded.id)
-      if (!account) return res.status(401).json({ message: 'Token không đúng' })
+      if (!account) return res.status(498).json({ message: 'Token không đúng' })
 
       console.log()
       console.log('========================')
@@ -30,9 +30,9 @@ const verifyToken = ([...role]) => {
       next()
     } catch (err) {
       if (err.name === 'TokenExpiredError') {
-        return res.status(401).json({ message: 'Token đã hết hạn' })
+        return res.status(498).json({ message: 'Token đã hết hạn' })
       } else {
-        res.status(403).json({ message: 'Token không hợp lệ' })
+        res.status(498).json({ message: 'Token không hợp lệ' })
       }
     }
   }

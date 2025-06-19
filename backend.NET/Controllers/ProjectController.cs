@@ -19,10 +19,16 @@ namespace api.Controllers
             _context = context;
         }
 
+        public record ProjectLocationDto(
+            string? Province,
+            string? District,
+            string? Ward
+        );
+
         public record ProjectDto(
             string? title,
             string? description,
-            string? location,
+            ProjectLocationDto? location,
             string? content,
             string? workingTime,
             long? salary,
@@ -31,8 +37,7 @@ namespace api.Controllers
             DateTime? deadline,
             List<string>? major,
             List<string>? specialization,
-            List<string>? applicants,
-            List<string>? assignedStudents
+            List<string>? applicants
         );
 
         [HttpGet]
@@ -50,8 +55,7 @@ namespace api.Controllers
                 .Include(p => p.Account)
                 .Include(p => p.Majors)
                 .Include(p => p.Specializations)
-                .Include(p => p.ApplicantStudents)
-                .Include(p => p.AssignedStudents)
+                .Include(p => p.ProjectApplicants)
                 .AsQueryable();
 
             if (!string.IsNullOrWhiteSpace(major))
@@ -83,7 +87,10 @@ namespace api.Controllers
                 query = query.Where(p =>
                     (p.Title ?? "").Contains(search) ||
                     (p.Description ?? "").Contains(search) ||
-                    (p.Location ?? "").Contains(search));
+                    (p.ProjectLocation != null &&
+                        ((p.ProjectLocation.Province ?? "").Contains(search) ||
+                        (p.ProjectLocation.District ?? "").Contains(search) ||
+                        (p.ProjectLocation.Ward ?? "").Contains(search))));
             }
 
             query = sortBy switch
@@ -111,7 +118,7 @@ namespace api.Controllers
                     },
                     p.Title,
                     p.Description,
-                    p.Location,
+                    p.ProjectLocation,
                     p.Salary,
                     p.ExpRequired,
                     p.WorkType,
@@ -125,38 +132,106 @@ namespace api.Controllers
             return Ok(result);
         }
 
-        [HttpGet("my")]
-        public async Task<IActionResult> GetMyProjects()
+        [HttpGet("detail/{id}")]
+        public async Task<IActionResult> GetProjectById(string id)
         {
-            var accountId = User.FindFirst("AccountId")?.Value;
-            if (accountId == null) return Unauthorized("AccountId not found in token");
-
-            var projects = await _context.Projects
+            var project = await _context.Projects
                 .AsNoTracking()
-                .Where(p => p.AccountId == accountId)
-                .ToListAsync();
+                .Include(p => p.Account)
+                .Include(p => p.Majors)
+                .Include(p => p.Specializations)
+                .Include(p => p.ProjectApplicants)
+                .Include(p => p.ProjectLocation)
+                .FirstOrDefaultAsync(p => p.ProjectId == id);
 
-            var result = projects.Select(p => new
+            object? profile = null;
+
+            if (project?.Account.AccountRole == "student")
             {
-                _id = p.ProjectId,
-                account = p.AccountId,
-                p.Title,
-                p.Description,
-                p.Location,
-                p.Salary,
-                p.ExpRequired,
-                p.WorkType,
-                p.WorkingTime,
-                p.HiringCount,
-                major = p.Majors.Select(m => m.MajorId),
-                specialization = p.Specializations.Select(s => s.SpecializationId),
-                applicants = p.ApplicantStudents.Select(s => s.StudentId),
-                assignedStudents = p.AssignedStudents.Select(s => s.StudentId),
-                deadline = p.Deadline
-            });
+                var student = await _context.Students
+                    .AsNoTracking()
+                    .FirstOrDefaultAsync(s => s.AccountId == project.Account.AccountId);
 
-            return Ok(result);
+                if (student != null)
+                    profile = new { name = student.Name };
+            }
+            else if (project?.Account.AccountRole == "employer")
+            {
+                var employer = await _context.Employers
+                    .AsNoTracking()
+                    .FirstOrDefaultAsync(c => c.AccountId == project.Account.AccountId);
+
+                if (employer != null)
+                    profile = new { companyName = employer.CompanyName };
+            }
+
+            return Ok(new
+            {
+                _id = project?.ProjectId,
+                account = new
+                {
+                    _id = project?.Account?.AccountId,
+                    avatar = project?.Account?.Avatar == null ? null : new
+                    {
+                        data = Convert.ToBase64String(project.Account.Avatar),
+                        contentType = project.Account.AvatarType
+                    },
+                    email = project?.Account?.Email,
+                    role = project?.Account?.AccountRole
+                },
+                project?.Title,
+                project?.Description,
+                project?.Content,
+                project?.Salary,
+                project?.ExpRequired,
+                project?.WorkType,
+                project?.WorkingTime,
+                project?.HiringCount,
+                profile,
+                major = project?.Majors.Select(m => m.MajorId),
+                specialization = project?.Specializations.Select(s => s.SpecializationId),
+                applicants = project?.ProjectApplicants.Select(a => a.StudentId),
+                deadline = project?.Deadline,
+                location = project?.ProjectLocation == null ? null : new
+                {
+                    project.ProjectLocation.Province,
+                    project.ProjectLocation.District,
+                    project.ProjectLocation.Ward
+                },
+            });
         }
+
+        // [HttpGet("my")]
+        // public async Task<IActionResult> GetMyProjects()
+        // {
+        //     var accountId = User.FindFirst("AccountId")?.Value;
+        //     if (accountId == null) return Unauthorized("AccountId not found in token");
+
+        //     var projects = await _context.Projects
+        //         .AsNoTracking()
+        //         .Where(p => p.AccountId == accountId)
+        //         .ToListAsync();
+
+        //     var result = projects.Select(p => new
+        //     {
+        //         _id = p.ProjectId,
+        //         account = p.AccountId,
+        //         p.Title,
+        //         p.Description,
+        //         p.ProjectLocation,
+        //         p.Salary,
+        //         p.ExpRequired,
+        //         p.WorkType,
+        //         p.WorkingTime,
+        //         p.HiringCount,
+        //         major = p.Majors.Select(m => m.MajorId),
+        //         specialization = p.Specializations.Select(s => s.SpecializationId),
+        //         applicants = p.ProjectApplicants.Select(s => s.StudentId),
+        //         deadline = p.Deadline
+        //     });
+
+        //     return Ok(result);
+        // }
 
         [HttpPost("my")]
         public async Task<IActionResult> CreateProject([FromBody] ProjectDto dto)
@@ -171,7 +246,14 @@ namespace api.Controllers
                 ProjectId = Guid.NewGuid().ToString(),
                 Title = dto.title,
                 Description = dto.description,
-                Location = dto.location,
+                ProjectLocation = dto.location != null
+                    ? new ProjectLocation
+                    {
+                        Province = dto.location.Province,
+                        District = dto.location.District,
+                        Ward = dto.location.Ward
+                    }
+                    : null,
                 AccountId = accountId,
                 Content = dto.content,
                 WorkingTime = dto.workingTime,
@@ -184,12 +266,6 @@ namespace api.Controllers
                     .ToListAsync(),
                 Specializations = await _context.Specializations
                     .Where(s => dto.specialization != null && dto.specialization.Contains(s.SpecializationId))
-                    .ToListAsync(),
-                ApplicantStudents = await _context.Students
-                    .Where(s => dto.applicants != null && dto.applicants.Contains(s.StudentId))
-                    .ToListAsync(),
-                AssignedStudents = await _context.Students
-                    .Where(s => dto.assignedStudents != null && dto.assignedStudents.Contains(s.StudentId))
                     .ToListAsync(),
             };
 

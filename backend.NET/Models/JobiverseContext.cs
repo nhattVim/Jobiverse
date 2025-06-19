@@ -45,11 +45,15 @@ public partial class JobiverseContext : DbContext
 
     public virtual DbSet<Project> Projects { get; set; }
 
+    public virtual DbSet<ProjectApplicant> ProjectApplicants { get; set; }
+
     public virtual DbSet<ProjectLocation> ProjectLocations { get; set; }
 
     public virtual DbSet<Specialization> Specializations { get; set; }
 
     public virtual DbSet<Student> Students { get; set; }
+
+    public virtual DbSet<StudentsInterest> StudentsInterests { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see https://go.microsoft.com/fwlink/?LinkId=723263.
@@ -313,30 +317,23 @@ public partial class JobiverseContext : DbContext
 
         modelBuilder.Entity<Favorite>(entity =>
         {
-            entity.HasKey(e => e.FavoriteId).HasName("PRIMARY");
-
-            entity.HasIndex(e => e.AccountId, "AccountID");
+            entity.HasKey(e => new { e.AccountId, e.ProjectId }).HasName("PRIMARY");
 
             entity.HasIndex(e => e.ProjectId, "ProjectID");
 
-            entity.Property(e => e.FavoriteId)
-                .HasDefaultValueSql("'uuid()'")
-                .HasColumnName("FavoriteID");
             entity.Property(e => e.AccountId).HasColumnName("AccountID");
+            entity.Property(e => e.ProjectId).HasColumnName("ProjectID");
             entity.Property(e => e.CreatedAt)
                 .HasDefaultValueSql("'CURRENT_TIMESTAMP(3)'")
                 .HasColumnType("datetime(3)");
-            entity.Property(e => e.ProjectId).HasColumnName("ProjectID");
 
             entity.HasOne(d => d.Account).WithMany(p => p.Favorites)
                 .HasForeignKey(d => d.AccountId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("Favorites_ibfk_1");
+                .HasConstraintName("Favorites_ibfk_2");
 
             entity.HasOne(d => d.Project).WithMany(p => p.Favorites)
                 .HasForeignKey(d => d.ProjectId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("Favorites_ibfk_2");
+                .HasConstraintName("Favorites_ibfk_1");
         });
 
         modelBuilder.Entity<Major>(entity =>
@@ -406,42 +403,6 @@ public partial class JobiverseContext : DbContext
                 .HasForeignKey(d => d.AccountId)
                 .HasConstraintName("Projects_ibfk_1");
 
-            entity.HasMany(d => d.ApplicantStudents).WithMany(p => p.Projects)
-                .UsingEntity<Dictionary<string, object>>(
-                    "ProjectApplicant",
-                    r => r.HasOne<Student>().WithMany()
-                        .HasForeignKey("ApplicantStudentId")
-                        .HasConstraintName("ProjectApplicants_ibfk_2"),
-                    l => l.HasOne<Project>().WithMany()
-                        .HasForeignKey("ProjectId")
-                        .HasConstraintName("ProjectApplicants_ibfk_1"),
-                    j =>
-                    {
-                        j.HasKey("ProjectId", "ApplicantStudentId").HasName("PRIMARY");
-                        j.ToTable("ProjectApplicants");
-                        j.HasIndex(new[] { "ApplicantStudentId" }, "ApplicantStudentID");
-                        j.IndexerProperty<string>("ProjectId").HasColumnName("ProjectID");
-                        j.IndexerProperty<string>("ApplicantStudentId").HasColumnName("ApplicantStudentID");
-                    });
-
-            entity.HasMany(d => d.AssignedStudents).WithMany(p => p.ProjectsNavigation)
-                .UsingEntity<Dictionary<string, object>>(
-                    "ProjectAssignment",
-                    r => r.HasOne<Student>().WithMany()
-                        .HasForeignKey("AssignedStudentId")
-                        .HasConstraintName("ProjectAssignments_ibfk_2"),
-                    l => l.HasOne<Project>().WithMany()
-                        .HasForeignKey("ProjectId")
-                        .HasConstraintName("ProjectAssignments_ibfk_1"),
-                    j =>
-                    {
-                        j.HasKey("ProjectId", "AssignedStudentId").HasName("PRIMARY");
-                        j.ToTable("ProjectAssignments");
-                        j.HasIndex(new[] { "AssignedStudentId" }, "AssignedStudentID");
-                        j.IndexerProperty<string>("ProjectId").HasColumnName("ProjectID");
-                        j.IndexerProperty<string>("AssignedStudentId").HasColumnName("AssignedStudentID");
-                    });
-
             entity.HasMany(d => d.Majors).WithMany(p => p.Projects)
                 .UsingEntity<Dictionary<string, object>>(
                     "ProjectMajor",
@@ -479,6 +440,33 @@ public partial class JobiverseContext : DbContext
                         j.IndexerProperty<string>("ProjectId").HasColumnName("ProjectID");
                         j.IndexerProperty<string>("SpecializationId").HasColumnName("SpecializationID");
                     });
+        });
+
+        modelBuilder.Entity<ProjectApplicant>(entity =>
+        {
+            entity.HasKey(e => new { e.ProjectId, e.StudentId }).HasName("PRIMARY");
+
+            entity.HasIndex(e => e.StudentId, "StudentID");
+
+            entity.Property(e => e.ProjectId).HasColumnName("ProjectID");
+            entity.Property(e => e.StudentId).HasColumnName("StudentID");
+            entity.Property(e => e.AppliedAt)
+                .HasDefaultValueSql("'CURRENT_TIMESTAMP(3)'")
+                .HasColumnType("datetime(3)");
+            entity.Property(e => e.CoverLetter).HasMaxLength(255);
+            entity.Property(e => e.Cv).HasMaxLength(255);
+            entity.Property(e => e.CvType).HasMaxLength(255);
+            entity.Property(e => e.Status)
+                .HasDefaultValueSql("'pending'")
+                .HasColumnType("enum('pending','rejected','accepted','invited','declinedInvitation')");
+
+            entity.HasOne(d => d.Project).WithMany(p => p.ProjectApplicants)
+                .HasForeignKey(d => d.ProjectId)
+                .HasConstraintName("ProjectApplicants_ibfk_1");
+
+            entity.HasOne(d => d.Student).WithMany(p => p.ProjectApplicants)
+                .HasForeignKey(d => d.StudentId)
+                .HasConstraintName("ProjectApplicants_ibfk_2");
         });
 
         modelBuilder.Entity<ProjectLocation>(entity =>
@@ -529,6 +517,8 @@ public partial class JobiverseContext : DbContext
                 .HasDefaultValueSql("'uuid()'")
                 .HasColumnName("StudentID");
             entity.Property(e => e.AccountId).HasColumnName("AccountID");
+            entity.Property(e => e.DefaultCvId).HasMaxLength(255);
+            entity.Property(e => e.DefaultCvType).HasColumnType("enum('CV','CVUpload')");
             entity.Property(e => e.MajorId).HasColumnName("MajorID");
             entity.Property(e => e.Mssv)
                 .HasMaxLength(20)
@@ -550,6 +540,17 @@ public partial class JobiverseContext : DbContext
                 .HasForeignKey(d => d.SpecializationId)
                 .OnDelete(DeleteBehavior.Cascade)
                 .HasConstraintName("Students_ibfk_3");
+        });
+
+        modelBuilder.Entity<StudentsInterest>(entity =>
+        {
+            entity.HasKey(e => new { e.StudentId, e.Interest }).HasName("PRIMARY");
+
+            entity.Property(e => e.StudentId).HasColumnName("StudentID");
+
+            entity.HasOne(d => d.Student).WithMany(p => p.StudentsInterests)
+                .HasForeignKey(d => d.StudentId)
+                .HasConstraintName("StudentsInterests_ibfk_1");
         });
 
         OnModelCreatingPartial(modelBuilder);

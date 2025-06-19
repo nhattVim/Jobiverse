@@ -13,8 +13,6 @@ public partial class Project
 
     public string? Description { get; set; }
 
-    public string? Location { get; set; }
-
     public string? Content { get; set; }
 
     public string? WorkingTime { get; set; }
@@ -41,11 +39,9 @@ public partial class Project
 
     public virtual ICollection<Favorite> Favorites { get; set; } = new List<Favorite>();
 
+    public virtual ICollection<ProjectApplicant> ProjectApplicants { get; set; } = new List<ProjectApplicant>();
+
     public virtual ProjectLocation? ProjectLocation { get; set; }
-
-    public virtual ICollection<Student> ApplicantStudents { get; set; } = new List<Student>();
-
-    public virtual ICollection<Student> AssignedStudents { get; set; } = new List<Student>();
 
     public virtual ICollection<Major> Majors { get; set; } = new List<Major>();
 

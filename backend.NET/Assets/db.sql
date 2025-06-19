@@ -42,9 +42,18 @@ CREATE TABLE Students(
     MajorID VARCHAR(255),
     SpecializationID VARCHAR(255),
     University VARCHAR(100) CHARACTER SET utf8mb4,
+    DefaultCvId VARCHAR(255),
+    DefaultCvType ENUM('CV', 'CVUpload'),
     FOREIGN KEY (AccountID) REFERENCES Accounts(AccountID) ON UPDATE CASCADE ON DELETE CASCADE,
     FOREIGN KEY (MajorID) REFERENCES Majors(MajorID) ON UPDATE CASCADE ON DELETE CASCADE,
     FOREIGN KEY (SpecializationID) REFERENCES Specializations(SpecializationID) ON UPDATE CASCADE ON DELETE CASCADE
+);
+
+CREATE TABLE StudentsInterests(
+    StudentID VARCHAR(255) NOT NULL,
+    Interest VARCHAR(255),
+    PRIMARY KEY (StudentID, Interest),
+    FOREIGN KEY (StudentID) REFERENCES Students(StudentID) ON UPDATE CASCADE ON DELETE CASCADE
 );
 
 -- Tạo lại bảng Employers
@@ -88,7 +97,8 @@ CREATE TABLE ProjectLocations (
   Province VARCHAR(255),
   District VARCHAR(255),
   Ward VARCHAR(255),
-  FOREIGN KEY (ProjectID) REFERENCES Projects(ProjectID),
+  PRIMARY KEY (ProjectID),
+  FOREIGN KEY (ProjectID) REFERENCES Projects(ProjectID)
 );
 
 CREATE TABLE ProjectMajors (
@@ -110,17 +120,23 @@ CREATE TABLE ProjectSpecializations (
 CREATE TABLE ProjectApplicants (
   ProjectID VARCHAR(255),
   StudentID VARCHAR(255),
+  Cv VARCHAR(255),
+  CvType VARCHAR(255),
+  CoverLetter VARCHAR(255),
+  Status ENUM('pending', 'rejected', 'accepted', 'invited', 'declinedInvitation') DEFAULT 'pending',
+  AppliedAt DATETIME(3) DEFAULT NOW(3),
   PRIMARY KEY (ProjectID, StudentID),
-  FOREIGN KEY (ProjectID) REFERENCES Projects(ProjectID) ON DELETE CASCADE,
+  FOREIGN KEY (ProjectID)   REFERENCES Projects(ProjectID) ON DELETE CASCADE,
   FOREIGN KEY (StudentID) REFERENCES Students(StudentID) ON DELETE CASCADE
 );
 
-CREATE TABLE ProjectAssignments (
-  ProjectID VARCHAR(255),
-  StudentID VARCHAR(255),
-  PRIMARY KEY (ProjectID, StudentID),
-  FOREIGN KEY (ProjectID) REFERENCES Projects(ProjectID) ON DELETE CASCADE,
-  FOREIGN KEY (StudentID) REFERENCES Students(StudentID) ON DELETE CASCADE
+CREATE TABLE Favorites(
+    AccountID VARCHAR(255) NOT NULL,
+    ProjectID VARCHAR(255) NOT NULL,
+    CreatedAt DATETIME(3) DEFAULT NOW(3),
+    PRIMARY KEY (AccountID, ProjectID),
+    FOREIGN KEY (ProjectID) REFERENCES Projects(ProjectID) ON DELETE CASCADE,
+    FOREIGN KEY (AccountID) REFERENCES Accounts(AccountID) ON DELETE CASCADE
 );
 
 -- Tạo lại bảng Notifications

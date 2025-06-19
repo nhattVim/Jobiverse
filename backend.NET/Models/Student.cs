@@ -19,6 +19,10 @@ public partial class Student
 
     public string? University { get; set; }
 
+    public string? DefaultCvId { get; set; }
+
+    public string? DefaultCvType { get; set; }
+
     public virtual Account Account { get; set; } = null!;
 
     public virtual ICollection<CvUpload> CvUploads { get; set; } = new List<CvUpload>();
@@ -27,9 +31,9 @@ public partial class Student
 
     public virtual Major? Major { get; set; }
 
+    public virtual ICollection<ProjectApplicant> ProjectApplicants { get; set; } = new List<ProjectApplicant>();
+
     public virtual Specialization? Specialization { get; set; }
 
-    public virtual ICollection<Project> Projects { get; set; } = new List<Project>();
-
-    public virtual ICollection<Project> ProjectsNavigation { get; set; } = new List<Project>();
+    public virtual ICollection<StudentsInterest> StudentsInterests { get; set; } = new List<StudentsInterest>();
 }
