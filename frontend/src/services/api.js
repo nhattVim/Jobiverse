@@ -15,11 +15,6 @@ export default async function apiFetch(path, method = 'GET', body = null) {
 
     if (!res.ok) {
       if (res.status === 498) {
-        console.warn('Token invalid, calling logout API...')
-        await fetch(`${API_BASE}/logout`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' }
-        })
         localStorage.removeItem('user')
         window.location.href = '/'
         return undefined

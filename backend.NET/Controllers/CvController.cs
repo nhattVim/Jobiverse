@@ -22,8 +22,6 @@ namespace api.Controllers
             _logger = logger;
         }
 
-        public record GeneratePdfRequestDto(string fileName = null!, string html = null!);
-
         [HttpGet("my")]
         public async Task<IActionResult> GetMyCVs()
         {
@@ -119,8 +117,8 @@ namespace api.Controllers
                     _id = a.ActivityId,
                     title = a.Title,
                     organization = a.Organization,
-                    startDate = a.StartDate,
-                    endDate = a.EndDate,
+                    start = a.StartDate,
+                    end = a.EndDate,
                     description = a.Description
                 }).ToList(),
 
@@ -129,8 +127,8 @@ namespace api.Controllers
                     _id = e.EducationId,
                     degree = e.Degree,
                     school = e.School,
-                    startDate = e.StartDate,
-                    endDate = e.EndDate
+                    start = e.StartDate,
+                    end = e.EndDate
                 }).ToList(),
 
                 languages = cv.CvLanguages.Select(l => new
@@ -209,8 +207,8 @@ namespace api.Controllers
                     ActivityId = Guid.NewGuid().ToString(),
                     Title = a.Title,
                     Organization = a.Organization,
-                    StartDate = a.StartDate,
-                    EndDate = a.EndDate,
+                    StartDate = a.Start,
+                    EndDate = a.End,
                     Description = a.Description
                 }).ToList() ?? new List<CvActivity>(),
 
@@ -219,8 +217,8 @@ namespace api.Controllers
                     EducationId = Guid.NewGuid().ToString(),
                     Degree = e.Degree,
                     School = e.School,
-                    StartDate = e.StartDate,
-                    EndDate = e.EndDate
+                    StartDate = e.Start,
+                    EndDate = e.End
                 }).ToList() ?? new List<CvEducation>(),
 
                 CvLanguages = req.Languages?.Select(l => new CvLanguage
@@ -258,6 +256,163 @@ namespace api.Controllers
             await _context.SaveChangesAsync();
 
             return StatusCode(201);
+        }
+
+        [HttpPut("{id}")]
+        public async Task<IActionResult> UpdateCV(string id, [FromBody] CvDto req)
+        {
+            try
+            {
+                var accountId = User.FindFirst("AccountId")?.Value;
+                if (accountId == null) return Unauthorized("Unauthorized");
+
+                var student = await _context.Students
+                    .AsNoTracking()
+                    .FirstOrDefaultAsync(s => s.AccountId == accountId);
+                if (student == null) return NotFound("Student not found");
+
+                if (req == null) return BadRequest("CV cannot be null");
+
+                var cvEntity = await _context.Cvs
+                    .Include(c => c.CvAchievements)
+                    .Include(c => c.CvActivities)
+                    .Include(c => c.CvEducations)
+                    .Include(c => c.CvLanguages)
+                    .Include(c => c.CvSocials)
+                    .Include(c => c.CvExperiences)
+                    .Include(c => c.CvSkills)
+                    .FirstOrDefaultAsync(c => c.Cvid == id);
+                if (cvEntity == null) return NotFound("CV not found");
+
+                cvEntity.Title = req.Title;
+                cvEntity.Avatar = req.Avatar;
+                cvEntity.Name = req.Name;
+                cvEntity.Birthday = req.Birthday;
+                cvEntity.Gender = req.Gender;
+                cvEntity.Phone = req.Phone;
+                cvEntity.Email = req.Email;
+                cvEntity.Address = req.Address;
+                cvEntity.Website = req.Website;
+                cvEntity.Summary = req.Summary;
+                cvEntity.DesiredPosition = req.DesiredPosition;
+                cvEntity.LastUpdated = DateTime.UtcNow;
+
+                _context.CvAchievements.RemoveRange(cvEntity.CvAchievements);
+                _context.CvActivities.RemoveRange(cvEntity.CvActivities);
+                _context.CvEducations.RemoveRange(cvEntity.CvEducations);
+                _context.CvLanguages.RemoveRange(cvEntity.CvLanguages);
+                _context.CvSocials.RemoveRange(cvEntity.CvSocials);
+                _context.CvExperiences.RemoveRange(cvEntity.CvExperiences);
+                _context.CvSkills.RemoveRange(cvEntity.CvSkills);
+
+                if (req.Achievements != null && req.Achievements.Any())
+                {
+                    var newAchievements = req.Achievements.Select(a => new CvAchievement
+                    {
+                        AchievementId = Guid.NewGuid().ToString(),
+                        Cvid = id,
+                        Title = a.Title,
+                        Description = a.Description
+                    });
+
+                    await _context.CvAchievements.AddRangeAsync(newAchievements);
+                }
+
+                if (req.Activities != null && req.Activities.Any())
+                {
+                    var newActivities = req.Activities.Select(a => new CvActivity
+                    {
+                        ActivityId = Guid.NewGuid().ToString(),
+                        Cvid = id,
+                        Title = a.Title,
+                        Organization = a.Organization,
+                        StartDate = a.Start,
+                        EndDate = a.End,
+                        Description = a.Description
+                    });
+
+                    await _context.CvActivities.AddRangeAsync(newActivities);
+                }
+
+                if (req.Educations != null && req.Educations.Any())
+                {
+                    var newEducations = req.Educations.Select(e => new CvEducation
+                    {
+                        EducationId = Guid.NewGuid().ToString(),
+                        Cvid = id,
+                        Degree = e.Degree,
+                        School = e.School,
+                        StartDate = e.Start,
+                        EndDate = e.End
+                    });
+
+                    await _context.CvEducations.AddRangeAsync(newEducations);
+                }
+
+                if (req.Languages != null && req.Languages.Any())
+                {
+                    var newLanguages = req.Languages.Select(l => new CvLanguage
+                    {
+                        LanguageId = Guid.NewGuid().ToString(),
+                        Cvid = id,
+                        Language = l.Language,
+                        Level = l.Level
+                    });
+
+                    await _context.CvLanguages.AddRangeAsync(newLanguages);
+                }
+
+                if (req.Socials != null && req.Socials.Any())
+                {
+                    var newSocials = req.Socials.Select(s => new CvSocial
+                    {
+                        SocialId = Guid.NewGuid().ToString(),
+                        Cvid = id,
+                        Platform = s.Platform,
+                        Link = s.Link
+                    });
+
+                    await _context.CvSocials.AddRangeAsync(newSocials);
+                }
+
+                if (req.Experiences != null && req.Experiences.Any())
+                {
+                    var newExperiences = req.Experiences.Select(e => new CvExperience
+                    {
+                        ExperienceId = Guid.NewGuid().ToString(),
+                        Cvid = id,
+                        Company = e.Company,
+                        Position = e.Position,
+                        StartDate = e.Start,
+                        EndDate = e.End,
+                        Description = e.Description
+                    });
+
+                    await _context.CvExperiences.AddRangeAsync(newExperiences);
+                }
+
+                if (req.Skills != null && req.Skills.Any())
+                {
+                    var newSkills = req.Skills.Select(s => new CvSkill
+                    {
+                        SkillId = Guid.NewGuid().ToString(),
+                        Cvid = id,
+                        SkillName = s
+                    });
+
+                    await _context.CvSkills.AddRangeAsync(newSkills);
+                }
+
+
+                await _context.SaveChangesAsync();
+
+                return Ok("CV updated successfully.");
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError("Error updating CV with ID {Id}: {Message}", id, ex.Message);
+                return StatusCode(500, "An error occurred while updating the CV. " + ex.Message);
+            }
         }
 
         [HttpPost("uploads")]
@@ -304,149 +459,55 @@ namespace api.Controllers
             return Ok("Tải lên thành công.");
         }
 
-        [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateCV(string id, [FromBody] CvDto req)
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteCv(string id)
         {
-            try
-            {
-                var accountId = User.FindFirst("AccountId")?.Value;
-                if (accountId == null) return Unauthorized("Unauthorized");
+            var cv = await _context.Cvs.FindAsync(id);
+            if (cv == null) return NotFound("CV not found");
 
-                var student = await _context.Students
-                    .AsNoTracking()
-                    .FirstOrDefaultAsync(s => s.AccountId == accountId);
-                if (student == null) return NotFound("Student not found");
+            _context.Cvs.Remove(cv);
+            await _context.SaveChangesAsync();
 
-                if (req == null) return BadRequest("CV cannot be null");
+            return Ok("CV deleted successfully.");
+        }
 
-                var cvEntity = await _context.Cvs
-                    .Include(c => c.CvAchievements)
-                    .Include(c => c.CvActivities)
-                    .Include(c => c.CvEducations)
-                    .Include(c => c.CvLanguages)
-                    .Include(c => c.CvSocials)
-                    .Include(c => c.CvExperiences)
-                    .Include(c => c.CvSkills)
-                    .FirstOrDefaultAsync(c => c.Cvid == id);
-                if (cvEntity == null) return NotFound("CV not found");
+        [HttpDelete("uploads/{id}")]
+        public async Task<IActionResult> DeleteUploadCv(string id)
+        {
+            var upload = await _context.CvUploads.FindAsync(id);
+            if (upload == null) return NotFound("Upload not found");
 
-                // Cập nhật thông tin cơ bản
-                cvEntity.Title = req.Title;
-                cvEntity.Avatar = req.Avatar;
-                cvEntity.Name = req.Name;
-                cvEntity.Birthday = req.Birthday;
-                cvEntity.Gender = req.Gender;
-                cvEntity.Phone = req.Phone;
-                cvEntity.Email = req.Email;
-                cvEntity.Address = req.Address;
-                cvEntity.Website = req.Website;
-                cvEntity.Summary = req.Summary;
-                cvEntity.DesiredPosition = req.DesiredPosition;
-                cvEntity.LastUpdated = DateTime.UtcNow;
+            _context.CvUploads.Remove(upload);
+            await _context.SaveChangesAsync();
 
-                // cvEntity.CvAchievements = req.Achievements?.Select(a => new CvAchievement
-                // {
-                //     // AchievementId = Guid.NewGuid().ToString(),
-                //     Title = a.Title,
-                //     Description = a.Description
-                // }).ToList() ?? new List<CvAchievement>();
-
-                _context.CvActivities.RemoveRange(cvEntity.CvActivities);
-                if (req.Activities != null)
-                {
-                    _context.CvActivities.AddRange(req.Activities.Select(a => new CvActivity
-                    {
-                        ActivityId = Guid.NewGuid().ToString(),
-                        Cvid = cvEntity.Cvid,
-                        Title = a.Title,
-                        Organization = a.Organization,
-                        StartDate = a.StartDate,
-                        EndDate = a.EndDate,
-                        Description = a.Description
-                    }));
-                }
-                // cvEntity.CvActivities = req.Activities?.Select(a => new CvActivity
-                // {
-                //     ActivityId = Guid.NewGuid().ToString(),
-                //     Title = a.Title,
-                //     Organization = a.Organization,
-                //     StartDate = a.StartDate,
-                //     EndDate = a.EndDate,
-                //     Description = a.Description
-                // }).ToList() ?? new List<CvActivity>();
-
-                // cvEntity.CvEducations = req.Educations?.Select(e => new CvEducation
-                // {
-                //     EducationId = Guid.NewGuid().ToString(),
-                //     Degree = e.Degree,
-                //     School = e.School,
-                //     StartDate = e.StartDate,
-                //     EndDate = e.EndDate
-                // }).ToList() ?? new List<CvEducation>();
-
-                // cvEntity.CvLanguages = req.Languages?.Select(l => new CvLanguage
-                // {
-                //     LanguageId = Guid.NewGuid().ToString(),
-                //     Language = l.Language,
-                //     Level = l.Level
-                // }).ToList() ?? new List<CvLanguage>();
-
-                // cvEntity.CvSocials = req.Socials?.Select(s => new CvSocial
-                // {
-                //     SocialId = Guid.NewGuid().ToString(),
-                //     Platform = s.Platform,
-                //     Link = s.Link
-                // }).ToList() ?? new List<CvSocial>();
-
-                // cvEntity.CvExperiences = req.Experiences?.Select(e => new CvExperience
-                // {
-                //     ExperienceId = Guid.NewGuid().ToString(),
-                //     Company = e.Company,
-                //     Position = e.Position,
-                //     StartDate = e.Start,
-                //     EndDate = e.End,
-                //     Description = e.Description
-                // }).ToList() ?? new List<CvExperience>();
-
-                // cvEntity.CvSkills = req.Skills?.Select(s => new CvSkill
-                // {
-                //     SkillId = Guid.NewGuid().ToString(),
-                //     SkillName = s
-                // }).ToList() ?? new List<CvSkill>();
-
-                // Lưu thay đổi
-
-                await _context.SaveChangesAsync();
-
-                return Ok("CV updated successfully.");
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError("Error updating CV with ID {Id}: {Message}", id, ex.Message);
-                return StatusCode(500, "An error occurred while updating the CV. " + ex.Message);
-            }
+            return Ok("Upload deleted successfully.");
         }
 
         [HttpPost("generate-pdf")]
-        public async Task<IActionResult> GeneratePdf([FromBody] GeneratePdfRequestDto req)
+        public async Task<IActionResult> GeneratePdf([FromBody] JsonDocument body)
         {
+            var root = body.RootElement;
+
+            string? fileName = root.TryGetProperty("fileName", out var fn) ? fn.GetString() : null;
+            string? html = root.TryGetProperty("html", out var ht) ? ht.GetString() : null;
+
+            if (string.IsNullOrWhiteSpace(html))
+                return BadRequest("Missing or empty 'html' content.");
+
             using var playwright = await Playwright.CreateAsync();
-            await using var browser = await playwright.Chromium.LaunchAsync(new BrowserTypeLaunchOptions
-            {
-                Headless = true
-            });
+            await using var browser = await playwright.Chromium.LaunchAsync(
+                new BrowserTypeLaunchOptions { Headless = true });
 
             var page = await browser.NewPageAsync();
-            await page.SetContentAsync(req.html, new PageSetContentOptions { WaitUntil = WaitUntilState.NetworkIdle });
+            await page.SetContentAsync(html, new PageSetContentOptions { WaitUntil = WaitUntilState.NetworkIdle });
 
             var pdfBytes = await page.PdfAsync(new PagePdfOptions
             {
                 Format = "A4",
                 PrintBackground = true,
-                Margin = new() { Top = "10mm", Bottom = "10mm", Left = "10mm", Right = "10mm" }
             });
 
-            return File(pdfBytes, "application/pdf", req.fileName ?? "document.pdf");
+            return File(pdfBytes, "application/pdf", fileName ?? "cv.pdf");
         }
     }
 }

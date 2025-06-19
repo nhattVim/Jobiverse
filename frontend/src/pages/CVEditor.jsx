@@ -117,6 +117,8 @@ export default function CVEditor() {
     </div>
   )
 
+  console.log('CV Data:', cvData)
+
   return (
     <>
       <BannerText

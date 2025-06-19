@@ -231,7 +231,7 @@ class CVController {
     }
   }
 
-  // [DELETE] /cv
+  // [DELETE] /cv/:id
   async deleteCV(req, res) {
     try {
       const cvId = req.params.id
