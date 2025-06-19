@@ -165,6 +165,88 @@ namespace api.Controllers
             return Ok(result);
         }
 
+        [HttpGet("default")]
+        public async Task<IActionResult> GetDefaultCv()
+        {
+            var accountId = User.FindFirst("AccountId")?.Value;
+            if (accountId == null) return Unauthorized("Unauthorized");
+
+            var student = await _context.Students
+                .AsNoTracking()
+                .FirstOrDefaultAsync(s => s.AccountId == accountId);
+
+            if (student == null || student.DefaultCvId == null)
+                return NotFound("Sinh viên chưa có CV mặc định");
+
+            var type = student.DefaultCvType;
+            var cv = student.DefaultCvId;
+
+            if (type == "CV")
+            {
+                var cvData = await _context.Cvs
+                    .AsNoTracking()
+                    .FirstOrDefaultAsync(c => c.Cvid == student.DefaultCvId);
+
+                if (cvData == null) return NotFound("Default CV not found");
+
+                return Ok(new { type, cv = new { _id = cvData.Cvid } });
+            }
+            else if (type == "CVUpload")
+            {
+                var uploadData = await _context.CvUploads
+                    .AsNoTracking()
+                    .FirstOrDefaultAsync(c => c.FileId == student.DefaultCvId);
+
+                if (uploadData == null) return NotFound("Default CV not found");
+
+                return Ok(new { type, cv = new { _id = uploadData.FileId } });
+            }
+            else
+            {
+                return BadRequest("Loại CV không hợp lệ");
+            }
+        }
+
+        [HttpPost("{id}/set-default")]
+        public async Task<IActionResult> SetDefaultCV(string id, [FromBody] JsonDocument body)
+        {
+            var accountId = User.FindFirst("AccountId")?.Value;
+            if (accountId == null) return Unauthorized("Unauthorized");
+
+            var student = await _context.Students
+                .FirstOrDefaultAsync(s => s.AccountId == accountId);
+            if (student == null) return NotFound("Student not found");
+
+            var root = body.RootElement;
+
+            var type = root.TryGetProperty("type", out var typeProp) ? typeProp.GetString() : null;
+
+            if (type == "CV")
+            {
+                var cv = await _context.Cvs.FindAsync(id);
+                if (cv == null) return NotFound("CV not found");
+
+                student.DefaultCvId = id;
+                student.DefaultCvType = type;
+            }
+            else if (type == "CVUpload")
+            {
+                var upload = await _context.CvUploads.FindAsync(id);
+                if (upload == null) return NotFound("Upload not found");
+
+                student.DefaultCvId = id;
+                student.DefaultCvType = type;
+            }
+            else
+            {
+                return BadRequest("Invalid type. Must be 'cv' or 'upload'.");
+            }
+
+            await _context.SaveChangesAsync();
+
+            return Ok(new { message = "Default CV set successfully" });
+        }
+
         [HttpPost]
         public async Task<IActionResult> CreateCV([FromBody] CvDto req)
         {
@@ -463,7 +545,17 @@ namespace api.Controllers
         public async Task<IActionResult> DeleteCv(string id)
         {
             var cv = await _context.Cvs.FindAsync(id);
-            if (cv == null) return NotFound("CV not found");
+            if (cv == null) return NotFound("CV không tồn tại");
+
+            var student = await _context.Students
+                .FirstOrDefaultAsync(s => s.DefaultCvId == id);
+
+            if (student != null)
+            {
+                student.DefaultCvId = null;
+                student.DefaultCvType = null;
+                _context.Students.Update(student);
+            }
 
             _context.Cvs.Remove(cv);
             await _context.SaveChangesAsync();
@@ -476,6 +568,16 @@ namespace api.Controllers
         {
             var upload = await _context.CvUploads.FindAsync(id);
             if (upload == null) return NotFound("Upload not found");
+
+            var student = await _context.Students
+                .FirstOrDefaultAsync(s => s.DefaultCvId == id);
+
+            if (student != null)
+            {
+                student.DefaultCvId = null;
+                student.DefaultCvType = null;
+                _context.Students.Update(student);
+            }
 
             _context.CvUploads.Remove(upload);
             await _context.SaveChangesAsync();

@@ -6,6 +6,7 @@ using System.Text.Json;
 using api.Models;
 using api.Settings;
 using Google.Apis.Auth;
+using Google.Apis.Util;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -229,7 +230,17 @@ namespace api.Controllers
             if (string.IsNullOrWhiteSpace(req.ggToken))
                 return BadRequest(new { message = "Missing Google ID token" });
 
-            var payload = await GoogleJsonWebSignature.ValidateAsync(req.ggToken);
+            // payload bình thường
+            // var payload = await GoogleJsonWebSignature.ValidateAsync(req.ggToken);
+
+            // payload với clock để tránh lỗi "Google.Apis.Auth.InvalidJwtException: JWT is not yet valid."
+            // giải thích lỗi: gg token gửi từ frontend chưa có hiệu lực tại thời điểm server kiểm tra
+            // do đó cần sử dụng Clock để đồng bộ thời gian giữa client và server
+            var payload = await GoogleJsonWebSignature.ValidateAsync(req.ggToken, new GoogleJsonWebSignature.ValidationSettings
+            {
+                Clock = SystemClock.Default
+            });
+
             var email = payload.Email;
 
             var account = await _context.Accounts

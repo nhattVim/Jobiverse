@@ -40,7 +40,7 @@ const CVCardList = ({
               onClick={onCreate}
               className="px-4 py-2 text-sm rounded-full cursor-pointer bg-blue hover:bg-blue-700 text-white-bright"
             >
-              {type === 'CVUpload' ? (<div className='flex items-center gap-1'><ArrowUpTrayIcon className='w-4 h-4'/>Tải CV lên</div>) : (<div className='flex items-center gap-1'><PlusIcon className='w-4 h-4'/>Tạo mới</div>)}
+              {type === 'CVUpload' ? (<div className='flex items-center gap-1'><ArrowUpTrayIcon className='w-4 h-4' />Tải CV lên</div>) : (<div className='flex items-center gap-1'><PlusIcon className='w-4 h-4' />Tạo mới</div>)}
             </button>
           )}
         </div>

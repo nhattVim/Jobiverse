@@ -33,6 +33,5 @@ namespace api.Controllers
                 return StatusCode(500, new { message = "Error fetching provinces" });
             }
         }
-
     }
 }

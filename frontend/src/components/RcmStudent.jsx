@@ -103,7 +103,7 @@ const RcmStudent = ({ id, title, isOwner, projectId, toast, reload, invitedStude
               >
                 <div className="mr-[50px]">
                   <div
-                    className="flex flex-col items-center justify-center bg-white-bright rounded-medium w-full h-full border border-gray-light"
+                    className="flex flex-col items-center justify-center w-full h-full border bg-white-bright rounded-medium border-gray-light"
                   >
                     <div className="flex flex-col items-center gap-4 p-10">
                       <img
