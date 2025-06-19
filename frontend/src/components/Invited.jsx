@@ -1,6 +1,6 @@
-import { formatDate } from '../utils/dateUtils'
 import emptyFolder from '../assets/empty-folder.png'
 import apiFetch from '../services/api'
+import { formatDateTime } from '../utils/dateTimeUtils'
 
 const Invited = ({ invitedDetails, setInvitedDetails, setPreviewId, setCvType, id, reload, toast }) => {
   const handleInvite = async (studentId) => {
@@ -73,7 +73,7 @@ const Invited = ({ invitedDetails, setInvitedDetails, setPreviewId, setCvType, i
             </div>
 
             <span className="text-sm text-gray-500 w-1/6">{s.student.account?.email}</span>
-            <span className="text-sm text-gray-500 w-[15%]">{formatDate(s.appliedAt)}</span>
+            <span className="text-sm text-gray-500 w-[15%]">{formatDateTime(s.appliedAt)}</span>
             <span className="text-sm font-semibold w-1/6">
               {checkStatus ? (
                 <div className="inline-flex items-center gap-2 border text-yellow-500 border-yellow-500 px-2 py-1 rounded-full bg-yellow-50">

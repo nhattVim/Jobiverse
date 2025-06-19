@@ -9,7 +9,7 @@ import {
   PencilSquareIcon,
   TrashIcon
 } from '@heroicons/react/24/outline'
-import { formatDate } from '../utils/dateUtils'
+import { formatDateTime } from '../utils/dateTimeUtils'
 
 const JobManager = () => {
   const [jobList, setJobList] = useState([])
@@ -104,7 +104,7 @@ const JobManager = () => {
                             {job.title || 'Không có tiêu đề'}
                           </Link>
                           <p className="text-sm italic text-gray-500">
-                            {job.createdAt === job.updatedAt ? `Đã tạo: ${formatDate(job.createdAt)}` : `Đã cập nhật: ${formatDate(job.updatedAt)}`}
+                            {job.createdAt === job.updatedAt ? `Đã tạo: ${formatDateTime(job.createdAt)}` : `Đã cập nhật: ${formatDateTime(job.updatedAt)}`}
                           </p>
                         </div>
 

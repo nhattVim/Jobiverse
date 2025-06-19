@@ -1,5 +1,5 @@
-import { formatDate } from '../utils/dateUtils'
 import emptyFolder from '../assets/empty-folder.png'
+import { formatDateTime } from '../utils/dateTimeUtils'
 
 const Applicants = ({
   applicantDetails,
@@ -47,7 +47,7 @@ const Applicants = ({
 
             <span className="text-sm text-gray-500 w-1/6">{s.student.account?.email}</span>
             <span className="text-sm text-gray-500 w-1/6">{s.student.university}</span>
-            <span className="text-sm text-gray-500 w-[15%]">{formatDate(s.appliedAt)}</span>
+            <span className="text-sm text-gray-500 w-[15%]">{formatDateTime(s.appliedAt)}</span>
             <span className="text-sm text-blue w-[10%] font-semibold underline cursor-pointer"
 
               onClick={() => {

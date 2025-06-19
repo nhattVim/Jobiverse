@@ -5,7 +5,7 @@ import ButtonArrowOne from '../shared/ButtonArrowOne'
 import apiFetch from '../services/api'
 import { CurrencyDollarIcon, MapPinIcon } from '@heroicons/react/24/outline'
 import { Link, useNavigate } from 'react-router-dom'
-import { formatDate } from '../utils/dateUtils'
+import { formatDateTime } from '../utils/dateTimeUtils'
 
 const SavedJob = () => {
   const [favoriteJobs, setFavoriteJobs] = useState([])
@@ -119,7 +119,7 @@ const SavedJob = () => {
                   </div>
                   <div className="flex flex-col justify-between h-full text-right gap-5">
                     <p className="text-sm text-black-low">
-                      Đã lưu: {formatDate(job.createdAt)}
+                      Đã lưu: {formatDateTime(job.createdAt)}
                     </p>
                     <div className="flex items-center space-x-3 justify-end">
                       <ButtonArrowOne>Ứng tuyển</ButtonArrowOne>

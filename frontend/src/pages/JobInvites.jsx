@@ -6,7 +6,7 @@ import { ToastContainer, toast } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
 import { CurrencyDollarIcon, MapPinIcon } from '@heroicons/react/24/outline'
 import { Link } from 'react-router-dom'
-import { formatDate } from '../utils/dateUtils'
+import { formatDateTime } from '../utils/dateTimeUtils'
 
 const JobInvites = () => {
   const [jobList, setJobList] = useState([])
@@ -118,7 +118,7 @@ const JobInvites = () => {
                         <div className='flex flex-col items-end space-y-10'>
                           <p className="text-sm text-black-low">
                             Được mời:{' '}
-                            <span>{formatDate(job.applicants[0].appliedAt)}</span>
+                            <span>{formatDateTime(job.applicants[0].appliedAt)}</span>
                           </p>
                           <div className="flex items-center space-x-2">
                             <button

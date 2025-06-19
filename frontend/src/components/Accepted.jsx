@@ -1,5 +1,5 @@
-import { formatDate } from '../utils/dateUtils'
 import emptyFolder from '../assets/empty-folder.png'
+import { formatDateTime } from '../utils/dateTimeUtils'
 
 const Accepted = ({ acceptedDetails, setPreviewId, setCvType }) => {
   return (
@@ -40,7 +40,7 @@ const Accepted = ({ acceptedDetails, setPreviewId, setCvType }) => {
 
             <span className="w-1/6 text-sm text-gray-500">{s.student.account?.email}</span>
             <span className="w-1/6 text-sm text-gray-500">{s.student.university}</span>
-            <span className="text-sm text-gray-500 w-[15%]">{formatDate(s.appliedAt)}</span>
+            <span className="text-sm text-gray-500 w-[15%]">{formatDateTime(s.appliedAt)}</span>
             <span className="w-1/6 text-sm font-semibold text-green-500">
               <div className="inline-flex items-center gap-2 px-2 py-1 border border-green-500 rounded-full bg-green-50">
                 <div className="w-2 h-2 bg-green-500 rounded-full"></div>

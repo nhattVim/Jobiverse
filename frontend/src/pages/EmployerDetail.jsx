@@ -1,13 +1,14 @@
 import {
   ArrowUpRightIcon,
   BriefcaseIcon,
-  CurrencyDollarIcon
+  CurrencyDollarIcon,
+  MapPinIcon
 } from '@heroicons/react/24/outline'
 import ButtonArrowOne from '../shared/ButtonArrowOne'
 import { useEffect, useState } from 'react'
 import apiFetch from '../services/api'
-import { useParams } from 'react-router-dom'
-import { EnvelopeIcon, MapPinIcon, TagIcon } from '@heroicons/react/24/solid'
+import { Link, useParams } from 'react-router-dom'
+import { EnvelopeIcon, MapPinIcon as MapPinSolidIcon, TagIcon } from '@heroicons/react/24/solid'
 
 const EmployerDetail = () => {
   const { id } = useParams()
@@ -106,7 +107,14 @@ const EmployerDetail = () => {
                       </div>
                       <div>
                         <h3 className="font-semibold text-[22px]">
-                          {job.title}
+                          <Link
+                            to={`/job-detail/${job._id}`}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="text-[22px] font-semibold leading-[28.6px] line-clamp-1 hover:text-blue transition-colors duration-300"
+                          >
+                            {job.title}
+                          </Link>
                         </h3>
                         <p className="text-black-low mt-2.5">
                           {job.profile?.companyName}
@@ -152,7 +160,7 @@ const EmployerDetail = () => {
                   <div className="flex flex-col gap-5 mt-5">
                     <div className="flex flex-col gap-2">
                       <div className="flex items-center">
-                        <MapPinIcon className="w-5 h-5 mr-[6px] text-blue shrink-0" />
+                        <MapPinSolidIcon className="w-5 h-5 mr-[6px] text-blue shrink-0" />
                         <p className="text-sm">
                           <span className="font-semibold mr-[6px]">
                             Địa chỉ công ty:
@@ -169,7 +177,7 @@ const EmployerDetail = () => {
                     <div className="flex items-center">
                       <EnvelopeIcon className="w-5 h-5 mr-[6px] text-blue shrink-0" />
                       <span className="font-semibold mr-[6px]">Email: </span>
-                      <p className="text-sm">{employerDetail.account.email}</p>
+                      <p className="text-sm">{employerDetail.account?.email}</p>
                     </div>
                   </div>
                 </div>

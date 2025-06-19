@@ -14,7 +14,7 @@ import { UserContext } from '../contexts/UserContext'
 import { useContext } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { ApplicationStatusContext } from '../contexts/ApplicationStatusContext'
-import { formatDate } from '../utils/dateUtils'
+import { formatDateTime } from '../utils/dateTimeUtils'
 
 const AppliedJob = () => {
   const { user } = useContext(UserContext)
@@ -153,7 +153,7 @@ const AppliedJob = () => {
                       <p className="text-sm text-black-low">
                         Đã ứng tuyển:{' '}
                         {applicant && (
-                          <span>{formatDate(applicant.appliedAt)}</span>
+                          <span>{formatDateTime(applicant.appliedAt)}</span>
                         )}
                       </p>
                       <div className="flex items-center justify-end space-x-3">
