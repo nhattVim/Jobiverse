@@ -148,9 +148,6 @@ const JobDetail = () => {
     exit: { opacity: 0, x: -40 }
   }
 
-  console.log(project)
-  console.log(invitedDetails)
-
   return (
     <>
       {isOpen && (

@@ -3,7 +3,7 @@ import 'react-loading-skeleton/dist/skeleton.css'
 
 const JobInfoSkeleton = () => {
   return (
-    <div className="container-responsive py-20">
+    <div className="py-20 container-responsive">
       <div className="grid grid-cols-[1fr_0.5fr] gap-10 min-h-full">
         {/* Left Content */}
         <div className="w-full">

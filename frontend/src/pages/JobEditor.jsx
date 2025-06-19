@@ -149,8 +149,6 @@ const JobEditor = () => {
     </div>
   )
 
-  console.log('Form state:', form)
-
   return (
     <div className="min-h-screen bg-white">
       <ToastContainer position="top-right" autoClose={3000} />

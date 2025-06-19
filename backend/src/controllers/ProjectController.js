@@ -77,7 +77,7 @@ class ProjectController {
     }
   }
 
-  // [GET] /projects/:id
+  // [GET] /projects/detail/:id
   async getProjectById(req, res, next) {
     try {
       const projectId = req.params.id

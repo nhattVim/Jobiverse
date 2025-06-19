@@ -37,101 +37,169 @@ namespace api.Controllers
             DateTime? deadline,
             List<string>? major,
             List<string>? specialization,
-            List<string>? applicants,
-            List<string>? assignedStudents
+            List<string>? applicants
         );
 
-        // [HttpGet]
-        // public async Task<IActionResult> GetAllProjects(
-        //     [FromQuery] string? major,
-        //     [FromQuery] string? spec,
-        //     [FromQuery] string? expRequired,
-        //     [FromQuery] string? workTypes,
-        //     [FromQuery] string? sortBy,
-        //     [FromQuery] string? search
-        // )
-        // {
-        //     var query = _context.Projects
-        //         .AsNoTracking()
-        //         .Include(p => p.Account)
-        //         .Include(p => p.Majors)
-        //         .Include(p => p.Specializations)
-        //         .Include(p => p.ProjectApplicants)
-        //         .AsQueryable();
+        [HttpGet]
+        public async Task<IActionResult> GetAllProjects(
+            [FromQuery] string? major,
+            [FromQuery] string? spec,
+            [FromQuery] string? expRequired,
+            [FromQuery] string? workTypes,
+            [FromQuery] string? sortBy,
+            [FromQuery] string? search
+        )
+        {
+            var query = _context.Projects
+                .AsNoTracking()
+                .Include(p => p.Account)
+                .Include(p => p.Majors)
+                .Include(p => p.Specializations)
+                .Include(p => p.ProjectApplicants)
+                .AsQueryable();
 
-        //     if (!string.IsNullOrWhiteSpace(major))
-        //     {
-        //         var majorIds = major.Split(',').ToHashSet();
-        //         query = query.Where(p => p.Majors.Any(m => majorIds.Contains(m.MajorId)));
-        //     }
+            if (!string.IsNullOrWhiteSpace(major))
+            {
+                var majorIds = major.Split(',').ToHashSet();
+                query = query.Where(p => p.Majors.Any(m => majorIds.Contains(m.MajorId)));
+            }
 
-        //     if (!string.IsNullOrWhiteSpace(spec))
-        //     {
-        //         var specIds = spec.Split(',').ToHashSet();
-        //         query = query.Where(p => p.Specializations.Any(s => specIds.Contains(s.SpecializationId)));
-        //     }
+            if (!string.IsNullOrWhiteSpace(spec))
+            {
+                var specIds = spec.Split(',').ToHashSet();
+                query = query.Where(p => p.Specializations.Any(s => specIds.Contains(s.SpecializationId)));
+            }
 
-        //     if (!string.IsNullOrWhiteSpace(expRequired))
-        //     {
-        //         var expList = expRequired.Split(',').Select(int.Parse).ToList();
-        //         query = query.Where(p => p.ExpRequired.HasValue && expList.Contains(p.ExpRequired.Value));
-        //     }
+            if (!string.IsNullOrWhiteSpace(expRequired))
+            {
+                var expList = expRequired.Split(',').Select(int.Parse).ToList();
+                query = query.Where(p => p.ExpRequired.HasValue && expList.Contains(p.ExpRequired.Value));
+            }
 
-        //     if (!string.IsNullOrWhiteSpace(workTypes))
-        //     {
-        //         var types = workTypes.Split(',').ToHashSet();
-        //         query = query.Where(p => p.WorkType != null && types.Contains(p.WorkType));
-        //     }
+            if (!string.IsNullOrWhiteSpace(workTypes))
+            {
+                var types = workTypes.Split(',').ToHashSet();
+                query = query.Where(p => p.WorkType != null && types.Contains(p.WorkType));
+            }
 
-        //     if (!string.IsNullOrWhiteSpace(search))
-        //     {
-        //         query = query.Where(p =>
-        //             (p.Title ?? "").Contains(search) ||
-        //             (p.Description ?? "").Contains(search) ||
-        //             (p.ProjectLocation != null &&
-        //                 ((p.ProjectLocation.Province ?? "").Contains(search) ||
-        //                 (p.ProjectLocation.District ?? "").Contains(search) ||
-        //                 (p.ProjectLocation.Ward ?? "").Contains(search))));
-        //     }
+            if (!string.IsNullOrWhiteSpace(search))
+            {
+                query = query.Where(p =>
+                    (p.Title ?? "").Contains(search) ||
+                    (p.Description ?? "").Contains(search) ||
+                    (p.ProjectLocation != null &&
+                        ((p.ProjectLocation.Province ?? "").Contains(search) ||
+                        (p.ProjectLocation.District ?? "").Contains(search) ||
+                        (p.ProjectLocation.Ward ?? "").Contains(search))));
+            }
 
-        //     query = sortBy switch
-        //     {
-        //         "newest" => query.OrderByDescending(p => p.CreatedAt),
-        //         "oldest" => query.OrderBy(p => p.CreatedAt),
-        //         "salaryAsc" => query.OrderBy(p => p.Salary),
-        //         "salaryDesc" => query.OrderByDescending(p => p.Salary),
-        //         _ => query.OrderByDescending(p => p.CreatedAt)
-        //     };
+            query = sortBy switch
+            {
+                "newest" => query.OrderByDescending(p => p.CreatedAt),
+                "oldest" => query.OrderBy(p => p.CreatedAt),
+                "salaryAsc" => query.OrderBy(p => p.Salary),
+                "salaryDesc" => query.OrderByDescending(p => p.Salary),
+                _ => query.OrderByDescending(p => p.CreatedAt)
+            };
 
-        //     var result = await query
-        //         .Where(p => p.Account != null && (p.Account.Deleted == false))
-        //         .Select(p => new
-        //         {
-        //             _id = p.ProjectId,
-        //             account = new
-        //             {
-        //                 _id = p.Account.AccountId,
-        //                 avatar = p.Account.Avatar == null ? null : new
-        //                 {
-        //                     data = Convert.ToBase64String(p.Account.Avatar),
-        //                     contentType = p.Account.AvatarType
-        //                 }
-        //             },
-        //             p.Title,
-        //             p.Description,
-        //             p.ProjectLocation,
-        //             p.Salary,
-        //             p.ExpRequired,
-        //             p.WorkType,
-        //             p.WorkingTime,
-        //             p.HiringCount,
-        //             major = p.Majors.Select(m => m.MajorId),
-        //             specialization = p.Specializations.Select(s => s.SpecializationId)
-        //         })
-        //         .ToListAsync();
+            var result = await query
+                .Where(p => p.Account != null && (p.Account.Deleted == false))
+                .Select(p => new
+                {
+                    _id = p.ProjectId,
+                    account = new
+                    {
+                        _id = p.Account.AccountId,
+                        avatar = p.Account.Avatar == null ? null : new
+                        {
+                            data = Convert.ToBase64String(p.Account.Avatar),
+                            contentType = p.Account.AvatarType
+                        }
+                    },
+                    p.Title,
+                    p.Description,
+                    p.ProjectLocation,
+                    p.Salary,
+                    p.ExpRequired,
+                    p.WorkType,
+                    p.WorkingTime,
+                    p.HiringCount,
+                    major = p.Majors.Select(m => m.MajorId),
+                    specialization = p.Specializations.Select(s => s.SpecializationId)
+                })
+                .ToListAsync();
 
-        //     return Ok(result);
-        // }
+            return Ok(result);
+        }
+
+        [HttpGet("detail/{id}")]
+        public async Task<IActionResult> GetProjectById(string id)
+        {
+            var project = await _context.Projects
+                .AsNoTracking()
+                .Include(p => p.Account)
+                .Include(p => p.Majors)
+                .Include(p => p.Specializations)
+                .Include(p => p.ProjectApplicants)
+                .Include(p => p.ProjectLocation)
+                .FirstOrDefaultAsync(p => p.ProjectId == id);
+
+            object? profile = null;
+
+            if (project?.Account.AccountRole == "student")
+            {
+                var student = await _context.Students
+                    .AsNoTracking()
+                    .FirstOrDefaultAsync(s => s.AccountId == project.Account.AccountId);
+
+                if (student != null)
+                    profile = new { name = student.Name };
+            }
+            else if (project?.Account.AccountRole == "employer")
+            {
+                var employer = await _context.Employers
+                    .AsNoTracking()
+                    .FirstOrDefaultAsync(c => c.AccountId == project.Account.AccountId);
+
+                if (employer != null)
+                    profile = new { companyName = employer.CompanyName };
+            }
+
+            return Ok(new
+            {
+                _id = project?.ProjectId,
+                account = new
+                {
+                    _id = project?.Account?.AccountId,
+                    avatar = project?.Account?.Avatar == null ? null : new
+                    {
+                        data = Convert.ToBase64String(project.Account.Avatar),
+                        contentType = project.Account.AvatarType
+                    },
+                    email = project?.Account?.Email,
+                    role = project?.Account?.AccountRole
+                },
+                project?.Title,
+                project?.Description,
+                project?.Content,
+                project?.Salary,
+                project?.ExpRequired,
+                project?.WorkType,
+                project?.WorkingTime,
+                project?.HiringCount,
+                profile,
+                major = project?.Majors.Select(m => m.MajorId),
+                specialization = project?.Specializations.Select(s => s.SpecializationId),
+                applicants = project?.ProjectApplicants.Select(a => a.StudentId),
+                deadline = project?.Deadline,
+                location = project?.ProjectLocation == null ? null : new
+                {
+                    project.ProjectLocation.Province,
+                    project.ProjectLocation.District,
+                    project.ProjectLocation.Ward
+                },
+            });
+        }
 
         // [HttpGet("my")]
         // public async Task<IActionResult> GetMyProjects()
@@ -165,49 +233,46 @@ namespace api.Controllers
         //     return Ok(result);
         // }
 
-        // [HttpPost("my")]
-        // public async Task<IActionResult> CreateProject([FromBody] ProjectDto dto)
-        // {
-        //     var accountId = User.FindFirst("AccountId")?.Value;
-        //     if (accountId == null) return Unauthorized("AccountId not found in token");
+        [HttpPost("my")]
+        public async Task<IActionResult> CreateProject([FromBody] ProjectDto dto)
+        {
+            var accountId = User.FindFirst("AccountId")?.Value;
+            if (accountId == null) return Unauthorized("AccountId not found in token");
 
-        //     _logger.LogInformation("Req {req}", JsonSerializer.Serialize(dto));
+            _logger.LogInformation("Req {req}", JsonSerializer.Serialize(dto));
 
-        //     var project = new Project
-        //     {
-        //         ProjectId = Guid.NewGuid().ToString(),
-        //         Title = dto.title,
-        //         Description = dto.description,
-        //         ProjectLocation = dto.location != null
-        //             ? new ProjectLocation
-        //             {
-        //                 Province = dto.location.Province,
-        //                 District = dto.location.District,
-        //                 Ward = dto.location.Ward
-        //             }
-        //             : null,
-        //         AccountId = accountId,
-        //         Content = dto.content,
-        //         WorkingTime = dto.workingTime,
-        //         Salary = dto.salary,
-        //         HiringCount = dto.hiringCount,
-        //         ExpRequired = dto.expRequired,
-        //         Deadline = dto.deadline ?? DateTime.UtcNow.AddDays(30),
-        //         Majors = await _context.Majors
-        //             .Where(m => dto.major != null && dto.major.Contains(m.MajorId))
-        //             .ToListAsync(),
-        //         Specializations = await _context.Specializations
-        //             .Where(s => dto.specialization != null && dto.specialization.Contains(s.SpecializationId))
-        //             .ToListAsync(),
-        //         ProjectApplicants = await _context.Students
-        //             .Where(s => dto.applicants != null && dto.applicants.Contains(s.StudentId))
-        //             .ToListAsync(),
-        //     };
+            var project = new Project
+            {
+                ProjectId = Guid.NewGuid().ToString(),
+                Title = dto.title,
+                Description = dto.description,
+                ProjectLocation = dto.location != null
+                    ? new ProjectLocation
+                    {
+                        Province = dto.location.Province,
+                        District = dto.location.District,
+                        Ward = dto.location.Ward
+                    }
+                    : null,
+                AccountId = accountId,
+                Content = dto.content,
+                WorkingTime = dto.workingTime,
+                Salary = dto.salary,
+                HiringCount = dto.hiringCount,
+                ExpRequired = dto.expRequired,
+                Deadline = dto.deadline ?? DateTime.UtcNow.AddDays(30),
+                Majors = await _context.Majors
+                    .Where(m => dto.major != null && dto.major.Contains(m.MajorId))
+                    .ToListAsync(),
+                Specializations = await _context.Specializations
+                    .Where(s => dto.specialization != null && dto.specialization.Contains(s.SpecializationId))
+                    .ToListAsync(),
+            };
 
-        //     _context.Projects.Add(project);
-        //     await _context.SaveChangesAsync();
+            _context.Projects.Add(project);
+            await _context.SaveChangesAsync();
 
-        //     return Ok();
-        // }
+            return Ok();
+        }
     }
 }

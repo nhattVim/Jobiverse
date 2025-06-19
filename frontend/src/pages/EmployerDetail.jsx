@@ -38,14 +38,14 @@ const EmployerDetail = () => {
   return (
     <>
       <div className="container-responsive">
-        <div className="flex justify-between w-full bg-gradient-blue-right py-10 rounded-medium px-25">
-          <div className="flex justify-center items-center gap-5">
+        <div className="flex justify-between w-full py-10 bg-gradient-blue-right rounded-medium px-25">
+          <div className="flex items-center justify-center gap-5">
             <img
               src={avatarSrc}
               alt="imgcompany"
-              className="object-cover w-40 h-40 rounded-small border-2 border-white-bright"
+              className="object-cover w-40 h-40 border-2 rounded-small border-white-bright"
             />
-            <div className="text-white flex flex-col items-start gap-5">
+            <div className="flex flex-col items-start gap-5 text-white">
               <h6 className="text-3xl font-semibold">
                 {employerDetail.companyName}
               </h6>
@@ -65,7 +65,7 @@ const EmployerDetail = () => {
               >
                 Xem các vị trí đang tuyển
                 <div className="bg-white group-hover/b:bg-black rounded-full flex items-center justify-center w-[30px] h-[30px] transition-all duration-500 ease-in-out">
-                  <ArrowUpRightIcon className="w-5 h-5 text-blue font-semibold group-hover/b:text-white transition-all duration-500 ease-in-out" />
+                  <ArrowUpRightIcon className="w-5 h-5 font-semibold transition-all duration-500 ease-in-out text-blue group-hover/b:text-white" />
                 </div>
               </a>
             </div>
@@ -77,7 +77,7 @@ const EmployerDetail = () => {
         <div className="container-responsive">
           <div className="grid grid-cols-[1fr_0.5fr] gap-10">
             <div className="flex flex-col gap-10">
-              <div className="bg-white-bright p-10 rounded-medium">
+              <div className="p-10 bg-white-bright rounded-medium">
                 <h5 className="text-[22px] font-semibold pb-5 border-b border-gray-light">
                   Giới thiệu công ty
                 </h5>
@@ -86,7 +86,7 @@ const EmployerDetail = () => {
 
               <div
                 id="current-job"
-                className="bg-white-bright p-10 rounded-medium flex flex-col gap-5"
+                className="flex flex-col gap-5 p-10 bg-white-bright rounded-medium"
               >
                 <h5 className="text-[22px] font-semibold pb-5 border-b border-gray-light">
                   Tuyển dụng
@@ -94,7 +94,7 @@ const EmployerDetail = () => {
                 {jobsOfEmployer.map((job, index) => (
                   <div
                     key={index}
-                    className="bg-blue-50 p-6 rounded-medium border border-white-low flex items-center justify-between hover:shadow-md hover:border-blue transition-all duration-300"
+                    className="flex items-center justify-between p-6 transition-all duration-300 border bg-blue-50 rounded-medium border-white-low hover:shadow-md hover:border-blue"
                   >
                     <div className="flex items-center space-x-5">
                       <div className="w-[70px] h-[70px] bg-white-bright border border-white-low rounded-small flex justify-center items-center">
@@ -112,23 +112,23 @@ const EmployerDetail = () => {
                           {job.profile?.companyName}
                         </p>
                         <div className="flex items-center text-black-low space-x-2 mt-2.5">
-                          <span className="flex gap-2 items-center">
-                            <CurrencyDollarIcon className="text-blue w-6 h-6" />
+                          <span className="flex items-center gap-2">
+                            <CurrencyDollarIcon className="w-6 h-6 text-blue" />
                             <p>{job.salary}</p>
                           </span>
                           <span>|</span>
-                          <span className="flex gap-2 items-center">
-                            <MapPinIcon className="text-blue w-6 h-6" />
+                          <span className="flex items-center gap-2">
+                            <MapPinIcon className="w-6 h-6 text-blue" />
                             <p>{job.location?.province}</p>
                           </span>
                         </div>
                       </div>
                     </div>
-                    <div className="flex flex-col items-end justify-between h-full text-right gap-5">
-                      <div className="text-sm bg-yellow px-2 py-1 rounded-lg">
+                    <div className="flex flex-col items-end justify-between h-full gap-5 text-right">
+                      <div className="px-2 py-1 text-sm rounded-lg bg-yellow">
                         {job.workType}
                       </div>
-                      <div className="flex items-center space-x-3 justify-end">
+                      <div className="flex items-center justify-end space-x-3">
                         <ButtonArrowOne
                           selectedPage={`/job-detail/${job._id}?openApply=true`}
                           target="_blank"
@@ -145,7 +145,7 @@ const EmployerDetail = () => {
 
             <div className="overflow-visible">
               <div className="sticky top-[120px]">
-                <div className="bg-white-bright p-10 rounded-medium">
+                <div className="p-10 bg-white-bright rounded-medium">
                   <h5 className="text-[22px] font-semibold pb-5 border-b border-gray-light">
                     Thông tin chung
                   </h5>
