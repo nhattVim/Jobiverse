@@ -62,16 +62,16 @@ builder.Services.AddAuthentication(options =>
     {
         OnAuthenticationFailed = context =>
         {
-            if (context.Exception is SecurityTokenExpiredException)
-            {
-                context.Response.StatusCode = 498;
-                context.Response.ContentType = "application/json";
-                context.Response.Headers.Append("Set-Cookie", "token=; Path=/; HttpOnly; SameSite=Lax; Max-Age=0");
-                var result = JsonSerializer.Serialize(new { message = "Token expired" });
-                return context.Response.WriteAsync(result);
-            }
+            context.Response.StatusCode = 498;
+            context.Response.ContentType = "application/json";
+            context.Response.Headers.Append("Set-Cookie", "token=; Path=/; HttpOnly; SameSite=Lax; Max-Age=0");
 
-            return Task.CompletedTask;
+            string message = context.Exception is SecurityTokenExpiredException
+                ? "Token đã hết hạn"
+                : "Token không hợp lệ";
+
+            var result = JsonSerializer.Serialize(new { message });
+            return context.Response.WriteAsync(result);
         },
 
         OnMessageReceived = context =>
