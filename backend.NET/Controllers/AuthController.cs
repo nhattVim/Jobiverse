@@ -102,7 +102,7 @@ namespace api.Controllers
         [HttpPost("logout")]
         public IActionResult Logout()
         {
-            Response.Cookies.Delete("token");
+            Response.Cookies.Delete("tokenNET");
             return Ok(new { message = "Logged out successfully" });
         }
 
@@ -339,11 +339,11 @@ namespace api.Controllers
         {
             var token = GenerateJwtToken(account);
 
-            Response.Cookies.Append("token", token, new CookieOptions
+            Response.Cookies.Append("tokenNET", token, new CookieOptions
             {
                 HttpOnly = true,
-                Secure = false,
-                SameSite = SameSiteMode.Lax,
+                Secure = true,
+                SameSite = SameSiteMode.None,
                 Path = "/",
             });
 

@@ -26,6 +26,10 @@ pnpm-lock.yaml
 # Uploads (Optional)
 uploads/
 
+# Certificates (Optional)
+localhost-key.pem
+localhost.pem
+
 # ============================
 # BACKEND.NET (ASP.NET Core)
 # ============================

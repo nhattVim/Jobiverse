@@ -64,7 +64,7 @@ builder.Services.AddAuthentication(options =>
         {
             context.Response.StatusCode = 498;
             context.Response.ContentType = "application/json";
-            context.Response.Headers.Append("Set-Cookie", "token=; Path=/; HttpOnly; SameSite=Lax; Max-Age=0");
+            context.Response.Headers.Append("Set-Cookie", "tokenNET=; Path=/; HttpOnly; SameSite=Lax; Max-Age=0");
 
             string message = context.Exception is SecurityTokenExpiredException
                 ? "Token đã hết hạn"
@@ -76,7 +76,7 @@ builder.Services.AddAuthentication(options =>
 
         OnMessageReceived = context =>
         {
-            var accessToken = context.Request.Cookies["token"];
+            var accessToken = context.Request.Cookies["tokenNET"];
             if (!string.IsNullOrEmpty(accessToken))
             {
                 context.Token = accessToken;

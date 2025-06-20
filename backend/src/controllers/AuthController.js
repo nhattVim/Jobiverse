@@ -12,196 +12,193 @@ const DefaultAvatar = fs.readFileSync(path.join(__dirname, '../../public', 'defa
 
 class AccountController {
   // [POST] /register
-  async register(req, res) {
+  register = async (req, res) => {
     try {
       const { authProvider } = req.body
-      console.log('Register authProvider:', authProvider)
-
-      if (authProvider === 'local') {
-
-        const { role, email, password, phoneNumber } = req.body
-        const trimmedEmail = email?.trim()
-        const trimmedPhone = phoneNumber?.trim()
-
-        if (!trimmedEmail || !trimmedPhone || !password || !role) {
-          return res.status(400).json({ message: 'Thiếu thông tin bắt buộc' })
-        }
-
-        const emailExists = await Account.findOne({ email: trimmedEmail, deleted: false })
-        if (emailExists) return res.status(400).json({ message: 'Email đã được sử dụng' })
-
-        const phoneExists = await Account.findOne({ phoneNumber: trimmedPhone, deleted: false })
-        if (phoneExists) return res.status(400).json({ message: 'Số điện thoại đã được sử dụng' })
-
-        const account = await Account.create({
-          role,
-          email: trimmedEmail,
-          password,
-          phoneNumber: trimmedPhone,
-          authProvider,
-          avatar: req.file
-            ? { data: req.file.buffer, contentType: req.file.mimetype }
-            : { data: DefaultAvatar, contentType: 'image/png' }
-        })
-
-        res.status(201).json({ message: 'Tạo tài khoản thành công', accountID: account._id })
-
-      } else if (authProvider === 'google') {
-
-        const { ggToken, role } = req.body
-        if (!ggToken || !role) return res.status(400).json({ message: 'Thiếu thông tin bắt buộc' })
-
-        const ticket = await client.verifyIdToken({ idToken: ggToken, audience: process.env.GOOGLE_CLIENT_ID })
-        const payload = ticket.getPayload()
-        const { email, picture } = payload
-
-        let account = await Account.findOne({ email, deleted: false })
-        if (!account) {
-          const response = await axios.get(picture, { responseType: 'arraybuffer' })
-          const buffer = Buffer.from(response.data, 'binary')
-          const contentType = response.headers['content-type']
-
-          account = await Account.create({
-            role,
-            email,
-            password: null,
-            phoneNumber: null,
-            authProvider,
-            avatar: { data: buffer, contentType }
-          })
-        }
-
-        const token = jwt.sign({ id: account._id, type: account.role }, JWT_SECRET, { expiresIn: '7d' })
-        res.cookie('token', token, { httpOnly: true, secure: true, sameSite: 'none', maxAge: 1 * 60 * 60 * 1000 })
-        res.json({ message: 'Đăng kí bằng Google thành công', token })
-
-      } else if (authProvider === 'facebook') {
-
-        const { fbToken, role } = req.body
-        if (!fbToken || !role) return res.status(400).json({ message: 'Thiếu thông tin bắt buộc' })
-
-        const fbResponse = await axios.get('https://graph.facebook.com/me', {
-          params: {
-            access_token: fbToken,
-            fields: 'id,email,picture'
-          }
-        })
-
-        const { email, picture } = fbResponse.data
-        if (!email) return res.status(400).json({ message: 'Không lấy được email từ Facebook' })
-
-        let account = await Account.findOne({ email, deleted: false })
-
-        if (!account) {
-          const picUrl = picture?.data?.url
-          let avatarData = DefaultAvatar
-          let contentType = 'image/png'
-
-          if (picUrl) {
-            const response = await axios.get(picUrl, { responseType: 'arraybuffer' })
-            avatarData = Buffer.from(response.data, 'binary')
-            contentType = response.headers['content-type']
-          }
-
-          account = await Account.create({
-            role,
-            email,
-            password: null,
-            phoneNumber: null,
-            authProvider,
-            avatar: { data: avatarData, contentType }
-          })
-        }
-
-        const token = jwt.sign({ id: account._id, type: account.role }, JWT_SECRET, { expiresIn: '7d' })
-        res.cookie('token', token, { httpOnly: true, secure: true, sameSite: 'none', maxAge: 7 * 24 * 60 * 60 * 1000 })
-        res.json({ message: 'Đăng kí bằng Facebook thành công', token })
+      if (authProvider == 'local') {
+        return this.registerLocal(req, res)
+      } else if (authProvider == 'google') {
+        return this.registerGoogle(req, res)
+      } else if (authProvider == 'facebook') {
+        return this.registerFacebook(req, res)
       } else {
-        res.status(400).json({ message: 'Phương thức đăng ký không hợp lệ' })
+        return res.status(400).json({ message: 'Phương thức đăng ký không hợp lệ' })
       }
     } catch (err) {
-      res.status(500).json({ message: 'Lỗi khi tạo tài khoản ' + err.message })
+      res.status(500).json({ message: 'Lỗi khi tạo tài khoản: ' + err.message })
     }
   }
 
+  // handle register for local account
+  registerLocal = async (req, res) => {
+    const { role, email, password, phoneNumber } = req.body
+    const trimmedEmail = email?.trim()
+    const trimmedPhone = phoneNumber?.trim()
+    if (!trimmedEmail || !trimmedPhone || !password || !role) {
+      return res.status(400).json({ message: 'Thiếu thông tin bắt buộc' })
+    }
+
+    const [emailExists, phoneExists] = await Promise.all([
+      Account.findOne({ email: trimmedEmail, deleted: false }),
+      Account.findOne({ phoneNumber: trimmedPhone, deleted: false })
+    ])
+    if (emailExists) return res.status(400).json({ message: 'Email đã được sử dụng' })
+    if (phoneExists) return res.status(400).json({ message: 'Số điện thoại đã được sử dụng' })
+
+    const avatar = req.file
+      ? { data: req.file.buffer, contentType: req.file.mimetype }
+      : { data: DefaultAvatar, contentType: 'image/png' }
+
+    const account = await Account.create({
+      role,
+      email: trimmedEmail,
+      password,
+      phoneNumber: trimmedPhone,
+      authProvider: 'local',
+      avatar
+    })
+
+    return res.status(201).json({ message: 'Tạo tài khoản thành công', accountID: account._id })
+  }
+
+  // handle register for Google account
+  registerGoogle = async (req, res) => {
+    const { ggToken, role } = req.body
+    if (!ggToken || !role) return res.status(400).json({ message: 'Thiếu thông tin bắt buộc' })
+
+    const ticket = await client.verifyIdToken({ idToken: ggToken, audience: process.env.GOOGLE_CLIENT_ID })
+    const payload = ticket.getPayload()
+    const { email, picture } = payload
+
+    let account = await Account.findOne({ email, deleted: false })
+    if (!account) {
+      const avatar = await this.fetchImage(picture)
+      account = await Account.create({
+        role,
+        email,
+        password: null,
+        phoneNumber: null,
+        authProvider: 'google',
+        avatar
+      })
+    }
+
+    this.createAndSetToken(res, account)
+    res.json({ message: 'Đăng kí bằng Google thành công' })
+  }
+
+  // handle register for Facebook account
+  registerFacebook = async (req, res) => {
+    const { fbToken, role } = req.body
+    if (!fbToken || !role) return res.status(400).json({ message: 'Thiếu thông tin bắt buộc' })
+
+    const fbResponse = await axios.get('https://graph.facebook.com/me', {
+      params: {
+        access_token: fbToken,
+        fields: 'id,email,picture'
+      }
+    })
+    const { email, picture } = fbResponse.data
+    if (!email) return res.status(400).json({ message: 'Không lấy được email từ Facebook' })
+
+    let account = await Account.findOne({ email, deleted: false })
+    if (!account) {
+      const picUrl = picture?.data?.url
+      const avatar = picUrl
+        ? await this.fetchImage(picUrl)
+        : { data: DefaultAvatar, contentType: 'image/png' }
+
+      account = await Account.create({
+        role,
+        email,
+        password: null,
+        phoneNumber: null,
+        authProvider: 'facebook',
+        avatar
+      })
+    }
+
+    this.createAndSetToken(res, account)
+    res.json({ message: 'Đăng kí bằng Facebook thành công' })
+  }
+
   // [POST] /login
-  async login(req, res) {
+  login = async (req, res) => {
     try {
       const { authProvider } = req.body
-
-      if (authProvider === 'local') {
-
-        const { emailOrPhone, password } = req.body
-        if (!emailOrPhone || !password) return res.status(400).json({ message: 'Thiếu thông tin bắt buộc' })
-
-        const isEmail = emailOrPhone.includes('@')
-        let account = isEmail
-          ? await Account.findOne({ email: emailOrPhone, deleted: false })
-          : await Account.findOne({ phoneNumber: emailOrPhone, deleted: false })
-
-        if (!account) return res.status(404).json({ message: 'Email hoặc số điện thoại không tồn tại' })
-        if (!account.password || typeof account.password !== 'string') {
-          return res.status(400).json({ message: 'Tài khoản này không thể đăng nhập bằng mật khẩu' })
-        }
-
-        const isMatch = await bcrypt.compare(password, account.password)
-        if (!isMatch) return res.status(401).json({ message: 'Sai mật khẩu' })
-
-        const token = jwt.sign({ id: account._id, type: account.role }, JWT_SECRET, { expiresIn: '7d' })
-        res.cookie('token', token, { httpOnly: true, secure: true, sameSite: 'none', maxAge: 7 * 24 * 60 * 60 * 1000 })
-        res.json({ message: 'Đăng nhập thành công', token })
-
-      } else if (authProvider === 'google') {
-
-        const { ggToken } = req.body
-        if (!ggToken) return res.status(400).json({ message: 'Thiếu token Google' })
-
-        const ticket = await client.verifyIdToken({ idToken: ggToken, audience: process.env.GOOGLE_CLIENT_ID })
-        const payload = ticket.getPayload()
-        const { email } = payload
-
-        const account = await Account.findOne({ email, deleted: false })
-        console.log(account)
-        if (!account) return res.status(401).json({ message: 'Tài khoản Google chưa đăng ký' })
-
-        const token = jwt.sign({ id: account._id, type: account.role }, JWT_SECRET, { expiresIn: '7d' })
-        res.cookie('token', token, { httpOnly: true, secure: true, sameSite: 'none', maxAge: 7 * 24 * 60 * 60 * 1000 })
-        res.json({ message: 'Đăng nhập Google thành công', token })
-
-      } else if (authProvider === 'facebook') {
-
-        const { fbToken } = req.body
-        if (!fbToken) return res.status(400).json({ message: 'Thiếu token Facebook' })
-        console.log('fbToken:', fbToken)
-
-        const fbResponse = await axios.get('https://graph.facebook.com/me', {
-          params: {
-            access_token: fbToken,
-            fields: 'id,email'
-          }
-        })
-
-        const { email } = fbResponse.data
-        if (!email) return res.status(404).json({ message: 'Không lấy được email từ Facebook' })
-
-        const account = await Account.findOne({ email, deleted: false })
-        if (!account) return res.status(404).json({ message: 'Tài khoản Facebook chưa đăng ký' })
-
-        const token = jwt.sign({ id: account._id, type: account.role }, JWT_SECRET, { expiresIn: '7d' })
-        res.cookie('token', token, { httpOnly: true, secure: true, sameSite: 'none', maxAge: 7 * 24 * 60 * 60 * 1000 })
-        res.json({ message: 'Đăng nhập Facebook thành công', token })
-
+      if (authProvider == 'local') {
+        return this.loginLocal(req, res)
+      } else if (authProvider == 'google') {
+        return this.loginGoogle(req, res)
+      } else if (authProvider == 'facebook') {
+        return this.loginFacebook(req, res)
       } else {
-        res.status(400).json({ message: 'Phương thức đăng nhập không hợp lệ' })
+        return res.status(400).json({ message: 'Phương thức đăng nhập không hợp  lệ' })
       }
     } catch (err) {
-      console.log(err)
       res.status(500).json({ message: 'Lỗi khi đăng nhập', error: err.message })
     }
   }
 
+  // handle login for local account
+  loginLocal = async (req, res) => {
+    const { emailOrPhone, password } = req.body
+    if (!emailOrPhone || !password) return res.status(400).json({ message: 'Thiếu thông tin bắt buộc' })
+
+    const isEmail = emailOrPhone.includes('@')
+    const account = await Account.findOne({
+      [isEmail ? 'email' : 'phoneNumber']: emailOrPhone,
+      deleted: false
+    })
+
+    if (!account) return res.status(404).json({ message: 'Tài khoản không tồn tại' })
+    if (!account.password) return res.status(400).json({ message: 'Tài khoản không hỗ trợ mật khẩu' })
+
+    const match = await bcrypt.compare(password, account.password)
+    if (!match) return res.status(401).json({ message: 'Sai mật khẩu' })
+
+    this.createAndSetToken(res, account)
+    res.json({ message: 'Đăng nhập thành công' })
+  }
+
+  // handle login for Google account
+  loginGoogle = async (req, res) => {
+    const { ggToken } = req.body
+    if (!ggToken) return res.status(400).json({ message: 'Thiếu token Google' })
+
+    const ticket = await client.verifyIdToken({ idToken: ggToken, audience: process.env.GOOGLE_CLIENT_ID })
+    const { email } = ticket.getPayload()
+
+    const account = await Account.findOne({ email, deleted: false })
+    if (!account) return res.status(401).json({ message: 'Tài khoản Google chưa đăng ký' })
+
+    this.createAndSetToken(res, account)
+    res.json({ message: 'Đăng nhập Google thành công' })
+  }
+
+  // handle login for Facebook account
+  loginFacebook = async (req, res) => {
+    const { fbToken } = req.body
+    if (!fbToken) return res.status(400).json({ message: 'Thiếu token Facebook' })
+
+    const fbResponse = await axios.get('https://graph.facebook.com/me', {
+      params: {
+        access_token: fbToken,
+        fields: 'id,email'
+      }
+    })
+    const { email } = fbResponse.data
+    if (!email) return res.status(400).json({ message: 'Không lấy được email từ Facebook' })
+
+    const account = await Account.findOne({ email, deleted: false })
+    if (!account) return res.status(404).json({ message: 'Tài khoản Facebook chưa đăng ký' })
+
+    this.createAndSetToken(res, account)
+    res.json({ message: 'Đăng nhập Facebook thành công' })
+  }
+
   // [POST] /logout
-  async logout(req, res) {
+  logout = async (req, res) => {
     try {
       res.clearCookie('token', {
         httpOnly: true,
@@ -211,6 +208,30 @@ class AccountController {
       res.json({ message: 'Đăng xuất thành công' })
     } catch (err) {
       res.status(500).json({ message: 'Lỗi khi đăng xuất', error: err.message })
+    }
+  }
+
+  // create and set JWT token in cookie
+  createAndSetToken = (res, account) => {
+    const token = jwt.sign({ id: account._id, type: account.role }, JWT_SECRET, { expiresIn: '7d' })
+    res.cookie('token', token, {
+      httpOnly: true,
+      secure: true,
+      sameSite: 'none',
+      maxAge: 7 * 24 * 60 * 60 * 1000
+    })
+  }
+
+  // fetch image from URL and return as Buffer
+  fetchImage = async (url) => {
+    try {
+      const response = await axios.get(url, { responseType: 'arraybuffer' })
+      return {
+        data: Buffer.from(response.data, 'binary'),
+        contentType: response.headers['content-type']
+      }
+    } catch {
+      return { data: DefaultAvatar, contentType: 'image/png' }
     }
   }
 }

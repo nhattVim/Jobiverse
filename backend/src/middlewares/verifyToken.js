@@ -5,7 +5,6 @@ const JWT_SECRET = process.env.JWT_SECRET
 const verifyToken = ([...role]) => {
   return async (req, res, next) => {
     // const token = req.headers.authorization?.split(' ')[1]
-
     const token = req.cookies.token
 
     if (!token) return res.status(498).json({ message: 'Invalid Token' })
@@ -32,7 +31,7 @@ const verifyToken = ([...role]) => {
       if (err.name === 'TokenExpiredError') {
         return res.status(498).json({ message: 'Token đã hết hạn' })
       } else {
-        res.status(498).json({ message: 'Token không hợp lệ' })
+        return res.status(498).json({ message: 'Token không hợp lệ' })
       }
     }
   }
