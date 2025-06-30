@@ -112,7 +112,7 @@ const EmployerProfile = () => {
 
               <div>
                 <label className="block mb-1 text-sm font-bold text-gray-700">
-                  Vị trí công tác
+                  Chức vụ công tác
                 </label>
                 <input
                   type="text"
@@ -120,7 +120,7 @@ const EmployerProfile = () => {
                   value={form.position}
                   onChange={handleChange}
                   className="w-full px-4 py-2 bg-white rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  placeholder="Vị trí"
+                  placeholder="Chức vụ"
                 />
               </div>
             </div>

@@ -47,12 +47,11 @@ const EmployerInfo = ({
       type: 'text',
       placeholder: 'Số giấy phép đăng ký kinh doanh'
     }
-    // `companyInfo` sẽ tách riêng bên dưới
   }
 
   return (
     <form onSubmit={handleSubmit}>
-      <section className="max-w-4xl p-10 mx-auto border border-gray-200 shadow-md bg-white-low rounded-medium">
+      <section className="p-10 border border-gray-200 shadow-md bg-white-low rounded-medium">
         <h2 className="mb-2 text-2xl font-bold text-blue">Cài đặt thông tin doanh nghiệp</h2>
         <p className="mb-6 text-sm text-black">
           <span className="text-red-500">*</span> Các thông tin bắt buộc
@@ -107,7 +106,6 @@ const EmployerInfo = ({
           />
         </div>
 
-        {/* Email (readonly) */}
         <div className="mt-8 md:col-span-2">
           <label className="block mb-1 text-sm font-bold text-gray-700">Email</label>
           <input
