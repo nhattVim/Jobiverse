@@ -1,0 +1,133 @@
+@import url("https://fonts.googleapis.com/css2?family=Noto+Sans:ital,wght@0,100..900;1,100..900&display=swap");
+@import "tailwindcss";
+@plugin "tailwind-scrollbar";
+
+html {
+  @apply scrollbar-custom;
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: "Noto Sans", sans-serif;
+  @apply text-black;
+  @apply bg-white;
+  @apply font-medium;
+}
+
+.tinymce-content ul {
+  @apply space-y-1 text-sm list-disc list-inside;
+}
+
+.tinymce-content ol {
+  @apply space-y-1 text-sm list-decimal list-inside;
+}
+
+#current-job {
+  scroll-margin-top: 224px;
+}
+
+@theme {
+  --color-black: #292c39;
+  --color-black-mid: #303240;
+  --color-black-low: #444655;
+  --color-gray-dark: #898b9b;
+  --color-gray: #a9aabc;
+  --color-gray-light: #d4d6e8;
+  --color-white-low: #e5e6f2;
+  --color-white-mid: #eeeffa;
+  --color-white: #f7f8ff;
+  --color-white-bright: #ffffff;
+  --color-blue-mid: #2e51ab;
+  --color-blue: #406bd0;
+  --color-yellow: #edcd59;
+  --color-red: #dc2f2f;
+
+  --radius-small: 20px;
+  --radius-medium: 30px;
+
+  --container-7xl: 1448px;
+
+  --breakpoint-lg: 1100px;
+
+  --animate-slideDown: slideDown 0.5s ease-in-out;
+  --animate-slideUp: slideUp 0.3s ease-in-out;
+  --animate-pop: pop 0.3s ease;
+
+  @keyframes slideDown {
+    from {
+      transform: translateY(-100%);
+    }
+
+    to {
+      transform: translateY(0);
+    }
+  }
+
+  @keyframes slideUp {
+    from {
+      transform: translateY(15%);
+      opacity: 0;
+    }
+
+    to {
+      transform: translateY(0);
+      opacity: 1;
+    }
+  }
+
+  @keyframes pop {
+    0% {
+      transform: scale(1);
+    }
+
+    40% {
+      transform: scale(1.4);
+    }
+
+    100% {
+      transform: scale(1);
+    }
+  }
+}
+
+@utility container-responsive {
+  @apply px-4 mx-auto max-w-7xl lg:px-6;
+}
+
+@utility bg-gradient-blue-right {
+  background: linear-gradient(270deg, #2e51ab 0%, #132145 100%);
+}
+
+@utility bg-gradient-blue-left {
+  background: linear-gradient(90deg, #132145 0%, #2e51ab 100%);
+}
+
+@utility scrollbar-gutter-stable {
+  scrollbar-gutter: stable;
+}
+
+@utility scrollbar-custom {
+  @apply scrollbar-thin scrollbar-thumb-gray-light scrollbar-track-white-bright;
+}
+
+@utility input-field {
+  @apply h-[50px] px-4 rounded-full outline-none text-base bg-white-bright
+}
+
+@utility input-field-focus {
+  @apply focus:outline-none focus:ring-2 focus:ring-blue
+}
+
+select {
+  @apply scrollbar-custom
+}
+input[type="number"]::-webkit-outer-spin-button,
+input[type="number"]::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+input[type="number"] {
+  appearance: textfield;
+  -moz-appearance: textfield;
+}

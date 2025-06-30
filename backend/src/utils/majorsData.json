@@ -1,0 +1,197 @@
+[
+  {
+    "name": "Công nghệ thông tin",
+    "description": "Ngành học về công nghệ và phần mềm",
+    "specializations": [
+      {
+        "name": "Trí tuệ nhân tạo",
+        "description": "Chuyên ngành AI"
+      },
+      {
+        "name": "Mạng máy tính",
+        "description": "Chuyên ngành mạng máy tính"
+      },
+      {
+        "name": "Kỹ thuật phần mềm",
+        "description": "Phát triển ứng dụng & hệ thống"
+      },
+      {
+        "name": "Hệ thống thông tin",
+        "description": "Thiết kế & quản trị hệ thống thông tin"
+      }
+    ]
+  },
+  {
+    "name": "Kinh tế",
+    "description": "Ngành học về kinh tế",
+    "specializations": [
+      {
+        "name": "Kinh tế quốc tế",
+        "description": "Chuyên ngành kinh tế quốc tế"
+      },
+      {
+        "name": "Kinh tế học",
+        "description": "Định giá, phân tích kinh tế"
+      }
+    ]
+  },
+  {
+    "name": "Kế toán",
+    "description": "Ngành học về kế toán",
+    "specializations": [
+      {
+        "name": "Kế toán doanh nghiệp",
+        "description": "Báo cáo tài chính doanh nghiệp"
+      },
+      {
+        "name": "Kiểm toán",
+        "description": "Kiểm soát và đánh giá tài chính"
+      }
+    ]
+  },
+  {
+    "name": "Tài chính – Ngân hàng",
+    "description": "Ngành học về tài chính và ngân hàng",
+    "specializations": [
+      {
+        "name": "Tài chính doanh nghiệp",
+        "description": "Quản trị tài chính doanh nghiệp"
+      },
+      {
+        "name": "Ngân hàng – tín dụng",
+        "description": "Hoạt động ngân hàng và cho vay"
+      }
+    ]
+  },
+  {
+    "name": "Quản trị kinh doanh",
+    "description": "Ngành học về quản trị",
+    "specializations": [
+      {
+        "name": "Quản trị doanh nghiệp",
+        "description": "Quản lý điều hành doanh nghiệp"
+      },
+      {
+        "name": "Logistics & Supply Chain",
+        "description": "Quản trị chuỗi cung ứng"
+      },
+      {
+        "name": "Marketing Management",
+        "description": "Chuyên ngành tiếp thị"
+      },
+      {
+        "name": "International Trade",
+        "description": "Thương mại quốc tế"
+      }
+    ]
+  },
+  {
+    "name": "Du lịch – Quản trị khách sạn",
+    "description": "Ngành học về du lịch và khách sạn",
+    "specializations": [
+      {
+        "name": "Quản trị dịch vụ du lịch",
+        "description": "Quản lý tour, dịch vụ du lịch"
+      },
+      {
+        "name": "Quản trị khách sạn",
+        "description": "Quản lý khách sạn và resort"
+      }
+    ]
+  },
+  {
+    "name": "Kỹ thuật điện – điện tử",
+    "description": "Ngành học về điện và điện tử",
+    "specializations": [
+      {
+        "name": "Điện tử viễn thông",
+        "description": "Chuyên ngành điện tử viễn thông"
+      },
+      {
+        "name": "Điện – điện tử",
+        "description": "Kỹ thuật điện & điều khiển"
+      }
+    ]
+  },
+  {
+    "name": "Hóa học",
+    "description": "Ngành học về hóa học",
+    "specializations": [
+      {
+        "name": "Hóa phân tích",
+        "description": "Phân tích định tính & định lượng"
+      },
+      {
+        "name": "Hóa hữu cơ",
+        "description": "Nghiên cứu hợp chất hữu cơ"
+      }
+    ]
+  },
+  {
+    "name": "Vật lý",
+    "description": "Ngành học về vật lý",
+    "specializations": [
+      {
+        "name": "Vật lý kỹ thuật",
+        "description": "Ứng dụng vật lý trong kỹ thuật"
+      },
+      {
+        "name": "Vật lý cơ bản",
+        "description": "Nghiên cứu lý thuyết vật lý"
+      }
+    ]
+  },
+  {
+    "name": "Toán học",
+    "description": "Ngành học về toán học",
+    "specializations": [
+      {
+        "name": "Toán ứng dụng",
+        "description": "Toán Giải thuật & Ứng dụng"
+      },
+      {
+        "name": "Toán lý thuyết",
+        "description": "Chuyên ngành toán thuần túy"
+      }
+    ]
+  },
+  {
+    "name": "Ngôn ngữ Anh",
+    "description": "Ngành học về ngôn ngữ và văn hóa Anh",
+    "specializations": [
+      {
+        "name": "Giáo dục tiếng Anh",
+        "description": "Sư phạm tiếng Anh"
+      },
+      {
+        "name": "Tiếng Anh thương mại",
+        "description": "Biên – phiên dịch & giao tiếp kinh doanh"
+      }
+    ]
+  },
+  {
+    "name": "Sư phạm Tiểu học",
+    "description": "Ngành học về sư phạm tiểu học",
+    "specializations": [
+      {
+        "name": "Giáo dục tiểu học",
+        "description": "Dạy học ở bậc tiểu học"
+      }
+    ]
+  },
+  {
+    "name": "Sư phạm Mầm non",
+    "description": "Ngành học về sư phạm mầm non",
+    "specializations": [
+      {
+        "name": "Giáo dục mầm non",
+        "description": "Dạy học ở bậc mầm non"
+      }
+    ]
+  },
+  {
+    "name": "Giáo dục thể chất",
+    "description": "Ngành học về thể chất và sức khỏe",
+    "specializations": []
+  }
+]

@@ -1,0 +1,75 @@
+# ============================
+# FRONTEND / BACKEND (Node.js + Vite)
+# ============================
+
+# Node modules
+node_modules/
+
+# Vite cache & build output
+dist/
+.vite/
+.cache/
+
+# Logs
+logs/
+*.log
+*.log.*
+
+# Package manager lock files
+package-lock.json
+yarn.lock
+pnpm-lock.yaml
+
+# Environment files
+.env
+
+# Uploads (Optional)
+uploads/
+
+# Certificates (Optional)
+localhost-key.pem
+localhost.pem
+
+# ============================
+# BACKEND.NET (ASP.NET Core)
+# ============================
+
+# Build output
+backend.NET/bin/
+backend/bin/*
+!backend/bin/www
+obj/
+
+
+# User-specific files
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+# Publish & local development artifacts
+*.db
+*.sqlite
+*.db-journal
+*.pdb
+*.cache
+*.pid
+*.pid.lock
+
+# appsettings (Optional)
+# appsettings.Development.json
+# appsettings.*.json
+
+# ============================
+# SHARED / ROOT LEVEL
+# ============================
+
+# OS-specific
+.DS_Store
+Thumbs.db
+
+# IDEs & editors
+.vscode/
+.idea/
+.vs/
+*.swp

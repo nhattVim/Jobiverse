@@ -1,0 +1,5 @@
+dotnet ef dbcontext scaffold "server=mysql-ed145c2-hochitrung08012004-6685.j.aivencloud.com;port=22012;database=Jobiverse;user=avnadmin;password=AVNS_23e2BqV9YnTCreBLUIT;" MySql.EntityFrameworkCore -o Models --context JobiverseContext --force
+
+dotnet tool install --global Microsoft.Playwright.CLI
+
+playwright install

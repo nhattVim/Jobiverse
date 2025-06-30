@@ -1,0 +1,149 @@
+#!/usr/bin/env node
+
+/**
+ * Module dependencies.
+ */
+
+var fs = require('fs');
+var path = require('path');
+var app = require('../app');
+var debug = require('debug')('backend:server');
+var http = require('http');
+var https = require('https');
+var { spawnSync } = require('child_process');
+
+/**
+ * Get port and env from environment
+ */
+
+var isDev = process.env.NODE_ENV !== 'production';
+var port = normalizePort(process.env.PORT || '3000');
+app.set('port', port);
+
+/**
+ * Create HTTPS server if certificate files exist, otherwise fallback to HTTP.
+ */
+
+const CERT_PATH = path.resolve(__dirname, 'localhost.pem');
+const KEY_PATH = path.resolve(__dirname, 'localhost-key.pem');
+
+var server;
+
+if (isDev) {
+  if (fs.existsSync(CERT_PATH) && fs.existsSync(KEY_PATH)) {
+    startHttpsServer();
+  } else {
+    console.log('\n🔐 Certificate files not found. Attempting to generate using mkcert...\n');
+
+    const checkMkcert = spawnSync('mkcert', ['--version'], { stdio: 'pipe' });
+
+    if (checkMkcert.status !== 0) {
+      console.error('\n❌ mkcert is not installed. Please install it first: https://github.com/FiloSottile/mkcert\n');
+      process.exit(1);
+    }
+
+    console.log('\n📥 Installing mkcert root CA...\n');
+    spawnSync('mkcert', ['-install'], { stdio: 'inherit' });
+
+    process.chdir(__dirname);
+
+    const result = spawnSync('mkcert', ['localhost'], { stdio: 'inherit' });
+
+    if (result.status === 0 && fs.existsSync(CERT_PATH) && fs.existsSync(KEY_PATH)) {
+      console.log('\n✅ Certificate generated successfully!');
+      console.log('\n🔁 Please restart your browser to trust the new certificate.\n');
+      startHttpsServer();
+    } else {
+      console.warn('\n⚠️ Failed to create HTTPS certs. Falling back to HTTP.\n');
+      startHttpServer();
+    }
+  }
+} else {
+  startHttpServer();
+}
+
+/**
+ * Functions to start the HTTP or HTTPS server.
+ */
+
+function startHttpsServer() {
+  const options = {
+    key: fs.readFileSync(KEY_PATH),
+    cert: fs.readFileSync(CERT_PATH),
+  };
+
+  server = https.createServer(options, app);
+  server.listen(port);
+  server.on('error', onError);
+  server.on('listening', onListening('HTTPS'));
+}
+
+function startHttpServer() {
+  server = http.createServer(app);
+  server.listen(port);
+  server.on('error', onError);
+  server.on('listening', onListening('HTTP'));
+}
+
+/**
+ * Normalize a port into a number, string, or false.
+ */
+
+function normalizePort(val) {
+  var port = parseInt(val, 10);
+
+  if (isNaN(port)) {
+    // named pipe
+    return val;
+  }
+
+  if (port >= 0) {
+    // port number
+    return port;
+  }
+
+  return false;
+}
+
+/**
+ * Event listener for HTTP server "error" event.
+ */
+
+function onError(error) {
+  if (error.syscall !== 'listen') {
+    throw error;
+  }
+
+  var bind = typeof port === 'string'
+    ? 'Pipe ' + port
+    : 'Port ' + port;
+
+  // handle specific listen errors with friendly messages
+  switch (error.code) {
+    case 'EACCES':
+      console.error(bind + ' requires elevated privileges');
+      process.exit(1);
+      break;
+    case 'EADDRINUSE':
+      console.error(bind + ' is already in use');
+      process.exit(1);
+      break;
+    default:
+      throw error;
+  }
+}
+
+/**
+ * Event listener for HTTP server "listening" event.
+ */
+
+function onListening(protocol) {
+  return () => {
+    var addr = server.address();
+    var bind = typeof addr === 'string'
+      ? 'pipe ' + addr
+      : 'port ' + addr.port;
+    debug('Listening on ' + bind);
+    console.log(`✅ ${protocol} server listening at ${bind}`);
+  }
+}
