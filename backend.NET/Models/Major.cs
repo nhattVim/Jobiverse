@@ -9,7 +9,7 @@ public partial class Major
 
     public string Name { get; set; } = null!;
 
-    public string Description { get; set; } = null!;
+    public string? Description { get; set; }
 
     public virtual ICollection<Specialization> Specializations { get; set; } = new List<Specialization>();
 

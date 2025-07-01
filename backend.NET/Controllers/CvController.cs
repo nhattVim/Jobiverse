@@ -535,54 +535,63 @@ namespace api.Controllers
             if (student == null) return NotFound("Student not found");
 
             if (request.Files == null || request.Files.Count == 0)
-                return BadRequest("File is required");
+                return BadRequest("At least one file is required");
 
-            var file = request.Files[0];
+            List<CvUpload> uploadedFiles = new();
 
-            if (file.Length == 0)
-                return BadRequest("File is empty");
-
-            var fileExt = Path.GetExtension(file.FileName).ToLower();
-            if (fileExt != ".pdf" && fileExt != ".doc" && fileExt != ".docx")
-                return BadRequest("Only PDF, DOC, and DOCX files are allowed.");
-
-            using var memoryStream = new MemoryStream();
-            await file.CopyToAsync(memoryStream);
-            var fileBytes = memoryStream.ToArray();
-
-            var fileId = Guid.NewGuid().ToString();
-
-            var cvUpload = new CvUpload
+            foreach (var file in request.Files)
             {
-                FileId = fileId,
-                StudentId = student.StudentId,
-                Title = Path.GetFileNameWithoutExtension(file.FileName),
-                FileName = file.FileName,
-                FileType = file.ContentType,
-                File = fileBytes,
-                UploadedAt = DateTime.UtcNow
-            };
+                if (file.Length == 0) continue;
 
-            _context.CvUploads.Add(cvUpload);
+                var fileExt = Path.GetExtension(file.FileName).ToLower();
+                if (fileExt != ".pdf" && fileExt != ".doc" && fileExt != ".docx")
+                    continue;
+
+                using var memoryStream = new MemoryStream();
+                await file.CopyToAsync(memoryStream);
+                var fileBytes = memoryStream.ToArray();
+
+                var fileId = Guid.NewGuid().ToString();
+
+                var cvUpload = new CvUpload
+                {
+                    FileId = fileId,
+                    StudentId = student.StudentId,
+                    Title = Path.GetFileNameWithoutExtension(file.FileName),
+                    FileName = file.FileName,
+                    FileType = file.ContentType,
+                    File = fileBytes,
+                    UploadedAt = DateTime.UtcNow
+                };
+
+                uploadedFiles.Add(cvUpload);
+            }
+
+            if (uploadedFiles.Count == 0)
+                return BadRequest("No valid files to upload.");
+
+            _context.CvUploads.AddRange(uploadedFiles);
             await _context.SaveChangesAsync();
 
             if (student.DefaultCvId == null)
             {
-                student.DefaultCvId = fileId;
+                var firstFile = uploadedFiles.First();
+                student.DefaultCvId = firstFile.FileId;
                 student.DefaultCvType = "CVUpload";
                 _context.Students.Update(student);
                 await _context.SaveChangesAsync();
             }
 
+            var firstUploaded = uploadedFiles.First();
             return Ok(new
             {
                 message = "Tải lên CV thành công",
                 uploadedFile = new
                 {
-                    _id = fileId,
-                    title = Path.GetFileNameWithoutExtension(file.FileName),
-                    fileName = file.FileName,
-                    fileType = file.ContentType
+                    _id = firstUploaded.FileId,
+                    title = firstUploaded.Title,
+                    fileName = firstUploaded.FileName,
+                    fileType = firstUploaded.FileType
                 }
             });
         }

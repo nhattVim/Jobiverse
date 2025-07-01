@@ -104,21 +104,35 @@ class CVController {
         return Buffer.from(str, 'latin1').toString('utf8')
       }
 
-      const file = files[0]
-      const uploadedFile = await CVUpload.create({
-        student: student._id,
-        title: fixEncoding(file.originalname),
-        fileName: fixEncoding(file.originalname),
-        file: file.buffer,
-        fileType: file.mimetype
-      })
+      const uploadedFiles = []
+
+      for (const file of files) {
+        const ext = file.originalname.split('.').pop().toLowerCase()
+        if (!['pdf', 'doc', 'docx'].includes(ext)) continue
+
+        const uploadedFile = await CVUpload.create({
+          student: student._id,
+          title: fixEncoding(file.originalname),
+          fileName: fixEncoding(file.originalname),
+          file: file.buffer,
+          fileType: file.mimetype
+        })
+
+        uploadedFiles.push(uploadedFile)
+      }
+
+      if (uploadedFiles.length === 0)
+        return res.status(400).json({ message: 'Tất cả các tệp đều không hợp lệ' })
 
       if (!student.defaultCV || !student.defaultCV.cv) {
-        student.defaultCV = { cv: uploadedFile._id, type: 'CVUpload' }
+        student.defaultCV = { cv: uploadedFiles[0]._id, type: 'CVUpload' }
         await student.save()
       }
 
-      res.status(201).json({ message: 'Tải lên CV thành công', uploadedFile })
+      res.status(201).json({
+        message: 'Tải lên CV thành công',
+        uploadedFile: uploadedFiles[0]
+      })
     } catch (err) {
       res.status(500).json({ message: 'Lỗi khi tải lên CV', error: err.message })
     }
