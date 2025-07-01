@@ -77,7 +77,8 @@ const JobList = () => {
     setJobs([])
     setHasNextPage(true)
     if (jobListRef.current && ([selectedMajors, selectedSpecs, selectedExps, selectedTypes].some(arr => arr.length > 0))) {
-      jobListRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' })
+      const top = jobListRef.current.getBoundingClientRect().top + window.pageYOffset - 100
+      window.scrollTo({ top, behavior: 'smooth' })
     }
   }, [selectedMajors, selectedSpecs, selectedExps, selectedTypes, sortOption, searchQuery])
 
@@ -197,7 +198,7 @@ const JobList = () => {
       </div>
     )
   }
-  console.log(jobs)
+
   return (
     <>
       <Banner searchQuery={searchQuery} setSearchQuery={setSearchQuery} />
@@ -207,59 +208,56 @@ const JobList = () => {
 
             {/* Sidebar */}
             <div className="relative overflow-visible">
-              <div className="sticky top-[124px] flex flex-col gap-5 p-10 rounded-medium bg-white-mid">
-                <div className="flex items-center gap-2.5">
-                  <FunnelIcon className="w-10 h-10" />
-                  <h6 className="text-[22px] font-semibold leading-0">Lọc nâng cao</h6>
+              <div className="sticky top-[100px] px-10 py-8 rounded-medium bg-white-mid">
+                <div className="relative flex flex-col max-h-[75vh]">
+                  <div className="absolute top-0 left-0 right-0 z-50 bg-white-mid border-b border-gray-light flex items-center gap-2.5 pb-5">
+                    <FunnelIcon className="w-10 h-10" />
+                    <h6 className="text-[22px] font-semibold leading-0">Lọc nâng cao</h6>
+                  </div>
+                  <div style={{ scrollbarGutter: 'stable' }} className="flex flex-col gap-5 overflow-y-hidden hover:overflow-y-auto scrollbar-custom-filter mt-13 mb-10">
+                    <div className="mt-2"></div>
+                    {renderCheckboxList(
+                      majors,
+                      selectedMajors,
+                      setSelectedMajors,
+                      showAllMajors,
+                      setShowAllMajors,
+                      'Ngành (Major)'
+                    )}
+                    {renderCheckboxList(
+                      specs,
+                      selectedSpecs,
+                      setSelectedSpecs,
+                      showAllSpecs,
+                      setShowAllSpecs,
+                      'Chuyên ngành (Specialization)'
+                    )}
+                    {renderCheckboxList(
+                      expItem,
+                      selectedExps,
+                      setSelectedExps,
+                      showAllExps,
+                      setShowAllExps,
+                      'Kinh nghiệm',
+                      7
+                    )}
+                    {renderCheckboxList(
+                      jobTypeItem,
+                      selectedTypes,
+                      setSelectedTypes,
+                      showAllTypes,
+                      setShowAllTypes,
+                      'Hình thức làm việc',
+                      2
+                    )}
+                    <div className="mb-3"></div>
+                  </div>
+                  <div className="absolute bottom-0 left-0 right-0 bg-filter-button">
+                    <button onClick={clearAllFilters} className="w-full px-4 py-2 mt-2 text-white bg-red rounded-medium cursor-pointer hover:bg-red-600">
+                      Xoá tất cả bộ lọc
+                    </button>
+                  </div>
                 </div>
-
-                {renderCheckboxList(
-                  majors,
-                  selectedMajors,
-                  setSelectedMajors,
-                  showAllMajors,
-                  setShowAllMajors,
-                  'Ngành (Major)'
-                )}
-
-                <div className="h-[1px] w-full bg-gray-light"></div>
-
-                {renderCheckboxList(
-                  specs,
-                  selectedSpecs,
-                  setSelectedSpecs,
-                  showAllSpecs,
-                  setShowAllSpecs,
-                  'Chuyên ngành (Specialization)'
-                )}
-
-                <div className="h-[0.5px] w-full bg-gray-light"></div>
-
-                {renderCheckboxList(
-                  expItem,
-                  selectedExps,
-                  setSelectedExps,
-                  showAllExps,
-                  setShowAllExps,
-                  'Kinh nghiệm',
-                  7
-                )}
-
-                <div className="h-[1px] w-full bg-gray-light"></div>
-
-                {renderCheckboxList(
-                  jobTypeItem,
-                  selectedTypes,
-                  setSelectedTypes,
-                  showAllTypes,
-                  setShowAllTypes,
-                  'Hình thức làm việc',
-                  2
-                )}
-
-                <button onClick={clearAllFilters} className="px-4 py-2 mt-4 text-white bg-red-500 rounded cursor-pointer hover:bg-red-600">
-                  Xoá tất cả bộ lọc
-                </button>
               </div>
             </div>
 
