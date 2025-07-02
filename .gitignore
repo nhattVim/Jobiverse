@@ -40,7 +40,6 @@ backend/bin/*
 !backend/bin/www
 obj/
 
-
 # User-specific files
 *.user
 *.suo
@@ -57,8 +56,7 @@ obj/
 *.pid.lock
 
 # appsettings (Optional)
-# appsettings.Development.json
-# appsettings.*.json
+appsettings.json
 
 # ============================
 # SHARED / ROOT LEVEL
