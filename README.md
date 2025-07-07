@@ -80,7 +80,7 @@ yarn dev
 
 ```sh
 cd backend.NET
-dotnet restore
+dotnet restore Jobiverse.sln
 dotnet watch run
 ```
 

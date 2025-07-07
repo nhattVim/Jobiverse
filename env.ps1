@@ -1,66 +1,63 @@
-# Use GUI popup for token input (works on all Windows PowerShell)
-Add-Type -AssemblyName Microsoft.VisualBasic
-$Token = [Microsoft.VisualBasic.Interaction]::InputBox("Paste your GitHub token here", "GitHub Token")
+# ─────────────────────────────────────────────────────────────
+# GitHub Secrets Importer Script for Jobiverse (PowerShell)
+# Author: nhatt
+# ─────────────────────────────────────────────────────────────
 
-# Stop script on any error
+# Prompt GitHub token via GUI (secure, cross-shell)
+Add-Type -AssemblyName Microsoft.VisualBasic
+$Token = [Microsoft.VisualBasic.Interaction]::InputBox("Paste your GitHub token here (will not be shown)", "GitHub Token")
+
+# Validate token input
+if ([string]::IsNullOrWhiteSpace($Token)) {
+    Write-Host "❌ No token entered. Exiting..." -ForegroundColor Red
+    exit 1
+}
+
+# Enable fail-fast on error
 $ErrorActionPreference = "Stop"
 
-# Utility functions for colored messages
-function Write-Info($msg) {
-    Write-Host "🔷 $msg" -ForegroundColor Cyan
-}
-function Write-Success($msg) {
-    Write-Host "✅ $msg" -ForegroundColor Green
-}
-function Write-WarningMsg($msg) {
-    Write-Host "⚠️ $msg" -ForegroundColor Yellow
-}
-function Write-ErrorMsg($msg) {
-    Write-Host "❌ $msg" -ForegroundColor Red
-}
+# Utility: Colored console messages
+function Write-Info($msg)       { Write-Host "🔷 $msg" -ForegroundColor Cyan }
+function Write-Success($msg)    { Write-Host "✅ $msg" -ForegroundColor Green }
+function Write-WarningMsg($msg) { Write-Host "⚠️ $msg" -ForegroundColor Yellow }
+function Write-ErrorMsg($msg)   { Write-Host "❌ $msg" -ForegroundColor Red }
 
-# Temporary directory and GitHub repo URL
-$TempDir = "temp_secrets_$([System.Diagnostics.Process]::GetCurrentProcess().Id)"
+# Constants
 $RepoUrl = "https://$Token@github.com/nhattVim/.env"
+$TempDir = "temp_secrets_$([System.Diagnostics.Process]::GetCurrentProcess().Id)"
+$Mappings = @{
+    "Jobiverse/backend/.env"                    = "backend/.env"
+    "Jobiverse/backend.NET/appsettings.json"    = "backend.NET/appsettings.json"
+    "Jobiverse/frontend/.env"                   = "frontend/.env"
+}
 
-# Clone the private secrets repository
+# Clone secrets repo
 Write-Info "Cloning secrets repository..."
-git clone $RepoUrl $TempDir
+git -c credential.helper= clone $RepoUrl $TempDir 2>$null
 
-if ($LASTEXITCODE -ne 0) {
-    Write-ErrorMsg "Clone failed. Kiểm tra GitHub token hoặc repo có tồn tại không."
+if ($LASTEXITCODE -ne 0 -or -not (Test-Path $TempDir)) {
+    Write-ErrorMsg "Clone failed. Kiểm tra GitHub token hoặc quyền truy cập vào repo."
     exit 1
-} else {
-    Write-Success "Repository cloned successfully!"
 }
 
-# Copy configuration files from temp directory to project
+Write-Success "Repository cloned successfully to '$TempDir'"
+
+# Copy mapped files
 Write-Info "Copying environment configuration files..."
-
-if (Test-Path "$TempDir/Jobiverse/backend/.env") {
-    Copy-Item "$TempDir/Jobiverse/backend/.env" -Destination "backend/.env" -Force
-    Write-Success "Copied backend/.env"
-} else {
-    Write-WarningMsg "backend/.env not found in repository."
+foreach ($src in $Mappings.Keys) {
+    $dst = $Mappings[$src]
+    $fullSrc = Join-Path $TempDir $src
+    if (Test-Path $fullSrc) {
+        Copy-Item $fullSrc -Destination $dst -Force
+        Write-Success "Copied $dst"
+    } else {
+        Write-WarningMsg "$src not found in repository."
+    }
 }
 
-if (Test-Path "$TempDir/Jobiverse/backend.NET/appsettings.json") {
-    Copy-Item "$TempDir/Jobiverse/backend.NET/appsettings.json" -Destination "backend.NET/appsettings.json" -Force
-    Write-Success "Copied backend.NET/appsettings.json"
-} else {
-    Write-WarningMsg "backend.NET/appsettings.json not found in repository."
-}
-
-if (Test-Path "$TempDir/Jobiverse/frontend/.env") {
-    Copy-Item "$TempDir/Jobiverse/frontend/.env" -Destination "frontend/.env" -Force
-    Write-Success "Copied frontend/.env"
-} else {
-    Write-WarningMsg "frontend/.env not found in repository."
-}
-
-# Remove temporary directory after copying
+# Cleanup
 Remove-Item -Recurse -Force $TempDir
 Write-Info "Temporary folder removed."
 
-# Final success message
-Write-Success "Secrets have been successfully imported!"
+# Done
+Write-Success "✅ All secrets imported successfully!"
