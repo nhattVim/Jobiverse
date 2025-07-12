@@ -21,5 +21,5 @@ createRoot(document.getElementById('root')).render(
         </GoogleOAuthProvider>
       </UserProvider>
     </ServerReadyProvider>
-  </React.StrictMode >
+  </React.StrictMode>
 )
